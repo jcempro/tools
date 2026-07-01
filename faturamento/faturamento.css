@@ -257,6 +257,7 @@ select:focus {
 
 .print-page h1 {
   margin: 0 0 0.75cm;
+  margin-top: .5cm;
   font-size: 14pt;
   letter-spacing: 0;
   text-align: center;
@@ -271,7 +272,9 @@ select:focus {
 .company-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed;  
+  margin-top: 4em;
+  margin-bottom: 3em;
 }
 
 .company-table th,
@@ -280,6 +283,9 @@ select:focus {
   padding: 0 3px;
   border-bottom: 1px solid var(--line);
   vertical-align: bottom;
+  padding: .1mm;
+  padding-bottom: .1mm;
+  padding-top: .4em !important;
 }
 
 .company-table th {
@@ -297,6 +303,7 @@ select:focus {
   grid-template-columns: 7.5cm 6.8cm;
   justify-content: space-between;
   margin: 0.75cm 0;
+  margin-bottom: 3.5em;
 }
 
 .summary-box {
