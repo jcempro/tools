@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Relação de Faturamento</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js"
+    integrity="sha512-w3u9q/DeneCSwUDjhiMNibTRh/1i/gScBVp2imNVAMCt6cUHIw6xzhzcPFIaL3Q1EbI2l+nu17q2aLJJLo4ZYg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="../assets/css/documentos.css">
+  <link rel="stylesheet" href="faturamento.css">
+  <script src="../assets/js/documentos.js"></script>
+  <script src="faturamento.js"></script>
+</head>
+
+<body id="faturamento-app">
+  <div class="versao">1.0.0 | modelos.jcem.pro/faturamento/</div>
+
+  <div class="cookie no-print">Usa-se COOKIES e similares. É proibido permanecer, usar, imprimir e compartilhar se
+    discordar.</div>
+  <div class="ico autosave no-print">Salvamento offline automático.</div>
+
+  <nav class="menu no-print" aria-label="Ferramentas">
+    <button type="button" class="ico pdf print">PDF</button>
+    <button type="button" class="ico print browser-print">Imprimir</button>
+    <button type="button" class="ico clear clear-form">Limpar</button>
+    <button type="button" class="ico share share-url">Share</button>
+  </nav>
+
+  <main class="faturamento-shell">
+    <section class="editor no-print" aria-label="Edição da relação de faturamento">
+      <div class="editor-grid">
+        <fieldset>
+          <legend>Empresa</legend>
+          <label for="razao-social">Razão Social</label>
+          <input id="razao-social" name="razaoSocial" type="text" required>
+
+          <label for="cnpj">CNPJ</label>
+          <input id="cnpj" name="cnpj" type="text" inputmode="numeric" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Documento</legend>
+          <div class="field-row two">
+            <div>
+              <label for="cidade">Cidade</label>
+              <input id="cidade" name="cidade" type="text" required>
+            </div>
+            <div>
+              <label for="uf">UF</label>
+              <input id="uf" name="uf" type="text" maxlength="2" required>
+            </div>
+          </div>
+
+          <label for="data-assinatura">Data de Assinatura</label>
+          <input id="data-assinatura" name="dataAssinatura" type="date" required>
+
+          <label for="mes-referencia">Mês/Ano de Referência</label>
+          <input id="mes-referencia" name="mesReferencia" type="text" placeholder="05/2026" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Faturamento</legend>
+          <label for="faturamento-alvo">Faturamento Bruto Anual</label>
+          <input id="faturamento-alvo" name="faturamentoBrutoAnual" class="money" type="text" inputmode="decimal">
+          <button type="button" id="distribuir-faturamento" class="secondary-action">Distribuir</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Recebimento</legend>
+          <label for="percentual-cartoes">Cartões</label>
+          <input id="percentual-cartoes" name="cartoes" class="percent" type="text" inputmode="decimal">
+
+          <label for="percentual-cheques">Cheques</label>
+          <input id="percentual-cheques" name="cheques" class="percent" type="text" inputmode="decimal">
+
+          <label for="percentual-titulos">Títulos</label>
+          <input id="percentual-titulos" name="titulos" class="percent" type="text" inputmode="decimal">
+        </fieldset>
+
+        <fieldset>
+          <legend>Regime e Comitê</legend>
+          <label for="regime-tributacao">Regime de Tributação</label>
+          <input id="regime-tributacao" name="regimeTributacao" type="text">
+
+          <label for="comite">Comitê</label>
+          <input id="comite" name="comite" type="text">
+        </fieldset>
+
+        <fieldset>
+          <legend>Assinantes</legend>
+          <div class="signer-grid">
+            <label for="assinante-1-nome">Nome 1</label>
+            <input id="assinante-1-nome" name="assinante1Nome" type="text" required>
+            <label for="assinante-1-cpf">CPF 1</label>
+            <input id="assinante-1-cpf" name="assinante1Cpf" type="text" inputmode="numeric" required>
+            <label for="assinante-1-papel">Papel 1</label>
+            <input id="assinante-1-papel" name="assinante1Papel" type="text" value="PROPRIETÁRIO/SÓCIO/MANDATÁRIO">
+
+            <label for="assinante-2-nome">Nome 2</label>
+            <input id="assinante-2-nome" name="assinante2Nome" type="text">
+            <label for="assinante-2-cpf">CPF 2</label>
+            <input id="assinante-2-cpf" name="assinante2Cpf" type="text" inputmode="numeric">
+            <label for="assinante-2-papel">Papel 2</label>
+            <input id="assinante-2-papel" name="assinante2Papel" type="text">
+
+            <label for="assinante-3-nome">Nome 3</label>
+            <input id="assinante-3-nome" name="assinante3Nome" type="text">
+            <label for="assinante-3-cpf">CPF 3</label>
+            <input id="assinante-3-cpf" name="assinante3Cpf" type="text" inputmode="numeric">
+            <label for="assinante-3-papel">Papel 3</label>
+            <input id="assinante-3-papel" name="assinante3Papel" type="text">
+          </div>
+        </fieldset>
+      </div>
+
+      <fieldset class="monthly-editor">
+        <legend>Mercado Interno</legend>
+        <table>
+          <thead>
+            <tr>
+              <th>Mês/Ano</th>
+              <th>Vendas à Vista</th>
+              <th>Vendas a Prazo</th>
+              <th>Prazo Médio</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody id="editor-meses"></tbody>
+        </table>
+      </fieldset>
+
+      <p id="status-faturamento" class="status" role="status"></p>
+    </section>
+
+    <section class="preview-wrap" aria-label="Pré-visualização da relação de faturamento">
+      <article id="documento-faturamento" class="print-page" aria-label="Documento imprimível">
+        <h1>RELAÇÃO DE FATURAMENTO</h1>
+
+        <table class="company-table">
+          <tr>
+            <th>Razão Social</th>
+            <td id="print-razao-social"></td>
+          </tr>
+          <tr>
+            <th>CNPJ:</th>
+            <td id="print-cnpj"></td>
+          </tr>
+        </table>
+
+        <div class="summary-row">
+          <div class="summary-box">
+            <span>Faturamento Bruto Anual:</span>
+            <strong id="print-faturamento-anual">R$ 0,00</strong>
+          </div>
+          <div class="summary-box">
+            <span>Mês/Ano de Referência:</span>
+            <strong id="print-mes-referencia"></strong>
+          </div>
+        </div>
+
+        <h2>MERCADO INTERNO:</h2>
+
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th>MÊS/ANO:</th>
+              <th>VENDAS À VISTA</th>
+              <th>VENDAS A PRAZO</th>
+              <th>PRAZO MÉDIO DE RECEBIMENTO</th>
+              <th>PREVISTO / REALIZADO</th>
+            </tr>
+          </thead>
+          <tbody id="print-meses"></tbody>
+          <tfoot>
+            <tr>
+              <th>TOTAIS:</th>
+              <td id="print-total-vista">R$ 0,00</td>
+              <td id="print-total-prazo">R$ 0,00</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="lower-grid">
+          <section>
+            <h2>PERCENTUAL DE RECEBIMENTO DAS VENDAS A PRAZO:</h2>
+            <table class="percent-table">
+              <tr>
+                <th>CARTÕES:</th>
+                <td id="print-cartoes"></td>
+              </tr>
+              <tr>
+                <th>CHEQUES:</th>
+                <td id="print-cheques"></td>
+              </tr>
+              <tr>
+                <th>TÍTULOS:</th>
+                <td id="print-titulos"></td>
+              </tr>
+            </table>
+
+            <table class="tax-table">
+              <tr>
+                <th>REGIME DE<br>TRIBUTAÇÃO:</th>
+                <td id="print-regime"></td>
+              </tr>
+            </table>
+          </section>
+
+          <section class="signature-date">
+            <strong><span id="print-cidade-uf"></span>, <span id="print-data"></span>,</strong>
+            <em>Assinatura física ou digital (site gov.br)</em>
+          </section>
+        </div>
+
+        <section class="signature-block">
+          <div class="signature-line"></div>
+          <strong id="print-assinantes"></strong>
+          <span id="print-papel"></span>
+          <span id="print-cpfs"></span>
+        </section>
+
+        <p class="committee"><strong>COMITÊ:</strong> <span id="print-comite"></span></p>
+      </article>
+    </section>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,440 @@
+@charset "UTF-8";
+
+:root {
+  --ink: #111;
+  --line: #202020;
+  --muted: #6b7280;
+  --panel: #f3f6f8;
+  --paper: #fff;
+  --accent: #174a7c;
+  --warn: #fff4cc;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: #dfe5e9;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.menu {
+  position: sticky;
+  z-index: 4;
+  top: 0;
+  border-bottom: 1px solid #c9d1d8;
+}
+
+.menu button {
+  border: 0;
+}
+
+.faturamento-shell {
+  display: grid;
+  grid-template-columns: minmax(320px, 440px) minmax(22cm, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 18px;
+}
+
+.editor {
+  position: sticky;
+  top: 58px;
+  max-height: calc(100vh - 76px);
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid #c8d0d7;
+  background: var(--panel);
+}
+
+.editor-grid {
+  display: grid;
+  gap: 12px;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #b9c3cc;
+  background: #fff;
+}
+
+legend {
+  padding: 0 6px;
+  font-weight: 700;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
+  color: #26333f;
+  font-size: 9pt;
+  font-weight: 700;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 34px;
+  margin-top: 3px;
+  padding: 6px 8px;
+  border: 1px solid #aeb8c2;
+  background: #fff;
+}
+
+input:focus {
+  outline: 2px solid #2d7fbd;
+  outline-offset: 1px;
+}
+
+.field-row.two {
+  display: grid;
+  grid-template-columns: 1fr 72px;
+  gap: 8px;
+}
+
+.secondary-action {
+  width: 100%;
+  min-height: 34px;
+  margin-top: 10px;
+  border: 1px solid #16456e;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.signer-grid {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.signer-grid label {
+  margin-top: 0;
+}
+
+.monthly-editor {
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.monthly-editor table {
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.monthly-editor th,
+.monthly-editor td {
+  padding: 4px;
+  border: 1px solid #c9d1d8;
+  text-align: left;
+}
+
+.monthly-editor th {
+  background: #edf1f4;
+  font-size: 8.5pt;
+}
+
+.monthly-editor input {
+  min-height: 30px;
+  margin: 0;
+}
+
+.monthly-editor .month-label,
+.monthly-editor .month-status {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status {
+  min-height: 1.2em;
+  margin: 10px 0 0;
+  color: #7a2518;
+  font-weight: 700;
+}
+
+.preview-wrap {
+  overflow: auto;
+  padding: 10px;
+}
+
+.print-page {
+  box-sizing: border-box;
+  width: 21cm;
+  min-height: 29.7cm;
+  margin: 0 auto;
+  padding: 1cm 0.9cm 0.9cm;
+  background: var(--paper);
+  box-shadow: 0 10px 24px rgb(20 35 50 / 25%);
+}
+
+.print-page,
+.print-page * {
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  line-height: 1.12;
+}
+
+.print-page h1 {
+  margin: 0 0 0.75cm;
+  font-size: 14pt;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.print-page h2 {
+  margin: 0.55cm 0 0.18cm;
+  font-size: 10.5pt;
+  font-weight: 700;
+}
+
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.company-table th,
+.company-table td {
+  height: 0.45cm;
+  padding: 0 3px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: bottom;
+}
+
+.company-table th {
+  width: 3cm;
+  text-align: left;
+  font-weight: 400;
+}
+
+.company-table td {
+  font-weight: 700;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 7.5cm 6.8cm;
+  justify-content: space-between;
+  margin: 0.75cm 0;
+}
+
+.summary-box {
+  min-height: 1.45cm;
+  padding: 0.16cm 0.28cm;
+  border: 0.08cm solid #555;
+  text-align: center;
+}
+
+.summary-box span {
+  display: block;
+  margin-bottom: 0.25cm;
+  font-size: 10pt;
+}
+
+.summary-box strong {
+  display: block;
+  font-size: 14pt;
+}
+
+.market-table,
+.percent-table,
+.tax-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.market-table th,
+.market-table td {
+  height: 0.48cm;
+  padding: 0.03cm 0.08cm;
+  border: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.market-table th {
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-align: center;
+}
+
+.market-table td {
+  text-align: right;
+}
+
+.market-table td:first-child,
+.market-table td:nth-child(4),
+.market-table td:nth-child(5) {
+  text-align: center;
+}
+
+.market-table tbody tr:nth-child(even) td {
+  background: #e7e7e7;
+}
+
+.market-table tfoot th,
+.market-table tfoot td {
+  font-weight: 700;
+}
+
+.market-table tfoot th {
+  text-align: left;
+}
+
+.market-table th:first-child {
+  width: 2.45cm;
+}
+
+.market-table th:nth-child(2),
+.market-table th:nth-child(3) {
+  width: 4cm;
+}
+
+.market-table th:nth-child(4) {
+  width: 3.1cm;
+}
+
+.market-table th:nth-child(5) {
+  width: 3cm;
+}
+
+.lower-grid {
+  display: grid;
+  grid-template-columns: 7.5cm 1fr;
+  gap: 2cm;
+  align-items: start;
+  margin-top: 0.35cm;
+}
+
+.percent-table th,
+.percent-table td,
+.tax-table th,
+.tax-table td {
+  height: 0.46cm;
+  padding: 0.03cm 0.08cm;
+  border: 1px solid var(--line);
+}
+
+.percent-table th,
+.tax-table th {
+  width: 3.15cm;
+  text-align: left;
+  font-weight: 400;
+}
+
+.percent-table td,
+.tax-table td {
+  background: var(--warn);
+}
+
+.tax-table {
+  margin-top: 0.45cm;
+}
+
+.signature-date {
+  align-self: end;
+  margin-top: 2.35cm;
+  text-align: center;
+}
+
+.signature-date strong,
+.signature-date em {
+  display: block;
+}
+
+.signature-date em {
+  margin-top: 0.08cm;
+  font-size: 8.5pt;
+}
+
+.signature-block {
+  width: 11.3cm;
+  margin: 2.15cm 0 0 auto;
+  text-align: center;
+}
+
+.signature-line {
+  height: 1px;
+  margin-bottom: 0.08cm;
+  border-top: 1px solid var(--line);
+}
+
+.signature-block strong,
+.signature-block span {
+  display: block;
+  min-height: 0.38cm;
+}
+
+.signature-block span {
+  font-size: 8.5pt;
+}
+
+.committee {
+  margin-top: 0.6cm;
+}
+
+@media (max-width: 1120px) {
+  .faturamento-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .editor {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media print {
+  body {
+    margin: 0;
+    background: #fff;
+  }
+
+  .faturamento-shell {
+    display: block;
+    padding: 0;
+  }
+
+  .preview-wrap {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .print-page {
+    width: 21cm;
+    min-height: 29.7cm;
+    margin: 0;
+    padding: 1cm 0.9cm 0.9cm;
+    box-shadow: none;
+  }
+}
+
+body.imprimir {
+  margin: 0;
+  background: #fff;
+}
+
+body.imprimir .faturamento-shell {
+  display: block;
+  padding: 0;
+}
+
+body.imprimir .preview-wrap {
+  overflow: visible;
+  padding: 0;
+}
+
+body.imprimir .print-page {
+  width: 21cm;
+  min-height: 29.7cm;
+  margin: 0;
+  box-shadow: none;
+}

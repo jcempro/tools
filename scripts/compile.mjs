@@ -10,6 +10,7 @@ const watch = process.argv.includes("--watch");
 const entries = [
   ["src/assets/js/documentos.ts", "assets/js/documentos.js"],
   ["src/oficios/admissional/admissional.ts", "oficios/admissional/admissional.js"],
+  ["src/faturamento/faturamento.ts", "faturamento/faturamento.js"],
   ["src/dizimo/assets/js/main.ts", "dizimo/assets/js/main.js"]
 ];
 

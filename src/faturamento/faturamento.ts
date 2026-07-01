@@ -1,0 +1,612 @@
+import {
+  buildPeriod,
+  classifyMonth,
+  compareMesAno,
+  distributeCents,
+  formatCurrencyFromCents,
+  formatMesAno,
+  formatPercent,
+  parseCurrencyToCents,
+  parseMesAno,
+  parsePercent,
+  previousClosedMonth,
+  sumRows,
+  type LinhaFaturamento,
+  type MesAno
+} from "./regras";
+
+(function bootstrapFaturamento(w: Window): void {
+  "use strict";
+
+  const documentos = w.JCEMDocumentos;
+  if (!documentos) {
+    w.alert("Infraestrutura documental indisponivel.");
+    return;
+  }
+  const api: JCEMDocumentosApi = documentos;
+
+  const pageConfig: PageConfig = {
+    bottom: 0.9,
+    left: 0.9,
+    right: 0.9,
+    size: [21, 29.7],
+    top: 1,
+    unit: "cm"
+  };
+
+  const ufs = new Set([
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO"
+  ]);
+
+  const validation: ValidationConfig = {
+    emptyFieldMessage: "Campo '${0}' vazio ou invalido",
+    fieldRules: [
+      { hint: "Razão Social", required: true, selector: "#razao-social" },
+      { hint: "CNPJ", required: true, selector: "#cnpj", validator: "cnpj" },
+      { hint: "Cidade", required: true, selector: "#cidade" },
+      { hint: "UF", required: true, selector: "#uf", validate: validateUf },
+      { hint: "Data de Assinatura", required: true, selector: "#data-assinatura" },
+      { hint: "Mês/Ano de Referência", required: true, selector: "#mes-referencia", validate: validateMesAno },
+      { hint: "Faturamento Bruto Anual", required: false, selector: "#faturamento-alvo", validate: validateCurrency },
+      { hint: "Valor monetário", required: false, selector: ".month-money", validate: validateCurrency },
+      { hint: "Prazo médio", required: true, selector: ".prazo-medio", validate: validateNonNegativeInteger },
+      { hint: "Percentual", required: false, selector: ".percent", validate: validatePercentField },
+      { hint: "Nome do assinante", required: true, selector: "#assinante-1-nome" },
+      { hint: "CPF do assinante", required: true, selector: "#assinante-1-cpf", validator: "cpf" },
+      { hint: "CPF do assinante", required: false, selector: "#assinante-2-cpf", validator: "cpf" },
+      { hint: "CPF do assinante", required: false, selector: "#assinante-3-cpf", validator: "cpf" }
+    ]
+  };
+
+  let currentReference: MesAno | null = null;
+  let isHydrating = false;
+
+  function validateCurrency(value: string): ValidationResult {
+    const parsed = parseCurrencyToCents(value);
+    return parsed === null ? -1 : formatCurrencyFromCents(parsed);
+  }
+
+  function validatePercentField(value: string): ValidationResult {
+    const parsed = parsePercent(value);
+    return parsed === null ? -1 : formatPercent(parsed);
+  }
+
+  function validateMesAno(value: string): ValidationResult {
+    const parsed = parseMesAno(value);
+    return parsed ? formatMesAno(parsed) : -1;
+  }
+
+  function validateUf(value: string): ValidationResult {
+    const normalized = value.trim().toUpperCase();
+    return ufs.has(normalized) ? normalized : -1;
+  }
+
+  function validateNonNegativeInteger(value: string): ValidationResult {
+    const normalized = value.trim();
+    if (!/^\d+$/.test(normalized)) {
+      return -1;
+    }
+
+    return `${Number.parseInt(normalized, 10)}`;
+  }
+
+  function input(id: string): HTMLInputElement {
+    const element = api.one<HTMLInputElement>(`#${id}`);
+    if (!element) {
+      throw new Error(`Campo obrigatorio ausente: ${id}`);
+    }
+    return element;
+  }
+
+  function text(id: string, value: string): void {
+    const element = api.one<HTMLElement>(`#${id}`);
+    if (element) {
+      element.textContent = value;
+    }
+  }
+
+  function todayIso(): string {
+    const today = new Date();
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
+    const day = `${today.getDate()}`.padStart(2, "0");
+    return `${today.getFullYear()}-${month}-${day}`;
+  }
+
+  function dateFromInput(value: string): Date {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const [year = "0", month = "1", day = "1"] = value.split("-");
+      return new Date(Number.parseInt(year, 10), Number.parseInt(month, 10) - 1, Number.parseInt(day, 10));
+    }
+
+    return new Date();
+  }
+
+  function formatDatePtBr(value: string): string {
+    const date = dateFromInput(value);
+    const day = `${date.getDate()}`.padStart(2, "0");
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    return `${day}/${month}/${date.getFullYear()}`;
+  }
+
+  function defaultReference(): MesAno {
+    return previousClosedMonth(dateFromInput(input("data-assinatura").value || todayIso()));
+  }
+
+  function setValue(id: string, value: string): void {
+    const element = input(id);
+    element.value = value;
+    api.storage.setItem(id, value);
+  }
+
+  function normalizeDefaults(): void {
+    if (!input("data-assinatura").value) {
+      setValue("data-assinatura", todayIso());
+    }
+
+    if (!input("cidade").value) {
+      setValue("cidade", "Pirassununga");
+    }
+
+    if (!input("uf").value) {
+      setValue("uf", "SP");
+    }
+
+    if (!input("mes-referencia").value) {
+      setValue("mes-referencia", formatMesAno(defaultReference()));
+    }
+
+    if (!input("assinante-1-papel").value) {
+      setValue("assinante-1-papel", "PROPRIETÁRIO/SÓCIO/MANDATÁRIO");
+    }
+  }
+
+  function renderMonthRows(reference: MesAno): void {
+    const editor = api.one<HTMLTableSectionElement>("#editor-meses");
+    const print = api.one<HTMLTableSectionElement>("#print-meses");
+
+    if (!editor || !print) {
+      return;
+    }
+
+    const months = buildPeriod(reference);
+    editor.innerHTML = "";
+    print.innerHTML = "";
+
+    months.forEach((month, index) => {
+      const label = formatMesAno(month);
+      const status = classifyMonth(month, reference);
+      const editorRow = document.createElement("tr");
+      editorRow.innerHTML = `
+        <td class="month-label" data-month="${label}">${label}</td>
+        <td><input id="mes-${index}-vista" class="money month-money" data-column="vista" type="text" inputmode="decimal"></td>
+        <td><input id="mes-${index}-prazo" class="money month-money" data-column="prazo" data-locked="true" type="text" inputmode="decimal"></td>
+        <td><input id="mes-${index}-prazo-medio" class="prazo-medio" type="text" inputmode="numeric" value="30"></td>
+        <td class="month-status">${status}</td>
+      `;
+      editor.appendChild(editorRow);
+
+      const printRow = document.createElement("tr");
+      printRow.innerHTML = `
+        <td data-print-month="${index}">${label}</td>
+        <td data-print-vista="${index}">R$ 0,00</td>
+        <td data-print-prazo="${index}">R$ 0,00</td>
+        <td data-print-prazo-medio="${index}">30</td>
+        <td data-print-status="${index}">${status}</td>
+      `;
+      print.appendChild(printRow);
+    });
+  }
+
+  function monthRows(): LinhaFaturamento[] {
+    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
+
+    return api.$<HTMLTableRowElement>("#editor-meses tr").map((row) => {
+      const monthText = row.querySelector<HTMLElement>("[data-month]")?.dataset.month ?? formatMesAno(reference);
+      const mesAno = parseMesAno(monthText) ?? reference;
+      const vista = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="vista"]')?.value ?? "") ?? 0;
+      const prazo = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="prazo"]')?.value ?? "") ?? 0;
+      const prazoMedio = Number.parseInt(row.querySelector<HTMLInputElement>(".prazo-medio")?.value || "30", 10);
+
+      return {
+        mesAno,
+        prazoMedio: Number.isFinite(prazoMedio) && prazoMedio >= 0 ? prazoMedio : 0,
+        situacao: classifyMonth(mesAno, reference),
+        vendasPrazo: prazo,
+        vendasVista: vista
+      };
+    });
+  }
+
+  function joinedValues(ids: string[], prefix = ""): string {
+    const values = ids
+      .map((id) => input(id).value.trim())
+      .filter((value) => value.length > 0);
+
+    return values.length > 0 ? `${prefix}${values.join(" ou ")}` : "";
+  }
+
+  function primaryRole(): string {
+    const roles = ["assinante-1-papel", "assinante-2-papel", "assinante-3-papel"]
+      .map((id) => input(id).value.trim())
+      .filter((value) => value.length > 0);
+
+    return roles[0] ?? "";
+  }
+
+  function renderPreview(): void {
+    const rows = monthRows();
+    const totals = sumRows(rows);
+    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
+    const city = input("cidade").value.trim() || "Pirassununga";
+    const uf = input("uf").value.trim().toUpperCase() || "SP";
+
+    text("print-razao-social", input("razao-social").value);
+    text("print-cnpj", input("cnpj").value);
+    text("print-faturamento-anual", formatCurrencyFromCents(totals.brutoAnual));
+    text("print-mes-referencia", formatMesAno(reference));
+    text("print-total-vista", formatCurrencyFromCents(totals.vista));
+    text("print-total-prazo", formatCurrencyFromCents(totals.prazo));
+    text("print-cartoes", input("percentual-cartoes").value);
+    text("print-cheques", input("percentual-cheques").value);
+    text("print-titulos", input("percentual-titulos").value);
+    text("print-regime", input("regime-tributacao").value);
+    text("print-cidade-uf", `${city}-${uf}`);
+    text("print-data", formatDatePtBr(input("data-assinatura").value));
+    text("print-assinantes", joinedValues(["assinante-1-nome", "assinante-2-nome", "assinante-3-nome"]));
+    text("print-papel", primaryRole());
+    text("print-cpfs", joinedValues(["assinante-1-cpf", "assinante-2-cpf", "assinante-3-cpf"], "CPF: "));
+    text("print-comite", input("comite").value);
+
+    rows.forEach((row, index) => {
+      textBySelector(`[data-print-month="${index}"]`, formatMesAno(row.mesAno));
+      textBySelector(`[data-print-vista="${index}"]`, formatCurrencyFromCents(row.vendasVista));
+      textBySelector(`[data-print-prazo="${index}"]`, formatCurrencyFromCents(row.vendasPrazo));
+      textBySelector(`[data-print-prazo-medio="${index}"]`, `${row.prazoMedio}`);
+      textBySelector(`[data-print-status="${index}"]`, row.situacao);
+    });
+  }
+
+  function textBySelector(selector: string, value: string): void {
+    const element = api.one<HTMLElement>(selector);
+    if (element) {
+      element.textContent = value;
+    }
+  }
+
+  function refreshPeriodIfNeeded(): void {
+    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
+
+    if (currentReference && compareMesAno(currentReference, reference) === 0) {
+      renderPreview();
+      return;
+    }
+
+    currentReference = reference;
+    renderMonthRows(reference);
+    api.autosave.init({ selector: "#editor-meses input", validation });
+    ensureDefaultMonthlyValues();
+    bindDynamicInputs();
+    renderPreview();
+  }
+
+  function ensureDefaultMonthlyValues(): void {
+    api.$<HTMLInputElement>(".prazo-medio").forEach((element) => {
+      if (!element.value) {
+        element.value = "30";
+      }
+    });
+  }
+
+  function distributeAnnual(): void {
+    const target = parseCurrencyToCents(input("faturamento-alvo").value);
+    const status = api.one<HTMLElement>("#status-faturamento");
+
+    if (target === null || target <= 0) {
+      if (status) {
+        status.textContent = "Informe um faturamento anual válido para distribuir.";
+      }
+      return;
+    }
+
+    const values = distributeCents(target, 12);
+    isHydrating = true;
+    values.forEach((value, index) => {
+      const vista = input(`mes-${index}-vista`);
+      const prazo = input(`mes-${index}-prazo`);
+      vista.value = formatCurrencyFromCents(value);
+      prazo.value = formatCurrencyFromCents(0);
+      delete vista.dataset.locked;
+      prazo.dataset.locked = "true";
+      api.storage.setItem(vista.id, vista.value);
+      api.storage.setItem(prazo.id, prazo.value);
+    });
+    isHydrating = false;
+
+    if (status) {
+      status.textContent = "";
+    }
+    renderPreview();
+  }
+
+  function normalizeMonthlyInput(element: HTMLInputElement): void {
+    const result = validateCurrency(element.value);
+
+    if (typeof result === "string") {
+      element.value = result;
+      api.storage.setItem(element.id, element.value);
+    }
+  }
+
+  function sumMoneyInputs(inputs: HTMLInputElement[]): number {
+    return inputs.reduce((sum, element) => sum + (parseCurrencyToCents(element.value) ?? 0), 0);
+  }
+
+  function reconcileAnnual(changed: HTMLInputElement): void {
+    const target = parseCurrencyToCents(input("faturamento-alvo").value);
+    const status = api.one<HTMLElement>("#status-faturamento");
+
+    if (target === null || target <= 0) {
+      if (status) {
+        status.textContent = "";
+      }
+      return;
+    }
+
+    changed.dataset.locked = "true";
+
+    const inputs = api.$<HTMLInputElement>(".month-money");
+    const locked = inputs.filter((element) => element.dataset.locked === "true");
+    const unlocked = inputs.filter((element) => element.dataset.locked !== "true");
+    const lockedTotal = sumMoneyInputs(locked);
+
+    if (lockedTotal > target) {
+      if (status) {
+        status.textContent = "Valores bloqueados superam o faturamento anual informado.";
+      }
+      return;
+    }
+
+    if (unlocked.length === 0) {
+      if (status && lockedTotal !== target) {
+        status.textContent = "Todos os valores mensais estão bloqueados; ajuste algum mês para reconciliar o total.";
+      }
+      return;
+    }
+
+    const values = distributeCents(target - lockedTotal, unlocked.length);
+
+    isHydrating = true;
+    unlocked.forEach((element, index) => {
+      element.value = formatCurrencyFromCents(values[index] ?? 0);
+      api.storage.setItem(element.id, element.value);
+    });
+    isHydrating = false;
+
+    if (status) {
+      status.textContent = "";
+    }
+  }
+
+  function bindDynamicInputs(): void {
+    api.$<HTMLInputElement>("#editor-meses input").forEach((element) => {
+      api.on(element, "input", () => {
+        if (!isHydrating) {
+          renderPreview();
+        }
+      });
+      api.on(element, "blur", () => {
+        if (element.classList.contains("month-money")) {
+          normalizeMonthlyInput(element);
+          reconcileAnnual(element);
+        }
+        renderPreview();
+      });
+    });
+  }
+
+  function clearForm(): void {
+    if (!w.confirm("Limpar dados salvos deste formulário?")) {
+      return;
+    }
+
+    api.$<HTMLInputElement>("#faturamento-app input").forEach((element) => {
+      api.storage.removeItem(element.id);
+      element.value = "";
+    });
+    normalizeDefaults();
+    refreshPeriodIfNeeded();
+    renderPreview();
+  }
+
+  function payload(): Record<string, unknown> {
+    return {
+      assinantes: [1, 2, 3].map((index) => ({
+        cpf: input(`assinante-${index}-cpf`).value,
+        nome: input(`assinante-${index}-nome`).value,
+        papel: input(`assinante-${index}-papel`).value
+      })),
+      cidade: input("cidade").value,
+      cnpj: input("cnpj").value,
+      comite: input("comite").value,
+      dataAssinatura: input("data-assinatura").value,
+      faturamentoBrutoAnual: input("faturamento-alvo").value,
+      meses: monthRows().map((row, index) => ({
+        mesAno: formatMesAno(row.mesAno),
+        prazoMedio: row.prazoMedio,
+        vendasPrazo: input(`mes-${index}-prazo`).value,
+        vendasVista: input(`mes-${index}-vista`).value
+      })),
+      mesReferencia: input("mes-referencia").value,
+      percentuais: {
+        cartoes: input("percentual-cartoes").value,
+        cheques: input("percentual-cheques").value,
+        titulos: input("percentual-titulos").value
+      },
+      razaoSocial: input("razao-social").value,
+      regimeTributacao: input("regime-tributacao").value,
+      uf: input("uf").value
+    };
+  }
+
+  function shareUrl(): void {
+    const url = `${w.location.origin}${w.location.pathname}?data=${api.base64.encode(JSON.stringify(payload()))}`;
+    void api.clipboard.copy(url).then(() => {
+      w.alert("Endereco da relacao preenchida copiado para a area de transferencia.");
+    });
+  }
+
+  function assignIfPresent(id: string, value: unknown): void {
+    if (typeof value !== "string" && typeof value !== "number") {
+      return;
+    }
+
+    const element = api.one<HTMLInputElement>(`#${id}`);
+    if (!element) {
+      return;
+    }
+
+    element.value = `${value}`;
+    api.storage.setItem(element.id, element.value);
+  }
+
+  function applyJsonPayload(): void {
+    const data = api.query.json();
+    if (!data) {
+      return;
+    }
+
+    assignIfPresent("razao-social", data.razaoSocial ?? data.empresa ?? data.nomeEmpresa);
+    assignIfPresent("cnpj", data.cnpj);
+    assignIfPresent("cidade", data.cidade);
+    assignIfPresent("uf", data.uf);
+    assignIfPresent("data-assinatura", data.dataAssinatura);
+    assignIfPresent("mes-referencia", data.mesReferencia);
+    assignIfPresent("faturamento-alvo", data.faturamentoBrutoAnual);
+    assignIfPresent("regime-tributacao", data.regimeTributacao);
+    assignIfPresent("comite", data.comite);
+
+    if (isRecord(data.percentuais)) {
+      assignIfPresent("percentual-cartoes", data.percentuais.cartoes);
+      assignIfPresent("percentual-cheques", data.percentuais.cheques);
+      assignIfPresent("percentual-titulos", data.percentuais.titulos);
+    }
+
+    if (Array.isArray(data.assinantes)) {
+      data.assinantes.slice(0, 3).forEach((item, index) => {
+        if (!isRecord(item)) {
+          return;
+        }
+        const number = index + 1;
+        assignIfPresent(`assinante-${number}-nome`, item.nome);
+        assignIfPresent(`assinante-${number}-cpf`, item.cpf);
+        assignIfPresent(`assinante-${number}-papel`, item.papel);
+      });
+    }
+
+    refreshPeriodIfNeeded();
+
+    if (Array.isArray(data.meses)) {
+      data.meses.slice(0, 12).forEach((item, index) => {
+        if (!isRecord(item)) {
+          return;
+        }
+        assignIfPresent(`mes-${index}-vista`, item.vendasVista);
+        assignIfPresent(`mes-${index}-prazo`, item.vendasPrazo);
+        assignIfPresent(`mes-${index}-prazo-medio`, item.prazoMedio);
+      });
+    }
+  }
+
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function filename(): string {
+    const company = input("razao-social").value.trim() || "Relacao de Faturamento";
+    return `${company}.pdf`;
+  }
+
+  function printPdf(): void {
+    refreshPeriodIfNeeded();
+
+    if (!api.validate.all({ selector: "#faturamento-app input", validation })) {
+      return;
+    }
+
+    api.print.pdf({
+      filename,
+      pageConfig,
+      source: inputDocument()
+    });
+  }
+
+  function inputDocument(): Element {
+    return api.one("#documento-faturamento") ?? document.documentElement;
+  }
+
+  function bindStaticInputs(): void {
+    api.$<HTMLInputElement>("#faturamento-app input").forEach((element) => {
+      api.on(element, "input", () => {
+        if (element.id === "mes-referencia") {
+          return;
+        }
+        renderPreview();
+      });
+      api.on(element, "blur", () => {
+        if (element.id === "mes-referencia" || element.id === "data-assinatura") {
+          refreshPeriodIfNeeded();
+          return;
+        }
+        renderPreview();
+      });
+    });
+  }
+
+  api.ready(() => {
+    api.print.createPageStyle(pageConfig);
+    api.autosave.indicator(".autosave");
+    renderMonthRows(defaultReference());
+    api.autosave.init({ selector: "#faturamento-app input", validation });
+    normalizeDefaults();
+    applyJsonPayload();
+    refreshPeriodIfNeeded();
+    bindStaticInputs();
+
+    api.toolbar.bind({
+      ".browser-print": () => w.print(),
+      ".clear-form": clearForm,
+      ".pdf.print": printPdf,
+      ".share-url": shareUrl
+    });
+
+    const distribute = api.one<HTMLButtonElement>("#distribuir-faturamento");
+    api.on(distribute, "click", distributeAnnual);
+    renderPreview();
+  });
+})(window);

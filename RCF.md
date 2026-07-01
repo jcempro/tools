@@ -223,6 +223,11 @@ Tratamentos preventivos devem cobrir erros de compilação, inconsistências de 
 │   ├── css/
 │   └── js/
 ├── dizimo/
+├── faturamento/
+│   ├── index.html
+│   ├── RCF.md
+│   ├── faturamento.css
+│   └── faturamento.js
 ├── favoritos/
 ├── oficios/
 │   └── <documento>/
@@ -234,6 +239,7 @@ Tratamentos preventivos devem cobrir erros de compilação, inconsistências de 
 │   ├── assets/
 │   ├── components/
 │   ├── dizimo/
+│   ├── faturamento/
 │   ├── favoritos/
 │   └── oficios/
 ├── tests/
@@ -257,7 +263,7 @@ A camada `assets/` concentra infraestrutura reutilizável:
 
 Documentos devem consumir essa camada e manter localmente apenas inicialização, configuração, mapeamentos e estilos exclusivos.
 
-Os arquivos JavaScript em `assets/`, `oficios/`, `dizimo/` e `favoritos/` são artefatos públicos gerados a partir de `src/`.
+Os arquivos JavaScript em `assets/`, `oficios/`, `faturamento/`, `dizimo/` e `favoritos/` são artefatos públicos gerados a partir de `src/`.
 
 ### ARQ003 - Separação Recomendada para Documentos
 
