@@ -1,6 +1,8 @@
 "use strict";
 (() => {
   // src/faturamento/regras.ts
+  var MEI_LIMIT_CENTS = 81e5;
+  var SIMPLES_NACIONAL_LIMIT_CENTS = 48e7;
   var currencyFormatter = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency" });
   var percentFormatter = new Intl.NumberFormat("pt-BR", {
     maximumFractionDigits: 2,
@@ -51,6 +53,27 @@
   }
   function formatPercent(value) {
     return percentFormatter.format(Math.min(100, Math.max(0, value)) / 100);
+  }
+  function splitAnnualTargets(total, vistaPercent) {
+    const normalizedTotal = Math.max(0, Math.round(total));
+    const normalizedPercent = Math.min(100, Math.max(0, Number.isFinite(vistaPercent) ? vistaPercent : 100));
+    const vista = Math.round(normalizedTotal * normalizedPercent / 100);
+    return {
+      prazo: normalizedTotal - vista,
+      vista
+    };
+  }
+  function isRegimeAllowed(regime, annualCents) {
+    if (!regime || annualCents === null || annualCents <= 0) {
+      return true;
+    }
+    if (regime === "MEI") {
+      return annualCents <= MEI_LIMIT_CENTS;
+    }
+    if (regime === "Simples Nacional") {
+      return annualCents <= SIMPLES_NACIONAL_LIMIT_CENTS;
+    }
+    return true;
   }
   function parseMesAno(value) {
     const match = /^(\d{1,2})\/(\d{4})$/.exec(`${value ?? ""}`.trim());
@@ -190,17 +213,19 @@
         { hint: "Data de Assinatura", required: true, selector: "#data-assinatura" },
         { hint: "M\xEAs/Ano de Refer\xEAncia", required: true, selector: "#mes-referencia", validate: validateMesAno },
         { hint: "Faturamento Bruto Anual", required: false, selector: "#faturamento-alvo", validate: validateCurrency },
+        { hint: "Distribui\xE7\xE3o \xE0 vista", required: true, selector: "#distribuicao-vista", validate: validatePercentField },
+        { hint: "Distribui\xE7\xE3o a prazo", required: true, selector: "#distribuicao-prazo", validate: validatePercentField },
         { hint: "Valor monet\xE1rio", required: false, selector: ".month-money", validate: validateCurrency },
         { hint: "Prazo m\xE9dio", required: true, selector: ".prazo-medio", validate: validateNonNegativeInteger },
         { hint: "Percentual", required: false, selector: ".percent", validate: validatePercentField },
         { hint: "Nome do assinante", required: true, selector: "#assinante-1-nome" },
         { hint: "CPF do assinante", required: true, selector: "#assinante-1-cpf", validator: "cpf" },
-        { hint: "CPF do assinante", required: false, selector: "#assinante-2-cpf", validator: "cpf" },
-        { hint: "CPF do assinante", required: false, selector: "#assinante-3-cpf", validator: "cpf" }
+        { hint: "CPF do assinante", required: false, selector: ".signer-cpf", validator: "cpf" }
       ]
     };
     let currentReference = null;
     let isHydrating = false;
+    let signerCount = 1;
     function validateCurrency(value) {
       const parsed = parseCurrencyToCents(value);
       return parsed === null ? -1 : formatCurrencyFromCents(parsed);
@@ -231,6 +256,13 @@
       }
       return element;
     }
+    function select(id) {
+      const element = api.one(`#${id}`);
+      if (!element) {
+        throw new Error(`Campo obrigatorio ausente: ${id}`);
+      }
+      return element;
+    }
     function text(id, value) {
       const element = api.one(`#${id}`);
       if (element) {
@@ -253,8 +285,9 @@
     function formatDatePtBr(value) {
       const date = dateFromInput(value);
       const day = `${date.getDate()}`.padStart(2, "0");
-      const month = `${date.getMonth() + 1}`.padStart(2, "0");
-      return `${day}/${month}/${date.getFullYear()}`;
+      const month = date.toLocaleString("pt-BR", { month: "long" });
+      const monthName = month.charAt(0).toUpperCase() + month.slice(1);
+      return `${day} de ${monthName} de ${date.getFullYear()}`;
     }
     function defaultReference() {
       return previousClosedMonth(dateFromInput(input("data-assinatura").value || todayIso()));
@@ -277,8 +310,24 @@
       if (!input("mes-referencia").value) {
         setValue("mes-referencia", formatMesAno(defaultReference()));
       }
-      if (!input("assinante-1-papel").value) {
-        setValue("assinante-1-papel", "PROPRIET\xC1RIO/S\xD3CIO/MANDAT\xC1RIO");
+      if (!input("distribuicao-vista").value) {
+        setValue("distribuicao-vista", "100%");
+      }
+      if (!input("distribuicao-prazo").value) {
+        setValue("distribuicao-prazo", "0%");
+      }
+      applyDefaultReceiptPercentages();
+    }
+    function applyDefaultReceiptPercentages() {
+      const defaults = {
+        "percentual-cartoes": "40%",
+        "percentual-cheques": "30%",
+        "percentual-titulos": "30%"
+      };
+      for (const [id, value] of Object.entries(defaults)) {
+        if (!input(id).value.trim()) {
+          setValue(id, value);
+        }
       }
     }
     function renderMonthRows(reference) {
@@ -330,13 +379,15 @@
         };
       });
     }
-    function joinedValues(ids, prefix = "") {
-      const values = ids.map((id) => input(id).value.trim()).filter((value) => value.length > 0);
+    function signerInputs(selector) {
+      return api.$(selector, api.one("#assinantes-lista") ?? document);
+    }
+    function joinedSignerValues(selector, prefix = "") {
+      const values = signerInputs(selector).map((element) => element.value.trim()).filter((value) => value.length > 0);
       return values.length > 0 ? `${prefix}${values.join(" ou ")}` : "";
     }
-    function primaryRole() {
-      const roles = ["assinante-1-papel", "assinante-2-papel", "assinante-3-papel"].map((id) => input(id).value.trim()).filter((value) => value.length > 0);
-      return roles[0] ?? "";
+    function fixedSignerRole() {
+      return "PROPRIET\xC1RIO/S\xD3CIO/MANDAT\xC1RIO";
     }
     function renderPreview() {
       const rows = monthRows();
@@ -353,13 +404,12 @@
       text("print-cartoes", input("percentual-cartoes").value);
       text("print-cheques", input("percentual-cheques").value);
       text("print-titulos", input("percentual-titulos").value);
-      text("print-regime", input("regime-tributacao").value);
+      text("print-regime", select("regime-tributacao").value);
       text("print-cidade-uf", `${city}-${uf}`);
       text("print-data", formatDatePtBr(input("data-assinatura").value));
-      text("print-assinantes", joinedValues(["assinante-1-nome", "assinante-2-nome", "assinante-3-nome"]));
-      text("print-papel", primaryRole());
-      text("print-cpfs", joinedValues(["assinante-1-cpf", "assinante-2-cpf", "assinante-3-cpf"], "CPF: "));
-      text("print-comite", input("comite").value);
+      text("print-assinantes", joinedSignerValues(".signer-name"));
+      text("print-papel", fixedSignerRole());
+      text("print-cpfs", joinedSignerValues(".signer-cpf", "CPF: "));
       rows.forEach((row, index) => {
         textBySelector(`[data-print-month="${index}"]`, formatMesAno(row.mesAno));
         textBySelector(`[data-print-vista="${index}"]`, formatCurrencyFromCents(row.vendasVista));
@@ -367,6 +417,7 @@
         textBySelector(`[data-print-prazo-medio="${index}"]`, `${row.prazoMedio}`);
         textBySelector(`[data-print-status="${index}"]`, row.situacao);
       });
+      updateRegimeOptions();
     }
     function textBySelector(selector, value) {
       const element = api.one(selector);
@@ -394,6 +445,37 @@
         }
       });
     }
+    function distributionVistaPercent() {
+      const vista = parsePercent(input("distribuicao-vista").value);
+      const prazo = parsePercent(input("distribuicao-prazo").value);
+      if (vista === null && prazo === null) {
+        return 100;
+      }
+      if (vista !== null && prazo !== null && Math.abs(vista + prazo - 100) < 0.01) {
+        return vista;
+      }
+      if (vista !== null) {
+        return vista;
+      }
+      return Math.max(0, 100 - (prazo ?? 0));
+    }
+    function syncDistributionPercent(changed) {
+      const vistaInput = input("distribuicao-vista");
+      const prazoInput = input("distribuicao-prazo");
+      const changedInput = changed === "vista" ? vistaInput : prazoInput;
+      const parsed = parsePercent(changedInput.value);
+      if (parsed === null) {
+        return;
+      }
+      const complement = 100 - parsed;
+      if (changed === "vista") {
+        prazoInput.value = formatPercent(complement);
+        api.storage.setItem(prazoInput.id, prazoInput.value);
+      } else {
+        vistaInput.value = formatPercent(complement);
+        api.storage.setItem(vistaInput.id, vistaInput.value);
+      }
+    }
     function distributeAnnual() {
       const target = parseCurrencyToCents(input("faturamento-alvo").value);
       const status = api.one("#status-faturamento");
@@ -403,15 +485,17 @@
         }
         return;
       }
-      const values = distributeCents(target, 12);
+      const targets = splitAnnualTargets(target, distributionVistaPercent());
+      const vistaValues = distributeCents(targets.vista, 12);
+      const prazoValues = distributeCents(targets.prazo, 12);
       isHydrating = true;
-      values.forEach((value, index) => {
+      vistaValues.forEach((value, index) => {
         const vista = input(`mes-${index}-vista`);
         const prazo = input(`mes-${index}-prazo`);
         vista.value = formatCurrencyFromCents(value);
-        prazo.value = formatCurrencyFromCents(0);
+        prazo.value = formatCurrencyFromCents(prazoValues[index] ?? 0);
         delete vista.dataset.locked;
-        prazo.dataset.locked = "true";
+        delete prazo.dataset.locked;
         api.storage.setItem(vista.id, vista.value);
         api.storage.setItem(prazo.id, prazo.value);
       });
@@ -419,6 +503,7 @@
       if (status) {
         status.textContent = "";
       }
+      updateRegimeOptions();
       renderPreview();
     }
     function normalizeMonthlyInput(element) {
@@ -434,6 +519,7 @@
     function reconcileAnnual(changed) {
       const target = parseCurrencyToCents(input("faturamento-alvo").value);
       const status = api.one("#status-faturamento");
+      const column = changed.dataset.column === "prazo" ? "prazo" : "vista";
       if (target === null || target <= 0) {
         if (status) {
           status.textContent = "";
@@ -441,23 +527,25 @@
         return;
       }
       changed.dataset.locked = "true";
-      const inputs = api.$(".month-money");
+      const targets = splitAnnualTargets(target, distributionVistaPercent());
+      const columnTarget = targets[column];
+      const inputs = api.$(`.month-money[data-column="${column}"]`);
       const locked = inputs.filter((element) => element.dataset.locked === "true");
       const unlocked = inputs.filter((element) => element.dataset.locked !== "true");
       const lockedTotal = sumMoneyInputs(locked);
-      if (lockedTotal > target) {
+      if (lockedTotal > columnTarget) {
         if (status) {
-          status.textContent = "Valores bloqueados superam o faturamento anual informado.";
+          status.textContent = `Valores bloqueados em ${column === "vista" ? "\xE0 vista" : "a prazo"} superam a meta definida.`;
         }
         return;
       }
       if (unlocked.length === 0) {
-        if (status && lockedTotal !== target) {
-          status.textContent = "Todos os valores mensais est\xE3o bloqueados; ajuste algum m\xEAs para reconciliar o total.";
+        if (status && lockedTotal !== columnTarget) {
+          status.textContent = `Todos os valores de ${column === "vista" ? "\xE0 vista" : "a prazo"} est\xE3o bloqueados; ajuste algum m\xEAs para reconciliar a meta.`;
         }
         return;
       }
-      const values = distributeCents(target - lockedTotal, unlocked.length);
+      const values = distributeCents(columnTarget - lockedTotal, unlocked.length);
       isHydrating = true;
       unlocked.forEach((element, index) => {
         element.value = formatCurrencyFromCents(values[index] ?? 0);
@@ -484,6 +572,122 @@
         });
       });
     }
+    function signerCard(index) {
+      const card = document.createElement("div");
+      card.className = "signer-card";
+      card.dataset.signerIndex = `${index}`;
+      card.innerHTML = `
+      <div class="signer-title">
+        <span>${index === 1 ? "Assinante" : `Assinante ${index}`}</span>
+        ${index > 1 ? `<button type="button" class="remove-signer" data-remove-signer="${index}">Remover</button>` : ""}
+      </div>
+      <label for="assinante-${index}-nome">Nome</label>
+      <input id="assinante-${index}-nome" name="assinante${index}Nome" class="signer-name" type="text" ${index === 1 ? "required" : ""}>
+      <label for="assinante-${index}-cpf">CPF</label>
+      <input id="assinante-${index}-cpf" name="assinante${index}Cpf" class="signer-cpf" type="text" inputmode="numeric" ${index === 1 ? "required" : ""}>
+    `;
+      return card;
+    }
+    function bindSignerCard(card) {
+      api.autosave.init({ root: card, selector: "input", validation });
+      api.$("input", card).forEach((element) => {
+        api.on(element, "input", renderPreview);
+        api.on(element, "blur", renderPreview);
+      });
+      const removeButton = api.one(".remove-signer", card);
+      api.on(removeButton, "click", () => {
+        const index = Number.parseInt(card.getAttribute("data-signer-index") || "0", 10);
+        removeSigner(index);
+      });
+    }
+    function restoreSigners() {
+      const storedCount = Number.parseInt(api.storage.getItem("assinantesCount") || "1", 10);
+      const count = Number.isFinite(storedCount) ? Math.max(1, Math.min(10, storedCount)) : 1;
+      const list = api.one("#assinantes-lista");
+      if (!list) {
+        return;
+      }
+      list.innerHTML = "";
+      for (let index = 1; index <= count; index += 1) {
+        list.appendChild(signerCard(index));
+      }
+      signerCount = count;
+      api.$(".signer-card", list).forEach(bindSignerCard);
+    }
+    function currentSigners() {
+      return api.$(".signer-card", api.one("#assinantes-lista") ?? document).map((card) => ({
+        cpf: api.one(".signer-cpf", card)?.value ?? "",
+        nome: api.one(".signer-name", card)?.value ?? ""
+      }));
+    }
+    function renderSignerValues(values) {
+      const list = api.one("#assinantes-lista");
+      if (!list) {
+        return;
+      }
+      api.$(".signer-name,.signer-cpf", list).forEach((element) => {
+        api.storage.removeItem(element.id);
+      });
+      list.innerHTML = "";
+      const safeValues = values.length > 0 ? values : [{ cpf: "", nome: "" }];
+      safeValues.forEach((value, index) => {
+        const number = index + 1;
+        const card = signerCard(number);
+        list.appendChild(card);
+        const name = api.one(".signer-name", card);
+        const cpf = api.one(".signer-cpf", card);
+        if (name) {
+          name.value = value.nome;
+          api.storage.setItem(name.id, name.value);
+        }
+        if (cpf) {
+          cpf.value = value.cpf;
+          api.storage.setItem(cpf.id, cpf.value);
+        }
+        bindSignerCard(card);
+      });
+      signerCount = safeValues.length;
+      api.storage.setItem("assinantesCount", `${signerCount}`);
+    }
+    function addSigner() {
+      const list = api.one("#assinantes-lista");
+      if (!list || signerCount >= 10) {
+        return;
+      }
+      const values = currentSigners();
+      values.push({ cpf: "", nome: "" });
+      renderSignerValues(values);
+      renderPreview();
+    }
+    function removeSigner(index) {
+      if (index <= 1) {
+        return;
+      }
+      const values = currentSigners().filter((_item, itemIndex) => itemIndex !== index - 1);
+      renderSignerValues(values);
+      renderPreview();
+    }
+    function validateSigners() {
+      const cards = api.$(".signer-card", api.one("#assinantes-lista") ?? document);
+      const errors = [];
+      cards.forEach((card, index) => {
+        const name = api.one(".signer-name", card);
+        const cpf = api.one(".signer-cpf", card);
+        const filled = Boolean(name?.value.trim() || cpf?.value.trim());
+        const required = index === 0 || filled;
+        if (required && !name?.value.trim()) {
+          errors.push(`Nome do assinante ${index + 1} vazio.`);
+        }
+        if (required && !cpf?.value.trim()) {
+          errors.push(`CPF do assinante ${index + 1} vazio.`);
+        }
+      });
+      if (errors.length > 0) {
+        w.alert(errors.join("\r\n"));
+        return false;
+      }
+      return true;
+    }
     function clearForm() {
       if (!w.confirm("Limpar dados salvos deste formul\xE1rio?")) {
         return;
@@ -492,21 +696,54 @@
         api.storage.removeItem(element.id);
         element.value = "";
       });
+      api.storage.removeItem("assinantesCount");
+      select("regime-tributacao").value = "";
+      api.storage.removeItem("regime-tributacao");
       normalizeDefaults();
       refreshPeriodIfNeeded();
       renderPreview();
     }
+    function updateRegimeOptions() {
+      const annual = parseCurrencyToCents(input("faturamento-alvo").value);
+      const regime = select("regime-tributacao");
+      const status = api.one("#status-faturamento");
+      api.$("option", regime).forEach((option) => {
+        if (!option.value) {
+          return;
+        }
+        option.disabled = !isRegimeAllowed(option.value, annual);
+      });
+      if (regime.value && !isRegimeAllowed(regime.value, annual)) {
+        const previous = regime.value;
+        regime.value = "";
+        api.storage.removeItem("regime-tributacao");
+        if (status) {
+          status.textContent = `${previous} n\xE3o \xE9 permitido para o faturamento anual informado.`;
+        }
+      }
+    }
+    function validateRegime() {
+      const annual = parseCurrencyToCents(input("faturamento-alvo").value);
+      const regime = select("regime-tributacao").value;
+      if (!isRegimeAllowed(regime, annual)) {
+        w.alert(`Regime tribut\xE1rio incompat\xEDvel com o faturamento anual informado.
+
+MEI: at\xE9 ${formatCurrencyFromCents(MEI_LIMIT_CENTS)}.
+Simples Nacional: at\xE9 ${formatCurrencyFromCents(SIMPLES_NACIONAL_LIMIT_CENTS)}.`);
+        return false;
+      }
+      return true;
+    }
     function payload() {
       return {
-        assinantes: [1, 2, 3].map((index) => ({
-          cpf: input(`assinante-${index}-cpf`).value,
-          nome: input(`assinante-${index}-nome`).value,
-          papel: input(`assinante-${index}-papel`).value
-        })),
+        assinantes: currentSigners(),
         cidade: input("cidade").value,
         cnpj: input("cnpj").value,
-        comite: input("comite").value,
         dataAssinatura: input("data-assinatura").value,
+        distribuicao: {
+          prazo: input("distribuicao-prazo").value,
+          vista: input("distribuicao-vista").value
+        },
         faturamentoBrutoAnual: input("faturamento-alvo").value,
         meses: monthRows().map((row, index) => ({
           mesAno: formatMesAno(row.mesAno),
@@ -521,7 +758,7 @@
           titulos: input("percentual-titulos").value
         },
         razaoSocial: input("razao-social").value,
-        regimeTributacao: input("regime-tributacao").value,
+        regimeTributacao: select("regime-tributacao").value,
         uf: input("uf").value
       };
     }
@@ -554,23 +791,25 @@
       assignIfPresent("data-assinatura", data.dataAssinatura);
       assignIfPresent("mes-referencia", data.mesReferencia);
       assignIfPresent("faturamento-alvo", data.faturamentoBrutoAnual);
-      assignIfPresent("regime-tributacao", data.regimeTributacao);
-      assignIfPresent("comite", data.comite);
+      if (typeof data.regimeTributacao === "string") {
+        select("regime-tributacao").value = data.regimeTributacao;
+        api.storage.setItem("regime-tributacao", data.regimeTributacao);
+      }
+      if (isRecord(data.distribuicao)) {
+        assignIfPresent("distribuicao-vista", data.distribuicao.vista);
+        assignIfPresent("distribuicao-prazo", data.distribuicao.prazo);
+      }
       if (isRecord(data.percentuais)) {
         assignIfPresent("percentual-cartoes", data.percentuais.cartoes);
         assignIfPresent("percentual-cheques", data.percentuais.cheques);
         assignIfPresent("percentual-titulos", data.percentuais.titulos);
       }
       if (Array.isArray(data.assinantes)) {
-        data.assinantes.slice(0, 3).forEach((item, index) => {
-          if (!isRecord(item)) {
-            return;
-          }
-          const number = index + 1;
-          assignIfPresent(`assinante-${number}-nome`, item.nome);
-          assignIfPresent(`assinante-${number}-cpf`, item.cpf);
-          assignIfPresent(`assinante-${number}-papel`, item.papel);
-        });
+        const signers = data.assinantes.filter(isRecord).slice(0, 10).map((item) => ({
+          cpf: typeof item.cpf === "string" || typeof item.cpf === "number" ? `${item.cpf}` : "",
+          nome: typeof item.nome === "string" || typeof item.nome === "number" ? `${item.nome}` : ""
+        }));
+        renderSignerValues(signers);
       }
       refreshPeriodIfNeeded();
       if (Array.isArray(data.meses)) {
@@ -593,7 +832,7 @@
     }
     function printPdf() {
       refreshPeriodIfNeeded();
-      if (!api.validate.all({ selector: "#faturamento-app input", validation })) {
+      if (!api.validate.all({ selector: "#faturamento-app input", validation }) || !validateSigners() || !validateRegime()) {
         return;
       }
       api.print.pdf({
@@ -611,6 +850,15 @@
           if (element.id === "mes-referencia") {
             return;
           }
+          if (element.id === "distribuicao-vista") {
+            syncDistributionPercent("vista");
+          }
+          if (element.id === "distribuicao-prazo") {
+            syncDistributionPercent("prazo");
+          }
+          if (element.id === "faturamento-alvo") {
+            updateRegimeOptions();
+          }
           renderPreview();
         });
         api.on(element, "blur", () => {
@@ -618,14 +866,25 @@
             refreshPeriodIfNeeded();
             return;
           }
+          if (element.id === "faturamento-alvo") {
+            updateRegimeOptions();
+          }
           renderPreview();
         });
+      });
+      const regime = select("regime-tributacao");
+      regime.value = api.storage.getItem("regime-tributacao") ?? "";
+      api.on(regime, "change", () => {
+        api.storage.setItem("regime-tributacao", regime.value);
+        updateRegimeOptions();
+        renderPreview();
       });
     }
     api.ready(() => {
       api.print.createPageStyle(pageConfig);
       api.autosave.indicator(".autosave");
       renderMonthRows(defaultReference());
+      restoreSigners();
       api.autosave.init({ selector: "#faturamento-app input", validation });
       normalizeDefaults();
       applyJsonPayload();
@@ -639,6 +898,8 @@
       });
       const distribute = api.one("#distribuir-faturamento");
       api.on(distribute, "click", distributeAnnual);
+      const addSignerButton = api.one("#adicionar-assinante");
+      api.on(addSignerButton, "click", addSigner);
       renderPreview();
     });
   })(window);

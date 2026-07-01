@@ -75,7 +75,7 @@ select {
 
 .faturamento-shell {
   display: grid;
-  grid-template-columns: minmax(320px, 440px) minmax(22cm, 1fr);
+  grid-template-columns: minmax(360px, 620px) minmax(22cm, 1fr);
   gap: 18px;
   align-items: start;
   padding: 18px;
@@ -93,6 +93,7 @@ select {
 
 .editor-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 12px;
 }
 
@@ -136,7 +137,13 @@ select:focus {
 
 .field-row.two {
   display: grid;
-  grid-template-columns: 1fr 72px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.field-row.city-uf {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 72px;
   gap: 8px;
 }
 
@@ -184,6 +191,7 @@ select:focus {
 }
 
 .monthly-editor {
+  grid-column: 1 / -1;
   margin-top: 12px;
   overflow-x: auto;
 }
@@ -217,6 +225,7 @@ select:focus {
 }
 
 .status {
+  grid-column: 1 / -1;
   min-height: 1.2em;
   margin: 10px 0 0;
   color: #7a2518;
@@ -453,6 +462,17 @@ select:focus {
   .editor {
     position: static;
     max-height: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .field-row.two,
+  .field-row.city-uf {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-grid {
+    grid-template-columns: 1fr;
   }
 }
 

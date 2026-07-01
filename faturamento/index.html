@@ -45,7 +45,7 @@
 
         <fieldset>
           <legend>Documento</legend>
-          <div class="field-row two">
+          <div class="field-row city-uf">
             <div>
               <label for="cidade">Cidade</label>
               <input id="cidade" name="cidade" type="text" required>
@@ -56,11 +56,16 @@
             </div>
           </div>
 
-          <label for="data-assinatura">Data de Assinatura</label>
-          <input id="data-assinatura" name="dataAssinatura" type="date" required>
-
-          <label for="mes-referencia">Mês/Ano de Referência</label>
-          <input id="mes-referencia" name="mesReferencia" type="text" placeholder="05/2026" required>
+          <div class="field-row two">
+            <div>
+              <label for="data-assinatura">Data de Assinatura</label>
+              <input id="data-assinatura" name="dataAssinatura" type="date" required>
+            </div>
+            <div>
+              <label for="mes-referencia">Mês/Ano de Referência</label>
+              <input id="mes-referencia" name="mesReferencia" type="text" placeholder="05/2026" required>
+            </div>
+          </div>
         </fieldset>
 
         <fieldset>
@@ -116,9 +121,6 @@
               <label for="assinante-1-cpf">CPF</label>
               <input id="assinante-1-cpf" name="assinante1Cpf" class="signer-cpf" type="text" inputmode="numeric"
                 required>
-              <label for="assinante-1-papel">Papel</label>
-              <input id="assinante-1-papel" name="assinante1Papel" class="signer-role" type="text"
-                value="PROPRIETÁRIO/SÓCIO/MANDATÁRIO">
             </div>
           </div>
           <button type="button" id="adicionar-assinante" class="secondary-action">Adicionar assinante</button>

@@ -6,8 +6,12 @@ import {
   classifyMonth,
   distributeCents,
   formatMesAno,
+  isRegimeAllowed,
+  MEI_LIMIT_CENTS,
   parseCurrencyToCents,
   parseMesAno,
+  SIMPLES_NACIONAL_LIMIT_CENTS,
+  splitAnnualTargets,
   sumRows,
   type LinhaFaturamento
 } from "../src/faturamento/regras";
@@ -67,4 +71,18 @@ test("faturamento totals add vista and prazo columns", () => {
     prazo: 1200,
     vista: 1300
   });
+});
+
+test("faturamento splits annual target between vista and prazo", () => {
+  assert.deepEqual(splitAnnualTargets(100_00, 100), { prazo: 0, vista: 100_00 });
+  assert.deepEqual(splitAnnualTargets(100_00, 70), { prazo: 30_00, vista: 70_00 });
+  assert.deepEqual(splitAnnualTargets(101_00, 50), { prazo: 50_50, vista: 50_50 });
+});
+
+test("faturamento blocks tax regimes above configured annual limits", () => {
+  assert.equal(isRegimeAllowed("MEI", MEI_LIMIT_CENTS), true);
+  assert.equal(isRegimeAllowed("MEI", MEI_LIMIT_CENTS + 1), false);
+  assert.equal(isRegimeAllowed("Simples Nacional", SIMPLES_NACIONAL_LIMIT_CENTS), true);
+  assert.equal(isRegimeAllowed("Simples Nacional", SIMPLES_NACIONAL_LIMIT_CENTS + 1), false);
+  assert.equal(isRegimeAllowed("Lucro Presumido", SIMPLES_NACIONAL_LIMIT_CENTS + 1), true);
 });

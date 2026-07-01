@@ -61,11 +61,14 @@ Cada assinante deve possuir:
 
 - Nome.
 - CPF.
-- Papel ou qualificacao no documento, quando informado.
 
 Quando houver multiplos assinantes, a apresentacao consolidada dos nomes deve usar `ou` como separador. A mesma regra se aplica aos CPFs.
 
 O CPF deve aceitar entrada numerica ou formatada, armazenar apenas digitos e apresentar mascara oficial brasileira.
+
+A interface deve iniciar com um unico grupo Nome/CPF e permitir adicionar ou remover grupos adicionais. O primeiro grupo e obrigatorio; grupos adicionados devem poder ser removidos.
+
+A qualificacao `PROPRIETARIO/SOCIO/MANDATARIO` deve ser tratada como texto fixo do modelo impresso, nao como campo editavel.
 
 ### RN004 - Localidade de Assinatura
 
@@ -85,10 +88,10 @@ A data de assinatura deve assumir a data atual como valor inicial, mas pode ser 
 
 Todas as regras temporais do modulo devem usar exclusivamente a data de assinatura vigente no documento. O relogio do computador nao pode alterar calculos depois que a data de assinatura tiver sido definida pelo usuario.
 
-A apresentacao da assinatura deve seguir o padrao visual oficial:
+A apresentacao da assinatura deve usar data por extenso em portugues do Brasil:
 
 ```text
-Cidade-UF, dd/mm/aaaa,
+Cidade-UF, dd de Mes de aaaa,
 ```
 
 ### RN006 - Periodo Mensal
@@ -154,6 +157,15 @@ Os totais exibidos no documento devem corresponder exatamente a soma dos doze me
 
 Quando o usuario informar apenas o Faturamento Bruto Anual, o sistema pode distribuir automaticamente os valores pelos doze meses.
 
+A distribuicao deve permitir definir o percentual do total destinado a Vendas a Vista e a Vendas a Prazo.
+
+O padrao inicial deve ser:
+
+- 100% para Vendas a Vista.
+- 0% para Vendas a Prazo.
+
+Os percentuais de distribuicao devem ser complementares e totalizar 100%.
+
 A distribuicao automatica deve ser:
 
 - Deterministica.
@@ -164,6 +176,8 @@ A distribuicao automatica deve ser:
 - Visualmente natural, evitando crescimento perfeitamente linear quando houver variacao simulada.
 
 Aleatoriedade verdadeira nao deve ser usada.
+
+O mesmo processo de distribuicao, compensacao, preservacao de edicoes manuais e reconciliacao de centavos deve existir tanto para Vendas a Vista quanto para Vendas a Prazo, sem misturar as duas colunas.
 
 ### RN012 - Edicao Manual e Redistribuicao
 
@@ -195,19 +209,39 @@ O documento deve permitir informar percentuais para:
 
 Cada percentual deve aceitar apenas valor valido entre 0% e 100%.
 
+Quando esses campos estiverem em branco, o documento deve aplicar os seguintes valores padrao:
+
+- Cartoes: 40%.
+- Cheques: 30%.
+- Titulos: 30%.
+
 Quando houver regra operacional exigindo totalizacao desses percentuais, a soma esperada deve ser configuravel no modulo e validada de forma explicita.
 
 ### RN015 - Regime de Tributacao
 
-O Regime de Tributacao e campo livre, sem calculo associado.
+O Regime de Tributacao deve ser selecionado em lista fechada com opcoes brasileiras usuais.
 
-O conteudo deve ser preservado para apresentacao no documento oficial.
+As opcoes iniciais sao:
+
+- MEI.
+- Simples Nacional.
+- Lucro Presumido.
+- Lucro Real.
+
+O sistema deve invalidar ou impedir selecao de regimes incompativeis com o Faturamento Bruto Anual informado.
+
+Limites normativos iniciais do modulo:
+
+- MEI permitido ate R$ 81.000,00 anuais.
+- Simples Nacional permitido ate R$ 4.800.000,00 anuais.
+
+Lucro Presumido e Lucro Real nao possuem bloqueio automatico por esses limites neste modulo, salvo regra futura documentada neste RCF.
 
 ### RN016 - Campo Comite
 
 O campo `COMITE` deve existir no documento oficial conforme o modelo visual.
 
-Seu preenchimento e livre, salvo regra futura registrada neste RCF.
+`COMITE` e apenas titulo impresso do documento, nao campo editavel.
 
 ### RN017 - Preenchimento Parametrizado
 
