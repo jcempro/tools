@@ -89,6 +89,9 @@
 
         <fieldset>
           <legend>Recebimento</legend>
+          <label for="prazo-medio">Prazo Médio de Recebimento</label>
+          <input id="prazo-medio" name="prazoMedio" type="text" inputmode="numeric" value="30">
+
           <label for="percentual-cartoes">Cartões</label>
           <input id="percentual-cartoes" name="cartoes" class="percent" type="text" inputmode="decimal">
 
@@ -135,7 +138,6 @@
               <th>Mês/Ano</th>
               <th>Vendas à Vista</th>
               <th>Vendas a Prazo</th>
-              <th>Prazo Médio</th>
               <th>Situação</th>
             </tr>
           </thead>
@@ -172,32 +174,32 @@
           </div>
         </div>
 
-        <h2>MERCADO INTERNO:</h2>
+        <div class="market-block">
+          <section class="market-panel">
+            <h2>MERCADO INTERNO:</h2>
 
-        <table class="market-table">
-          <thead>
-            <tr>
-              <th>MÊS/ANO:</th>
-              <th>VENDAS À VISTA</th>
-              <th>VENDAS A PRAZO</th>
-              <th>PRAZO MÉDIO DE RECEBIMENTO</th>
-              <th>PREVISTO / REALIZADO</th>
-            </tr>
-          </thead>
-          <tbody id="print-meses"></tbody>
-          <tfoot>
-            <tr>
-              <th>TOTAIS:</th>
-              <td id="print-total-vista">R$ 0,00</td>
-              <td id="print-total-prazo">R$ 0,00</td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+            <table class="market-table">
+              <thead>
+                <tr>
+                  <th>MÊS/ANO:</th>
+                  <th>VENDAS À VISTA</th>
+                  <th>VENDAS A PRAZO</th>
+                  <th>PREVISTO / REALIZADO</th>
+                </tr>
+              </thead>
+              <tbody id="print-meses"></tbody>
+              <tfoot>
+                <tr>
+                  <th>TOTAIS:</th>
+                  <td id="print-total-vista">R$ 0,00</td>
+                  <td id="print-total-prazo">R$ 0,00</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </section>
 
-        <div class="lower-grid">
-          <section>
+          <section class="details-panel market-side-panel">
             <h2>PERCENTUAL DE RECEBIMENTO DAS VENDAS A PRAZO:</h2>
             <table class="percent-table">
               <tr>
@@ -219,14 +221,19 @@
                 <th>REGIME DE<br>TRIBUTAÇÃO:</th>
                 <td id="print-regime"></td>
               </tr>
+              <tr>
+                <th>PRAZO MÉDIO<br>DE RECEBIMENTO:</th>
+                <td><span id="print-prazo-medio">30</span> dias</td>
+              </tr>
             </table>
           </section>
 
-          <section class="signature-date">
-            <strong><span id="print-cidade-uf"></span>, <span id="print-data"></span>,</strong>
-            <em>Assinatura física ou digital (site gov.br)</em>
-          </section>
         </div>
+
+        <section class="signature-date">
+          <strong><span id="print-cidade-uf"></span>, <span id="print-data"></span>,</strong>
+          <em>Assinatura física ou digital (site gov.br)</em>
+        </section>
 
         <section class="signature-block">
           <div class="signature-line"></div>

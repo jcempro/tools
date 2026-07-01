@@ -81,7 +81,7 @@ import {
       { hint: "Distribuição à vista", required: true, selector: "#distribuicao-vista", validate: validatePercentField },
       { hint: "Distribuição a prazo", required: true, selector: "#distribuicao-prazo", validate: validatePercentField },
       { hint: "Valor monetário", required: false, selector: ".month-money", validate: validateCurrency },
-      { hint: "Prazo médio", required: true, selector: ".prazo-medio", validate: validateNonNegativeInteger },
+      { hint: "Prazo médio", required: true, selector: "#prazo-medio", validate: validateNonNegativeInteger },
       { hint: "Percentual", required: false, selector: ".percent", validate: validatePercentField },
       { hint: "Nome do assinante", required: true, selector: "#assinante-1-nome" },
       { hint: "CPF do assinante", required: true, selector: "#assinante-1-cpf", validator: "cpf" },
@@ -204,6 +204,10 @@ import {
       setValue("distribuicao-prazo", "0%");
     }
 
+    if (!input("prazo-medio").value) {
+      setValue("prazo-medio", "30");
+    }
+
     applyDefaultReceiptPercentages();
   }
 
@@ -241,7 +245,6 @@ import {
         <td class="month-label" data-month="${label}">${label}</td>
         <td><input id="mes-${index}-vista" class="money month-money" data-column="vista" type="text" inputmode="decimal"></td>
         <td><input id="mes-${index}-prazo" class="money month-money" data-column="prazo" data-locked="true" type="text" inputmode="decimal"></td>
-        <td><input id="mes-${index}-prazo-medio" class="prazo-medio" type="text" inputmode="numeric" value="30"></td>
         <td class="month-status">${status}</td>
       `;
       editor.appendChild(editorRow);
@@ -251,7 +254,6 @@ import {
         <td data-print-month="${index}">${label}</td>
         <td data-print-vista="${index}">R$ 0,00</td>
         <td data-print-prazo="${index}">R$ 0,00</td>
-        <td data-print-prazo-medio="${index}">30</td>
         <td data-print-status="${index}">${status}</td>
       `;
       print.appendChild(printRow);
@@ -266,7 +268,7 @@ import {
       const mesAno = parseMesAno(monthText) ?? reference;
       const vista = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="vista"]')?.value ?? "") ?? 0;
       const prazo = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="prazo"]')?.value ?? "") ?? 0;
-      const prazoMedio = Number.parseInt(row.querySelector<HTMLInputElement>(".prazo-medio")?.value || "30", 10);
+      const prazoMedio = Number.parseInt(input("prazo-medio").value || "30", 10);
 
       return {
         mesAno,
@@ -311,6 +313,7 @@ import {
     text("print-cheques", input("percentual-cheques").value);
     text("print-titulos", input("percentual-titulos").value);
     text("print-regime", select("regime-tributacao").value);
+    text("print-prazo-medio", input("prazo-medio").value || "30");
     text("print-cidade-uf", `${city}-${uf}`);
     text("print-data", formatDatePtBr(input("data-assinatura").value));
     text("print-assinantes", joinedSignerValues(".signer-name"));
@@ -321,7 +324,6 @@ import {
       textBySelector(`[data-print-month="${index}"]`, formatMesAno(row.mesAno));
       textBySelector(`[data-print-vista="${index}"]`, formatCurrencyFromCents(row.vendasVista));
       textBySelector(`[data-print-prazo="${index}"]`, formatCurrencyFromCents(row.vendasPrazo));
-      textBySelector(`[data-print-prazo-medio="${index}"]`, `${row.prazoMedio}`);
       textBySelector(`[data-print-status="${index}"]`, row.situacao);
     });
     updateRegimeOptions();
@@ -345,17 +347,8 @@ import {
     currentReference = reference;
     renderMonthRows(reference);
     api.autosave.init({ selector: "#editor-meses input", validation });
-    ensureDefaultMonthlyValues();
     bindDynamicInputs();
     renderPreview();
-  }
-
-  function ensureDefaultMonthlyValues(): void {
-    api.$<HTMLInputElement>(".prazo-medio").forEach((element) => {
-      if (!element.value) {
-        element.value = "30";
-      }
-    });
   }
 
   function distributionVistaPercent(): number {
@@ -711,7 +704,6 @@ import {
       faturamentoBrutoAnual: input("faturamento-alvo").value,
       meses: monthRows().map((row, index) => ({
         mesAno: formatMesAno(row.mesAno),
-        prazoMedio: row.prazoMedio,
         vendasPrazo: input(`mes-${index}-prazo`).value,
         vendasVista: input(`mes-${index}-vista`).value
       })),
@@ -721,6 +713,7 @@ import {
         cheques: input("percentual-cheques").value,
         titulos: input("percentual-titulos").value
       },
+      prazoMedio: input("prazo-medio").value,
       razaoSocial: input("razao-social").value,
       regimeTributacao: select("regime-tributacao").value,
       uf: input("uf").value
@@ -761,6 +754,7 @@ import {
     assignIfPresent("data-assinatura", data.dataAssinatura);
     assignIfPresent("mes-referencia", data.mesReferencia);
     assignIfPresent("faturamento-alvo", data.faturamentoBrutoAnual);
+    assignIfPresent("prazo-medio", data.prazoMedio);
 
     if (typeof data.regimeTributacao === "string") {
       select("regime-tributacao").value = data.regimeTributacao;
@@ -798,7 +792,9 @@ import {
         }
         assignIfPresent(`mes-${index}-vista`, item.vendasVista);
         assignIfPresent(`mes-${index}-prazo`, item.vendasPrazo);
-        assignIfPresent(`mes-${index}-prazo-medio`, item.prazoMedio);
+        if (!data.prazoMedio && index === 0) {
+          assignIfPresent("prazo-medio", item.prazoMedio);
+        }
       });
     }
   }

@@ -136,12 +136,17 @@ A tabela de Mercado Interno deve conter, para cada um dos doze meses:
 - Mes/Ano.
 - Vendas a Vista.
 - Vendas a Prazo.
-- Prazo Medio de Recebimento.
 - Situacao Previsto/Realizado.
 
 Valores de venda devem ser monetarios, nao negativos e apresentados em BRL.
 
-O Prazo Medio de Recebimento deve ser numerico, editavel por mes e independente entre meses.
+O Prazo Medio de Recebimento deve ser um campo unico do documento, numerico e nao negativo.
+
+Na impressao, o Prazo Medio de Recebimento deve aparecer como informacao separada da tabela mensal, evitando repeticao linha a linha.
+
+A tabela impressa deve priorizar largura proporcional para Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao, garantindo folga visual para valores monetarios em faixa de milhoes.
+
+Na impressao, a tabela de Mercado Interno deve usar largura reduzida e proporcional ao seu conjunto atual de colunas. O espaco lateral direito liberado pela ausencia da coluna repetitiva de Prazo Medio deve ser ocupado pelo bloco de Percentual de Recebimento das Vendas a Prazo, Regime de Tributacao e Prazo Medio de Recebimento, mantendo alinhamento visual com o topo da tabela.
 
 ### RN010 - Faturamento Bruto Anual
 
@@ -256,6 +261,8 @@ Dados parametrizados devem passar pelas mesmas normalizacoes e validacoes aplica
 O modulo deve salvar automaticamente os dados durante a edicao, usando persistencia local do navegador.
 
 O salvamento automatico deve preservar dados cadastrais, financeiros, periodo, classificacoes, percentuais, regime tributario e assinatura.
+
+O salvamento automatico deve preservar o Prazo Medio de Recebimento unico do documento.
 
 ### RN019 - Impressao e PDF
 

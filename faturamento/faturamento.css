@@ -325,16 +325,32 @@ select:focus {
   table-layout: fixed;
 }
 
+.market-block {
+  display: grid;
+  grid-template-columns: 11.7cm 5.85cm;
+  gap: 0.65cm;
+  align-items: start;
+}
+
+.market-panel {
+  min-width: 0;
+}
+
+.market-panel h2,
+.market-side-panel h2 {
+  margin-top: 0;
+}
+
 .market-table th,
 .market-table td {
   height: 0.48cm;
-  padding: 0.03cm 0.08cm;
+  padding: 0.03cm 0.06cm;
   border: 1px solid var(--line);
   vertical-align: middle;
 }
 
 .market-table th {
-  font-size: 8.5pt;
+  font-size: 7.8pt;
   font-weight: 700;
   text-align: center;
 }
@@ -344,8 +360,7 @@ select:focus {
 }
 
 .market-table td:first-child,
-.market-table td:nth-child(4),
-.market-table td:nth-child(5) {
+.market-table td:nth-child(4) {
   text-align: center;
 }
 
@@ -363,28 +378,16 @@ select:focus {
 }
 
 .market-table th:first-child {
-  width: 2.45cm;
+  width: 1.9cm;
 }
 
 .market-table th:nth-child(2),
 .market-table th:nth-child(3) {
-  width: 4cm;
+  width: 3.45cm;
 }
 
 .market-table th:nth-child(4) {
-  width: 3.1cm;
-}
-
-.market-table th:nth-child(5) {
-  width: 3cm;
-}
-
-.lower-grid {
-  display: grid;
-  grid-template-columns: 7.5cm 1fr;
-  gap: 2cm;
-  align-items: start;
-  margin-top: 0.35cm;
+  width: 2.25cm;
 }
 
 .percent-table th,
@@ -398,7 +401,7 @@ select:focus {
 
 .percent-table th,
 .tax-table th {
-  width: 3.15cm;
+  width: 2.7cm;
   text-align: left;
   font-weight: 400;
 }
@@ -409,13 +412,19 @@ select:focus {
 }
 
 .tax-table {
-  margin-top: 0.45cm;
+  margin-top: 0.32cm;
 }
 
 .signature-date {
-  align-self: end;
-  margin-top: 2.35cm;
+  align-self: start;
+  width: 8.6cm;
+  margin: 0.72cm 0 0 auto;
   text-align: center;
+}
+
+.details-panel h2 {
+  font-size: 8.5pt;
+  line-height: 1.15;
 }
 
 .signature-date strong,
