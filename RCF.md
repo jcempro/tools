@@ -213,9 +213,13 @@ Novas interfaces devem privilegiar componentes tipados, reutilizáveis e desacop
 
 O projeto deve possuir scripts NPM para desenvolvimento, compilação, build, testes, lint, type-check e validação.
 
+O ciclo local deve oferecer comando de desenvolvimento simples e comando com recarregamento automático. O comando `dev-live` deve servir `site/`, recompilar TypeScript em modo watch e recarregar o navegador quando artefatos estáticos mudarem.
+
 O build deve reutilizar cache incremental sempre que possível, recompilando e copiando apenas artefatos alterados, sem comprometer consistência de `site/` e `dist/`.
 
 Operações críticas de build devem ser fail-safe: falhas de IO, cache corrompido, lock concorrente, erro de compilação ou inconsistência de tipos devem interromper a publicação antes de gerar saída inconsistente.
+
+Workflows de CI devem ter limite máximo de 10 minutos por execução. Caches no GitHub Actions só devem ser usados quando o ganho esperado superar o custo de restauração e gravação para o tamanho real do projeto.
 
 ### RN023 - Robustez Permanente
 
@@ -377,11 +381,12 @@ Decisões globais registradas:
 - JavaScript versionado em `site/` deve permanecer legível para desenvolvimento, suporte e rastreio de problemas.
 - Scripts Node.js de build permanecem em `.mjs` dentro de `script/` por serem bootstrap executável antes da compilação TypeScript.
 - O build incremental usa manifestos em `.cache/build/` e locks de concorrência para proteger `site/` e `dist/`.
+- O comando `dev-live` serve `site/` com recarregamento automático para desenvolvimento local.
 - Cada ferramenta com `index.html` deve gerar também um Bundle offline autocontido nomeado pelo diretório da ferramenta dentro de `dist/`.
 - A otimização de HTML, CSS, JavaScript e JSON textuais deve ocorrer na construção de `dist/`, sem alterar a fonte canônica nem os artefatos de desenvolvimento em `site/`.
 - A publicação estática deve usar `dist/`, preservando a saída de produção já validada.
 - Recursos externos necessários ao funcionamento offline devem ser resolvidos por dependências locais versionadas e incorporados pelo pipeline de Bundle.
-- O GitHub Actions deve restaurar cache incremental de build e publicar artefatos já contendo saídas Web e Bundle.
+- O GitHub Actions deve evitar cache de build quando ele tornar o workflow mais lento que a recomputação e deve publicar artefatos já contendo saídas Web e Bundle.
 
 ## Requisitos Não Funcionais
 

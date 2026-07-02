@@ -9,6 +9,12 @@ npm install
 npm run dev
 ```
 
+Para desenvolvimento com recarregamento automático:
+
+```bash
+npm run dev-live
+```
+
 ## Validação
 
 ```bash
