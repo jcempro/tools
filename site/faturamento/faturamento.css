@@ -108,6 +108,7 @@ fieldset {
 legend {
   padding: 0 6px;
   font-weight: 700;
+  color: #2b92db;
 }
 
 label {
@@ -206,12 +207,14 @@ select:focus {
   padding: 4px;
   border: 1px solid #c9d1d8;
   text-align: left;
+  color: #777;
 }
 
 .monthly-editor th {
   background: #edf1f4;
   font-size: 8.5pt;
 }
+
 
 .monthly-editor input {
   min-height: 30px;
@@ -376,12 +379,20 @@ select:focus {
 }
 
 .market-table tfoot th,
-.market-table tfoot td {
-  font-weight: 700;
+.market-table tfoot td {  
+  font-weight: bold !important;
+  background-color: #bbb !important;  
+  border-top: .2mm solid #333 !important;
+}
+
+.market-table thead th{  
+  border-bottom: .2mm solid #333 !important;
+  font-weight: bold !important;
+  background-color: #bbb !important;  
 }
 
 .market-table tfoot th {
-  text-align: left;
+  text-align: right;
 }
 
 .market-table th:first-child {
