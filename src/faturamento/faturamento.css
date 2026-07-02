@@ -402,7 +402,7 @@ select:focus {
 .market-table tfoot td {  
   font-weight: bold !important;
   background-color: #bbb !important;  
-  border-top: .2mm solid #333 !important;
+  border-top: .5mm solid #333 !important;
 }
 
 .market-table thead th{  

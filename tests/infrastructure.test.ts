@@ -3,7 +3,7 @@ import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
 
-async function collectIndexFiles(dir = "site"): Promise<string[]> {
+async function collectIndexFiles(dir = "src"): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true });
   const files: string[] = [];
 
@@ -37,7 +37,7 @@ test("TypeScript target is ES2020 or newer", async () => {
   assert.match(tsconfig.compilerOptions.target, /^ES20(2\d|[3-9]\d)$/);
 });
 
-test("published index pages use stable local asset paths", async () => {
+test("source index pages use stable local asset paths", async () => {
   const attributePattern = /\b(?:href|src)=["']([^"']+)["']/gi;
   const relativeLocalReferences: string[] = [];
 
