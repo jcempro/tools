@@ -868,6 +868,7 @@ Simples Nacional: at\xE9 ${formatCurrencyFromCents(SIMPLES_NACIONAL_LIMIT_CENTS)
       });
     }
     api.ready(() => {
+      api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".faturamento-shell" });
       api.print.createPageStyle(pageConfig);
       api.autosave.indicator(".autosave");
       renderMonthRows(defaultReference());
