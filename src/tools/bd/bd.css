@@ -73,8 +73,15 @@ button {
 .bundle-link {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   padding: 8px 12px;
   white-space: nowrap;
+}
+
+.bundle-link::before {
+  content: "\21E9";
+  font-size: 18px;
+  line-height: 1;
 }
 
 button:disabled {

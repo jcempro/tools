@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
 import { constants as fsConstants } from "node:fs";
-import { mkdir, open, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, readdir, rename, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { constants as zlibConstants, deflateRawSync } from "node:zlib";
 import { minifyCssText, minifyHtmlText, minifyJsText } from "./asset-optimizer.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -39,6 +40,13 @@ const mimeByExt = new Map([
   [".woff", "font/woff"],
   [".woff2", "font/woff2"]
 ]);
+const crcTable = Array.from({ length: 256 }, (_item, index) => {
+  let value = index;
+  for (let bit = 0; bit < 8; bit += 1) {
+    value = (value & 1) ? (0xedb88320 ^ (value >>> 1)) : (value >>> 1);
+  }
+  return value >>> 0;
+});
 
 async function acquireLock() {
   await mkdir(cacheDir, { recursive: true });
@@ -218,11 +226,96 @@ function assertOffline(html, rel) {
   }
 }
 
+function crc32(data) {
+  let crc = 0xffffffff;
+  for (const byte of data) {
+    crc = (crc >>> 8) ^ crcTable[(crc ^ byte) & 0xff];
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function dosDateTime() {
+  return {
+    date: (1 << 5) | 1,
+    time: 0
+  };
+}
+
+function writeUInt16(value) {
+  const buffer = Buffer.allocUnsafe(2);
+  buffer.writeUInt16LE(value);
+  return buffer;
+}
+
+function writeUInt32(value) {
+  const buffer = Buffer.allocUnsafe(4);
+  buffer.writeUInt32LE(value >>> 0);
+  return buffer;
+}
+
+function createZipSingleFile(filename, content) {
+  const name = Buffer.from(filename, "utf8");
+  const source = Buffer.from(content, "utf8");
+  const compressed = deflateRawSync(source, { level: zlibConstants.Z_BEST_COMPRESSION });
+  const checksum = crc32(source);
+  const { date, time } = dosDateTime();
+  const localHeader = Buffer.concat([
+    writeUInt32(0x04034b50),
+    writeUInt16(20),
+    writeUInt16(0x0800),
+    writeUInt16(8),
+    writeUInt16(time),
+    writeUInt16(date),
+    writeUInt32(checksum),
+    writeUInt32(compressed.byteLength),
+    writeUInt32(source.byteLength),
+    writeUInt16(name.byteLength),
+    writeUInt16(0),
+    name
+  ]);
+  const centralHeader = Buffer.concat([
+    writeUInt32(0x02014b50),
+    writeUInt16(20),
+    writeUInt16(20),
+    writeUInt16(0x0800),
+    writeUInt16(8),
+    writeUInt16(time),
+    writeUInt16(date),
+    writeUInt32(checksum),
+    writeUInt32(compressed.byteLength),
+    writeUInt32(source.byteLength),
+    writeUInt16(name.byteLength),
+    writeUInt16(0),
+    writeUInt16(0),
+    writeUInt16(0),
+    writeUInt16(0),
+    writeUInt32(0),
+    writeUInt32(0),
+    name
+  ]);
+  const centralDirectoryOffset = localHeader.byteLength + compressed.byteLength;
+  const end = Buffer.concat([
+    writeUInt32(0x06054b50),
+    writeUInt16(0),
+    writeUInt16(0),
+    writeUInt16(1),
+    writeUInt16(1),
+    writeUInt32(centralHeader.byteLength),
+    writeUInt32(centralDirectoryOffset),
+    writeUInt16(0)
+  ]);
+
+  return Buffer.concat([localHeader, compressed, centralHeader, end]);
+}
+
 async function buildBundle(rel) {
   const indexFile = path.join(siteDir, rel);
   const dir = path.dirname(indexFile);
-  const bundleName = `${path.basename(dir)}.bundle.html`;
-  const outputFile = path.join(distDir, path.dirname(rel), bundleName);
+  const bundleBaseName = `${path.basename(dir)}.bundle`;
+  const htmlName = `${bundleBaseName}.html`;
+  const zipName = `${bundleBaseName}.zip`;
+  const outputFile = path.join(distDir, path.dirname(rel), zipName);
+  const legacyOutputFile = path.join(distDir, path.dirname(rel), htmlName);
 
   let html = await readFile(indexFile, "utf8");
   html = await inlineStyles(html, indexFile);
@@ -232,11 +325,13 @@ async function buildBundle(rel) {
   assertOffline(html, rel);
 
   const body = `<!DOCTYPE html>${html.replace(/^<!DOCTYPE html>/i, "")}\n`;
-  const hash = createHash("sha256").update(body).digest("hex").slice(0, 12);
+  const zip = createZipSingleFile(htmlName, body);
+  const hash = createHash("sha256").update(zip).digest("hex").slice(0, 12);
   await mkdir(path.dirname(outputFile), { recursive: true });
   const tmp = `${outputFile}.tmp-${process.pid}-${hash}`;
-  await writeFile(tmp, body, "utf8");
+  await writeFile(tmp, zip);
   await rename(tmp, outputFile);
+  await rm(legacyOutputFile, { force: true });
   return path.relative(root, outputFile);
 }
 

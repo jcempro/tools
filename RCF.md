@@ -94,9 +94,11 @@ A barra poderá conter ações:
 - Específicas do tipo documental.
 - Específicas da categoria.
 - Específicas do documento individual.
-- Download do bundle offline equivalente, quando o arquivo `<nome-da-pasta>.bundle.html` existir no mesmo caminho publicado do `index.html`.
+- Download do bundle offline equivalente, quando o arquivo `<nome-da-pasta>.bundle.zip` existir no mesmo caminho publicado do `index.html`.
 
 A configuração deve permitir habilitar, ocultar, ordenar e parametrizar ações sem duplicar lógica em cada documento.
+
+Controles de download de bundle devem usar um ícone ou símbolo visual comum de download, preservando texto acessível ou rótulo compreensível para o usuário.
 
 ### RN009 - Salvamento Automático
 
@@ -241,13 +243,17 @@ Tratamentos preventivos devem cobrir erros de compilação, inconsistências de 
 Toda ferramenta publicada pelo projeto deve possuir dois artefatos gerados automaticamente pelo pipeline de build:
 
 - Saída Web: `index.html` otimizado para hospedagem estática e uso online.
-- Saída Bundle: arquivo HTML autocontido nomeado como `<nome-da-pasta>.bundle.html`, destinado a uso totalmente offline.
+- Saída Bundle: arquivo ZIP nomeado como `<nome-da-pasta>.bundle.zip`, destinado a uso totalmente offline.
 
-A saída Bundle deve incorporar internamente todos os recursos necessários ao funcionamento da ferramenta, incluindo HTML, CSS, JavaScript, fontes, imagens, SVGs, JSON, ícones e dependências estáticas aplicáveis.
+A saída Bundle deve conter internamente um HTML autocontido nomeado como `<nome-da-pasta>.bundle.html`, incorporando todos os recursos necessários ao funcionamento da ferramenta, incluindo HTML, CSS, JavaScript, fontes, imagens, SVGs, JSON, ícones e dependências estáticas aplicáveis.
 
 O Bundle não deve depender de requisições externas para executar a ferramenta. Dependências externas usadas pela versão Web devem possuir cópia local versionada ou mapeamento de build capaz de incorporá-las ao Bundle.
 
-O Bundle deve ser publicado no mesmo diretório do `index.html` correspondente em `dist/`, permitindo download direto a partir da página Web publicada.
+Somente o arquivo compactado deve ser publicado. O HTML autocontido solto não deve existir como artefato público em `dist/`, para evitar abertura direta pelo navegador no lugar de download.
+
+O Bundle deve ser publicado no mesmo diretório do `index.html` correspondente em `dist/`, permitindo download direto a partir da página Web publicada. Seu basename deve permanecer idêntico ao padrão anterior, alterando apenas a extensão pública para `.zip`.
+
+A compactação do Bundle deve usar o maior nível disponível na toolchain padrão do projeto. O formato ZIP com Deflate no nível máximo é a decisão vigente por ser gerável em Node.js sem dependência externa, compatível com GitHub Actions e amplamente suportado pelos usuários; formatos como `.7z` só devem substituir ZIP se puderem oferecer ganho real sem introduzir dependência operacional incompatível com a arquitetura estática e o CI.
 
 Ambas as saídas devem ser produzidas em modo de produção, com minificação, eliminação de código morto, otimização de tamanho e priorização de carregamento rápido.
 
@@ -405,7 +411,7 @@ Decisões globais registradas:
 - Scripts Node.js de build permanecem em `.mjs` dentro de `scripts/` por serem bootstrap executável antes da compilação TypeScript.
 - O build incremental usa manifestos em `.cache/build/` e locks de concorrência para proteger `site/` e `dist/`.
 - O comando `dev-live` serve o cache `site/` com recarregamento automático para desenvolvimento local.
-- Cada ferramenta com `index.html` deve gerar também um Bundle offline autocontido nomeado pelo diretório da ferramenta dentro de `dist/`.
+- Cada ferramenta com `index.html` deve gerar também um Bundle offline compactado em ZIP, nomeado pelo diretório da ferramenta dentro de `dist/`, contendo internamente o HTML autocontido equivalente.
 - A otimização de HTML, CSS, JavaScript e JSON textuais deve ocorrer na construção de `dist/`, sem alterar a fonte canônica em `src/` nem os artefatos intermediários legíveis em `site/`.
 - A publicação estática deve usar `dist/`, preservando a saída de produção já validada.
 - O workflow de publicação deve enviar `dist/` ao GitHub Pages em push na branch de publicação configurada, mantendo pull requests restritos a validação, testes e geração de artefatos.
@@ -414,6 +420,7 @@ Decisões globais registradas:
 - Qualquer alteração futura no pipeline deve preservar a correspondência `src/<caminho-logico>` -> `site/<caminho-logico>` -> `dist/<caminho-logico>` -> `https://modelos.jcem.pro/<caminho-logico>`.
 - Recursos externos necessários ao funcionamento offline devem ser resolvidos por dependências locais versionadas e incorporados pelo pipeline de Bundle.
 - URLs internas de assets e bundles em páginas publicadas devem ser estáveis com ou sem barra final, preferencialmente root-relative sob `https://modelos.jcem.pro/`.
+- O pipeline não deve publicar arquivos `*.bundle.html` soltos; a validação deve exigir `*.bundle.zip` e bloquear HTML de bundle fora do arquivo compactado.
 - O GitHub Actions deve evitar cache de build quando ele tornar o workflow mais lento que a recomputação e deve publicar artefatos já contendo saídas Web e Bundle.
 
 ## Requisitos Não Funcionais

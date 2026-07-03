@@ -93,7 +93,21 @@ function assertNoPublicSrcReferences(label, rel, content) {
 }
 
 function bundleForIndex(rel) {
-  return `${path.dirname(rel)}/${path.basename(path.dirname(rel))}.bundle.html`.replace(/^\.\//, "");
+  return `${path.dirname(rel)}/${path.basename(path.dirname(rel))}.bundle.zip`.replace(/^\.\//, "");
+}
+
+function bundleHtmlNameForIndex(rel) {
+  return `${path.basename(path.dirname(rel))}.bundle.html`;
+}
+
+async function assertBundleZip(rel, expectedInnerName) {
+  const data = await readFile(path.join(distDir, rel));
+  if (data.length < 4 || data.readUInt32LE(0) !== 0x04034b50) {
+    throw new Error(`Bundle offline nao e ZIP valido: ${rel}`);
+  }
+  if (!data.includes(Buffer.from(expectedInnerName, "utf8"))) {
+    throw new Error(`Bundle ZIP nao contem HTML autocontido esperado (${expectedInnerName}): ${rel}`);
+  }
 }
 
 async function validatePublicText(label, dir, files) {
@@ -146,8 +160,16 @@ async function main() {
     if (publicPath.toLowerCase().includes("/src/")) {
       throw new Error(`URL publica invalida para src/${rel}: ${publicPath}`);
     }
-    if (!distSet.has(bundleForIndex(rel))) {
-      throw new Error(`Bundle offline ausente para ${publicPath}: ${bundleForIndex(rel)}`);
+    const bundle = bundleForIndex(rel);
+    if (!distSet.has(bundle)) {
+      throw new Error(`Bundle offline ausente para ${publicPath}: ${bundle}`);
+    }
+    await assertBundleZip(bundle, bundleHtmlNameForIndex(rel));
+  }
+
+  for (const rel of distFiles) {
+    if (rel.endsWith(".bundle.html")) {
+      throw new Error(`Bundle HTML solto nao deve ser publicado; use ZIP: ${rel}`);
     }
   }
 
@@ -158,7 +180,7 @@ async function main() {
   }
 
   for (const rel of distFiles) {
-    if (distOnlyFiles.has(rel) || rel.endsWith(".bundle.html")) {
+    if (distOnlyFiles.has(rel) || rel.endsWith(".bundle.zip")) {
       continue;
     }
     if (!siteSet.has(rel)) {

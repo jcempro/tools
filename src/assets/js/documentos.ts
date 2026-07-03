@@ -627,7 +627,7 @@
     const parts = w.location.pathname.split("/").filter(Boolean);
     const last = parts[parts.length - 1] ?? "";
     const folder = last.toLowerCase().endsWith(".html") ? parts[parts.length - 2] : last;
-    return `${folder || "index"}.bundle.html`;
+    return `${folder || "index"}.bundle.zip`;
   }
 
   function resolveBundleHref(element: HTMLAnchorElement): string {

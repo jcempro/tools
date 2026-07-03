@@ -17,6 +17,10 @@ const textExtensions = new Set([".css", ".html", ".js", ".json"]);
 const rootPassthroughFiles = ["CNAME"];
 const generatedRootFiles = new Map([[".nojekyll", ""]]);
 
+function isBundleArtifact(rel) {
+  return /\.bundle\.(?:html|zip)$/i.test(rel);
+}
+
 async function acquireLock() {
   await mkdir(cacheDir, { recursive: true });
   try {
@@ -67,7 +71,7 @@ async function collectFiles(dir = siteDir, prefix = "") {
 
   for (const entry of entries) {
     const rel = prefix ? path.join(prefix, entry.name) : entry.name;
-    if (rel.endsWith(".bundle.html")) {
+    if (isBundleArtifact(rel)) {
       continue;
     }
 
