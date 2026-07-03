@@ -354,14 +354,14 @@ Nenhuma implementação deverá assumir conhecimento fixo da estrutura dos model
 ### ARQ001 - Arquivos do Módulo
 
 ```text
-src/tools/bd/
+src/csv-bd/
 ├── RCF.md
 ├── bd.css
 ├── bd.ts
 └── index.html
 ```
 
-O arquivo `src/tools/bd/RCF.md` é o RCF específico vigente deste módulo, seguindo a organização normativa global por diretório de módulo.
+O arquivo `src/csv-bd/RCF.md` é o RCF específico vigente deste módulo, seguindo a organização normativa global por diretório de módulo.
 
 ### ARQ002 - Consumo da Camada Compartilhada
 
@@ -374,7 +374,7 @@ O módulo deve consumir o núcleo tabular compartilhado em `src/assets/js/tabula
 - preservação de colunas desconhecidas;
 - rastreamento de inconsistências e decisões pendentes.
 
-O arquivo `src/tools/bd/bd.ts` deve conter apenas a integração da interface, fluxo operacional, logs, decisões do usuário e acionamento do núcleo compartilhado.
+O arquivo `src/csv-bd/bd.ts` deve conter apenas a integração da interface, fluxo operacional, logs, decisões do usuário e acionamento do núcleo compartilhado.
 
 ### ARQ003 - Decisões Arquiteturais Locais
 
@@ -383,4 +383,4 @@ O arquivo `src/tools/bd/bd.ts` deve conter apenas a integração da interface, f
 - O núcleo de transformação tabular foi promovido para a camada compartilhada por possuir potencial de reuso em futuras ferramentas.
 - A saída CSV deve ser produzida em UTF-8 com BOM.
 - Conflitos de consolidação de nomes devem permanecer rastreáveis e expostos ao usuário antes da exportação final.
-- Arquivos gerados em `site/tools/bd/` e `dist/tools/bd/` são artefatos de build; a fonte canônica permanece em `src/tools/bd/`.
+- Arquivos gerados em `site/csv-bd/` e `dist/csv-bd/` são artefatos de build; a fonte canônica permanece em `src/csv-bd/`.

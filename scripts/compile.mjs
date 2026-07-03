@@ -14,7 +14,7 @@ const entries = [
   ["src/oficios/admissional/admissional.ts", "site/oficios/admissional/admissional.js"],
   ["src/faturamento/faturamento.ts", "site/faturamento/faturamento.js"],
   ["src/dizimo/assets/js/main.ts", "site/dizimo/assets/js/main.js"],
-  ["src/tools/bd/bd.ts", "site/tools/bd/bd.js"]
+  ["csv-bd/bd.ts", "site/tools/bd/bd.js"]
 ];
 
 const bookmarklets = [
