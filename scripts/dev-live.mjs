@@ -1,13 +1,13 @@
 import { spawn } from "node:child_process";
 import { createReadStream, watch as watchFs } from "node:fs";
-import { readFile, stat } from "node:fs/promises";
+import { mkdir, readFile, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const compile = spawn("npm", ["run", "compile:watch"], { shell: true, stdio: "inherit" });
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const siteRoot = path.join(root, "site");
+const distRoot = path.join(root, "dist");
 const port = Number(process.env.PORT || 4173);
 const clients = new Set();
 
@@ -56,9 +56,9 @@ const server = createServer(async (request, response) => {
     }
 
     const pathname = decodeURIComponent(url.pathname);
-    const requested = path.normalize(path.join(siteRoot, pathname));
+    const requested = path.normalize(path.join(distRoot, pathname));
 
-    if (requested !== siteRoot && !isInside(siteRoot, requested)) {
+    if (requested !== distRoot && !isInside(distRoot, requested)) {
       response.writeHead(403);
       response.end("Forbidden");
       return;
@@ -102,13 +102,14 @@ function scheduleReload() {
 }
 
 try {
-  watchFs(siteRoot, { recursive: true }, scheduleReload);
+  await mkdir(distRoot, { recursive: true });
+  watchFs(distRoot, { recursive: true }, scheduleReload);
 } catch (_error) {
-  watchFs(siteRoot, scheduleReload);
+  watchFs(distRoot, scheduleReload);
 }
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`Servidor live em http://127.0.0.1:${port}/ servindo cache site/`);
+  console.log(`Servidor live em http://127.0.0.1:${port}/ servindo dist/`);
 });
 
 function stop() {

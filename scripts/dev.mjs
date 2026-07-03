@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const compile = spawn("npm", ["run", "compile:watch"], { shell: true, stdio: "inherit" });
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const siteRoot = path.join(root, "site");
+const distRoot = path.join(root, "dist");
 const port = Number(process.env.PORT || 4173);
 
 const mime = new Map([
@@ -23,9 +23,9 @@ const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${request.headers.host || "127.0.0.1"}`);
     const pathname = decodeURIComponent(url.pathname);
-    const requested = path.normalize(path.join(siteRoot, pathname));
+    const requested = path.normalize(path.join(distRoot, pathname));
 
-    const relative = path.relative(siteRoot, requested);
+    const relative = path.relative(distRoot, requested);
     if (relative.startsWith("..") || path.isAbsolute(relative)) {
       response.writeHead(403);
       response.end("Forbidden");
@@ -57,7 +57,7 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`Servidor local em http://127.0.0.1:${port}/ servindo cache site/`);
+  console.log(`Servidor local em http://127.0.0.1:${port}/ servindo dist/`);
 });
 
 function stop() {

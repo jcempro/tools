@@ -41,7 +41,7 @@ function normalizeScriptEntries(value, label) {
       throw new Error(`Configuracao invalida em ${label}[${index}].source: fonte deve estar em src/.`);
     }
 
-    if (/^(?:src|site|dist)\//.test(output)) {
+    if (/^(?:src|dist)\//.test(output)) {
       throw new Error(`Configuracao invalida em ${label}[${index}].output: saida deve ser relativa a raiz publica.`);
     }
 

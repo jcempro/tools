@@ -6,7 +6,7 @@ Ao alterar o sistema:
 
 - Ao término, indicar um texto detalhado para commit, com até 512 caracteres, separando melhoria de fix quando aplicável.
 - Preserve a arquitetura atual de páginas estáticas, com HTML, CSS e JavaScript executando diretamente no navegador.
-- Trate `src/` como fonte canônica para código, HTML, CSS, estilos, RCFs específicos e demais arquivos-fonte. Arquivos em `site/` são cache de build e não devem ser editados manualmente.
+- Trate `src/` como fonte canônica para código, HTML, CSS, estilos, RCFs específicos e demais arquivos-fonte. Arquivos em `dist/` são artefatos gerados, raiz publicada e saída de produção; não devem ser editados manualmente.
 - Rode `npm run check` quando a mudança tocar TypeScript, build, documentos, validação, assets compartilhados ou workflows.
 - Use o projeto `whatsapp` apenas como referência documental. Não importe regras de negócio, fluxos, arquivos, dependências ou decisões funcionais daquele projeto.
 - Codificar de forma blindada prevendo potenciais bugs e falhas e os tratar preventivamente.

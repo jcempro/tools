@@ -3,11 +3,12 @@ import { mkdir, readFile, readdir, rm, rmdir, writeFile } from "node:fs/promises
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
+import { optimizeTextByPath } from "./asset-optimizer.mjs";
 import { loadBuildConfig } from "./config.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const srcRoot = path.join(root, "src");
-const siteRoot = path.join(root, "site");
+const distRoot = path.join(root, "dist");
 const watch = process.argv.includes("--watch");
 const buildConfig = await loadBuildConfig();
 const generatedFiles = new Set([
@@ -30,6 +31,7 @@ const staticSourceExtensions = new Set([
   ".woff",
   ".woff2"
 ]);
+const optimizableTextExtensions = new Set([".css", ".html", ".js", ".json"]);
 
 async function ensureParent(file) {
   await mkdir(path.dirname(path.join(root, file)), { recursive: true });
@@ -68,8 +70,7 @@ async function collectFiles(dir, prefix = "") {
   return files;
 }
 
-async function copyChanged(src, dest) {
-  const data = await readFile(src);
+async function copyChangedData(data, dest) {
   const current = await readFile(dest).catch(() => undefined);
 
   if (current && Buffer.compare(data, current) === 0) {
@@ -81,6 +82,14 @@ async function copyChanged(src, dest) {
   return true;
 }
 
+async function readStaticOutput(src, rel) {
+  if (!optimizableTextExtensions.has(path.extname(rel).toLowerCase())) {
+    return await readFile(src);
+  }
+
+  return Buffer.from(await optimizeTextByPath(rel, await readFile(src, "utf8")), "utf8");
+}
+
 async function copyStaticSources() {
   let changed = 0;
 
@@ -90,21 +99,23 @@ async function copyStaticSources() {
     }
 
     generatedFiles.add(normalizeRel(rel));
-    if (await copyChanged(path.join(srcRoot, rel), path.join(siteRoot, rel))) {
+    const source = path.join(srcRoot, rel);
+    const output = await readStaticOutput(source, rel);
+    if (await copyChangedData(output, path.join(distRoot, rel))) {
       changed += 1;
     }
   }
 
   for (const rel of buildConfig.rootPassthroughFiles) {
     generatedFiles.add(normalizeRel(rel));
-    if (await copyChanged(path.join(root, rel), path.join(siteRoot, rel))) {
+    if (await copyChangedData(await readFile(path.join(root, rel)), path.join(distRoot, rel))) {
       changed += 1;
     }
   }
 
   for (const { output, content } of buildConfig.generatedRootFiles) {
     generatedFiles.add(normalizeRel(output));
-    const dest = path.join(siteRoot, output);
+    const dest = path.join(distRoot, output);
     const current = await readFile(dest, "utf8").catch(() => undefined);
     if (current !== content) {
       await mkdir(path.dirname(dest), { recursive: true });
@@ -116,18 +127,18 @@ async function copyStaticSources() {
   return changed;
 }
 
-async function pruneSite() {
+async function pruneDist() {
   const generated = new Set([...generatedFiles].map((file) => normalizeRel(file)));
 
-  for (const rel of await collectFiles(siteRoot)) {
+  for (const rel of await collectFiles(distRoot)) {
     if (generated.has(normalizeRel(rel))) {
       continue;
     }
-    await rm(path.join(siteRoot, rel), { force: true });
+    await rm(path.join(distRoot, rel), { force: true });
   }
 }
 
-async function pruneEmptyDirectories(dir = siteRoot) {
+async function pruneEmptyDirectories(dir = distRoot) {
   const entries = await readdir(dir, { withFileTypes: true }).catch(() => []);
 
   for (const entry of entries) {
@@ -137,14 +148,14 @@ async function pruneEmptyDirectories(dir = siteRoot) {
     await pruneEmptyDirectories(path.join(dir, entry.name));
   }
 
-  if (dir !== siteRoot) {
+  if (dir !== distRoot) {
     await rmdir(dir).catch(() => undefined);
   }
 }
 
 async function buildBrowserScripts() {
   for (const { source, output } of buildConfig.browserScripts) {
-    const outfile = path.join("site", output);
+    const outfile = path.join("dist", output);
     await ensureParent(outfile);
     const result = await esbuild.build({
       entryPoints: [path.join(root, source)],
@@ -152,7 +163,7 @@ async function buildBrowserScripts() {
       format: "iife",
       legalComments: "none",
       logLevel: "silent",
-      minify: false,
+      minify: true,
       sourcemap: false,
       target: "es2020",
       write: false
@@ -167,7 +178,7 @@ async function buildBrowserScripts() {
 
 async function buildBookmarklets() {
   for (const { source, output } of buildConfig.bookmarklets) {
-    const outfile = path.join("site", output);
+    const outfile = path.join("dist", output);
     await ensureParent(outfile);
     const result = await esbuild.build({
       bundle: true,
@@ -190,21 +201,21 @@ async function buildAll() {
   const copied = await copyStaticSources();
   await buildBrowserScripts();
   await buildBookmarklets();
-  await pruneSite();
+  await pruneDist();
   await pruneEmptyDirectories();
   return copied;
 }
 
 if (watch) {
   await buildAll();
-  console.log("Watch ativo. O cache site/ sera reconstruido ao alterar src/.");
+  console.log("Watch ativo. dist/ sera reconstruido ao alterar src/.");
   let timer;
   watchFs(srcRoot, { recursive: true }, () => {
     clearTimeout(timer);
     timer = setTimeout(async () => {
       try {
         const copied = await buildAll();
-        console.log(`[${new Date().toLocaleTimeString()}] site atualizado (${copied} estaticos alterados)`);
+        console.log(`[${new Date().toLocaleTimeString()}] dist atualizado (${copied} estaticos alterados)`);
       } catch (error) {
         console.error(error);
       }
@@ -213,6 +224,6 @@ if (watch) {
 } else {
   await buildAll();
   for (const { output } of buildConfig.browserScripts) {
-    await readFile(path.join(siteRoot, output), "utf8");
+    await readFile(path.join(distRoot, output), "utf8");
   }
 }

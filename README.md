@@ -9,26 +9,19 @@ npm install
 npm run dev
 ```
 
-Para desenvolvimento com recarregamento automático:
+Com recarregamento automático:
 
 ```bash
 npm run dev-live
 ```
 
-## Validação
+## Validação e Build
 
 ```bash
 npm run check
-```
-
-## Build
-
-```bash
 npm run build
 ```
 
-O build materializa o cache publicável em `site/` a partir de `src/`, incluindo os bundles offline `*.bundle.zip`, e prepara `dist/` como saída local otimizada para validação.
+`src/` é a única fonte canônica para TypeScript, TSX, HTML, CSS e RCFs específicos. `dist/` é a única saída gerada: raiz publicada, artefato de produção e local dos bundles offline `*.bundle.zip`.
 
-O código-fonte canônico fica em `src/`, incluindo TypeScript, TSX, HTML, CSS e RCFs específicos. `site/` é cache de construção e raiz publicada pelo GitHub Pages; `dist/` é saída local ignorada pelo Git.
-
-Entradas explícitas de build, bookmarklets e arquivos raiz do artefato publicável são configurados em `scripts/config.json`.
+Entradas explícitas de build, bookmarklets e arquivos raiz publicados ficam em `scripts/config.json`.

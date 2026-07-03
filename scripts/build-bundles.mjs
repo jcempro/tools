@@ -7,7 +7,6 @@ import { constants as zlibConstants, deflateRawSync } from "node:zlib";
 import { minifyCssText, minifyHtmlText, minifyJsText } from "./asset-optimizer.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const siteDir = path.join(root, "site");
 const distDir = path.join(root, "dist");
 const cacheDir = path.join(root, ".cache", "build");
 const lockPath = path.join(cacheDir, "bundle.lock");
@@ -62,7 +61,7 @@ async function releaseLock(handle) {
   await unlink(lockPath).catch(() => undefined);
 }
 
-async function collectIndexFiles(dir = siteDir, prefix = "") {
+async function collectIndexFiles(dir = distDir, prefix = "") {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
 
@@ -105,7 +104,7 @@ function resolveResource(ref, baseDir) {
 
   const normalized = decodeURIComponent(ref.split("#")[0].split("?")[0]);
   const resolved = normalized.startsWith("/")
-    ? path.resolve(siteDir, normalized.slice(1))
+    ? path.resolve(distDir, normalized.slice(1))
     : path.resolve(baseDir, normalized);
   const relative = path.relative(root, resolved);
 
@@ -309,17 +308,15 @@ function createZipSingleFile(filename, content) {
 }
 
 async function buildBundle(rel) {
-  const indexFile = path.join(siteDir, rel);
+  const indexFile = path.join(distDir, rel);
   const dir = path.dirname(indexFile);
   const bundleBaseName = `${path.basename(dir)}.bundle`;
   const htmlName = `${bundleBaseName}.html`;
   const zipName = `${bundleBaseName}.zip`;
   const outputFiles = [
-    path.join(siteDir, path.dirname(rel), zipName),
     path.join(distDir, path.dirname(rel), zipName)
   ];
   const legacyOutputFiles = [
-    path.join(siteDir, path.dirname(rel), htmlName),
     path.join(distDir, path.dirname(rel), htmlName)
   ];
 

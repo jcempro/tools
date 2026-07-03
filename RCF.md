@@ -1,308 +1,27 @@
 # RCF - Requirements & Control Framework
 
-## Projeto
+## 1. Identidade
 
-Modelos Web JCEM.
+**Projeto:** Modelos Web JCEM.
 
-## Objetivo
+**Objetivo:** publicar modelos e utilitarios Web estaticos em `tools.jcem.pro`, com infraestrutura compartilhada para documentos editaveis, parametrizaveis, persistidos localmente e imprimiveis com fidelidade A4.
 
-Disponibilizar modelos e utilitários Web estáticos, com infraestrutura compartilhada para documentos editáveis, parametrizáveis e imprimíveis com fidelidade em A4.
+**Escopo global:** paginas estaticas executadas no navegador; documentos imprimiveis por categoria/modulo; utilitarios sem backend; bookmarklets em `src/favoritos/`; infraestrutura em `src/assets/` e `src/components/`; persistencia em `localStorage`; PDF client-side quando houver acao dedicada; preenchimento por query string; publicacao estatica no GitHub Pages.
 
-## Escopo
+## 2. Hierarquia Normativa
 
-- Páginas estáticas executadas no navegador.
-- Documentos imprimíveis organizados por categoria e módulo.
-- Utilitários Web simples que não dependem de backend.
-- Bookmarklets utilitários com fonte em `src/favoritos/`.
-- Componentes reutilizáveis e infraestrutura compartilhada com fonte em `src/assets/` e `src/components/`.
-- Fontes do projeto em `src/`, incluindo TypeScript, TSX, HTML, CSS, estilos e demais arquivos-fonte necessários ao desenvolvimento.
-- Persistência local no navegador por `localStorage`.
-- Geração de PDF no cliente quando houver botão dedicado.
-- Preenchimento parametrizado por query string.
-- Publicação estática sob o domínio `tools.jcem.pro`.
+1. Este RCF contem apenas regras transversais.
+2. Cada documento ou modulo com objetivo, campos, validacoes, layout, fluxo ou decisoes proprias deve possuir `RCF.md` especifico em seu diretorio de `src/`.
+3. RCF especifico complementa o global sem alterar sua semantica; regra local nao deve ser promovida ao RCF global por conveniencia.
+4. Decisoes arquiteturais, novas dependencias externas, excecoes e mudancas funcionais devem ser registradas no RCF apropriado no mesmo ciclo da alteracao.
 
-## Regras de Negócio Globais
-
-### RN001 - Separação de Escopos Normativos
-
-O `RCF.md` global deve conter apenas regras transversais ao sistema.
-
-Cada documento ou módulo especializado deve possuir seu próprio `RCF.md` quando tiver objetivo, campos, validações, layout ou decisões que não façam sentido para todo o projeto.
-
-Regras específicas não devem ser promovidas ao RCF global apenas por terem surgido durante a implementação de um documento.
-
-### RN002 - Documento como Artefato de Impressão
-
-Documentos imprimíveis têm como finalidade gerar artefatos previsíveis para papel ou PDF.
-
-Toda estilização de documentos imprimíveis deve priorizar fidelidade de impressão, sem impedir uma experiência Web utilizável para edição, avisos e ações auxiliares.
-
-### RN003 - Separação entre Interface Web e Área Imprimível
-
-Documentos devem separar conceitualmente:
-
-- Interface Web: avisos, barras de ferramentas, controles, mensagens, botões, inputs auxiliares e feedbacks de edição.
-- Área imprimível: conteúdo formal que deve aparecer no papel ou PDF.
-
-Elementos não imprimíveis devem ser visíveis apenas na interface Web e ocultados em `@media print` e em qualquer modo programático de geração de PDF.
-
-Páginas que exibam simultaneamente aviso de cookies e barra de ferramentas devem informar, na interface Web e fora da área imprimível, a versão canônica atualizada do modelo sob `https://tools.jcem.pro/<path-do-modelo>`, sem incluir `index.html`, além da orientação para desabilitar cabeçalho e rodapé do navegador ao imprimir.
-
-### RN004 - Fidelidade A4
-
-A área imprimível deve possuir layout preciso e previsível em A4 quando o documento declarar esse formato.
-
-Margens, dimensões, largura útil, posicionamento, tabelas, campos, timbres, rodapés de versão e paginação devem ser controlados por CSS e configuração explícita, evitando dependência de comportamento implícito do navegador.
-
-### RN005 - Impressão pelo Navegador e por PDF Dedicado
-
-A impressão deve funcionar corretamente tanto via Ctrl+P, ou equivalente do sistema/navegador, quanto por botão dedicado de geração de PDF quando o documento oferecer essa ação.
-
-O botão dedicado deve preparar o documento para impressão, ocultar placeholders e elementos de interface, aplicar configuração de página e restaurar o estado visual depois da geração.
-
-### RN006 - Responsividade Restrita
-
-A visualização Web pode ser responsiva para melhorar uso em telas diferentes.
-
-A responsividade deve ficar restrita a elementos de interface, barras, avisos e controles. Ela não deve alterar medidas fundamentais, proporções, margens, paginação ou alinhamentos da área imprimível.
-
-### RN007 - Componentes Reutilizáveis
-
-Tudo que possuir potencial de reutilização entre documentos deve ficar em camada compartilhada do projeto.
-
-Devem ser centralizados, quando aplicável:
-
-- Cabeçalho institucional.
-- Barra de ferramentas.
-- Rodapé institucional.
-- Sistema de impressão e exportação PDF.
-- Estilos documentais comuns.
-- Componentes de formulário.
-- Salvamento automático.
-- Preenchimento por parâmetros.
-- Utilitários de validação e formatação.
-- Timbre ou upload de imagem documental.
-- Funções de data.
-- Acesso à área de transferência.
-- Compartilhamento de link limpo ou preenchido por JSON Base64.
-
-### RN008 - Barra de Ferramentas Extensível
-
-A barra de ferramentas deve ser desacoplada do documento e tratada como componente reutilizável, configurável e extensível.
-
-A barra poderá conter ações:
-
-- Globais, disponíveis em todo o projeto.
-- Específicas do tipo documental.
-- Específicas da categoria.
-- Específicas do documento individual.
-- Download do bundle offline equivalente, quando o arquivo `<nome-da-pasta>.bundle.zip` existir no mesmo caminho publicado do `index.html`.
-
-A configuração deve permitir habilitar, ocultar, ordenar e parametrizar ações sem duplicar lógica em cada documento.
-
-Controles de download de bundle devem usar um ícone ou símbolo visual comum de download, preservando texto acessível ou rótulo compreensível para o usuário.
-
-Cabeçalho institucional, barra de ferramentas e rodapé institucional são componentes globais obrigatórios para todos os módulos publicados, com exceção explícita do módulo `dizimo`, preservado por compatibilidade visual e histórica.
-
-O cabeçalho e o rodapé globais devem ser únicos, reutilizáveis e compartilhados, implementados na infraestrutura comum do projeto. Módulos não podem duplicar cabeçalhos ou rodapés próprios nem alterar a estrutura base desses componentes.
-
-O cabeçalho global deve informar o domínio `tools.jcem.pro` e a licença do projeto como `Mozilla Public License 2.0`, com link para a página oficial do texto integral em `https://www.mozilla.org/MPL/2.0/`.
-
-O rodapé global deve conter disclaimer, versão resumida da licença, nome do autor, isenção de responsabilidade, isenção de garantia e observação explícita de que o software é fornecido "no estado em que se encontra", sem garantias de qualquer natureza, inclusive quanto à conformidade legal, regulatória ou adequação a finalidades específicas.
-
-A barra de ferramentas global deve ser extensível por mecanismos formais de extensão, como slots, hooks ou configuração equivalente. Módulos podem fornecer ações específicas nesses pontos de extensão sem modificar a estrutura base do cabeçalho, da barra ou do rodapé.
-
-Exceções aos componentes globais só podem existir quando previstas explicitamente neste RCF ou no RCF específico aplicável, sem inferência por conveniência local.
-
-Módulos imprimíveis devem ocultar automaticamente cabeçalho, barra de ferramentas, rodapé e demais elementos exclusivamente de interface durante impressão nativa, PDF dedicado e qualquer modo programático equivalente.
-
-### RN009 - Salvamento Automático
-
-Documentos editáveis devem possuir salvamento automático durante a edição quando houver campos de usuário.
-
-A persistência padrão deve ser local ao navegador, usando `localStorage`, sem exigir botão manual de salvar.
-
-Campos sem identificador explícito podem receber identificador automático, desde que esse comportamento preserve compatibilidade com documentos existentes.
-
-### RN010 - Validação e Normalização Reutilizáveis
-
-Validações com uso potencialmente comum devem ficar na camada compartilhada.
-
-O sistema compartilhado deve disponibilizar um catálogo global de validadores e normalizadores, no mínimo para:
-
-- CPF.
-- CNPJ.
-- CEP.
-- Telefone fixo brasileiro.
-- Celular brasileiro.
-- Moeda em BRL.
-- Padrões HTML definidos por `pattern`.
-- Campos obrigatórios.
-
-O uso desses validadores deve ser opt-in por documento e por campo. Cada documento deve poder declarar, para cada campo, se a validação é exigida, opcional, desativada ou substituída por validador próprio.
-
-A configuração por campo deve permitir definir seletor, obrigatoriedade, tipo de validador, normalização, mensagem, `pattern` e transformações simples como maiúsculas.
-
-Mensagens específicas de domínio devem permanecer configuráveis por documento.
-
-### RN011 - Preenchimento por Query String
-
-Qualquer documento deverá poder ser totalmente preenchido por parâmetros recebidos via JSON na query string, codificados em Base64.
-
-Base64 deve ser tratado como mecanismo de ofuscação e transporte, nunca como segurança, autenticação, assinatura ou criptografia.
-
-A camada compartilhada deve oferecer leitura de payload JSON Base64 e aplicação por mapeamento configurado pelo documento.
-
-Aliases legados por parâmetros individuais podem ser preservados no módulo específico do documento.
-
-### RN012 - Compartilhamento de Página ou Modelo Preenchido
-
-Documentos podem disponibilizar ação de compartilhamento na barra de ferramentas.
-
-A ação compartilhada de `share` deve pertencer à camada global e perguntar ao usuário se deseja:
-
-- Compartilhar apenas o link limpo da página, sem query string e sem dados preenchidos.
-- Compartilhar o link da página com dados preenchidos em JSON codificado em Base64 no parâmetro `data`, ou nome equivalente configurado.
-
-URLs compartilhadas com dados em Base64 devem ser tratadas como potencialmente públicas.
-
-A implementação global deve montar a URL, codificar JSON em Base64, copiar o endereço para a área de transferência e tratar falhas de forma recuperável.
-
-Cada documento pode configurar gatilhos e pontos de extensão para complementar o comportamento global, incluindo validação prévia, definição ou extensão do payload, URL canônica, mensagens específicas e ações posteriores ao compartilhamento.
-
-O conteúdo compartilhado, campos incluídos, validações prévias e aliases legados devem ser definidos no RCF específico do documento ou módulo quando forem regras particulares.
-
-### RN013 - Timbre e Imagens Documentais
-
-Documentos podem permitir upload de timbre ou imagem documental.
-
-A infraestrutura compartilhada deve permitir ler arquivo local aceito pelo documento, armazenar Data URL em `localStorage` e restaurar a imagem durante a edição e impressão.
-
-Formatos aceitos, posicionamento e obrigatoriedade são regras específicas de cada documento.
-
-### RN014 - Limpeza de Campos
-
-Documentos editáveis podem oferecer ação para limpar campos de preenchimento do usuário.
-
-A estratégia de limpeza deve ser configurável, permitindo limpar apenas campos automáticos, campos selecionados ou escopos documentais definidos.
-
-### RN015 - Data Gerada no Cliente
-
-Documentos podem preencher data automaticamente no carregamento.
-
-A infraestrutura compartilhada deve fornecer formatação local em português, enquanto o local de exibição e a necessidade da data pertencem ao documento.
-
-### RN016 - Dependências de Terceiros em CDN
-
-Dependências externas carregadas por CDN devem ser explícitas, versionadas e justificadas pela necessidade do documento ou módulo.
-
-Mudanças que introduzam novas dependências externas devem registrar a decisão no RCF apropriado.
-
-### RN017 - Compatibilidade Estática
-
-O projeto deve continuar funcionando como site estático.
-
-Não deve ser exigido servidor de aplicação, etapa de build, backend ou banco de dados para uso dos documentos atuais, salvo decisão arquitetural futura registrada neste RCF.
-
-Páginas publicadas em subdiretórios devem permanecer funcionais quando acessadas com ou sem barra final na URL. Recursos locais referenciados por HTML, como CSS, JavaScript e bundles para download, devem usar caminhos absolutos a partir da raiz do site publicado para não depender da base relativa inferida pelo navegador.
-
-### RN018 - Redirecionamentos Legados
-
-Arquivos legados podem redirecionar para a nova estrutura de diretórios quando necessário para preservar links públicos.
-
-Redirecionamentos específicos devem permanecer simples, estáticos e sem acoplar regras de negócio ao arquivo legado.
-
-### RN019 - Utilitários Não Documentais
-
-Utilitários Web que não sejam documentos imprimíveis devem permanecer isolados das regras de impressão, salvo quando consumirem componentes compartilhados realmente genéricos.
-
-Regras próprias desses utilitários devem ficar em RCF específico quando o módulo evoluir para além de página simples.
-
-### RN020 - TypeScript como Fonte
-
-TypeScript é a linguagem padrão do projeto.
-
-Todo código de aplicação deve ter fonte em `.ts` ou `.tsx`, com JavaScript permitido apenas como artefato compilado, bookmarklet publicado, script de bootstrap de tooling Node.js ou exceção técnica documentada.
-
-O alvo mínimo de compilação é ES2020. Alvos superiores podem ser adotados quando preservarem compatibilidade com GitHub Pages, navegadores suportados e GitHub Actions.
-
-### RN021 - Componentes TSX
-
-`.tsx` é o formato preferencial para componentes de interface reutilizáveis.
-
-Novas interfaces devem privilegiar componentes tipados, reutilizáveis e desacoplados de regras específicas de documento.
-
-### RN022 - Build, CI e Cache Incremental
-
-O projeto deve possuir scripts NPM para desenvolvimento, compilação, build, testes, lint, type-check e validação.
-
-O ciclo local deve oferecer comando de desenvolvimento simples e comando com recarregamento automático. O comando `dev-live` deve servir o cache `site/`, reconstruir fontes de `src/` em modo watch e recarregar o navegador quando artefatos estáticos mudarem.
-
-O build deve reutilizar cache incremental sempre que possível, recompilando e copiando apenas artefatos alterados, sem comprometer consistência de `site/` e `dist/`.
-
-Operações críticas de build devem ser fail-safe: falhas de IO, cache corrompido, lock concorrente, erro de compilação ou inconsistência de tipos devem interromper a publicação antes de gerar saída inconsistente.
-
-O pipeline deve validar, antes de publicar, que nenhum caminho público em `site/` ou `dist/` contenha o segmento `src/`, que cada página funcional existente em `src/` seja materializada diretamente na raiz lógica correspondente do domínio, e que `site/` e `dist/` permaneçam estruturalmente consistentes. Diretórios vazios, rotas antigas e artefatos sem origem pública esperada devem falhar a validação.
-
-O artefato efetivamente enviado ao GitHub Pages deve usar `site/` como raiz publicável. `dist/` é saída local ignorada pelo Git, usada para validação, otimização, comparação e proteção contra regressões sem alterar diretamente o cache publicável já funcional.
-
-Mapeamentos de inclusão de scripts, bookmarklets, arquivos raiz obrigatórios e demais entradas explícitas de build devem ser declarados em `scripts/config.json`. Scripts de build, validação e publicação devem consumir essa configuração compartilhada, evitando caminhos de submódulos duplicados, arbitrários ou travados em código.
-
-Workflows de publicação devem usar versões de ações oficiais compatíveis com o runtime JavaScript vigente do GitHub Actions, sem recorrer a variáveis de escape para runtimes obsoletos como `ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION`.
-
-Workflows de CI devem ter limite máximo de 10 minutos por execução. Caches no GitHub Actions só devem ser usados quando o ganho esperado superar o custo de restauração e gravação para o tamanho real do projeto.
-
-### RN023 - Robustez Permanente
-
-Toda implementação deve ser fortemente tipada, modular, reutilizável, blindada e fail-safe.
-
-Tratamentos preventivos devem cobrir erros de compilação, inconsistências de tipos, falhas de build, problemas de cache, condições de corrida, falhas de IO e estados ausentes no navegador.
-
-### RN024 - Otimização e Saída Dupla de Produção
-
-Toda ferramenta publicada pelo projeto deve possuir dois artefatos gerados automaticamente pelo pipeline de build:
-
-- Saída Web: `index.html` otimizado para hospedagem estática e uso online.
-- Saída Bundle: arquivo ZIP nomeado como `<nome-da-pasta>.bundle.zip`, destinado a uso totalmente offline.
-
-A saída Bundle deve conter internamente um HTML autocontido nomeado como `<nome-da-pasta>.bundle.html`, incorporando todos os recursos necessários ao funcionamento da ferramenta, incluindo HTML, CSS, JavaScript, fontes, imagens, SVGs, JSON, ícones e dependências estáticas aplicáveis.
-
-O Bundle não deve depender de requisições externas para executar a ferramenta. Dependências externas usadas pela versão Web devem possuir cópia local versionada ou mapeamento de build capaz de incorporá-las ao Bundle.
-
-Somente o arquivo compactado deve ser publicado. O HTML autocontido solto não deve existir como artefato público em `site/` nem em `dist/`, para evitar abertura direta pelo navegador no lugar de download.
-
-O Bundle deve ser publicado no mesmo diretório do `index.html` correspondente em `site/`, permitindo download direto a partir da página Web publicada. Seu basename deve permanecer idêntico ao padrão anterior, alterando apenas a extensão pública para `.zip`.
-
-A compactação do Bundle deve usar o maior nível disponível na toolchain padrão do projeto. O formato ZIP com Deflate no nível máximo é a decisão vigente por ser gerável em Node.js sem dependência externa, compatível com GitHub Actions e amplamente suportado pelos usuários; formatos como `.7z` só devem substituir ZIP se puderem oferecer ganho real sem introduzir dependência operacional incompatível com a arquitetura estática e o CI.
-
-Ambas as saídas devem ser produzidas em modo de produção, com minificação, eliminação de código morto, otimização de tamanho e priorização de carregamento rápido.
-
-Transpilação agressiva, minificação e otimização de produção devem ocorrer exclusivamente em `dist/`.
-
-Fora de `dist/`, os artefatos JavaScript públicos gerados no cache `site/` a partir de `src/` devem permanecer adequados a desenvolvimento local, rastreio de erros e depuração, sem minificação agressiva.
-
-O `dist/` deve ser construído a partir do cache `site/`, que por sua vez deve ser gerado exclusivamente a partir de `src/` e arquivos raiz explicitamente permitidos.
-
-O workflow de publicação não deve usar `dist/` como `path` do artefato Pages. Quando artefatos gerados, como bundles ZIP e arquivos raiz obrigatórios, forem necessários para publicação, eles devem existir em `site/` antes do upload do artefato `github-pages`.
-
-O workflow deve produzir exatamente um artefato Pages oficial por execução de publicação, usando `actions/upload-pages-artifact` sobre `site/`. Uploads genéricos ou duplicados do mesmo conteúdo não devem coexistir com o artefato `github-pages`.
-
-O build deve falhar de forma segura quando não conseguir gerar, otimizar, incorporar ou validar qualquer artefato obrigatório.
-
-## Arquitetura
-
-### ARQ001 - Estrutura Oficial
+## 3. Arquitetura de Diretorios
 
 ```text
 /
-├── dist/
-│   └── <artefatos finais otimizados para producao>
-├── site/
-│   └── <cache intermediario reconstruivel a partir de src/>
-├── src/
+├── dist/              # unica saida gerada, raiz publicada e artefato de producao
+├── src/               # unica fonte canonica
 │   ├── assets/
-│   │   ├── css/
-│   │   └── js/
 │   ├── components/
 │   ├── csv-bd/
 │   ├── dizimo/
@@ -311,8 +30,7 @@ O build deve falhar de forma segura quando não conseguir gerar, otimizar, incor
 │   └── oficios/
 ├── tests/
 ├── scripts/
-├── .github/
-│   └── workflows/
+├── .github/workflows/
 ├── AGENTS.md
 ├── CNAME
 ├── LICENSE
@@ -321,180 +39,133 @@ O build deve falhar de forma segura quando não conseguir gerar, otimizar, incor
 └── continue.ia
 ```
 
-`src/` contém exclusivamente o código-fonte do projeto, incluindo `.ts`, `.tsx`, `.html`, `.css`, `.scss` ou Sass quando adotado, RCFs específicos e demais arquivos-fonte necessários ao desenvolvimento. Nenhum artefato gerado deve ser armazenado em `src/`.
+`src/` e a fonte canonica para TypeScript, TSX, HTML, CSS, estilos, RCFs especificos e demais fontes. Nenhum artefato gerado deve ser armazenado em `src/`, e `src/` nunca integra URL publica. A correspondencia publica e `src/<caminho-logico>` -> `dist/<caminho-logico>` -> `https://tools.jcem.pro/<caminho-logico>`.
 
-`src/` nunca integra a URL pública. Sua estrutura lógica deve ser projetada para que `src/<modulo>/...` resulte em `https://tools.jcem.pro/<modulo>/...`, sem prefixo `src/` ou equivalente.
+`dist/` e reconstruivel, ignorado pelo Git, otimizado para producao, raiz unica enviada ao GitHub Pages e unico local de artefatos Web e Bundle. Ele deve conter apenas a arvore publica esperada, arquivos raiz obrigatorios de publicacao, JavaScript compilado, recursos estaticos, `index.html` otimizados e bundles ZIP. Nao deve conter fontes canonicas, caminhos com segmento `src/` ou `dist/`, diretorios vazios, rotas obsoletas, artefatos sem origem publica prevista nem `*.bundle.html` solto.
 
-`site/` é cache de construção e raiz publicável do site no GitHub Pages. Ele pode conter HTML, CSS, JavaScript intermediários gerados, arquivos raiz obrigatórios de publicação e bundles ZIP publicáveis, legíveis para depuração local quando aplicável, mas deve ser tratado como reconstruível, não como fonte canônica. Sua árvore deve espelhar a estrutura pública efetiva do site, preservando apenas artefatos intermediários ou publicáveis necessários ao build incremental e à publicação, sem reproduzir a organização interna do repositório quando ela diferir da URL publicada.
+`scripts/` contem apenas automacao interna de desenvolvimento, build, manutencao, importacao e publicacao; seu conteudo nao integra a publicacao. `scripts/config.json` centraliza entradas TypeScript, bookmarklets, arquivos raiz obrigatorios e saidas publicas, evitando caminhos duplicados ou fixados em scripts.
 
-`dist/` contém exclusivamente artefatos finais locais de build, com compilação completa, otimização máxima para produção, minificação e versões Web e Bundle. Ele é ignorado pelo Git e não deve ser usado como raiz do artefato GitHub Pages enquanto `site/` já representar a estrutura pública validada.
+Nao deve haver sobreposicao funcional entre `src/`, `dist/` e `scripts/`.
 
-`scripts/` contém apenas ferramentas internas de automação, build, manutenção, importação, geração e suporte ao desenvolvimento. Seu conteúdo não integra artefatos publicados.
+## 4. Documentos Imprimiveis
 
-`scripts/config.json` centraliza os mapeamentos explícitos de build, incluindo entradas TypeScript, saídas públicas relativas, bookmarklets e arquivos raiz obrigatórios do artefato publicável. Alterações futuras de caminho lógico de módulos devem ser feitas nessa configuração e nos RCFs específicos correspondentes, mantendo os scripts genéricos.
+Documentos imprimiveis existem para gerar papel ou PDF previsivel. Quando declararem A4, margens, dimensoes, largura util, fontes, tabelas, timbres, campos, rodapes de versao, posicionamento e paginacao devem ser controlados por CSS/configuracao explicita, preferindo `cm` e `pt` quando a medida fisica for relevante.
 
-Não deve haver sobreposição funcional entre `src/`, `site/`, `dist/` e `scripts/`.
+Cada documento deve separar:
 
-### ARQ002 - Organização de Fonte e Componentes
+- **Interface Web:** avisos, cookies, toolbar, controles, mensagens, inputs auxiliares e feedbacks.
+- **Area imprimivel:** conteudo formal que aparece no papel/PDF.
 
-A estrutura física em `src/` deve refletir a organização lógica dos componentes e módulos.
+Elementos de interface devem ser identificaveis por classes/atributos como `.menu`, `.nota`, `.cookie`, `.autosave`, `.jcem-chrome` ou `.no-print`, e ocultos em `@media print`, PDF dedicado e modos programaticos equivalentes. Quando aviso de cookies e toolbar aparecerem juntos, a interface deve informar a URL canonica `https://tools.jcem.pro/<path-do-modelo>` sem `index.html` e orientar a desativar cabecalho/rodape do navegador.
 
-Componentes reutilizáveis devem possuir subdiretórios dedicados quando tiverem arquivos relacionados suficientes para justificar agrupamento, como TSX, estilos, tipos, testes, utilitários específicos e documentação local.
+A responsividade pode melhorar a edicao Web, mas nao pode alterar medidas, margens, proporcoes, alinhamentos, timbre, paginacao ou hierarquia da area imprimivel. Mudancas em CSS, fontes, escalas, placeholders, tabelas, assinatura, toolbar ou PDF exigem revisao contra impressao/PDF.
 
-Estilos devem permanecer segregados em arquivos próprios sempre que isso aumentar coesão, facilitar manutenção ou evitar concentração excessiva de CSS/SCSS genérico.
+Impressao deve funcionar por Ctrl+P ou equivalente e por botao dedicado quando existente. A acao dedicada deve preparar o documento, ocultar placeholders/interface, aplicar configuracao de pagina e restaurar o estado visual.
 
-Arquivos relacionados ao mesmo componente ou módulo devem ficar próximos sempre que isso melhorar rastreabilidade, reutilização, escalabilidade e localização rápida do código.
+## 5. Infraestrutura Compartilhada
 
-### ARQ003 - Camada Compartilhada
+Recursos reutilizaveis pertencem a `src/assets/` ou `src/components/`, conforme a natureza do recurso. Documentos devem manter localmente apenas inicializacao, configuracao, mapeamentos, mensagens e estilos exclusivos.
 
-A camada `src/assets/` concentra infraestrutura reutilizável:
+Recursos compartilhados obrigatorios quando aplicaveis:
 
-- `src/assets/js/documentos.ts`: utilitários e serviços compartilhados para documentos.
-- `src/assets/js/tabular.ts`: utilitários compartilhados para leitura, escrita, preservação e transformação determinística de dados tabulares em ferramentas não documentais.
-- `src/assets/css/documentos.css`: estilos documentais e componentes visuais reutilizáveis.
+- cabecalho institucional, toolbar extensivel e rodape institucional;
+- impressao/PDF, autosave, query string JSON Base64 e compartilhamento;
+- estilos documentais comuns, formularios, datas, clipboard, timbre/imagem documental;
+- validadores, normalizadores, mensagens e estados de erro reutilizaveis;
+- nucleos reutilizaveis de utilitarios nao documentais, como transformacao tabular.
 
-Documentos devem consumir essa camada e manter localmente apenas inicialização, configuração, mapeamentos e estilos exclusivos.
+Cabecalho, toolbar e rodape globais sao obrigatorios para modulos publicados, exceto `dizimo` por compatibilidade visual e historica. Modulos nao podem duplicar cabecalhos/rodapes nem alterar a estrutura base; excecoes exigem previsao expressa neste RCF ou no RCF especifico.
 
-O cache `site/assets/` é gerado a partir de `src/assets/` e não deve ser editado manualmente.
+O cabecalho global deve informar `tools.jcem.pro` e a licenca `Mozilla Public License 2.0`, com link para `https://www.mozilla.org/MPL/2.0/`. O rodape deve conter disclaimer, versao resumida da licenca, autor, isencao de responsabilidade, isencao de garantia e aviso de fornecimento "no estado em que se encontra", sem garantias de qualquer natureza, inclusive conformidade legal, regulatoria ou adequacao a finalidade especifica.
 
-O diretório `dist/` é a saída de produção otimizada e autocontida quando aplicável. Ele deve ser gerado pelo pipeline e não é fonte canônica.
-
-### ARQ004 - Separação Recomendada para Documentos
-
-Documentos imprimíveis devem seguir a seguinte separação lógica:
-
-- Núcleo de documento: HTML com conteúdo formal e marcação mínima.
-- Área imprimível: contêiner exclusivo para conteúdo formal.
-- Toolbar: componente reutilizável externo à regra do documento.
-- Configuração local: metadados, ações, mensagens e mapeamentos.
-- Persistência: serviço compartilhado de autosave.
-- Parametrização: serviço compartilhado de query string e JSON Base64.
-- Impressão/PDF: serviço compartilhado.
-- Validação: utilitários compartilhados com configuração local.
-- RCF específico: contrato do documento ou módulo.
-
-### ARQ005 - Configuração por Escopo
-
-A configuração de ações deve respeitar precedência:
+A toolbar deve ser componente reutilizavel, configuravel e extensivel por slots, hooks ou configuracao equivalente, com precedencia:
 
 ```text
 global < categoria < tipo documental < documento individual
 ```
 
-Uma ação mais específica pode sobrescrever, ocultar ou complementar uma ação mais geral.
+Acoes podem ser habilitadas, ocultadas, ordenadas, parametrizadas, sobrescritas ou complementadas sem duplicar logica. Quando existir `<nome-da-pasta>.bundle.zip` no mesmo caminho publicado do `index.html`, a toolbar pode oferecer download com icone/simbolo comum e texto acessivel.
 
-### ARQ006 - Persistência Local
+## 6. Dados, Validacao e Persistencia
 
-A persistência deve permanecer local ao navegador por padrão.
+Documentos editaveis com campos de usuario devem salvar automaticamente em `localStorage`, sem botao manual obrigatorio. Chaves devem ser estaveis e, em evolucoes, preferencialmente namespaced por categoria/documento. Campos sem identificador podem receber `id` automatico para preservar compatibilidade.
 
-As chaves de `localStorage` devem ser estáveis e, em evolução futura, preferencialmente namespaced por categoria/documento para evitar colisões entre modelos.
+O catalogo global de validadores/normalizadores deve incluir, no minimo: CPF, CNPJ, CEP, telefone fixo brasileiro, celular brasileiro, moeda BRL, `pattern` HTML e campos obrigatorios. Uso e severidade sao opt-in por documento/campo, permitindo exigir, tornar opcional, desativar ou substituir validacao. A configuracao por campo deve definir seletor, obrigatoriedade, tipo, normalizacao, mensagem, `pattern` e transformacoes simples como maiusculas. Mensagens de dominio ficam no modulo.
 
-### ARQ007 - Parametrização JSON Base64
+Todo documento deve aceitar preenchimento integral por um parametro contendo JSON codificado em Base64, por exemplo `?data=BASE64(JSON)`. Base64 e apenas ofuscacao/transporte, nunca seguranca, autenticacao, assinatura ou criptografia. A camada compartilhada deve ler, validar estrutura, aplicar mapeamento, ignorar chaves desconhecidas sem falhar e usar os mesmos normalizadores da edicao manual. Aliases legados pertencem ao RCF especifico.
 
-A arquitetura de preenchimento parametrizado deve aceitar um parâmetro único contendo JSON codificado em Base64, por exemplo:
+A acao global `share` deve perguntar se o usuario deseja copiar link limpo ou preenchido. No modo preenchido, deve montar URL canonica, gerar JSON Base64, copiar para a area de transferencia, tratar falhas de forma recuperavel e permitir hooks locais para validacao previa, payload, mensagens e pos-acoes. URLs com dados em Base64 sao potencialmente publicas.
 
-```text
-?data=BASE64(JSON)
-```
+Documentos podem oferecer limpeza configuravel de campos, data automatica em portugues, upload de timbre/imagem e restauracao por `localStorage`. Formatos, obrigatoriedade, posicionamento e escopos sao regras especificas.
 
-O JSON deve mapear campos por identificador estável, nome lógico ou alias documentado. A rotina deve validar estrutura, ignorar chaves desconhecidas sem falhar e aplicar os mesmos normalizadores usados na edição manual.
+## 7. Compatibilidade, Dependencias e Utilitarios
 
-### ARQ008 - Fidelidade de Impressão Permanente
+O projeto permanece estatico: uso das ferramentas atuais nao pode exigir backend, servidor de aplicacao, banco de dados ou etapa de build pelo usuario final. Paginas publicadas em subdiretorios devem funcionar com ou sem barra final; recursos locais devem usar caminhos absolutos a partir da raiz publicada.
 
-Toda mudança em documentos imprimíveis deve considerar fidelidade de impressão como requisito funcional, não como detalhe visual.
+Arquivos legados podem redirecionar para nova estrutura quando necessario para preservar links publicos, sem acoplar regra de negocio ao redirecionamento.
 
-Mudanças em CSS, fontes, escalas, margens, tabelas, inputs, placeholders, timbre, assinatura, toolbar ou geração de PDF devem ser revisadas contra impressão/PDF.
+Utilitarios nao documentais ficam isolados das regras de impressao, salvo consumo de componentes realmente genericos. Regras proprias devem ficar em RCF especifico quando o modulo deixar de ser pagina simples.
 
-### ARQ009 - Interface Não Imprimível
+Dependencias externas por CDN devem ser explicitas, versionadas, justificadas e registradas no RCF apropriado. Dependencias necessarias ao funcionamento offline devem possuir copia local versionada ou mapeamento de build que as incorpore ao Bundle.
 
-Interface Web deve usar classes ou atributos claros para indicar elementos não imprimíveis.
+## 8. TypeScript e Componentes
 
-O padrão compartilhado deve suportar classes como `.menu`, `.nota`, `.cookie`, `.autosave`, `.jcem-chrome` e `.no-print`, ocultando-as em impressão e no modo programático de PDF.
+TypeScript e a fonte padrao do codigo de aplicacao. JavaScript e permitido apenas como artefato compilado, bookmarklet publicado, bootstrap Node.js de tooling ou excecao tecnica documentada. O alvo minimo e ES2020, podendo subir se preservar GitHub Pages, navegadores suportados e GitHub Actions.
 
-### ARQ010 - Decisões Arquiteturais
+`.tsx` e preferencial para componentes reutilizaveis de interface. Novas interfaces devem privilegiar componentes tipados, desacoplados e reutilizaveis.
 
-Todas as decisões arquiteturais devem ser registradas no RCF apropriado.
+## 9. Build, Bundle, CI e Publicacao
 
-Decisões globais registradas:
+O projeto deve possuir scripts NPM para desenvolvimento, recarregamento automatico, compilacao, build, bundle, testes, lint, type-check e validacao. `dev-live` deve servir `dist/`, reconstruir `src/` em watch e recarregar quando artefatos publicos mudarem.
 
-- O projeto permanece estático, sem backend obrigatório.
-- O RCF global contém apenas regras transversais; documentos especializados possuem RCF próprio.
-- A raiz do repositório deve concentrar apenas arquivos esperados de configuração, documentação e metadados, como `AGENTS.md`, `CNAME`, `LICENSE`, `README.md`, `RCF.md`, `package.json`, `tsconfig.json`, `.gitignore` e `.github/`.
-- Todo conteúdo fonte real do site deve ficar em `src/`.
-- `site/` é cache intermediário reconstruível e não deve conter fonte canônica.
-- Infraestrutura com potencial de reuso fica em `src/assets/` ou `src/components/`, conforme a natureza do recurso.
-- Cabeçalho, barra de ferramentas e rodapé institucionais pertencem à infraestrutura compartilhada em `src/assets/` e devem ser reutilizados por todos os módulos publicados, exceto `dizimo`.
-- Núcleos reutilizáveis de ferramentas não documentais, como transformação tabular client-side, pertencem a `src/assets/js/` quando puderem servir a múltiplos módulos.
-- Documentos consomem APIs compartilhadas e mantêm localmente apenas configuração e regras específicas.
-- Validações comuns pertencem ao catálogo global, mas sua aplicação é declarada por campo em cada documento.
-- A prioridade permanente dos documentos imprimíveis é impressão A4 fiel quando esse formato for declarado.
-- A responsividade deve beneficiar a interface Web sem modificar a precisão da área imprimível.
-- O preenchimento por JSON Base64 deve ser universal para documentos, tratando Base64 como ofuscação.
-- A ação global de share deve perguntar se o link será limpo ou preenchido, centralizando URL, Base64, clipboard e hooks de extensão por documento.
-- Dependências externas devem ser explícitas, versionadas e registradas quando introduzidas.
-- TypeScript passa a ser a fonte canônica do código de aplicação.
-- `.tsx` passa a ser o padrão para componentes de interface reutilizáveis.
-- JavaScript em `site/` é artefato compilado reconstruível para preservar compatibilidade retroativa com GitHub Pages e depuração local.
-- JavaScript gerado em `site/` deve permanecer legível para desenvolvimento, suporte e rastreio de problemas.
-- Scripts Node.js de build permanecem em `.mjs` dentro de `scripts/` por serem bootstrap executável antes da compilação TypeScript.
-- O build incremental usa manifestos em `.cache/build/` e locks de concorrência para proteger `site/` e `dist/`.
-- Entradas explícitas de build devem ser configuradas em `scripts/config.json` e consumidas pelos scripts, sem duplicação manual de caminhos de submódulos em `compile`, `dist` ou validação.
-- O comando `dev-live` serve o cache `site/` com recarregamento automático para desenvolvimento local.
-- Cada ferramenta com `index.html` deve gerar também um Bundle offline compactado em ZIP, nomeado pelo diretório da ferramenta dentro de `site/` e espelhado em `dist/`, contendo internamente o HTML autocontido equivalente.
-- A otimização de HTML, CSS, JavaScript e JSON textuais deve ocorrer na construção de `dist/`, sem alterar a fonte canônica em `src/` nem os artefatos intermediários legíveis em `site/`.
-- A publicação estática deve usar `site/`, preservando `dist/` como saída local ignorada para validação e otimização.
-- O workflow de publicação deve enviar `site/` ao GitHub Pages em push na branch de publicação configurada, mantendo pull requests restritos a validação, testes e geração de artefatos.
-- O artefato de publicação deve incluir `CNAME` e `.nojekyll`, publicar somente a raiz lógica de `site/` e falhar se `src/` aparecer como diretório, segmento de caminho ou referência pública em `site/` ou `dist/`.
-- `site/` e `dist/` devem ser podados pelo build para remover arquivos e diretórios obsoletos; a validação deve falhar diante de qualquer artefato ou diretório vazio que não corresponda à árvore pública esperada.
-- As ações oficiais de checkout, setup de Node, upload de artefatos, configuração de Pages, upload do artefato Pages e deploy Pages devem permanecer em versões compatíveis com Node 24 ou runtime posterior vigente no GitHub Actions.
-- Qualquer alteração futura no pipeline deve preservar a correspondência `src/<caminho-logico>` -> `site/<caminho-logico>` -> `https://tools.jcem.pro/<caminho-logico>`, mantendo `dist/<caminho-logico>` apenas como espelho local otimizado quando aplicável.
-- Recursos externos necessários ao funcionamento offline devem ser resolvidos por dependências locais versionadas e incorporados pelo pipeline de Bundle.
-- URLs internas de assets e bundles em páginas publicadas devem ser estáveis com ou sem barra final, preferencialmente root-relative sob `https://tools.jcem.pro/`.
-- O pipeline não deve publicar arquivos `*.bundle.html` soltos; a validação deve exigir `*.bundle.zip` em `site/` e bloquear HTML de bundle fora do arquivo compactado.
-- O GitHub Actions deve evitar cache de build quando ele tornar o workflow mais lento que a recomputação e deve publicar artefatos já contendo saídas Web e Bundle.
+O build deve ser incremental quando possivel, mas fail-safe: erro de IO, cache corrompido, lock concorrente, falha de compilacao, inconsistencia de tipos ou validacao deve impedir publicacao. A validacao deve garantir que cada pagina funcional de `src/` esteja materializada na raiz logica correspondente em `dist/`, que nao haja segmentos publicos `src/` ou `dist/`, que arquivos raiz obrigatorios existam, que artefatos obsoletos sejam podados e que a arvore final contenha somente arquivos esperados.
 
-## Requisitos Não Funcionais
+Toda ferramenta com `index.html` deve gerar automaticamente:
 
-### RNF001 - Plataforma
+- **Saida Web:** `index.html` otimizado para hospedagem estatica online.
+- **Saida Bundle:** ZIP `<nome-da-pasta>.bundle.zip` no mesmo diretorio, contendo internamente `<nome-da-pasta>.bundle.html` autocontido.
 
-Compatível com navegadores modernos em desktop e mobile, preservando impressão confiável especialmente em navegadores Chromium quando houver geração por PDF no cliente.
+O Bundle deve incorporar todos os recursos necessarios ao funcionamento offline, incluindo HTML, CSS, JavaScript, fontes, imagens, SVGs, JSON, icones e dependencias estaticas aplicaveis. Ele nao pode depender de requisicoes externas. Apenas o ZIP deve ser publicado; HTML autocontido solto e proibido. ZIP com Deflate no maior nivel disponivel e o formato vigente por ser compativel com Node.js, GitHub Actions e usuarios; outro formato exige ganho real sem dependencia operacional incompativel.
 
-### RNF002 - Operação Estática
+Saidas Web e Bundle devem ser produzidas em modo de producao, com minificacao, eliminacao de codigo morto, otimizacao de tamanho e carregamento rapido, sem alterar `src/`. Falha ao gerar, otimizar, incorporar ou validar qualquer artefato obrigatorio deve interromper o build.
 
-O projeto deve funcionar por hospedagem estática e acesso direto às páginas, respeitando limitações normais de APIs do navegador.
+O workflow de publicacao deve produzir exatamente um artefato Pages oficial por execucao, usando `actions/upload-pages-artifact` sobre `dist/`, incluindo `CNAME` e `.nojekyll`. Uploads duplicados do mesmo conteudo nao devem coexistir. Pull requests devem validar, testar e gerar artefatos; deploy ocorre apenas no push da branch configurada.
 
-### RNF003 - Usabilidade
+Workflows devem usar acoes oficiais compativeis com o runtime JavaScript vigente do GitHub Actions, sem variaveis de escape para runtimes obsoletos. CI deve ter limite maximo de 10 minutos; caches so devem ser usados quando o ganho esperado superar restauracao e gravacao para o tamanho real do projeto.
 
-A edição Web deve ser simples, direta e suficiente para preenchimento rápido antes da impressão.
+## 10. Robustez e Qualidade
 
-Alertas, notas e ferramentas devem ajudar o usuário sem aparecer no documento impresso.
+Implementacoes devem ser fortemente tipadas, modulares, reutilizaveis, previsiveis, deterministicas, rastreaveis e fail-safe. Devem tratar preventivamente erros de compilacao, tipos, build, cache, IO, estados ausentes no navegador, condicoes de corrida, dados invalidos e falhas recuperaveis sem corrupcao silenciosa.
 
-### RNF004 - Manutenibilidade
+Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplicada entre documentos e candidata a compartilhamento. Refatoracoes necessarias devem preservar comportamento antes de acrescentar capacidades.
 
-Novas regras de negócio devem ser documentadas no RCF apropriado no mesmo ciclo da alteração.
+## 11. Requisitos Nao Funcionais
 
-Lógica duplicada entre documentos deve ser candidata a componente reutilizável.
+- **Plataforma:** navegadores modernos desktop/mobile, com impressao confiavel, especialmente Chromium quando houver PDF client-side.
+- **Operacao estatica:** hospedagem estatica e acesso direto as paginas, respeitando limites normais de APIs do navegador.
+- **Usabilidade:** edicao simples e rapida; alertas, notas e ferramentas auxiliam sem aparecer no impresso.
+- **Privacidade:** dados preenchidos ficam no navegador por padrao; URLs Base64 sao publicas em potencial.
+- **Compatibilidade visual:** fontes, tamanhos, espacamentos e unidades devem favorecer previsibilidade em PDF/papel.
+- **Toolchain:** tecnologias maduras, mantidas e compativeis com GitHub Actions/GitHub Pages; type-check, lint, testes e build executaveis via NPM em Linux CI e ambiente local.
 
-### RNF005 - Privacidade
+## 12. Decisoes Arquiteturais Vigentes
 
-Dados preenchidos devem permanecer no navegador do usuário por padrão.
-
-URLs compartilhadas com dados em Base64 devem ser tratadas como potencialmente públicas.
-
-### RNF006 - Compatibilidade Visual
-
-Fontes, tamanhos, espaçamentos e unidades devem favorecer previsibilidade no PDF e no papel.
-
-Unidades físicas como `cm` e `pt` devem ser preferidas para a área imprimível quando a medida física for relevante.
-
-### RNF007 - Evolução Controlada
-
-Alterações devem preservar arquitetura existente e evitar reestruturações amplas sem necessidade.
-
-Quando uma refatoração for necessária, ela deve manter comportamento atual antes de acrescentar novas capacidades.
-
-### RNF008 - Toolchain
-
-A toolchain deve usar tecnologias maduras, amplamente mantidas e compatíveis com GitHub Actions e GitHub Pages.
-
-Type-check, lint, testes e build devem ser executáveis por NPM em ambiente Linux de CI e em ambiente local.
+- O projeto permanece estatico, sem backend obrigatorio.
+- `src/` e a unica fonte canonica; `dist/` e a unica saida gerada, publicada e produtiva.
+- A raiz do repositorio concentra apenas configuracao, documentacao e metadados esperados.
+- Infraestrutura reutilizavel fica em `src/assets/` ou `src/components/`.
+- Documentos consomem APIs compartilhadas e mantem localmente apenas configuracao e regras especificas.
+- Validacoes comuns pertencem ao catalogo global; aplicacao e declarada por campo.
+- Impressao A4 fiel e requisito funcional permanente quando o formato for declarado.
+- Responsividade nao modifica a precisao da area imprimivel.
+- JSON Base64 e universal para documentos e deve ser tratado como ofuscacao.
+- A acao global de compartilhamento centraliza URL, Base64, clipboard e hooks.
+- Dependencias externas sao versionadas, justificadas e registradas.
+- TypeScript e fonte canonica de aplicacao; TSX e preferencial para componentes reutilizaveis.
+- Scripts Node.js em `.mjs` dentro de `scripts/` sao bootstrap executavel da toolchain.
+- Build incremental usa manifestos/locks em `.cache/build/` quando util e protege `dist/`.
+- Entradas de build ficam em `scripts/config.json`.
+- Cada ferramenta com `index.html` gera ZIP offline no mesmo caminho publico.
+- Publicacao estatica usa `dist/` como raiz unica do Pages.
+- A validacao bloqueia `src/` ou `dist/` como segmento/referencia publica, arquivos obsoletos, diretorios vazios e `*.bundle.html` solto.
+- URLs internas de assets e bundles devem ser estaveis com ou sem barra final, preferencialmente root-relative.

@@ -1,405 +1,109 @@
-# RCF Subordinado — Conversor Universal de Modelos de Dados CSV
+# RCF - Conversor Universal de Modelos CSV
 
-## Objetivo
+## 1. Objetivo e Escopo
 
-Desenvolver um subprojeto subordinado ao RCF principal destinado à conversão bidirecional entre modelos tabulares, tendo inicialmente o formato CSV como origem e destino, permanecendo preparado para suportar futuramente outros formatos de armazenamento (JSON, SQLite, IndexedDB, bancos remotos, entre outros), sem necessidade de alterações no núcleo da aplicação.
+Ferramenta subordinada ao RCF global para conversao deterministica e bidirecional entre modelos tabulares, inicialmente CSV, preparada para futuros adaptadores como JSON, SQLite, IndexedDB ou bancos remotos sem alterar o nucleo.
 
-Este subprojeto constitui exclusivamente uma ferramenta de transformação de dados, não possuindo finalidade de impressão ou geração documental.
+O modulo e utilitario client-side, estatico, offline, sem finalidade documental, impressao A4 ou PDF. Deve consumir o layout institucional global, mas suas regras sao de transformacao de dados.
 
-Toda sua implementação deverá obedecer integralmente às diretrizes do RCF principal, complementadas pelas normas específicas deste documento.
+## 2. Principios Obrigatorios
 
----
+- execucao integral no navegador, sem servidor obrigatorio;
+- nucleo desacoplado de formato de armazenamento;
+- modelo interno canonico usado entre importacao e exportacao;
+- determinismo absoluto, rastreabilidade completa e ausencia de descarte silencioso;
+- compatibilidade retroativa/futura, baixo acoplamento, alta coesao e extensibilidade;
+- codificacao preventiva contra falhas, corrupcao, inconsistencias, duplicidade e expansao estrutural.
 
-## Requisitos Gerais
+## 3. Entrada, Saida e CSV
 
-- execução integral client-side, diretamente no navegador;
-- nenhuma dependência obrigatória de servidor;
-- funcionamento offline;
-- arquitetura desacoplada;
-- núcleo independente do formato de armazenamento;
-- determinismo absoluto;
-- rastreabilidade completa;
-- reutilização máxima;
-- compatibilidade com o layout oficial;
-- compatibilidade retroativa e futura;
-- codificação preventiva contra falhas, corrupção de dados, inconsistências e expansão futura.
+A importacao deve aceitar CSV de RFC 4180, Excel, LibreOffice, Google Sheets e arquivos parcialmente inconsistentes quando recuperaveis. Deve detectar automaticamente UTF-8, UTF-8 com BOM, ANSI e demais codificacoes reconheciveis.
 
----
+O parser deve detectar separador consistente, incluindo virgula, ponto e virgula, TAB, pipe e dois pontos, e suportar aspas simples/duplas, campos com ou sem aspas, separadores protegidos, quebras de linha internas, numeros textuais ou numericos, campos vazios e espacos opcionais conforme o dialeto.
 
-## Arquitetura
+Exportacao textual deve ser UTF-8 com BOM.
 
-A implementação deverá possuir um modelo interno canônico, independente dos formatos de entrada e saída.
+## 4. Colunas e Preservacao
 
-Toda importação deverá converter inicialmente para esse modelo interno.
+Nomes de colunas sao case-insensitive e podem possuir aliases configuraveis. Colunas multiplas indexadas devem aceitar forma com espaco e compacta, como `Fone 2`/`Nome 2` e `Fone2`/`Nome2`, com mesma semantica.
 
-Toda exportação deverá ser produzida exclusivamente a partir desse modelo.
+Colunas desconhecidas nunca devem ser descartadas: entram no modelo interno e sao preservadas nas conversoes. A coluna local `id` e identificador operacional da origem, nao dado de dominio; deve ser ignorada por padrao e preservada apenas quando o usuario a marcar expressamente como identificador no conversor.
 
-Novos formatos deverão ser adicionados mediante adaptadores independentes, sem modificar o núcleo do conversor.
+## 5. Campo Fone
 
----
+`Fone`, em qualquer modelo, representa exclusivamente o identificador numerico do telefone. Antes de indexar, comparar, agregar, reconstruir, serializar ou persistir, deve conter somente digitos. O nucleo deve remover parenteses, espacos, hifens, `+`, separadores e equivalentes. Formatacao amigavel pertence apenas a apresentacao e nao pode ser gravada no CSV nem usada como chave logica.
 
-## Compatibilidade de Entrada
+## 6. Modelos
 
-A importação deverá aceitar arquivos CSV produzidos pelos principais softwares e implementações existentes, incluindo, entre outros:
+### Modelo 1 - Cliente
 
-- RFC 4180;
-- Microsoft Excel;
-- LibreOffice;
-- Google Sheets;
-- arquivos parcialmente inconsistentes, desde que recuperáveis.
+Cada linha representa um cliente. O identificador primario pode ser `MCI`, `CID` ou `MGI`, com prioridade/equivalencia configuraveis. A linha pode conter qualquer quantidade de pares correlacionados:
 
-Deverá suportar automaticamente:
-
-- UTF-8;
-- UTF-8 com BOM;
-- ANSI;
-- demais codificações reconhecíveis.
-
-A detecção deverá ocorrer automaticamente.
-
-Sempre que possível, a codificação original deverá ser identificada sem intervenção do usuário.
-
----
-
-## Compatibilidade de Saída
-
-Sempre que o destino for um arquivo textual (CSV ou equivalente), a exportação deverá ocorrer obrigatoriamente em UTF-8 com BOM.
-
----
-
-## Parser CSV
-
-O parser deverá aceitar automaticamente:
-
-- vírgula;
-- ponto e vírgula;
-- TAB;
-- pipe;
-- dois pontos;
-- qualquer separador consistente detectável.
-
-Também deverá suportar corretamente:
-
-- campos entre aspas;
-- campos sem aspas;
-- aspas simples;
-- aspas duplas;
-- separadores internos protegidos;
-- quebras de linha internas;
-- números entre aspas;
-- números sem aspas;
-- campos vazios;
-- espaços opcionais conforme o dialeto utilizado.
-
----
-
-## Tratamento de Colunas
-
-Os nomes das colunas deverão ser tratados de forma case-insensitive.
-
-O sistema deverá permitir aliases configuráveis para futuras nomenclaturas equivalentes.
-
-Colunas múltiplas indexadas deverão aceitar, no mínimo, a forma com espaço antes do índice e a forma compacta sem espaço, como `Fone 2`/`Nome 2` e `Fone2`/`Nome2`, tratando-as como semanticamente equivalentes.
-
-Colunas desconhecidas jamais deverão ser descartadas.
-
-Toda coluna desconhecida deverá ser automaticamente incorporada ao modelo interno e preservada durante todas as conversões.
-
-A coluna local `id`, quando presente, deverá ser tratada como identificador operacional da origem e não como dado de domínio. Ela deverá ser ignorada e não preservada nas conversões, exceto quando o usuário a marcar expressamente no conversor como identificador a ser usado e preservado.
-
-## Normalização do Campo Fone
-
-O campo Fone, em qualquer modelo, representa exclusivamente o identificador numérico do telefone.
-
-Antes de qualquer indexação, comparação, agregação, reconstrução, serialização ou persistência, o valor deverá ser normalizado para conter apenas dígitos.
-
-Caracteres de apresentação, como parênteses, espaços, hífens, sinal de mais, separadores e equivalentes, deverão ser removidos pelo núcleo de transformação.
-
-Qualquer formatação amigável de telefone pertence exclusivamente à camada de apresentação e não poderá ser gravada no CSV exportado nem usada como chave lógica.
-
----
-
-# Modelo 1
-
-Cada linha representa um cliente.
-
-O identificador primário poderá ser:
-
-- MCI;
-- CID;
-- MGI;
-
-A prioridade e equivalência entre esses identificadores deverão ser configuráveis conforme definido pelo RCF principal.
-
-O modelo poderá conter:
-
-Fone
-
-Fone 2
-
+```text
+Fone / Nome
+Fone 2 / Nome 2
 ...
+Fone n / Nome n
+```
 
-Fone n
+Cada `Nome n` descreve exclusivamente o `Fone n` correspondente. Nao ha limite estrutural para `n`. Outras colunas sao permitidas.
 
-bem como seus respectivos:
+### Modelo 2 - Telefone
 
-Nome
+Cada linha representa exatamente um telefone. `Fone` normalizado e o unico indexador e a unica chave logica. `Nome` e o nome canonico consolidado daquele telefone e nao compoe chave.
 
-Nome 2
+O Modelo 2 deve conter no maximo um par `Fone`/`Nome` por linha e nunca pode criar varias linhas para o mesmo `Fone` por variacao de `Nome`. Colunas multiplas nele sao permitidas apenas para associacoes de clientes ou atributos equivalentes, por exemplo:
 
-...
-
-Nome n
-
-Cada Nome representa exclusivamente o telefone correspondente.
-
-O modelo poderá conter qualquer quantidade de pares Nome/Fone.
-
-Não deverá existir limitação estrutural para n.
-
-Também poderá conter quaisquer outras colunas adicionais.
-
----
-
-# Modelo 2
-
-Cada linha representa um telefone.
-
-O telefone torna-se a entidade principal.
-
-O campo Fone normalizado é o único indexador e a única chave lógica do registro.
-
-O campo Nome representa o nome canônico consolidado para o telefone naquela linha e não compõe chave lógica.
-
-O Modelo 2 não poderá conter múltiplos pares Fone/Nome na mesma linha nem múltiplas linhas para o mesmo Fone normalizado apenas por variação de Nome.
-
-Deverá conter:
-
-Fone
-
-Nome
-
+```text
 MCI
-
 MCI 2
-
 ...
-
 MCI n
+```
 
-bem como futuras colunas múltiplas equivalentes.
+`Fone 2`, `Nome 2` ou equivalentes em entrada declarada/inferida como Modelo 2 devem ser canonicalizados em registros independentes, consolidados por `Fone` normalizado antes de conversao, serializacao ou persistencia. Outras colunas adicionais devem ser preservadas.
 
-Colunas múltiplas no Modelo 2 são permitidas apenas para associações de clientes ou atributos equivalentes, nunca para novos telefones ou novos pares Fone/Nome.
+## 7. Conversoes
 
-Outras colunas adicionais deverão ser preservadas automaticamente.
+### Modelo 1 -> Modelo 2
 
-Caso uma entrada declarada como Modelo 2 contenha colunas como Fone 2, Nome 2 ou equivalentes, a importação deverá canonicalizar esses telefones em registros independentes, consolidando por Fone normalizado antes de converter, serializar ou persistir a saída.
+Cada par `Fone`/`Nome` alimenta o registro identificado pelo `Fone` normalizado. Ocorrencias do mesmo telefone devem gerar um unico registro, agregando clientes associados sem duplicidade.
 
----
+Variacoes de nome do mesmo telefone sao problema de consolidacao de dados, nao chave composta nem registros independentes. Exceto `Nome`, atributos adicionais pertencem conceitualmente ao cliente; quando replicados para acompanhar telefones, isso serve somente para preservar informacao e permitir reconstrucao futura, sem alterar sua semantica.
 
-## Conversão Modelo 1 → Modelo 2
+Se um telefone estiver ligado a varios clientes, todas as associacoes devem ser preservadas por colunas indexadas (`MCI`, `MCI 2`, ...), aplicando o mesmo principio a futuras colunas multiocorrencia. Colunas replicadas devem identificar explicitamente a ocorrencia para eliminar ambiguidade e permitir reconstrucao exata.
 
-Cada par Nome/Fone deverá alimentar o registro individual identificado pelo Fone normalizado.
+### Modelo 2 -> Modelo 1
 
-Ocorrências com o mesmo Fone normalizado deverão ser consolidadas em um único registro do Modelo 2, agregando os clientes associados sem duplicidade.
+Registros do mesmo cliente devem ser reconstruidos em uma unica linha com pares `Fone`/`Nome`, `Fone 2`/`Nome 2`, ..., de forma totalmente deterministica e sem perda de associacoes.
 
-Variações de Nome para o mesmo Fone deverão ser tratadas como problema de consolidação de dados, não como registros independentes nem como chave composta.
+## 8. Cardinalidade e Integridade
 
-Os atributos pertencentes ao cliente deverão acompanhar o telefone exclusivamente para preservação da informação e reconstrução futura.
+O modelo deve suportar muitos-para-muitos: um cliente pode possuir varios telefones e um telefone pode estar associado a varios clientes. Nenhuma associacao, coluna adicional, valor desconhecido, relacionamento ou informacao recuperavel pode ser perdida.
 
-Essa replicação não altera sua semântica lógica.
+## 9. Consolidacao de Nomes
 
-Continuam sendo atributos pertencentes ao cliente.
+Quando o mesmo `Fone` surgir com nomes diferentes, o sistema deve considerar variacoes possivelmente legitimas, como erro de digitacao, abreviacao, pronome de tratamento, diferenca ortografica ou nome incompleto.
 
-Caso um mesmo telefone esteja associado a vários clientes, todos deverão ser preservados.
+A consolidacao automatica deve usar criterios deterministiscos. Se nao houver confianca suficiente, a interface deve solicitar decisao manual, preservar todas as alternativas, exigir confirmacao explicita e aplicar a escolha de forma consistente na operacao. A exportacao final permanece pendente enquanto nao houver consolidacao confiavel ou confirmada.
 
-Para isso deverão existir:
+## 10. Inferencia de Direcao
 
-MCI
+O conversor deve inferir automaticamente o modelo da origem pela estrutura das colunas. Como ha apenas dois modelos vigentes, o destino deve ser sempre o outro modelo; origem e destino iguais sao proibidos pela interface e pelo nucleo.
 
-MCI 2
+A inferencia deve ocorrer tambem antes da conversao: ao selecionar arquivo e ao inserir, colar ou digitar CSV valido no campo de texto. Essa pre-inferencia deve ser assincrona, cancelavel e limitada ao necessario para reconhecer a estrutura, evitando travamento em digitacao, colagem ou arquivos grandes. A conversao final deve repetir a inferencia sobre os dados efetivamente processados.
 
-...
+## 11. Erros e Logs
 
-MCI n
+Inconsistencias recuperaveis devem ser corrigidas automaticamente; quando impossivel, o usuario deve decidir. Nada pode ser descartado silenciosamente e toda inconsistencia deve permanecer rastreavel.
 
-O mesmo princípio deverá aplicar-se automaticamente a quaisquer futuras colunas que admitam múltiplas ocorrências.
+Logs da interface devem ser sucintos e continuamente atualizados, informando inicio, etapa, progresso, avisos, inconsistencias, decisoes pendentes, conclusao e falhas sem verbosidade excessiva.
 
----
+## 12. Extensibilidade
 
-## Conversão Modelo 2 → Modelo 1
+Novos modelos, formatos, adaptadores, transformacoes, validadores e normalizadores devem ser adicionaveis sem alterar o nucleo. A implementacao nao deve assumir conhecimento fixo alem das regras deste RCF.
 
-Todos os registros pertencentes ao mesmo cliente deverão ser reconstruídos em uma única linha.
-
-Os telefones deverão ser reorganizados como:
-
-Fone
-
-Nome
-
-Fone 2
-
-Nome 2
-
-...
-
-Fone n
-
-Nome n
-
-A reconstrução deverá ser totalmente determinística.
-
----
-
-## Inferência de Direção
-
-O conversor deverá inferir automaticamente o modelo da origem a partir da estrutura de colunas recebida.
-
-A inferência deverá ocorrer de forma antecipada ao selecionar um arquivo e ao inserir, colar ou digitar conteúdo CSV válido no campo de texto, atualizando a indicação de origem e destino antes da conversão final.
-
-Inferências antecipadas deverão ser assíncronas, canceláveis e limitadas ao necessário para identificar a estrutura, evitando travamentos da interface durante digitação, colagem ou arquivos grandes.
-
-Como existem apenas dois modelos vigentes, o destino deverá ser sempre o outro modelo.
-
-A interface não deverá permitir conversão com origem e destino iguais.
-
----
-
-## Relacionamento Muitos-para-Muitos
-
-O modelo deverá suportar integralmente relacionamentos muitos-para-muitos.
-
-Assim:
-
-- um cliente poderá possuir vários telefones;
-- um telefone poderá pertencer a vários clientes.
-
-Nenhuma associação poderá ser perdida.
-
----
-
-## Preservação de Dados
-
-A conversão deverá preservar integralmente:
-
-- conteúdo;
-- estrutura lógica;
-- relacionamentos;
-- colunas adicionais;
-- valores desconhecidos;
-- compatibilidade futura.
-
-Nenhum dado poderá ser descartado simplesmente por não ser compreendido pelo modelo atual.
-
----
-
-## Escopo dos Atributos
-
-Exceto pelo Nome, todos os atributos adicionais pertencem conceitualmente ao cliente.
-
-Quando forem replicados para acompanhar um telefone, isso ocorrerá exclusivamente para garantir preservação das informações e reconstrução posterior.
-
----
-
-## Nome das Colunas Replicadas
-
-Sempre que um atributo do cliente for replicado devido à existência de múltiplos MCIs associados ao mesmo telefone, sua nomenclatura deverá identificar explicitamente a qual ocorrência pertence.
-
-Essa identificação deverá eliminar ambiguidades e permitir reconstrução exata do modelo original.
-
----
-
-## Consolidação de Nomes
-
-Quando um mesmo telefone aparecer associado a diferentes nomes, o sistema deverá considerar inicialmente tratar-se de possíveis variações legítimas, como:
-
-- erro de digitação;
-- abreviação;
-- pronome de tratamento;
-- pequenas diferenças ortográficas;
-- nome incompleto.
-
-O sistema deverá tentar consolidar automaticamente esses nomes utilizando critérios determinísticos.
-
-Caso não seja possível determinar uma representação confiável, deverá solicitar decisão do usuário.
-
-A escolha realizada deverá ser aplicada de forma consistente durante toda a operação.
-
-A existência de múltiplos nomes para o mesmo Fone não autoriza criar múltiplas linhas no Modelo 2.
-
-Enquanto não houver decisão de consolidação confiável ou explícita, a exportação final deverá permanecer pendente e a interface deverá preservar todas as alternativas identificadas para confirmação manual.
-
-A interface de resolução manual deverá oferecer mecanismo explícito de confirmação das escolhas antes de liberar a saída CSV final.
-
----
-
-## Tratamento de Erros
-
-Sempre que possível, inconsistências deverão ser recuperadas automaticamente.
-
-Quando isso não for possível, o sistema deverá solicitar intervenção do usuário.
-
-Nenhum dado deverá ser descartado silenciosamente.
-
-Todas as inconsistências deverão permanecer rastreáveis.
-
----
-
-## Logs
-
-A interface deverá apresentar logs sucintos e continuamente atualizados.
-
-Os logs deverão informar, no mínimo:
-
-- início da operação;
-- etapa atual;
-- progresso;
-- avisos;
-- inconsistências;
-- solicitações de decisão;
-- conclusão;
-- falhas.
-
-Os logs deverão possuir caráter exclusivamente informativo, evitando excesso de verbosidade.
-
----
-
-## Extensibilidade
-
-A implementação deverá permitir inclusão de novos:
-
-- modelos tabulares;
-- formatos de armazenamento;
-- adaptadores;
-- regras de transformação;
-- validadores;
-- normalizadores;
-
-sem necessidade de alteração do núcleo do sistema.
-
----
-
-## Compatibilidade Futura
-
-Toda decisão arquitetural deverá privilegiar:
-
-- baixo acoplamento;
-- alta coesão;
-- modularidade;
-- reutilização;
-- previsibilidade;
-- determinismo;
-- rastreabilidade;
-- compatibilidade retroativa;
-- compatibilidade futura.
-
-Nenhuma implementação deverá assumir conhecimento fixo da estrutura dos modelos além das regras normatizadas neste documento.
-
----
-
-## Arquitetura Local
-
-### ARQ001 - Arquivos do Módulo
+## 13. Arquitetura Local
 
 ```text
 src/csv-bd/
@@ -409,26 +113,15 @@ src/csv-bd/
 └── index.html
 ```
 
-O arquivo `src/csv-bd/RCF.md` é o RCF específico vigente deste módulo, seguindo a organização normativa global por diretório de módulo.
+`src/csv-bd/RCF.md` e o contrato especifico vigente. `src/csv-bd/bd.ts` deve conter apenas integracao de interface, fluxo operacional, logs, decisoes do usuario e acionamento do nucleo compartilhado.
 
-### ARQ002 - Consumo da Camada Compartilhada
+O modulo deve consumir `src/assets/js/tabular.ts` para deteccao/leitura de CSV, serializacao UTF-8 com BOM, modelo interno canonico, conversao deterministica, preservacao de colunas desconhecidas, rastreamento de inconsistencias e decisoes pendentes.
 
-O módulo deve consumir o núcleo tabular compartilhado em `src/assets/js/tabular.ts` para:
+## 14. Decisoes Locais
 
-- detecção e leitura de CSV;
-- serialização CSV em UTF-8 com BOM;
-- modelo interno canônico;
-- conversão determinística entre modelos;
-- preservação de colunas desconhecidas;
-- rastreamento de inconsistências e decisões pendentes.
-
-O arquivo `src/csv-bd/bd.ts` deve conter apenas a integração da interface, fluxo operacional, logs, decisões do usuário e acionamento do núcleo compartilhado.
-
-### ARQ003 - Decisões Arquiteturais Locais
-
-- O módulo permanece estático, offline e executado integralmente no navegador.
-- O módulo não é documento imprimível e não consome regras A4 ou PDF, mas deve consumir o cabeçalho, a barra de ações extensível e o rodapé institucionais da infraestrutura compartilhada global.
-- O núcleo de transformação tabular foi promovido para a camada compartilhada por possuir potencial de reuso em futuras ferramentas.
-- A saída CSV deve ser produzida em UTF-8 com BOM.
-- Conflitos de consolidação de nomes devem permanecer rastreáveis e expostos ao usuário antes da exportação final.
-- Arquivos gerados em `site/csv-bd/` e `dist/csv-bd/` são artefatos de build; a fonte canônica permanece em `src/csv-bd/`.
+- O modulo permanece estatico, offline e executado no navegador.
+- Nao consome regras A4/PDF, mas usa cabecalho, barra extensivel e rodape globais.
+- O nucleo tabular pertence a camada compartilhada por potencial de reuso.
+- A saida CSV e sempre UTF-8 com BOM.
+- Conflitos de nomes ficam rastreaveis e expostos antes da exportacao.
+- Artefatos gerados em `dist/csv-bd/` nao sao fonte canonica.

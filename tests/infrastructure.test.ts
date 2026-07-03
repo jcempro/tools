@@ -24,7 +24,7 @@ test("package exposes the full development lifecycle", async () => {
     scripts: Record<string, string>;
   };
 
-  for (const script of ["build", "build:dist", "build:site", "bundle", "check", "compile", "dev", "dev-live", "lint", "test", "type-check", "validate", "validate:publication"]) {
+  for (const script of ["build", "build:dist", "bundle", "check", "compile", "dev", "dev-live", "lint", "test", "type-check", "validate", "validate:publication"]) {
     assert.ok(pkg.scripts[script], `missing npm script: ${script}`);
   }
 });
@@ -68,7 +68,7 @@ test("build config keeps source and public paths explicit", async () => {
 
   for (const entry of entries) {
     assert.match(entry.source, /^src\/.+\.ts$/);
-    assert.doesNotMatch(entry.output, /^(?:src|site|dist)\//);
+    assert.doesNotMatch(entry.output, /^(?:src|dist)\//);
     assert.doesNotMatch(entry.output, /(?:^|\/)\.\.(?:\/|$)/);
   }
 

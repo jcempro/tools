@@ -1,501 +1,138 @@
 # RCF - Relacao de Faturamento
 
-## Projeto
+## 1. Objetivo e Escopo
 
-Modulo de Relacao de Faturamento.
+Modulo estatico para gerar a "RELACAO DE FATURAMENTO" oficial, editavel e imprimivel, com dados cadastrais da empresa, periodo de referencia, faturamento mensal, totais, situacao dos meses, percentuais de recebimento, regime tributario e assinatura dos responsaveis.
 
-## Objetivo
+O modelo visual oficial rege layout, organizacao, hierarquia, fluxo e experiencia. A planilha legada e apenas fonte historica de regras validas ja formalizadas aqui; nao pode ser motor de calculo, referencia arquitetural ou fonte normativa concorrente.
 
-Gerar uma Relacao de Faturamento oficial, editavel e imprimivel, contendo dados cadastrais da empresa, periodo de referencia, faturamento mensal, totais, situacao dos meses, percentuais de recebimento, regime tributario e assinatura dos responsaveis.
+Inclui edicao Web, autosave, preenchimento JSON Base64, validacao, revisao A4 e impressao/PDF. Exclui backend, banco, autenticacao obrigatoria e regras contabeis, fiscais ou tributarias nao descritas neste RCF.
 
-O modelo visual oficial define layout, organizacao, hierarquia, fluxo e experiencia do usuario. A planilha legada serve apenas como referencia funcional para extracao de regras de negocio validas, calculos e comportamentos esperados.
+## 2. Documento Oficial
 
-## Escopo
+O impresso deve conter: titulo centralizado; Razao Social e CNPJ; destaques para Faturamento Bruto Anual e Mes/Ano de Referencia; secao "MERCADO INTERNO"; Percentual de Recebimento das Vendas a Prazo; Regime de Tributacao; local, data e area de assinatura; responsavel, cargo/papel e CPF; campo/titulo `COMITE`.
 
-- Aplicacao Web estatica para preenchimento e revisao da Relacao de Faturamento.
-- Documento imprimivel em A4, preferencialmente em pagina unica.
-- Edicao dos dados cadastrais, financeiros e de assinatura.
-- Geracao de periodo com exatamente doze meses consecutivos.
-- Calculo de totais, referencia mensal, situacao Previsto/Realizado e valores derivados.
-- Validacao de CNPJ, CPF, datas, localidade, percentuais e valores monetarios.
-- Uso da infraestrutura compartilhada do projeto para validacao, normalizacao, salvamento automatico, preenchimento parametrizado, impressao e PDF.
+`COMITE` e a qualificacao `PROPRIETARIO/SOCIO/MANDATARIO` sao textos impressos fixos, nao campos editaveis.
 
-Ficam fora do escopo:
+## 3. Dados Cadastrais e Assinatura
 
-- Uso da planilha como motor interno de calculo.
-- Backend, banco de dados ou autenticacao obrigatoria.
-- Regras contabeis, fiscais ou tributarias nao explicitadas neste RCF.
+A empresa deve ter Razao Social e CNPJ. Razao Social preserva o texto informado. CNPJ aceita entrada numerica ou formatada, armazena apenas digitos e apresenta mascara brasileira.
 
-## Regras de Negocio
+O documento aceita um ou mais assinantes, cada um com Nome e CPF. A interface inicia com um grupo obrigatorio Nome/CPF e permite adicionar/remover grupos extras. Nomes e CPFs consolidados usam `ou` como separador. CPF aceita entrada numerica ou formatada, armazena apenas digitos e apresenta mascara brasileira.
 
-### RN001 - Documento Oficial
+Localidade deve conter cidade e UF brasileira, aceitar variantes usuais como `Cidade/UF` ou `Cidade-UF`, normalizar espacos e apresentar `Cidade-UF`. UF deve ter duas letras e pertencer as unidades federativas brasileiras.
 
-O modulo deve produzir o documento "RELACAO DE FATURAMENTO" com a estrutura visual definida pelo modelo oficial:
-
-- Titulo centralizado.
-- Identificacao da empresa por Razao Social e CNPJ.
-- Destaques para Faturamento Bruto Anual e Mes/Ano de Referencia.
-- Secao "MERCADO INTERNO" com tabela mensal.
-- Bloco de Percentual de Recebimento das Vendas a Prazo.
-- Campo de Regime de Tributacao.
-- Local, data e area de assinatura.
-- Identificacao de responsavel, cargo/papel e CPF.
-- Campo "COMITE".
-
-### RN002 - Dados da Empresa
-
-A empresa deve possuir, no minimo:
-
-- Razao Social.
-- CNPJ.
-
-A Razao Social deve preservar o conteudo informado pelo usuario, sem transformacao semantica obrigatoria.
-
-O CNPJ deve aceitar entrada numerica ou formatada, armazenar apenas digitos e apresentar mascara oficial brasileira.
-
-### RN003 - Assinantes
-
-O documento deve aceitar um ou mais assinantes.
-
-Cada assinante deve possuir:
-
-- Nome.
-- CPF.
-
-Quando houver multiplos assinantes, a apresentacao consolidada dos nomes deve usar `ou` como separador. A mesma regra se aplica aos CPFs.
-
-O CPF deve aceitar entrada numerica ou formatada, armazenar apenas digitos e apresentar mascara oficial brasileira.
-
-A interface deve iniciar com um unico grupo Nome/CPF e permitir adicionar ou remover grupos adicionais. O primeiro grupo e obrigatorio; grupos adicionados devem poder ser removidos.
-
-A qualificacao `PROPRIETARIO/SOCIO/MANDATARIO` deve ser tratada como texto fixo do modelo impresso, nao como campo editavel.
-
-### RN004 - Localidade de Assinatura
-
-A localidade de assinatura deve conter cidade e UF brasileira.
-
-A entrada pode aceitar variantes usuais como `Cidade/UF` ou `Cidade-UF`, desde que a apresentacao no documento siga o padrao visual oficial:
-
-```text
-Cidade-UF
-```
-
-Espacos excedentes devem ser normalizados. A UF deve conter duas letras e corresponder a uma unidade federativa brasileira.
-
-### RN005 - Data de Assinatura
-
-A data de assinatura deve assumir a data atual como valor inicial, mas pode ser alterada pelo usuario.
-
-Todas as regras temporais do modulo devem usar exclusivamente a data de assinatura vigente no documento. O relogio do computador nao pode alterar calculos depois que a data de assinatura tiver sido definida pelo usuario.
-
-A apresentacao da assinatura deve usar data por extenso em portugues do Brasil:
+Data de assinatura inicia na data atual e pode ser alterada. Todas as regras temporais usam exclusivamente a data vigente no documento; o relogio do computador nao recalcula depois da definicao pelo usuario. A apresentacao e:
 
 ```text
 Cidade-UF, dd de Mes de aaaa,
 ```
 
-### RN006 - Periodo Mensal
+## 4. Periodo, Referencia e Situacao
 
-A relacao deve trabalhar sempre com exatamente doze meses consecutivos.
+A relacao sempre possui exatamente doze meses consecutivos, sem duplicidade, lacuna, excesso, falta ou desordem cronologica.
 
-O periodo padrao deve representar os doze meses encerrados no Mes/Ano de Referencia.
+O Mes/Ano de Referencia representa o ultimo mes realizado. Por padrao, corresponde ao ultimo mes encerrado antes do mes da data de assinatura. O usuario pode altera-lo; a alteracao regenera os doze meses e mantem a classificacao coerente.
 
-Nao pode haver:
+Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ou iguais ao Mes/Ano de Referencia sao `REALIZADO`; posteriores, quando existirem por escolha operacional, sao `PREVISTO`. Classificacao manual pode existir, mas nao pode violar a semantica de ultimo mes realizado.
 
-- Menos de doze meses.
-- Mais de doze meses.
-- Meses duplicados.
-- Lacunas entre meses.
-- Meses fora de ordem cronologica.
+## 5. Mercado Interno e Totais
 
-### RN007 - Mes/Ano de Referencia
+A tabela de Mercado Interno contem, para cada mes: Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao Previsto/Realizado. Valores sao monetarios, nao negativos e apresentados em BRL.
 
-O Mes/Ano de Referencia representa o ultimo mes considerado realizado para a relacao.
+Prazo Medio de Recebimento e campo unico, numerico e nao negativo. Na impressao aparece separado da tabela, sem repeticao por linha.
 
-Por padrao, ele deve corresponder ao ultimo mes encerrado antes do mes da data de assinatura.
-
-O usuario pode alterar o Mes/Ano de Referencia quando a realidade do documento exigir. Toda alteracao deve regenerar o periodo de doze meses consecutivos e manter a consistencia da classificacao mensal.
-
-### RN008 - Classificacao Previsto/Realizado
-
-Cada mes deve possuir situacao:
-
-- `REALIZADO`.
-- `PREVISTO`.
-
-Meses anteriores ou iguais ao Mes/Ano de Referencia devem ser classificados como `REALIZADO`.
-
-Meses posteriores ao Mes/Ano de Referencia, quando existirem por escolha operacional do usuario, devem ser classificados como `PREVISTO`.
-
-A classificacao manual pode existir, desde que nao viole a regra de que o Mes/Ano de Referencia representa o ultimo mes realizado.
-
-### RN009 - Mercado Interno
-
-A tabela de Mercado Interno deve conter, para cada um dos doze meses:
-
-- Mes/Ano.
-- Vendas a Vista.
-- Vendas a Prazo.
-- Situacao Previsto/Realizado.
-
-Valores de venda devem ser monetarios, nao negativos e apresentados em BRL.
-
-O Prazo Medio de Recebimento deve ser um campo unico do documento, numerico e nao negativo.
-
-Na impressao, o Prazo Medio de Recebimento deve aparecer como informacao separada da tabela mensal, evitando repeticao linha a linha.
-
-A tabela impressa deve priorizar largura proporcional para Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao, garantindo folga visual para valores monetarios em faixa de milhoes.
-
-Na impressao, a tabela de Mercado Interno deve usar largura reduzida e proporcional ao seu conjunto atual de colunas. O espaco lateral direito liberado pela ausencia da coluna repetitiva de Prazo Medio deve ser ocupado pelo bloco de Percentual de Recebimento das Vendas a Prazo, Regime de Tributacao e Prazo Medio de Recebimento, mantendo alinhamento visual com o topo da tabela.
-
-### RN010 - Faturamento Bruto Anual
-
-O Faturamento Bruto Anual deve ser calculado por:
+O Faturamento Bruto Anual e:
 
 ```text
 Total de Vendas a Vista + Total de Vendas a Prazo
 ```
 
-Os totais exibidos no documento devem corresponder exatamente a soma dos doze meses de cada coluna.
+Totais exibidos devem corresponder exatamente a soma dos doze meses de cada coluna.
 
-### RN011 - Distribuicao Inicial de Valores
+Na impressao, a tabela deve usar largura proporcional para Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao, comportando valores em milhoes. A largura reduzida pela ausencia do prazo medio repetido deve liberar area lateral direita para Percentual de Recebimento, Regime de Tributacao e Prazo Medio, alinhados ao topo da tabela.
 
-Quando o usuario informar apenas o Faturamento Bruto Anual, o sistema pode distribuir automaticamente os valores pelos doze meses.
+## 6. Distribuicao, Edicao e Previsao
 
-A distribuicao deve permitir definir o percentual do total destinado a Vendas a Vista e a Vendas a Prazo.
+Quando o usuario informar apenas Faturamento Bruto Anual, o sistema pode distribuir automaticamente valores pelos doze meses. A distribuicao deve permitir percentual para Vendas a Vista e Vendas a Prazo, complementares e totalizando 100%, com padrao 100% a vista e 0% a prazo.
 
-O padrao inicial deve ser:
+A distribuicao deve ser deterministica, reprodutivel, nao negativa, arredondada para centavos, reconciliada exatamente ao total anual e visualmente natural, sem aleatoriedade verdadeira nem crescimento perfeitamente linear quando houver variacao simulada. O processo de distribuicao, compensacao, preservacao de edicoes manuais e reconciliacao de centavos aplica-se separadamente a Vendas a Vista e Vendas a Prazo, sem misturar colunas.
 
-- 100% para Vendas a Vista.
-- 0% para Vendas a Prazo.
+O usuario pode editar valores mensais. Havendo total anual de referencia, a edicao de um mes nao altera esse total; a diferenca e compensada nos meses elegiveis restantes. Meses alterados manualmente permanecem preservados ate desbloqueio ou redefinicao da distribuicao. Redistribuicao deve manter valores nao negativos e soma exata.
 
-Os percentuais de distribuicao devem ser complementares e totalizar 100%.
+Meses `PREVISTO` devem ter valores derivados automaticamente, salvo edicao manual explicita. Previsao de Vendas a Vista usa apenas dados dessa coluna; Vendas a Prazo usa apenas dados dessa coluna.
 
-A distribuicao automatica deve ser:
+## 7. Percentuais e Regime
 
-- Deterministica.
-- Reprodutivel para a mesma entrada.
-- Nao negativa.
-- Arredondada para centavos.
-- Exatamente reconciliada com o Faturamento Bruto Anual.
-- Visualmente natural, evitando crescimento perfeitamente linear quando houver variacao simulada.
+Percentual de Recebimento das Vendas a Prazo deve aceitar Cartoes, Cheques e Titulos, cada um entre 0% e 100%. Campos em branco usam padrao: Cartoes 40%, Cheques 30%, Titulos 30%. Soma obrigatoria, quando exigida por regra operacional, deve ser configuravel e validada explicitamente.
 
-Aleatoriedade verdadeira nao deve ser usada.
+Regime de Tributacao e lista fechada inicial: MEI, Simples Nacional, Lucro Presumido e Lucro Real. O sistema deve invalidar ou impedir regimes incompativeis com Faturamento Bruto Anual. Limites iniciais: MEI ate R$ 81.000,00 anuais; Simples Nacional ate R$ 4.800.000,00 anuais. Lucro Presumido e Lucro Real nao possuem bloqueio automatico por esses limites, salvo regra futura neste RCF.
 
-O mesmo processo de distribuicao, compensacao, preservacao de edicoes manuais e reconciliacao de centavos deve existir tanto para Vendas a Vista quanto para Vendas a Prazo, sem misturar as duas colunas.
+## 8. Parametrizacao e Autosave
 
-### RN012 - Edicao Manual e Redistribuicao
+O modulo deve aceitar preenchimento integral por JSON Base64 conforme RCF global. Chaves desconhecidas sao ignoradas sem interromper carregamento. Dados parametrizados passam pelas mesmas normalizacoes e validacoes da edicao manual.
 
-O usuario pode alterar valores mensais.
+No compartilhamento preenchido, o payload deve representar a relacao completa: empresa, assinantes, cidade/UF, data, mes de referencia, distribuicao, periodo mensal, percentuais, regime, prazo medio e valores financeiros.
 
-Quando houver valor anual de referencia informado, a alteracao manual de um mes nao deve alterar o Faturamento Bruto Anual. A diferenca deve ser compensada nos meses elegiveis restantes.
+Autosave local deve preservar dados cadastrais, financeiros, periodo, classificacoes, percentuais, regime tributario, assinatura e Prazo Medio unico.
 
-Meses alterados manualmente devem permanecer preservados ate que o usuario remova esse bloqueio ou redefina a distribuicao.
+## 9. Impressao, PDF e Interface
 
-A redistribuicao deve manter valores nao negativos e reconciliar os centavos para que a soma final seja exata.
+O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas.
 
-### RN013 - Meses Previstos
+A interface Web nao precisa reproduzir exatamente a folha durante edicao. Deve priorizar produtividade, clareza, rapidez, validacao em tempo real, prevencao de inconsistencias e revisao visual fiel antes da impressao.
 
-Quando existirem meses classificados como `PREVISTO`, seus valores devem ser derivados de forma automatica, salvo edicao manual explicita.
+## 10. Fluxo Operacional
 
-A previsao de Vendas a Vista deve usar apenas dados de Vendas a Vista.
+1. Usuario cria relacao, carrega autosave ou abre URL parametrizada.
+2. Sistema normaliza dados, aplica valores iniciais seguros e mostra pendencias sem bloquear campos independentes.
+3. Usuario preenche empresa, localidade, data, assinantes e textos.
+4. Sistema valida dados comuns durante edicao e antes de imprimir.
+5. Usuario confirma Mes/Ano de Referencia; sistema gera doze meses, situacoes e totais coerentes.
+6. Usuario informa total anual, valores mensais ou ambos; sistema distribui, redistribui e impede negativos, meses invalidos ou soma divergente.
+7. Usuario revisa o A4, corrige pendencias e imprime/gera PDF.
 
-A previsao de Vendas a Prazo deve usar apenas dados de Vendas a Prazo.
+## 11. Validacoes e Normalizacao
 
-As duas colunas nao devem ser misturadas para calculo de medias, tendencias ou compensacoes.
+Erros obrigatorios: CNPJ invalido; CPF invalido; data invalida; Mes/Ano de Referencia invalido; UF invalida; periodo diferente de doze meses; meses duplicados, ausentes, nao consecutivos ou fora de ordem; valores negativos; percentuais fora de 0% a 100%; prazo medio negativo; total anual divergente; documento extrapolando A4 por conteudo fora dos limites esperados.
 
-### RN014 - Percentual de Recebimento das Vendas a Prazo
+Normalizacoes: CNPJ/CPF para digitos no armazenamento e mascara na apresentacao; moeda BRL; percentual brasileiro; Mes/Ano `mm/aaaa`; localidade `Cidade-UF`; espacos excedentes em textos livres.
 
-O documento deve permitir informar percentuais para:
+Entradas invalidas nao devem corromper dados validos. Quando possivel, preservar o valor original para correcao e bloquear apenas consolidacao, impressao ou exportacao inconsistente.
 
-- Cartoes.
-- Cheques.
-- Titulos.
+## 12. Componentes e Reuso
 
-Cada percentual deve aceitar apenas valor valido entre 0% e 100%.
+O modulo deve reutilizar infraestrutura compartilhada para toolbar/acoes documentais, autosave, JSON Base64, impressao/PDF, separacao interface/area imprimivel, validadores, normalizadores, formatacao de datas/moedas/percentuais/documentos brasileiros, mensagens e estados de erro.
 
-Quando esses campos estiverem em branco, o documento deve aplicar os seguintes valores padrao:
+Devem ser promovidas ou consumidas como compartilhadas as logicas reutilizaveis, incluindo validacao de Mes/Ano, geracao de doze meses, formatacao/arredondamento BRL, reconciliacao de centavos, validacao percentual, Cidade-UF e serializacao de formularios complexos.
 
-- Cartoes: 40%.
-- Cheques: 30%.
-- Titulos: 30%.
+Permanecem locais: semantica da Relacao de Faturamento, Mercado Interno, Faturamento Bruto Anual, distribuicao/redistribuicao mensal, classificacao vinculada ao Mes/Ano de Referencia, layout oficial e regras de assinatura/apresentacao do responsavel.
 
-Quando houver regra operacional exigindo totalizacao desses percentuais, a soma esperada deve ser configuravel no modulo e validada de forma explicita.
+## 13. Extensoes Permitidas
 
-### RN015 - Regime de Tributacao
+Novos mercados/categorias de receita, estrategias deterministicas de distribuicao, regras adicionais de percentuais e exportacoes futuras podem ser adicionados se preservarem a relacao atual, consistencia de dados, equivalencia visual e ausencia de dependencia obrigatoria de planilhas, com registro neste RCF.
 
-O Regime de Tributacao deve ser selecionado em lista fechada com opcoes brasileiras usuais.
+## 14. UX e Acessibilidade
 
-As opcoes iniciais sao:
+Campos editaveis devem ter rotulos claros, ordem de navegacao coerente e erros associados. Informacoes por cor tambem precisam de texto, icone, estado ou indicacao perceptivel.
 
-- MEI.
-- Simples Nacional.
-- Lucro Presumido.
-- Lucro Real.
+Responsividade deve beneficiar edicao/revisao; a area imprimivel preserva medidas, hierarquia, proporcoes e paginacao. O usuario deve identificar rapidamente pendencias, meses realizados/previstos, valores editados manualmente, totais divergentes, estado do autosave e prontidao para impressao.
 
-O sistema deve invalidar ou impedir selecao de regimes incompativeis com o Faturamento Bruto Anual informado.
+## 15. Invariantes e Aceitacao
 
-Limites normativos iniciais do modulo:
+Nunca violar: doze meses consecutivos; Mes/Ano coerente com ultimo realizado; totais iguais a soma mensal; nenhum valor negativo; percentuais validos; CPF/CNPJ armazenados como digitos e apresentados com mascara; parametrizacao e edicao manual com mesmas validacoes; regra de negocio independente do layout; A4 oficial fiel.
 
-- MEI permitido ate R$ 81.000,00 anuais.
-- Simples Nacional permitido ate R$ 4.800.000,00 anuais.
+Conformidade exige gerar a estrutura visual oficial, calcular corretamente totais, classificar meses, validar campos exigidos, autosalvar, aceitar JSON Base64 integral, reutilizar infraestrutura global, imprimir/PDF sem interface e evitar acoplamento entre negocio, edicao e impresso.
 
-Lucro Presumido e Lucro Real nao possuem bloqueio automatico por esses limites neste modulo, salvo regra futura documentada neste RCF.
+## 16. Arquitetura Local
 
-### RN016 - Campo Comite
+```text
+src/faturamento/
+├── RCF.md
+├── faturamento.css
+├── faturamento.ts
+├── index.html
+└── regras.ts
+```
 
-O campo `COMITE` deve existir no documento oficial conforme o modelo visual.
-
-`COMITE` e apenas titulo impresso do documento, nao campo editavel.
-
-### RN017 - Preenchimento Parametrizado
-
-O modulo deve poder ser integralmente preenchido por JSON em Base64 recebido pela query string, conforme regra global do projeto.
-
-Chaves desconhecidas devem ser ignoradas sem interromper o carregamento.
-
-Dados parametrizados devem passar pelas mesmas normalizacoes e validacoes aplicadas a edicao manual.
-
-Quando a acao global de compartilhamento for usada no modo preenchido, o payload do modulo deve representar a Relacao de Faturamento completa: empresa, assinantes, cidade/UF, data, mes de referencia, distribuicao, periodo mensal, percentuais, regime tributario, prazo medio e valores financeiros.
-
-### RN018 - Salvamento Automatico
-
-O modulo deve salvar automaticamente os dados durante a edicao, usando persistencia local do navegador.
-
-O salvamento automatico deve preservar dados cadastrais, financeiros, periodo, classificacoes, percentuais, regime tributario e assinatura.
-
-O salvamento automatico deve preservar o Prazo Medio de Recebimento unico do documento.
-
-### RN019 - Impressao e PDF
-
-O documento imprimivel deve seguir o modelo visual oficial e priorizar fidelidade A4.
-
-A impressao deve funcionar por comando nativo do navegador e por acao dedicada de PDF quando disponivel.
-
-Elementos de interface Web, mensagens, alertas e ferramentas nao devem aparecer na impressao nem no PDF.
-
-O documento deve caber em uma pagina A4 sempre que os conteudos informados estiverem dentro dos limites esperados do modelo.
-
-### RN020 - Interface Web
-
-A interface Web nao precisa reproduzir exatamente a folha A4 durante a edicao.
-
-Ela deve priorizar:
-
-- Produtividade.
-- Clareza.
-- Rapidez de preenchimento.
-- Validacao em tempo real.
-- Prevencao de inconsistencias.
-- Revisao visual do documento antes da impressao.
-
-A visualizacao A4 deve permanecer disponivel como representacao fiel do documento final.
-
-## Fluxo Operacional
-
-### FL001 - Criacao ou Edicao
-
-O usuario inicia uma relacao nova, carrega dados salvos automaticamente ou abre uma URL parametrizada.
-
-O sistema deve normalizar os dados recebidos, aplicar valores iniciais seguros e apresentar pendencias sem bloquear campos independentes.
-
-### FL002 - Dados Cadastrais
-
-O usuario preenche Razao Social, CNPJ, localidade, data de assinatura, assinantes e demais campos textuais.
-
-Validacoes comuns devem ocorrer durante a edicao e antes da impressao.
-
-### FL003 - Periodo e Referencia
-
-O usuario informa ou confirma o Mes/Ano de Referencia.
-
-O sistema gera os doze meses consecutivos, define a classificacao de cada mes e mantem os totais coerentes.
-
-### FL004 - Faturamento
-
-O usuario informa o faturamento anual, valores mensais ou ambos.
-
-O sistema calcula totais, distribui ou redistribui valores quando aplicavel e impede inconsistencias como valores negativos, meses ausentes ou soma divergente.
-
-### FL005 - Revisao e Impressao
-
-O usuario revisa o documento no layout A4, corrige pendencias e gera impressao ou PDF.
-
-Antes da impressao, o sistema deve validar os invariantes obrigatorios e destacar pendencias relevantes.
-
-## Validacoes
-
-### VAL001 - Validacoes Obrigatorias
-
-O modulo deve impedir ou destacar como erro:
-
-- CNPJ invalido.
-- CPF invalido.
-- Data de assinatura invalida.
-- Mes/Ano de Referencia invalido.
-- UF invalida.
-- Periodo diferente de doze meses.
-- Meses duplicados ou nao consecutivos.
-- Valores monetarios negativos.
-- Percentuais fora de 0% a 100%.
-- Prazo medio negativo.
-- Total anual divergente da soma mensal.
-- Documento que extrapole a pagina A4 por conteudo fora dos limites esperados.
-
-### VAL002 - Normalizacao
-
-O modulo deve normalizar:
-
-- CNPJ para digitos no armazenamento e mascara oficial na apresentacao.
-- CPF para digitos no armazenamento e mascara oficial na apresentacao.
-- Valores monetarios para BRL.
-- Percentuais para formato percentual brasileiro.
-- Mes/Ano para `mm/aaaa`.
-- Localidade para `Cidade-UF` na apresentacao.
-- Espacos excedentes em textos livres.
-
-### VAL003 - Erros Recuperaveis
-
-Entradas invalidas nao devem corromper dados ja validos.
-
-Quando possivel, o sistema deve preservar o valor original para correcao do usuario e impedir apenas a consolidacao, impressao ou exportacao inconsistente.
-
-## Componentes e Reuso
-
-### CR001 - Infraestrutura Compartilhada Obrigatoria
-
-O modulo deve reutilizar a infraestrutura compartilhada do projeto para:
-
-- Barra de ferramentas e acoes documentais.
-- Salvamento automatico.
-- Preenchimento por JSON Base64.
-- Impressao e PDF.
-- Separacao entre interface Web e area imprimivel.
-- Validadores e normalizadores comuns.
-- Formatacao de datas, moedas, percentuais e documentos brasileiros quando disponivel.
-- Mensagens de validacao e estados de erro reutilizaveis.
-
-### CR002 - Regras Promoviveis
-
-Qualquer logica com potencial de uso por outros documentos deve ser promovida ou consumida como capacidade compartilhada.
-
-Sao candidatos naturais a compartilhamento:
-
-- Validacao de mes/ano.
-- Geracao de doze meses consecutivos.
-- Formatacao e arredondamento monetario em BRL.
-- Reconciliacao de centavos.
-- Validacao percentual.
-- Normalizacao de Cidade-UF.
-- Serializacao de formularios complexos para autosave e query string.
-
-### CR003 - Componentes Especificos do Faturamento
-
-Devem permanecer especificos deste modulo:
-
-- Semantica da Relacao de Faturamento.
-- Campos do Mercado Interno.
-- Regras de Faturamento Bruto Anual.
-- Distribuicao e redistribuicao mensal de faturamento.
-- Classificacao Previsto/Realizado vinculada ao Mes/Ano de Referencia.
-- Layout oficial da Relacao de Faturamento.
-- Regras de assinatura e apresentacao do responsavel neste documento.
-
-## Pontos de Extensao
-
-### EXT001 - Novos Mercados
-
-O modulo pode evoluir para incluir outros mercados ou categorias de receita, desde que preserve a Relacao de Faturamento atual e registre as novas regras neste RCF.
-
-### EXT002 - Novas Estrategias de Distribuicao
-
-Novas estrategias de distribuicao podem ser adicionadas se forem deterministicas, auditaveis e capazes de reconciliar exatamente o total anual.
-
-### EXT003 - Regras de Percentuais
-
-Regras adicionais para percentuais de recebimento podem ser configuradas, como soma obrigatoria, campos exigidos por regime ou bloqueios por tipo de venda, desde que documentadas neste RCF.
-
-### EXT004 - Exportacoes Futuras
-
-Exportacoes futuras devem preservar a consistencia dos dados e a equivalencia visual do documento oficial, sem introduzir dependencia obrigatoria de planilhas.
-
-## Acessibilidade, Responsividade e Usabilidade
-
-### UX001 - Acessibilidade
-
-Campos editaveis devem possuir rotulos claros, ordem de navegacao coerente e mensagens de erro associadas ao campo correspondente.
-
-Informacoes transmitidas por cor tambem devem possuir texto, icone, estado ou outra indicacao perceptivel.
-
-### UX002 - Responsividade
-
-A responsividade deve beneficiar a interface de edicao e revisao.
-
-A area imprimivel deve preservar medidas, hierarquia, proporcoes e paginacao do documento oficial, conforme regra global.
-
-### UX003 - Usabilidade
-
-O usuario deve conseguir identificar rapidamente:
-
-- Pendencias obrigatorias.
-- Meses realizados e previstos.
-- Valores editados manualmente.
-- Totais divergentes.
-- Estado do salvamento automatico.
-- Prontidao para impressao.
-
-## Restricoes e Premissas
-
-### RP001 - Planilha Legada
-
-A planilha legada nao deve ser usada como implementacao, motor de calculo, referencia arquitetural ou fonte normativa apos a definicao deste RCF.
-
-Somente regras de negocio validas extraidas dela e formalizadas neste documento devem orientar a implementacao.
-
-### RP002 - Modelo Visual
-
-O modelo visual oficial tem prioridade sobre a planilha para layout, organizacao, hierarquia visual, fluxo e experiencia do usuario.
-
-Quando houver divergencia entre planilha e modelo visual, o modelo visual prevalece para apresentacao.
-
-Quando houver divergencia entre planilha e RCF global, o RCF global prevalece para arquitetura, infraestrutura compartilhada, impressao A4, parametrizacao, autosave e separacao de escopos.
-
-### RP003 - Consistencia Permanente
-
-As seguintes invariantes nunca devem ser violadas:
-
-- Exatamente doze meses consecutivos.
-- Mes/Ano de Referencia coerente com o ultimo mes realizado.
-- Totais iguais a soma dos meses.
-- Nenhum valor monetario negativo.
-- Percentuais validos.
-- CPF e CNPJ armazenados como digitos e apresentados com mascara.
-- Dados parametrizados e dados editados manualmente seguem as mesmas validacoes.
-- Logica de negocio independente do layout.
-- Documento imprimivel fiel ao A4 oficial.
-
-## Criterios de Aceitacao
-
-O modulo sera considerado conforme quando:
-
-- Gerar a Relacao de Faturamento com a estrutura visual oficial.
-- Mantiver exatamente doze meses consecutivos.
-- Calcular corretamente Faturamento Bruto Anual e totais por coluna.
-- Classificar meses como Previsto ou Realizado de forma coerente com o Mes/Ano de Referencia.
-- Validar CNPJ, CPF, datas, localidade, percentuais e valores monetarios.
-- Preservar dados por salvamento automatico.
-- Aceitar preenchimento integral por JSON Base64.
-- Reutilizar infraestrutura compartilhada para recursos transversais.
-- Imprimir ou gerar PDF A4 sem elementos de interface Web.
-- Evitar acoplamento entre regras de negocio, interface de edicao e documento imprimivel.
-
-## Decisoes Arquiteturais Locais
-
-- O RCF deste modulo substitui a planilha legada como referencia normativa oficial.
-- A planilha permanece apenas como fonte historica de regras funcionais ja formalizadas aqui.
-- O modelo visual oficial prevalece para apresentacao e experiencia do usuario.
-- O modulo deve permanecer estatico e executado no navegador, conforme arquitetura global do projeto.
-- Toda infraestrutura reutilizavel deve ser compartilhada e nao acoplada ao faturamento.
-- Regras especificas da Relacao de Faturamento devem permanecer neste RCF.
-- A logica de calculo deve ser independente da renderizacao visual.
-- A impressao A4 fiel e requisito funcional permanente deste modulo.
+O modulo permanece estatico e executado no navegador. Infraestrutura reutilizavel e compartilhada; regras especificas ficam neste RCF. A logica de calculo deve ser independente da renderizacao visual, e a impressao A4 fiel e requisito permanente.
