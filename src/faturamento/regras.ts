@@ -19,9 +19,24 @@ export interface TotaisFaturamento {
   vista: number;
 }
 
+export interface LinhaRedistribuicao {
+  fixarPrazo?: boolean;
+  fixarVista?: boolean;
+  vendasPrazo: number;
+  vendasVista: number;
+}
+
+export interface ResultadoRedistribuicao {
+  erro?: string;
+  linhas: Array<{ vendasPrazo: number; vendasVista: number }>;
+  percentualVista: number;
+  totais: TotaisFaturamento;
+}
+
 export type RegimeTributario = "MEI" | "Simples Nacional" | "Lucro Presumido" | "Lucro Real";
 
 export const MEI_LIMIT_CENTS = 8_100_000;
+export const MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT = 40;
 export const SIMPLES_NACIONAL_LIMIT_CENTS = 480_000_000;
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency" });
@@ -103,6 +118,176 @@ export function splitAnnualTargets(total: number, vistaPercent: number): { prazo
   return {
     prazo: normalizedTotal - vista,
     vista
+  };
+}
+
+function sumLocked(linhas: LinhaRedistribuicao[], column: "prazo" | "vista"): number {
+  return linhas.reduce((sum, linha) => {
+    const locked = column === "vista" ? linha.fixarVista : linha.fixarPrazo;
+    const value = column === "vista" ? linha.vendasVista : linha.vendasPrazo;
+    return sum + (locked ? Math.max(0, Math.round(value)) : 0);
+  }, 0);
+}
+
+function sumUnlocked(linhas: LinhaRedistribuicao[], column: "prazo" | "vista"): number {
+  return linhas.reduce((sum, linha) => {
+    const locked = column === "vista" ? linha.fixarVista : linha.fixarPrazo;
+    const value = column === "vista" ? linha.vendasVista : linha.vendasPrazo;
+    return sum + (!locked ? Math.max(0, Math.round(value)) : 0);
+  }, 0);
+}
+
+function distributeColumn(
+  linhas: LinhaRedistribuicao[],
+  column: "prazo" | "vista",
+  target: number
+): { erro?: string; values: number[] } {
+  const normalizedTarget = Math.max(0, Math.round(target));
+  const values = linhas.map((linha) => Math.max(0, Math.round(column === "vista" ? linha.vendasVista : linha.vendasPrazo)));
+  const locked = linhas.map((linha) => Boolean(column === "vista" ? linha.fixarVista : linha.fixarPrazo));
+  const lockedTotal = values.reduce((sum, value, index) => sum + (locked[index] ? value : 0), 0);
+  const unlockedIndexes = locked
+    .map((isLocked, index) => ({ index, isLocked }))
+    .filter((item) => !item.isLocked)
+    .map((item) => item.index);
+
+  if (normalizedTarget === 0) {
+    return { values: values.map(() => 0) };
+  }
+
+  if (lockedTotal > normalizedTarget) {
+    return { erro: "Valores fixados superam a meta da coluna.", values };
+  }
+
+  if (unlockedIndexes.length === 0) {
+    return lockedTotal === normalizedTarget
+      ? { values }
+      : { erro: "Todos os valores da coluna estao fixados e nao reconciliam a meta.", values };
+  }
+
+  const distributed = distributeCents(normalizedTarget - lockedTotal, unlockedIndexes.length);
+  const next = [...values];
+  unlockedIndexes.forEach((rowIndex, index) => {
+    next[rowIndex] = distributed[index] ?? 0;
+  });
+
+  return { values: next };
+}
+
+function calculateTotalsFromRedistribution(linhas: Array<{ vendasPrazo: number; vendasVista: number }>): TotaisFaturamento {
+  return sumRows(linhas.map((linha) => ({
+    mesAno: { ano: 2000, mes: 1 },
+    prazoMedio: 0,
+    situacao: "REALIZADO",
+    vendasPrazo: linha.vendasPrazo,
+    vendasVista: linha.vendasVista
+  })));
+}
+
+function monthlyToleranceError(
+  linhas: Array<{ vendasPrazo: number; vendasVista: number }>,
+  vistaPercent: number
+): string | undefined {
+  const minimum = Math.max(0, vistaPercent - MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT);
+  const maximum = Math.min(100, vistaPercent + MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT);
+  const invalidIndex = linhas.findIndex((linha) => {
+    const total = linha.vendasVista + linha.vendasPrazo;
+    if (total <= 0) {
+      return false;
+    }
+    const share = (linha.vendasVista / total) * 100;
+    return share < minimum - 0.01 || share > maximum + 0.01;
+  });
+
+  if (invalidIndex < 0) {
+    return undefined;
+  }
+
+  return `A distribuicao do mes ${invalidIndex + 1} excede a tolerancia de ${MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT}% em relacao ao percentual global fixado.`;
+}
+
+export function redistributeAnnualValues(
+  linhas: LinhaRedistribuicao[],
+  total: number,
+  vistaPercent: number,
+  fixarDistribuicao: boolean
+): ResultadoRedistribuicao {
+  const normalizedTotal = Math.max(0, Math.round(total));
+  const safePercent = Math.min(100, Math.max(0, Number.isFinite(vistaPercent) ? vistaPercent : 100));
+
+  if (linhas.length === 0) {
+    return {
+      linhas: [],
+      percentualVista: safePercent,
+      totais: { brutoAnual: 0, prazo: 0, vista: 0 }
+    };
+  }
+
+  if (fixarDistribuicao) {
+    const targets = splitAnnualTargets(normalizedTotal, safePercent);
+    const vista = distributeColumn(linhas, "vista", targets.vista);
+    const prazo = distributeColumn(linhas, "prazo", targets.prazo);
+    const output = linhas.map((_linha, index) => ({
+      vendasPrazo: prazo.values[index] ?? 0,
+      vendasVista: vista.values[index] ?? 0
+    }));
+    const totals = calculateTotalsFromRedistribution(output);
+    const erro = vista.erro || prazo.erro || monthlyToleranceError(output, safePercent);
+
+    return {
+      erro,
+      linhas: output,
+      percentualVista: safePercent,
+      totais: totals
+    };
+  }
+
+  const lockedVista = sumLocked(linhas, "vista");
+  const lockedPrazo = sumLocked(linhas, "prazo");
+  const lockedTotal = lockedVista + lockedPrazo;
+
+  if (lockedTotal > normalizedTotal) {
+    const output = linhas.map((linha) => ({
+      vendasPrazo: Math.max(0, Math.round(linha.vendasPrazo)),
+      vendasVista: Math.max(0, Math.round(linha.vendasVista))
+    }));
+    return {
+      erro: "Valores informados pelo usuario superam o faturamento anual.",
+      linhas: output,
+      percentualVista: normalizedTotal > 0 ? (calculateTotalsFromRedistribution(output).vista / normalizedTotal) * 100 : safePercent,
+      totais: calculateTotalsFromRedistribution(output)
+    };
+  }
+
+  const remaining = normalizedTotal - lockedTotal;
+  const unlockedVista = sumUnlocked(linhas, "vista");
+  const unlockedPrazo = sumUnlocked(linhas, "prazo");
+  const hasUnlockedVista = linhas.some((linha) => !linha.fixarVista);
+  const hasUnlockedPrazo = linhas.some((linha) => !linha.fixarPrazo);
+  let residualVistaPercent = safePercent;
+
+  if (hasUnlockedVista && !hasUnlockedPrazo) {
+    residualVistaPercent = 100;
+  } else if (!hasUnlockedVista && hasUnlockedPrazo) {
+    residualVistaPercent = 0;
+  } else if (unlockedVista + unlockedPrazo > 0) {
+    residualVistaPercent = (unlockedVista / (unlockedVista + unlockedPrazo)) * 100;
+  }
+
+  const residualTargets = splitAnnualTargets(remaining, residualVistaPercent);
+  const vista = distributeColumn(linhas, "vista", lockedVista + residualTargets.vista);
+  const prazo = distributeColumn(linhas, "prazo", lockedPrazo + residualTargets.prazo);
+  const output = linhas.map((_linha, index) => ({
+    vendasPrazo: prazo.values[index] ?? 0,
+    vendasVista: vista.values[index] ?? 0
+  }));
+  const totals = calculateTotalsFromRedistribution(output);
+
+  return {
+    erro: vista.erro || prazo.erro,
+    linhas: output,
+    percentualVista: normalizedTotal > 0 ? (totals.vista / normalizedTotal) * 100 : safePercent,
+    totais: totals
   };
 }
 

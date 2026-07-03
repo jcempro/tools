@@ -8,10 +8,12 @@ import {
   formatPercent,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
+  MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT,
   parseCurrencyToCents,
   parseMesAno,
   parsePercent,
   previousClosedMonth,
+  redistributeAnnualValues,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
   sumRows,
@@ -130,6 +132,10 @@ import {
     return element;
   }
 
+  function checked(id: string): boolean {
+    return input(id).checked;
+  }
+
   function select(id: string): HTMLSelectElement {
     const element = api.one<HTMLSelectElement>(`#${id}`);
     if (!element) {
@@ -211,6 +217,11 @@ import {
     applyDefaultReceiptPercentages();
   }
 
+  function restoreFixedDistribution(): void {
+    const fixed = input("fixar-distribuicao");
+    fixed.checked = api.storage.getItem("fixar-distribuicao") === "true";
+  }
+
   function applyDefaultReceiptPercentages(): void {
     const defaults: Record<string, string> = {
       "percentual-cartoes": "40%",
@@ -244,7 +255,7 @@ import {
       editorRow.innerHTML = `
         <td class="month-label" data-month="${label}">${label}</td>
         <td><input id="mes-${index}-vista" class="money month-money" data-column="vista" type="text" inputmode="decimal"></td>
-        <td><input id="mes-${index}-prazo" class="money month-money" data-column="prazo" data-locked="true" type="text" inputmode="decimal"></td>
+        <td><input id="mes-${index}-prazo" class="money month-money" data-column="prazo" type="text" inputmode="decimal"></td>
         <td class="month-status">${status}</td>
       `;
       editor.appendChild(editorRow);
@@ -348,6 +359,7 @@ import {
     renderMonthRows(reference);
     api.autosave.init({ selector: "#editor-meses input", validation });
     bindDynamicInputs();
+    updateDistributionLockState();
     renderPreview();
   }
 
@@ -410,12 +422,13 @@ import {
       const prazo = input(`mes-${index}-prazo`);
       vista.value = formatCurrencyFromCents(value);
       prazo.value = formatCurrencyFromCents(prazoValues[index] ?? 0);
-      delete vista.dataset.locked;
-      delete prazo.dataset.locked;
+      setMonthlyLock(vista, false);
+      setMonthlyLock(prazo, false);
       api.storage.setItem(vista.id, vista.value);
       api.storage.setItem(prazo.id, prazo.value);
     });
     isHydrating = false;
+    updateDistributionLockState();
 
     if (status) {
       status.textContent = "";
@@ -433,61 +446,136 @@ import {
     }
   }
 
-  function sumMoneyInputs(inputs: HTMLInputElement[]): number {
-    return inputs.reduce((sum, element) => sum + (parseCurrencyToCents(element.value) ?? 0), 0);
+  function lockStorageKey(element: HTMLInputElement): string {
+    return `${element.id}:locked`;
   }
 
-  function reconcileAnnual(changed: HTMLInputElement): void {
+  function setMonthlyLock(element: HTMLInputElement, locked: boolean): void {
+    if (locked) {
+      element.dataset.locked = "true";
+      api.storage.setItem(lockStorageKey(element), "true");
+      return;
+    }
+
+    delete element.dataset.locked;
+    api.storage.removeItem(lockStorageKey(element));
+  }
+
+  function restoreMonthlyLock(element: HTMLInputElement): void {
+    if (api.storage.getItem(lockStorageKey(element)) === "true") {
+      element.dataset.locked = "true";
+    } else {
+      delete element.dataset.locked;
+    }
+  }
+
+  function isDistributionFixed(): boolean {
+    return checked("fixar-distribuicao");
+  }
+
+  function setDistributionVistaPercent(value: number): void {
+    const vistaInput = input("distribuicao-vista");
+    const prazoInput = input("distribuicao-prazo");
+    const normalized = Math.min(100, Math.max(0, Number.isFinite(value) ? value : 100));
+    vistaInput.value = formatPercent(normalized);
+    prazoInput.value = formatPercent(100 - normalized);
+    api.storage.setItem(vistaInput.id, vistaInput.value);
+    api.storage.setItem(prazoInput.id, prazoInput.value);
+  }
+
+  function currentMonthlyRowsForRedistribution(): Array<{
+    fixarPrazo: boolean;
+    fixarVista: boolean;
+    vendasPrazo: number;
+    vendasVista: number;
+  }> {
+    return Array.from({ length: 12 }, (_item, index) => {
+      const vista = input(`mes-${index}-vista`);
+      const prazo = input(`mes-${index}-prazo`);
+      return {
+        fixarPrazo: prazo.dataset.locked === "true",
+        fixarVista: vista.dataset.locked === "true",
+        vendasPrazo: parseCurrencyToCents(prazo.value) ?? 0,
+        vendasVista: parseCurrencyToCents(vista.value) ?? 0
+      };
+    });
+  }
+
+  function updateDistributionLockState(): void {
+    const fixed = isDistributionFixed();
+    const vistaPercent = distributionVistaPercent();
+    const disableVista = fixed && vistaPercent <= 0.001;
+    const disablePrazo = fixed && (100 - vistaPercent) <= 0.001;
+
+    Array.from({ length: 12 }, (_item, index) => {
+      const vista = input(`mes-${index}-vista`);
+      const prazo = input(`mes-${index}-prazo`);
+      for (const [element, disabled] of [[vista, disableVista], [prazo, disablePrazo]] as const) {
+        element.disabled = disabled;
+        if (disabled) {
+          element.value = formatCurrencyFromCents(0);
+          setMonthlyLock(element, false);
+          api.storage.setItem(element.id, element.value);
+        }
+      }
+    });
+  }
+
+  function applyRedistribution(
+    result: ReturnType<typeof redistributeAnnualValues>,
+    options: { updatePercent: boolean }
+  ): void {
+    isHydrating = true;
+    result.linhas.forEach((row, index) => {
+      const vista = input(`mes-${index}-vista`);
+      const prazo = input(`mes-${index}-prazo`);
+      vista.value = formatCurrencyFromCents(row.vendasVista);
+      prazo.value = formatCurrencyFromCents(row.vendasPrazo);
+      api.storage.setItem(vista.id, vista.value);
+      api.storage.setItem(prazo.id, prazo.value);
+    });
+    isHydrating = false;
+
+    if (options.updatePercent && !result.erro) {
+      setDistributionVistaPercent(result.percentualVista);
+    }
+  }
+
+  function reconcileAnnual(changed?: HTMLInputElement): void {
     const target = parseCurrencyToCents(input("faturamento-alvo").value);
     const status = api.one<HTMLElement>("#status-faturamento");
-    const column = changed.dataset.column === "prazo" ? "prazo" : "vista";
 
     if (target === null || target <= 0) {
       if (status) {
         status.textContent = "";
       }
+      updateDistributionLockState();
       return;
     }
 
-    changed.dataset.locked = "true";
-
-    const targets = splitAnnualTargets(target, distributionVistaPercent());
-    const columnTarget = targets[column];
-    const inputs = api.$<HTMLInputElement>(`.month-money[data-column="${column}"]`);
-    const locked = inputs.filter((element) => element.dataset.locked === "true");
-    const unlocked = inputs.filter((element) => element.dataset.locked !== "true");
-    const lockedTotal = sumMoneyInputs(locked);
-
-    if (lockedTotal > columnTarget) {
-      if (status) {
-        status.textContent = `Valores bloqueados em ${column === "vista" ? "à vista" : "a prazo"} superam a meta definida.`;
-      }
+    if (changed && changed.disabled) {
       return;
     }
 
-    if (unlocked.length === 0) {
-      if (status && lockedTotal !== columnTarget) {
-        status.textContent = `Todos os valores de ${column === "vista" ? "à vista" : "a prazo"} estão bloqueados; ajuste algum mês para reconciliar a meta.`;
-      }
-      return;
+    if (changed) {
+      setMonthlyLock(changed, true);
     }
 
-    const values = distributeCents(columnTarget - lockedTotal, unlocked.length);
-
-    isHydrating = true;
-    unlocked.forEach((element, index) => {
-      element.value = formatCurrencyFromCents(values[index] ?? 0);
-      api.storage.setItem(element.id, element.value);
-    });
-    isHydrating = false;
-
+    const fixed = isDistributionFixed();
+    const result = redistributeAnnualValues(currentMonthlyRowsForRedistribution(), target, distributionVistaPercent(), fixed);
+    applyRedistribution(result, { updatePercent: !fixed });
+    updateDistributionLockState();
     if (status) {
-      status.textContent = "";
+      status.textContent = result.erro && fixed
+        ? `${result.erro} No modo fixado, cada mês pode divergir até ${MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT}% do percentual global.`
+        : result.erro ?? "";
     }
+    updateRegimeOptions();
   }
 
   function bindDynamicInputs(): void {
     api.$<HTMLInputElement>("#editor-meses input").forEach((element) => {
+      restoreMonthlyLock(element);
       api.on(element, "input", () => {
         if (!isHydrating) {
           renderPreview();
@@ -647,6 +735,8 @@ import {
 
     api.$<HTMLInputElement>("#faturamento-app input").forEach((element) => {
       api.storage.removeItem(element.id);
+      api.storage.removeItem(lockStorageKey(element));
+      element.checked = false;
       element.value = "";
     });
     api.storage.removeItem("assinantesCount");
@@ -654,6 +744,7 @@ import {
     api.storage.removeItem("regime-tributacao");
     normalizeDefaults();
     refreshPeriodIfNeeded();
+    updateDistributionLockState();
     renderPreview();
   }
 
@@ -698,6 +789,7 @@ import {
       cnpj: input("cnpj").value,
       dataAssinatura: input("data-assinatura").value,
       distribuicao: {
+        fixar: input("fixar-distribuicao").checked,
         prazo: input("distribuicao-prazo").value,
         vista: input("distribuicao-vista").value
       },
@@ -757,6 +849,11 @@ import {
     if (isRecord(data.distribuicao)) {
       assignIfPresent("distribuicao-vista", data.distribuicao.vista);
       assignIfPresent("distribuicao-prazo", data.distribuicao.prazo);
+      if (typeof data.distribuicao.fixar === "boolean") {
+        const fixed = input("fixar-distribuicao");
+        fixed.checked = data.distribuicao.fixar;
+        api.storage.setItem("fixar-distribuicao", `${fixed.checked}`);
+      }
     }
 
     if (isRecord(data.percentuais)) {
@@ -822,14 +919,23 @@ import {
   function bindStaticInputs(): void {
     api.$<HTMLInputElement>("#faturamento-app input").forEach((element) => {
       api.on(element, "input", () => {
+        if (element.id === "fixar-distribuicao") {
+          api.storage.setItem("fixar-distribuicao", `${element.checked}`);
+          updateDistributionLockState();
+          reconcileAnnual();
+          renderPreview();
+          return;
+        }
         if (element.id === "mes-referencia") {
           return;
         }
         if (element.id === "distribuicao-vista") {
           syncDistributionPercent("vista");
+          updateDistributionLockState();
         }
         if (element.id === "distribuicao-prazo") {
           syncDistributionPercent("prazo");
+          updateDistributionLockState();
         }
         if (element.id === "faturamento-alvo") {
           updateRegimeOptions();
@@ -843,6 +949,12 @@ import {
         }
         if (element.id === "faturamento-alvo") {
           updateRegimeOptions();
+        }
+        if (element.id === "distribuicao-vista" || element.id === "distribuicao-prazo") {
+          updateDistributionLockState();
+          if (isDistributionFixed()) {
+            reconcileAnnual();
+          }
         }
         renderPreview();
       });
@@ -864,9 +976,11 @@ import {
     renderMonthRows(defaultReference());
     restoreSigners();
     api.autosave.init({ selector: "#faturamento-app input", validation });
+    restoreFixedDistribution();
     normalizeDefaults();
     applyJsonPayload();
     refreshPeriodIfNeeded();
+    updateDistributionLockState();
     bindStaticInputs();
 
     api.toolbar.bind({

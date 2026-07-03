@@ -144,6 +144,19 @@ label {
   font-weight: 700;
 }
 
+.inline-check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 30px;
+}
+
+.inline-check input {
+  width: auto;
+  min-height: 0;
+  margin: 0;
+}
+
 input,
 select {
   box-sizing: border-box;
@@ -159,6 +172,12 @@ input:focus,
 select:focus {
   outline: 2px solid #2d7fbd;
   outline-offset: 1px;
+}
+
+input:disabled {
+  background: #eef1f4;
+  color: #697581;
+  cursor: not-allowed;
 }
 
 .field-row.two {

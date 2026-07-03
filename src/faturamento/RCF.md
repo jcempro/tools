@@ -56,9 +56,13 @@ Na impressao, a tabela deve usar largura proporcional para Mes/Ano, Vendas a Vis
 
 Quando o usuario informar apenas Faturamento Bruto Anual, o sistema pode distribuir automaticamente valores pelos doze meses. A distribuicao deve permitir percentual para Vendas a Vista e Vendas a Prazo, complementares e totalizando 100%, com padrao 100% a vista e 0% a prazo.
 
-A distribuicao deve ser deterministica, reprodutivel, nao negativa, arredondada para centavos, reconciliada exatamente ao total anual e visualmente natural, sem aleatoriedade verdadeira nem crescimento perfeitamente linear quando houver variacao simulada. O processo de distribuicao, compensacao, preservacao de edicoes manuais e reconciliacao de centavos aplica-se separadamente a Vendas a Vista e Vendas a Prazo, sem misturar colunas.
+A distribuicao deve ser deterministica, reprodutivel, nao negativa, arredondada para centavos, reconciliada exatamente ao total anual e visualmente natural, sem aleatoriedade verdadeira nem crescimento perfeitamente linear quando houver variacao simulada. A reconciliacao deve considerar simultaneamente Vendas a Vista e Vendas a Prazo para preservar o total anual.
 
 O usuario pode editar valores mensais. Havendo total anual de referencia, a edicao de um mes nao altera esse total; a diferenca e compensada nos meses elegiveis restantes. Meses alterados manualmente permanecem preservados ate desbloqueio ou redefinicao da distribuicao. Redistribuicao deve manter valores nao negativos e soma exata.
+
+Por padrao, a distribuicao entre a vista e a prazo nao fica fixada: alteracoes manuais nos meses devem ser tratadas como indicio da composicao real, fazendo o sistema inferir novos percentuais globais a partir dos valores preservados e redistribuir o restante do total anual.
+
+Quando o usuario marcar a opcao de fixar distribuicao, os percentuais globais informados passam a ser imposicao anual. Se uma coluna estiver com 0%, seus campos mensais devem ficar desabilitados e zerados. Se houver percentual limitado, a redistribuicao deve preservar o percentual anual imposto, sem exigir que cada mes siga a mesma proporcao; a divergencia mensal entre a vista e a prazo pode variar ate 40 pontos percentuais em relacao ao percentual global fixado.
 
 Meses `PREVISTO` devem ter valores derivados automaticamente, salvo edicao manual explicita. Previsao de Vendas a Vista usa apenas dados dessa coluna; Vendas a Prazo usa apenas dados dessa coluna.
 

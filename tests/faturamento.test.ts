@@ -10,6 +10,7 @@ import {
   MEI_LIMIT_CENTS,
   parseCurrencyToCents,
   parseMesAno,
+  redistributeAnnualValues,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
   sumRows,
@@ -77,6 +78,41 @@ test("faturamento splits annual target between vista and prazo", () => {
   assert.deepEqual(splitAnnualTargets(100_00, 100), { prazo: 0, vista: 100_00 });
   assert.deepEqual(splitAnnualTargets(100_00, 70), { prazo: 30_00, vista: 70_00 });
   assert.deepEqual(splitAnnualTargets(101_00, 50), { prazo: 50_50, vista: 50_50 });
+});
+
+test("faturamento infers distribution from manual monthly edits when not fixed", () => {
+  const result = redistributeAnnualValues(
+    [
+      { fixarPrazo: true, vendasPrazo: 1_000_00, vendasVista: 1_000_00 },
+      { vendasPrazo: 0, vendasVista: 11_000_00 }
+    ],
+    12_000_00,
+    100,
+    false
+  );
+
+  assert.equal(result.erro, undefined);
+  assert.equal(result.totais.brutoAnual, 12_000_00);
+  assert.equal(result.totais.prazo, 1_000_00);
+  assert.equal(Math.round(result.percentualVista * 100), 9167);
+});
+
+test("faturamento preserves imposed annual split when distribution is fixed", () => {
+  const result = redistributeAnnualValues(
+    [
+      { fixarPrazo: true, vendasPrazo: 1_500_00, vendasVista: 1_000_00 },
+      { vendasPrazo: 0, vendasVista: 11_000_00 }
+    ],
+    12_000_00,
+    75,
+    true
+  );
+
+  assert.equal(result.erro, undefined);
+  assert.equal(result.totais.brutoAnual, 12_000_00);
+  assert.equal(result.totais.vista, 9_000_00);
+  assert.equal(result.totais.prazo, 3_000_00);
+  assert.equal(result.percentualVista, 75);
 });
 
 test("faturamento blocks tax regimes above configured annual limits", () => {
