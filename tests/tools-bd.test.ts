@@ -31,6 +31,24 @@ test("bd converts modelo 1 to modelo 2 preserving unknown customer columns", () 
   assert.deepEqual(result.dataset.rows[1], ["552222", "Ana Casa", "100", "A", "", ""]);
 });
 
+test("bd recognizes compact indexed phone/name columns in modelo 1", () => {
+  const source = parseCsv([
+    "MCI;Nome;Fone;Nome2;Fone2;Nome3;Fone3;Segmento",
+    "100;Ana;(11) 1111-0000;Ana Casa;2222;Ana Trabalho;3333;A"
+  ].join("\n"));
+
+  const result = convertDataset(source, "modelo1", "modelo2");
+
+  assert.equal(result.issues.some((issue) => issue.severity === "error"), false);
+  assert.equal(result.dataset.columns.some((column) => /^fone\s*\d+$/i.test(column) || /^nome\s*\d+$/i.test(column)), false);
+  assert.deepEqual(result.dataset.columns, ["Fone", "Nome", "MCI", "Segmento"]);
+  assert.deepEqual(result.dataset.rows, [
+    ["1111110000", "Ana", "100", "A"],
+    ["2222", "Ana Casa", "100", "A"],
+    ["3333", "Ana Trabalho", "100", "A"]
+  ]);
+});
+
 test("bd asks for name decision when the same phone has divergent names", () => {
   const source = parseCsv([
     "MCI;Nome;Fone",

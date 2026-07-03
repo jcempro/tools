@@ -99,6 +99,8 @@ Os nomes das colunas deverão ser tratados de forma case-insensitive.
 
 O sistema deverá permitir aliases configuráveis para futuras nomenclaturas equivalentes.
 
+Colunas múltiplas indexadas deverão aceitar, no mínimo, a forma com espaço antes do índice e a forma compacta sem espaço, como `Fone 2`/`Nome 2` e `Fone2`/`Nome2`, tratando-as como semanticamente equivalentes.
+
 Colunas desconhecidas jamais deverão ser descartadas.
 
 Toda coluna desconhecida deverá ser automaticamente incorporada ao modelo interno e preservada durante todas as conversões.

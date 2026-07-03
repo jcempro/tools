@@ -579,7 +579,7 @@ function findColumn(columns: string[], expected: string): string | undefined {
 }
 
 function isBase(column: string, base: string): boolean {
-  return normalizeKey(indexedColumn(column).base) === normalizeKey(base);
+  return Boolean(indexedColumnForBase(column, base));
 }
 
 function isPairColumn(column: string): boolean {
@@ -595,9 +595,26 @@ function indexedColumn(column: string): { base: string; index: number } {
 
 function collectIndexedColumns(columns: string[], base: string): Array<{ column: string; index: number }> {
   return columns
-    .map((column) => ({ column, ...indexedColumn(column) }))
-    .filter((item) => normalizeKey(item.base) === normalizeKey(base))
+    .map((column) => indexedColumnForBase(column, base))
+    .filter((item): item is { column: string; index: number } => Boolean(item))
     .sort((left, right) => left.index - right.index);
+}
+
+function indexedColumnForBase(column: string, expectedBase: string): { column: string; index: number } | null {
+  const spaced = indexedColumn(column);
+  const expected = normalizeKey(expectedBase);
+  if (normalizeKey(spaced.base) === expected) {
+    return { column, index: spaced.index };
+  }
+
+  const compact = /^(.*?)(\d+)$/.exec(column.trim());
+  const compactBase = compact?.[1]?.trim() ?? "";
+  const compactIndex = Number.parseInt(compact?.[2] ?? "1", 10);
+  if (compactBase && normalizeKey(compactBase) === expected && Number.isFinite(compactIndex) && compactIndex > 0) {
+    return { column, index: compactIndex };
+  }
+
+  return null;
 }
 
 function resolveCustomerKey(record: Map<string, string>, identifiers: string[], rowIndex: number, occurrence = 1): string {
