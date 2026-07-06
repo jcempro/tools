@@ -3,13 +3,16 @@ import assert from "node:assert/strict";
 
 import {
   buildPeriod,
+  buildPeriodFromStart,
   classifyMonth,
+  classifyMonthBySignatureDate,
   distributeCents,
   formatMesAno,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
   parseCurrencyToCents,
   parseMesAno,
+  referenceFromPeriodAndSignature,
   redistributeAnnualValues,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
@@ -43,12 +46,47 @@ test("faturamento classifies months from reference", () => {
   assert.equal(classifyMonth(after, reference), "PREVISTO");
 });
 
+test("faturamento builds twelve months from the selected initial month", () => {
+  const start = parseMesAno("07/2025");
+  assert.ok(start);
+
+  const period = buildPeriodFromStart(start);
+
+  assert.equal(period.length, 12);
+  assert.equal(formatMesAno(period[0]!), "07/2025");
+  assert.equal(formatMesAno(period[11]!), "06/2026");
+});
+
+test("faturamento classifies realized and predicted months from signature date", () => {
+  const before = parseMesAno("06/2026");
+  const same = parseMesAno("07/2026");
+  const after = parseMesAno("08/2026");
+  const signature = new Date(2026, 6, 6);
+
+  assert.ok(before);
+  assert.ok(same);
+  assert.ok(after);
+  assert.equal(classifyMonthBySignatureDate(before, signature), "REALIZADO");
+  assert.equal(classifyMonthBySignatureDate(same, signature), "PREVISTO");
+  assert.equal(classifyMonthBySignatureDate(after, signature), "PREVISTO");
+});
+
+test("faturamento derives reference from the last realized visible month", () => {
+  const start = parseMesAno("01/2026");
+  assert.ok(start);
+
+  const reference = referenceFromPeriodAndSignature(buildPeriodFromStart(start), new Date(2026, 6, 6));
+
+  assert.equal(formatMesAno(reference), "06/2026");
+});
+
 test("faturamento distribution is deterministic and reconciles cents", () => {
   const first = distributeCents(674_784_44, 12);
   const second = distributeCents(674_784_44, 12);
 
   assert.deepEqual(first, second);
   assert.equal(first.reduce((sum, value) => sum + value, 0), 674_784_44);
+  assert.equal(first.every((value) => Number.isInteger(value)), true);
   assert.equal(new Set(first).size > 1, true);
 });
 

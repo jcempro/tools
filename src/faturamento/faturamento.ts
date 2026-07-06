@@ -1,6 +1,7 @@
 import {
-  buildPeriod,
-  classifyMonth,
+  addMonths,
+  buildPeriodFromStart,
+  classifyMonthBySignatureDate,
   compareMesAno,
   distributeCents,
   formatCurrencyFromCents,
@@ -12,7 +13,7 @@ import {
   parseCurrencyToCents,
   parseMesAno,
   parsePercent,
-  previousClosedMonth,
+  referenceFromPeriodAndSignature,
   redistributeAnnualValues,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
@@ -78,7 +79,7 @@ import {
       { hint: "Cidade", required: true, selector: "#cidade" },
       { hint: "UF", required: true, selector: "#uf", validate: validateUf },
       { hint: "Data de Assinatura", required: true, selector: "#data-assinatura" },
-      { hint: "Mês/Ano de Referência", required: true, selector: "#mes-referencia", validate: validateMesAno },
+      { hint: "Mês inicial", required: true, selector: "#mes-inicial", validate: validateMesAno },
       { hint: "Faturamento Bruto Anual", required: false, selector: "#faturamento-alvo", validate: validateCurrency },
       { hint: "Distribuição à vista", required: true, selector: "#distribuicao-vista", validate: validatePercentField },
       { hint: "Distribuição a prazo", required: true, selector: "#distribuicao-prazo", validate: validatePercentField },
@@ -91,7 +92,8 @@ import {
     ]
   };
 
-  let currentReference: MesAno | null = null;
+  let currentPeriodStart: MesAno | null = null;
+  let currentSignatureMonth: MesAno | null = null;
   let isHydrating = false;
   let signerCount = 1;
 
@@ -175,8 +177,24 @@ import {
     return `${day} de ${monthName} de ${date.getFullYear()}`;
   }
 
-  function defaultReference(): MesAno {
-    return previousClosedMonth(dateFromInput(input("data-assinatura").value || todayIso()));
+  function signatureDate(): Date {
+    return dateFromInput(input("data-assinatura").value || todayIso());
+  }
+
+  function defaultInitialMonth(): MesAno {
+    return addMonths({ ano: signatureDate().getFullYear(), mes: signatureDate().getMonth() + 1 }, -12);
+  }
+
+  function initialMonth(): MesAno {
+    return parseMesAno(input("mes-inicial").value) ?? defaultInitialMonth();
+  }
+
+  function currentPeriod(): MesAno[] {
+    return buildPeriodFromStart(initialMonth());
+  }
+
+  function currentDerivedReference(): MesAno {
+    return referenceFromPeriodAndSignature(currentPeriod(), signatureDate());
   }
 
   function setValue(id: string, value: string): void {
@@ -198,8 +216,9 @@ import {
       setValue("uf", "SP");
     }
 
-    if (!input("mes-referencia").value) {
-      setValue("mes-referencia", formatMesAno(defaultReference()));
+    if (!input("mes-inicial").value) {
+      const previousReference = parseMesAno(api.storage.getItem("mes-referencia") ?? "");
+      setValue("mes-inicial", formatMesAno(previousReference ? addMonths(previousReference, -11) : defaultInitialMonth()));
     }
 
     if (!input("distribuicao-vista").value) {
@@ -236,7 +255,7 @@ import {
     }
   }
 
-  function renderMonthRows(reference: MesAno): void {
+  function renderMonthRows(start: MesAno): void {
     const editor = api.one<HTMLTableSectionElement>("#editor-meses");
     const print = api.one<HTMLTableSectionElement>("#print-meses");
 
@@ -244,13 +263,13 @@ import {
       return;
     }
 
-    const months = buildPeriod(reference);
+    const months = buildPeriodFromStart(start);
     editor.innerHTML = "";
     print.innerHTML = "";
 
     months.forEach((month, index) => {
       const label = formatMesAno(month);
-      const status = classifyMonth(month, reference);
+      const status = classifyMonthBySignatureDate(month, signatureDate());
       const editorRow = document.createElement("tr");
       editorRow.innerHTML = `
         <td class="month-label" data-month="${label}">${label}</td>
@@ -272,11 +291,9 @@ import {
   }
 
   function monthRows(): LinhaFaturamento[] {
-    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
-
     return api.$<HTMLTableRowElement>("#editor-meses tr").map((row) => {
-      const monthText = row.querySelector<HTMLElement>("[data-month]")?.dataset.month ?? formatMesAno(reference);
-      const mesAno = parseMesAno(monthText) ?? reference;
+      const monthText = row.querySelector<HTMLElement>("[data-month]")?.dataset.month ?? formatMesAno(initialMonth());
+      const mesAno = parseMesAno(monthText) ?? initialMonth();
       const vista = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="vista"]')?.value ?? "") ?? 0;
       const prazo = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="prazo"]')?.value ?? "") ?? 0;
       const prazoMedio = Number.parseInt(input("prazo-medio").value || "45", 10);
@@ -284,7 +301,7 @@ import {
       return {
         mesAno,
         prazoMedio: Number.isFinite(prazoMedio) && prazoMedio >= 0 ? prazoMedio : 0,
-        situacao: classifyMonth(mesAno, reference),
+        situacao: classifyMonthBySignatureDate(mesAno, signatureDate()),
         vendasPrazo: prazo,
         vendasVista: vista
       };
@@ -326,7 +343,7 @@ import {
   function renderPreview(): void {
     const rows = monthRows();
     const totals = sumRows(rows);
-    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
+    const reference = referenceFromPeriodAndSignature(rows.map((row) => row.mesAno), signatureDate());
     const city = input("cidade").value.trim() || "Pirassununga";
     const uf = input("uf").value.trim().toUpperCase() || "SP";
 
@@ -364,15 +381,22 @@ import {
   }
 
   function refreshPeriodIfNeeded(): void {
-    const reference = parseMesAno(input("mes-referencia").value) ?? defaultReference();
+    const start = initialMonth();
+    const signedMonth = { ano: signatureDate().getFullYear(), mes: signatureDate().getMonth() + 1 };
 
-    if (currentReference && compareMesAno(currentReference, reference) === 0) {
+    if (
+      currentPeriodStart &&
+      currentSignatureMonth &&
+      compareMesAno(currentPeriodStart, start) === 0 &&
+      compareMesAno(currentSignatureMonth, signedMonth) === 0
+    ) {
       renderPreview();
       return;
     }
 
-    currentReference = reference;
-    renderMonthRows(reference);
+    currentPeriodStart = start;
+    currentSignatureMonth = signedMonth;
+    renderMonthRows(start);
     api.autosave.init({ selector: "#editor-meses input", validation });
     bindDynamicInputs();
     updateDistributionLockState();
@@ -756,6 +780,7 @@ import {
       element.value = "";
     });
     api.storage.removeItem("assinantesCount");
+    api.storage.removeItem("mes-referencia");
     select("regime-tributacao").value = "";
     api.storage.removeItem("regime-tributacao");
     normalizeDefaults();
@@ -815,7 +840,8 @@ import {
         vendasPrazo: input(`mes-${index}-prazo`).value,
         vendasVista: input(`mes-${index}-vista`).value
       })),
-      mesReferencia: input("mes-referencia").value,
+      mesInicial: input("mes-inicial").value,
+      mesReferencia: formatMesAno(currentDerivedReference()),
       percentuais: {
         cartoes: input("percentual-cartoes").value,
         cheques: input("percentual-cheques").value,
@@ -853,7 +879,27 @@ import {
     assignIfPresent("cidade", data.cidade);
     assignIfPresent("uf", data.uf);
     assignIfPresent("data-assinatura", data.dataAssinatura);
-    assignIfPresent("mes-referencia", data.mesReferencia);
+    let periodAssigned = false;
+    if (typeof data.mesInicial === "string" || typeof data.mesInicial === "number") {
+      assignIfPresent("mes-inicial", data.mesInicial);
+      periodAssigned = true;
+    } else if (typeof data.mesReferencia === "string" || typeof data.mesReferencia === "number") {
+      const legacyReference = parseMesAno(`${data.mesReferencia}`);
+      if (legacyReference) {
+        assignIfPresent("mes-inicial", formatMesAno(addMonths(legacyReference, -11)));
+        periodAssigned = true;
+      }
+    }
+    if (!periodAssigned && Array.isArray(data.meses) && isRecord(data.meses[0])) {
+      assignIfPresent("mes-inicial", data.meses[0].mesAno);
+      periodAssigned = true;
+    }
+    if (periodAssigned) {
+      api.storage.removeItem("mes-referencia");
+    }
+    if (!parseMesAno(input("mes-inicial").value)) {
+      setValue("mes-inicial", formatMesAno(defaultInitialMonth()));
+    }
     assignIfPresent("faturamento-alvo", data.faturamentoBrutoAnual);
     assignIfPresent("prazo-medio", data.prazoMedio);
 
@@ -942,7 +988,7 @@ import {
           renderPreview();
           return;
         }
-        if (element.id === "mes-referencia") {
+        if (element.id === "mes-inicial") {
           return;
         }
         if (element.id === "distribuicao-vista") {
@@ -959,7 +1005,7 @@ import {
         renderPreview();
       });
       api.on(element, "blur", () => {
-        if (element.id === "mes-referencia" || element.id === "data-assinatura") {
+        if (element.id === "mes-inicial" || element.id === "data-assinatura") {
           refreshPeriodIfNeeded();
           return;
         }
@@ -989,7 +1035,7 @@ import {
     api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".faturamento-shell" });
     api.print.createPageStyle(pageConfig);
     api.autosave.indicator(".autosave");
-    renderMonthRows(defaultReference());
+    renderMonthRows(defaultInitialMonth());
     restoreSigners();
     api.autosave.init({ selector: "#faturamento-app input", validation });
     restoreFixedDistribution();

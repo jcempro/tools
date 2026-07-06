@@ -340,6 +340,10 @@ export function addMonths(value: MesAno, amount: number): MesAno {
   return { ano, mes };
 }
 
+export function monthFromDate(date: Date): MesAno {
+  return { ano: date.getFullYear(), mes: date.getMonth() + 1 };
+}
+
 export function previousClosedMonth(date: Date): MesAno {
   const candidate = new Date(date.getFullYear(), date.getMonth() - 1, 1);
   return { ano: candidate.getFullYear(), mes: candidate.getMonth() + 1 };
@@ -354,8 +358,28 @@ export function buildPeriod(reference: MesAno, count = 12): MesAno[] {
   return Array.from({ length: count }, (_item, index) => addMonths(start, index));
 }
 
+export function buildPeriodFromStart(start: MesAno, count = 12): MesAno[] {
+  if (count < 1) {
+    return [];
+  }
+
+  return Array.from({ length: count }, (_item, index) => addMonths(start, index));
+}
+
 export function classifyMonth(month: MesAno, reference: MesAno): SituacaoFaturamento {
   return compareMesAno(month, reference) <= 0 ? "REALIZADO" : "PREVISTO";
+}
+
+export function classifyMonthBySignatureDate(month: MesAno, signatureDate: Date): SituacaoFaturamento {
+  return compareMesAno(month, monthFromDate(signatureDate)) < 0 ? "REALIZADO" : "PREVISTO";
+}
+
+export function referenceFromPeriodAndSignature(period: MesAno[], signatureDate: Date): MesAno {
+  const lastRealized = [...period]
+    .reverse()
+    .find((month) => classifyMonthBySignatureDate(month, signatureDate) === "REALIZADO");
+
+  return lastRealized ?? previousClosedMonth(signatureDate);
 }
 
 export function distributeCents(total: number, count = 12): number[] {
@@ -381,7 +405,10 @@ export function distributeCents(total: number, count = 12): number[] {
   let remainder = normalizedTotal - cents.reduce((sum, item) => sum + item, 0);
   const order = exact
     .map((value, index) => ({ fraction: value - Math.floor(value), index }))
-    .sort((left, right) => right.fraction - left.fraction);
+    .sort((left, right) => {
+      const byFraction = right.fraction - left.fraction;
+      return byFraction === 0 ? left.index - right.index : byFraction;
+    });
 
   for (const item of order) {
     if (remainder <= 0) {
