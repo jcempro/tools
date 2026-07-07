@@ -1466,7 +1466,7 @@ import {
       </div>
       <div class="jcem-chrome-meta">
         <span class="jcem-chrome-domain">${domain}</span>
-        <span class="ico autosave jcem-autosave"><span>Salvamento offline quando aplicável.</span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
+        <span class="ico autosave jcem-autosave"><span>Salvamento local, offline e automático, se aplicável.</span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
       </div>
       <nav class="menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
     `;
