@@ -454,6 +454,10 @@ div.menu {
 .jcem-chrome {
   box-sizing: border-box;
   width: 100%;
+  --jcem-icon-color: currentColor;
+  --jcem-icon-hover-color: currentColor;
+  --jcem-toolbar-icon-color: #888;
+  --jcem-toolbar-icon-hover-color: #123a62;
   color: #18212b;
   font-family: "Noto Sans", "Tahoma", "Arial", "sans-serif";
 }
@@ -602,6 +606,15 @@ div.menu {
   color: #123a62;
 }
 
+.jcem-chrome-actions.menu .jcem-fa-icon {
+  color: var(--jcem-toolbar-icon-color);
+}
+
+.jcem-chrome-actions.menu > *:hover .jcem-fa-icon,
+.jcem-chrome-actions.menu > *:focus-visible .jcem-fa-icon {
+  color: var(--jcem-toolbar-icon-hover-color);
+}
+
 .jcem-chrome-actions.menu > *:focus-visible {
   outline: 2px solid #2d7fbd;
   outline-offset: 2px;
@@ -611,7 +624,9 @@ div.menu {
   width: 2rem;
   height: 2rem;
   flex: 0 0 auto;
+  color: var(--jcem-icon-color, currentColor);
   fill: currentColor;
+  transition: color 160ms ease, opacity 160ms ease, transform 160ms ease;
 }
 
 .jcem-toolbar-label {
