@@ -18,7 +18,7 @@
 body {
   margin: 0;
   color: var(--ink);
-  background: #dfe5e9;
+  background: #fff;
 }
 
 button,
@@ -96,24 +96,6 @@ select {
   border-color: var(--accent);
   background: #e8f2fb;
   color: #123a62;
-}
-
-.faturamento-shell {
-  display: grid;
-  grid-template-columns: minmax(360px, 620px) minmax(22cm, 1fr);
-  gap: 18px;
-  align-items: start;
-  padding: 18px;
-}
-
-.editor {
-  position: sticky;
-  top: 58px;
-  max-height: calc(100vh - 76px);
-  overflow: auto;
-  padding: 14px;
-  border: 1px solid #c8d0d7;
-  background: var(--panel);
 }
 
 .editor-grid {
@@ -280,19 +262,13 @@ input:disabled {
 }
 
 
-.preview-wrap {
-  overflow: auto;
-  padding: 10px;
-}
-
 .print-page {
   box-sizing: border-box;
   width: 21cm;
   min-height: 29.7cm;
-  margin: 0 auto;
+  margin: 0;
   padding: 0.82cm 0.86cm 0.72cm;
   background: var(--paper);
-  box-shadow: 0 10px 24px rgb(20 35 50 / 25%);
 }
 
 .print-page,
@@ -559,17 +535,6 @@ input:disabled {
   margin-top: 0.32cm;
 }
 
-@media (max-width: 1120px) {
-  .faturamento-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .editor {
-    position: static;
-    max-height: none;
-  }
-}
-
 @media (max-width: 560px) {
   .field-row.two,
   .field-row.city-uf {
@@ -590,16 +555,6 @@ input:disabled {
     background: #fff;
   }
 
-  .faturamento-shell {
-    display: block;
-    padding: 0;
-  }
-
-  .preview-wrap {
-    overflow: visible;
-    padding: 0;
-  }
-
   .print-page {
     width: 21cm;
     min-height: 0;
@@ -616,16 +571,6 @@ input:disabled {
 body.imprimir {
   margin: 0;
   background: #fff;
-}
-
-body.imprimir .faturamento-shell {
-  display: block;
-  padding: 0;
-}
-
-body.imprimir .preview-wrap {
-  overflow: visible;
-  padding: 0;
 }
 
 body.imprimir .print-page {

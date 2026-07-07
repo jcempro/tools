@@ -129,7 +129,7 @@ Payload JSON Base64 integral deve aceitar, alem dos aliases legados:
 
 Identificadores e comportamentos que sustentam dados ja salvos em `localStorage` devem ser preservados. Campos sem `id` continuam recebendo identificador automatico pela infraestrutura compartilhada.
 
-Conteudo textual, mapeamentos, mensagens especificas, margens particulares, layout de assinatura e selecao de validadores pertencem ao modulo admissional. Validacao comum, autosave, impressao, timbre, data, toolbar, Base64 e estilos documentais comuns pertencem a camada compartilhada.
+Conteudo textual, mapeamentos, mensagens especificas, margens particulares, layout interno de assinatura e selecao de validadores pertencem ao modulo admissional. Layout global de workspace/preview, validacao comum, autosave, impressao, timbre, data, toolbar, Base64 e estilos documentais comuns pertencem a camada compartilhada.
 
 ## 9. Arquitetura Local
 
@@ -149,7 +149,7 @@ Codigo local canonico: `src/oficios/admissional/admissional.ts`. Artefatos gerad
 
 - Documento estatico, executado no navegador.
 - Infraestrutura reutilizavel extraida para `src/assets/`.
-- Modulo local mantem apenas configuracao, mapeamentos e layout especifico de assinatura.
+- Modulo local mantem apenas configuracao, mapeamentos e layout interno especifico de assinatura.
 - Comportamento local e TypeScript compilado para JavaScript publicado.
 - Validacoes comuns sao selecionadas por campo no modulo.
 - Compartilhamento legado por parametros individuais permanece por compatibilidade.

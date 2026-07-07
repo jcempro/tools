@@ -60,6 +60,8 @@ Elementos de interface devem ser identificaveis por classes/atributos como `.men
 
 A Area imprimivel e a unica regiao que pode ser limitada artificialmente pelas dimensoes da folha. A Area de aplicacao, incluindo cabecalho global, rodape global, toolbar, paineis auxiliares, alertas, notificacoes, navegacao e apoios de edicao, deve permanecer responsiva e usar a largura disponivel da viewport sem herdar limites de A4. Modulos imprimiveis devem apresentar a regiao externa a folha com fundo diferenciado, de modo semelhante a editores de documentos e visualizadores de PDF, tornando evidente onde a pagina fisica comeca e termina.
 
+O layout visual dos modulos imprimiveis deve ser centralizado em infraestrutura global opcional. Container de workspace, area cinza externa, preview, regiao de formularios, posicionamento da folha, scroll, dimensionamento, margens da viewport e comportamento responsivo nao pertencem ao modulo. O modulo imprimivel apenas renderiza o conteudo da folha, declara formularios internos ou externos, vincula campos aos elementos do documento e fornece configuracoes especificas. Ferramentas nao imprimiveis nao precisam ativar essa infraestrutura e nao devem receber workspace residual.
+
 A responsividade pode melhorar a edicao Web, mas nao pode alterar medidas, margens, proporcoes, alinhamentos, timbre, paginacao ou hierarquia da area imprimivel. Mudancas em CSS, fontes, escalas, placeholders, tabelas, assinatura, toolbar ou PDF exigem revisao contra impressao/PDF.
 
 Toda area imprimivel que simule a pagina fisica deve manter aparencia de papel independentemente do tema do sistema operacional, tema do navegador, modo escuro forcado ou recurso equivalente. A superficie imprimivel deve declarar fundo branco, cores compativeis com impressao, contraste adequado, `color-scheme` claro e protecao contra ajuste forcado de cores. Apenas a interface Web externa a folha pode adaptar-se a tema claro/escuro.
@@ -74,7 +76,7 @@ Recursos compartilhados obrigatorios quando aplicaveis:
 
 - cabecalho institucional, toolbar extensivel e rodape institucional;
 - impressao/PDF, autosave, query string JSON Base64 e compartilhamento;
-- estilos documentais comuns, formularios, datas, clipboard, timbre/imagem documental;
+- layout de workspace/preview/formularios, estilos documentais comuns, datas, clipboard, timbre/imagem documental;
 - validadores, normalizadores, mensagens e estados de erro reutilizaveis;
 - nucleos reutilizaveis de utilitarios nao documentais, como transformacao tabular.
 

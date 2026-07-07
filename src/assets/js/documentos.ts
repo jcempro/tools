@@ -639,6 +639,67 @@
     }
   }
 
+  function resolveLayoutElement(value: Element | string | null | undefined): HTMLElement | null {
+    if (!value) {
+      return null;
+    }
+
+    const element = typeof value === "string" ? one<HTMLElement>(value) : value;
+    return element instanceof HTMLElement ? element : null;
+  }
+
+  function ensureClass(element: Element, className: string): void {
+    if (!element.classList.contains(className)) {
+      element.classList.add(className);
+    }
+  }
+
+  function renderPrintableLayout(options: PrintableLayoutOptions): void {
+    const documentElement = resolveLayoutElement(options.document);
+
+    if (!documentElement) {
+      return;
+    }
+
+    d.body.classList.add("jcem-printable-layout");
+
+    const currentParent = documentElement.parentElement;
+    const workspace = resolveLayoutElement(options.workspace) ?? d.createElement("main");
+    ensureClass(workspace, "jcem-document-workspace");
+
+    if (!workspace.parentElement) {
+      currentParent?.insertBefore(workspace, documentElement);
+    }
+
+    const preview = resolveLayoutElement(options.preview) ?? d.createElement("section");
+    ensureClass(preview, "jcem-document-preview-region");
+    preview.setAttribute("aria-label", preview.getAttribute("aria-label") || "Pre-visualizacao do documento");
+
+    if (!preview.parentElement || preview.parentElement !== workspace) {
+      workspace.appendChild(preview);
+    }
+    if (!preview.contains(documentElement)) {
+      preview.appendChild(documentElement);
+    }
+
+    const externalForms = (options.forms ?? [])
+      .filter((form) => form.placement === "external")
+      .map((form) => resolveLayoutElement(form.selector))
+      .filter((form): form is HTMLElement => Boolean(form));
+
+    if (externalForms.length > 0) {
+      workspace.classList.remove("jcem-document-workspace--document-only");
+      for (const form of externalForms) {
+        ensureClass(form, "jcem-document-form-region");
+        if (form.parentElement !== workspace) {
+          workspace.insertBefore(form, preview);
+        }
+      }
+    } else {
+      workspace.classList.add("jcem-document-workspace--document-only");
+    }
+  }
+
   function bundleNameFromPath(): string {
     const parts = w.location.pathname.split("/").filter(Boolean);
     const last = parts[parts.length - 1] ?? "";
@@ -923,6 +984,9 @@
     },
     chrome: {
       render: renderChrome
+    },
+    layout: {
+      printable: renderPrintableLayout
     },
     date: {
       current: formatCurrentDate

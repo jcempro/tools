@@ -73,6 +73,9 @@ declare global {
     chrome: {
       render: (options?: ChromeOptions) => void;
     };
+    layout: {
+      printable: (options: PrintableLayoutOptions) => void;
+    };
     share: {
       bindToolbar: (selector: string, options?: ShareOptions) => void;
       buildUrl: (mode: ShareMode, options?: ShareOptions, event?: Event) => ShareBuildResult;
@@ -171,6 +174,18 @@ declare global {
     licenseName?: string;
     licenseUrl?: string;
     mountBefore?: Element | string | null;
+  }
+
+  interface PrintableFormConfig {
+    placement: "external" | "internal";
+    selector: Element | string;
+  }
+
+  interface PrintableLayoutOptions {
+    document: Element | string;
+    forms?: PrintableFormConfig[];
+    preview?: Element | string | null;
+    workspace?: Element | string | null;
   }
 
   interface PdfOptions {

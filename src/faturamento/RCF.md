@@ -110,11 +110,11 @@ Entradas invalidas nao devem corromper dados validos. Quando possivel, preservar
 
 ## 12. Componentes e Reuso
 
-O modulo deve reutilizar infraestrutura compartilhada para toolbar/acoes documentais, autosave, JSON Base64, impressao/PDF, separacao interface/area imprimivel, validadores, normalizadores, formatacao de datas/moedas/percentuais/documentos brasileiros, mensagens e estados de erro.
+O modulo deve reutilizar infraestrutura compartilhada para layout de workspace/preview/formularios, toolbar/acoes documentais, autosave, JSON Base64, impressao/PDF, separacao interface/area imprimivel, validadores, normalizadores, formatacao de datas/moedas/percentuais/documentos brasileiros, mensagens e estados de erro.
 
 Devem ser promovidas ou consumidas como compartilhadas as logicas reutilizaveis, incluindo validacao de Mes/Ano, geracao de doze meses, formatacao/arredondamento BRL, reconciliacao de centavos, validacao percentual, Cidade-UF e serializacao de formularios complexos.
 
-Permanecem locais: semantica da Relacao de Faturamento, Mercado Interno, Faturamento Bruto Anual, distribuicao/redistribuicao mensal, classificacao vinculada a data de assinatura, referencia derivada, layout oficial e regras de assinatura/apresentacao do responsavel.
+Permanecem locais: semantica da Relacao de Faturamento, Mercado Interno, Faturamento Bruto Anual, distribuicao/redistribuicao mensal, classificacao vinculada a data de assinatura, referencia derivada, layout interno oficial da folha e regras de assinatura/apresentacao do responsavel.
 
 ## 13. Extensoes Permitidas
 

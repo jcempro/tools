@@ -1033,6 +1033,12 @@ import {
 
   api.ready(() => {
     api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".faturamento-shell" });
+    api.layout.printable({
+      document: "#documento-faturamento",
+      forms: [{ placement: "external", selector: ".editor" }],
+      preview: ".preview-wrap",
+      workspace: ".faturamento-shell"
+    });
     api.print.createPageStyle(pageConfig);
     api.autosave.indicator(".autosave");
     renderMonthRows(defaultInitialMonth());

@@ -133,6 +133,10 @@
 
   api.ready(() => {
     api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".versao" });
+    api.layout.printable({
+      document: ".main",
+      forms: [{ placement: "internal", selector: ".main" }]
+    });
     api.autosave.indicator(".autosave");
     api.image.load({ key: "timbre", selector: "img.logo" });
     api.print.createPageStyle(pageConfig);

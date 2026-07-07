@@ -115,3 +115,20 @@ test("print page sizing does not constrain application chrome globally", async (
   assert.match(ts, /body:not\(\.imprimir\) div\.main/);
   assert.match(ts, /body\.imprimir div\.main/);
 });
+
+test("printable modules consume the shared document workspace layout", async () => {
+  const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
+  const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
+  const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
+  const faturamentoCss = await readFile("src/faturamento/faturamento.css", "utf8");
+  const sharedCss = await readFile("src/assets/css/documentos.css", "utf8");
+
+  assert.match(sharedTs, /renderPrintableLayout/);
+  assert.match(sharedTs, /jcem-document-workspace/);
+  assert.match(sharedCss, /body\.jcem-printable-layout\s*{[^}]*height:\s*100vh;/s);
+  assert.match(sharedCss, /\.jcem-document-workspace\s*{[^}]*flex:\s*1 1 0;/s);
+  assert.match(faturamentoTs, /api\.layout\.printable/);
+  assert.match(admissionalTs, /api\.layout\.printable/);
+  assert.doesNotMatch(faturamentoCss, /\.faturamento-shell\s*{/);
+  assert.doesNotMatch(faturamentoCss, /\.preview-wrap\s*{/);
+});
