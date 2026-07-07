@@ -1598,6 +1598,7 @@ import { g as guard } from "./guard";
         <h2>${seal.__p16}</h2>
         <p>${seal.__p21}</p>
         <p>${seal.__p22}</p>
+        <p>${seal.__p23}</p>
       </section>
     `;
 

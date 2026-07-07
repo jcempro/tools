@@ -36,6 +36,10 @@ const protectedChromeTerms = [
   "Modelos e ferramentas são recursos auxiliares",
   "Os recursos não substituem",
   "único instrumento normativo",
+  "Nada constitui consultoria",
+  "serviço gerenciado",
+  "assunção de responsabilidade",
+  "responsabilidades civis",
   "Disclaimer e isenção"
 ];
 const compiledOutputs = new Map([

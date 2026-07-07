@@ -199,7 +199,11 @@ test("institutional chrome protects author, license and legal notices", async ()
     "mozilla.org/MPL",
     "Código disponibilizado sob",
     "Os recursos não substituem",
-    "único instrumento normativo"
+    "único instrumento normativo",
+    "Nada constitui consultoria",
+    "serviço gerenciado",
+    "assunção de responsabilidade",
+    "responsabilidades civis"
   ];
 
   for (const source of protectedSources) {
@@ -216,6 +220,9 @@ test("institutional chrome protects author, license and legal notices", async ()
   assert.equal(seal.__p5, "https://www.mozilla.org/MPL/2.0/");
   assert.match(seal.__p21, /Os recursos não substituem/);
   assert.match(seal.__p22, /único instrumento normativo/);
+  assert.match(seal.__p23, /Nada constitui consultoria/);
+  assert.match(seal.__p23, /assunção de responsabilidade/);
+  assert.match(seal.__p23, /responsabilidades civis/);
   assert.match(sharedTs, /guard\(\)/);
   assert.doesNotMatch(sharedTs, /chromeDefaults|chromeCopy/);
   assert.doesNotMatch(sharedTs, /Tools JCEM/);
