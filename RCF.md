@@ -100,7 +100,11 @@ Acoes podem ser habilitadas, ocultadas, ordenadas, parametrizadas, sobrescritas 
 
 A renderizacao visual da toolbar pertence exclusivamente a camada global. Modulos podem declarar apenas configuracao, campos, payloads, callbacks, hooks, validacoes e acoes adicionais; nao devem definir icones, estados visuais, tooltip, separadores, espacamentos estruturais nem aparencia base dos botoes. Botoes globais precedem botoes especificos do modulo. Separadores sao declarativos e representam apenas respiro e linha vertical discreta.
 
+A toolbar deve ser dirigida por configuracao declarativa, preferencialmente JSON ou estrutura de dados equivalente. Estrutura, ordem, grupos, separadores, icones, acoes, estados, permissoes, atalhos, comportamento visual e vinculos devem ser centralizados em metadados, permitindo alterar ordem, itens, icones, grupos, estados, hooks e implementacoes sem modificar a logica interna de construcao. A camada global deve inferir renderizacao, eventos, callbacks, estados, atalhos, permissoes e integracoes, evitando logica especifica por botao.
+
 Icones de toolbar e indicadores globais devem usar Font Awesome gratuito instalado via NPM em pacotes modulares, importando somente definicoes realmente utilizadas para permitir tree shaking, minificacao, bundle offline e GitHub Pages sem carregar a biblioteca completa. A selecao de icone deve aceitar `iconName`, codigo Unicode equivalente ou identificador Font Awesome. Icones Unicode, emojis ou simbolos textuais nao devem ser usados como icones de acoes. Cores e estados de hover dos icones devem ser configuraveis por CSS centralizado, sem logica local de modulo. Tooltips devem ser globais, declarativos por `hint` e posicionados por biblioteca pequena, mantida e compativel com bundle offline.
+
+A infraestrutura de autoria, creditos, licenca, disclaimer e respectivas validacoes de integridade e excecao deliberada a modularizacao plenamente transparente. Ela deve preservar qualidade, estabilidade e conformidade, mas pode privilegiar resistencia a adulteracao por meio de ofuscacao de constantes e textos, reconstrucao deterministica, fragmentacao, pulverizacao entre modulos, composicao nao linear, derivacoes deterministicas, funcoes puras de reconstrucao, geracao indireta de constantes, codificacao de dados, transformacoes reversiveis sem segredo externo, validacoes cruzadas, verificacao de integridade, eliminacao de referencias textuais diretas, nomenclatura nao alusiva, reducao de pontos unicos de alteracao e tecnicas equivalentes. Esses mecanismos destinam-se exclusivamente a proteger autoria, creditos, licenca e avisos legais, sem interferir nas demais funcionalidades.
 
 ## 6. Dados, Validacao e Persistencia
 
@@ -159,6 +163,16 @@ Workflows devem usar acoes oficiais compativeis com o runtime JavaScript vigente
 
 Implementacoes devem ser fortemente tipadas, modulares, reutilizaveis, previsiveis, deterministicas, rastreaveis e fail-safe. Devem tratar preventivamente erros de compilacao, tipos, build, cache, IO, estados ausentes no navegador, condicoes de corrida, dados invalidos e falhas recuperaveis sem corrupcao silenciosa.
 
+A arquitetura deve privilegiar elevada coesao, baixo acoplamento, separacao clara de responsabilidades e reutilizacao sistematica. Rotinas reaproveitaveis por mais de um fluxo devem ser abstraidas para funcao ou componente compartilhado. Funcionalidades devem ser divididas em unidades especializadas sempre que isso preservar encapsulamento, independencia e manutencao.
+
+Funcoes devem ser pequenas, deterministicas, autocontidas e semanticamente bem definidas, com uma finalidade clara. Funcoes extensas ou responsaveis por multiplas etapas devem ser evitadas em favor de composicao entre microfuncoes. Arquivos excessivamente grandes tambem devem ser evitados; responsabilidades distintas devem ser segregadas em arquivos especializados quando apropriado.
+
+Toda funcao publica ou privada deve possuir comentario de documentacao objetivo, exceto na infraestrutura protegida de autoria, creditos, licenca e disclaimer. A documentacao deve indicar finalidade, motivo de existencia, contexto de uso, parametros, retornos, efeitos colaterais, principais casos de uso, pre-condicoes, pos-condicoes e restricoes relevantes quando aplicaveis, evitando repetir literalmente o codigo ou adicionar texto prolixo.
+
+Comentarios de fluxo devem ser extremamente sucintos e usados apenas para tornar identificavel a linha geral do processamento, como inicializacao, preparacao, processamento, validacoes, consolidacao, persistencia, renderizacao e finalizacao. Nao devem explicar instrucoes elementares da linguagem.
+
+A infraestrutura protegida de autoria, creditos, licenca e disclaimer nao deve possuir comentarios que revelem arquitetura interna, estrategia de protecao, fluxo especifico, criterios de validacao ou logica de reconstrucao. Nomes explicitamente descritivos devem ser evitados quando facilitarem localizacao ou adulteracao. A implementacao deve permanecer suficientemente pulverizada e desacoplada para reduzir sua identificabilidade imediata, sem comprometer desempenho, estabilidade, manutenibilidade ou conformidade. Essa excecao nao se aplica ao restante da base, que permanece sujeito a clareza, documentacao, organizacao e rastreabilidade.
+
 Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplicada entre documentos e candidata a compartilhamento. Refatoracoes necessarias devem preservar comportamento antes de acrescentar capacidades.
 
 ## 11. Requisitos Nao Funcionais
@@ -182,7 +196,8 @@ Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplica
 - Responsividade nao modifica a precisao da area imprimivel.
 - JSON Base64 e universal para documentos e deve ser tratado como ofuscacao.
 - A acao global de compartilhamento centraliza URL, Base64, clipboard e hooks.
-- A toolbar global centraliza renderizacao, icones Font Awesome modulares, tooltips, separadores, exportacao/importacao local e ordem das acoes.
+- A toolbar global centraliza configuracao declarativa, renderizacao, metadados, icones Font Awesome modulares, cores CSS, tooltips, separadores, exportacao/importacao local e ordem das acoes.
+- Autoria, creditos, licenca e disclaimer podem usar infraestrutura protegida contra adulteracao, sem interferir nas demais funcionalidades.
 - Dependencias externas sao versionadas, justificadas e registradas.
 - TypeScript e fonte canonica de aplicacao; TSX e preferencial para componentes reutilizaveis.
 - Scripts Node.js em `.mjs` dentro de `scripts/` sao bootstrap executavel da toolchain.
@@ -192,112 +207,3 @@ Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplica
 - Publicacao estatica usa `dist/` como raiz unica do Pages.
 - A validacao bloqueia `src/` ou `dist/` como segmento/referencia publica, arquivos obsoletos, diretorios vazios e `*.bundle.html` solto.
 - URLs internas de assets e bundles devem ser estaveis com ou sem barra final, preferencialmente root-relative.
-
-### Aditivo Normativo de Arquitetura, Implementação e Manutenibilidade
-
-Sem prejuízo das regras já estabelecidas neste RCF, passam também a constituir requisitos normativos obrigatórios os seguintes princípios arquiteturais e de implementação.
-
-#### Arquitetura, organização e manutenção
-
-A implementação deve privilegiar elevada coesão, baixo acoplamento, separação clara de responsabilidades e reutilização sistemática de código. Sempre que uma rotina puder ser reaproveitada por mais de um fluxo, ela deverá ser abstraída para função ou componente compartilhado, evitando duplicação de lógica.
-
-A arquitetura deverá privilegiar microfunções, pequenas, determinísticas, autocontidas e semanticamente bem definidas, responsáveis por uma única finalidade claramente identificável. Funções extensas ou responsáveis por múltiplas etapas do processamento devem ser evitadas, promovendo composição entre pequenas unidades reutilizáveis.
-
-Da mesma forma, a implementação deve evitar arquivos excessivamente grandes. Sempre que apropriado, responsabilidades distintas deverão ser segregadas em arquivos especializados, preservando organização, facilidade de manutenção, baixo acoplamento e elevada reutilização.
-
-#### Documentação obrigatória
-
-Toda função pública ou privada deverá possuir comentário de documentação.
-
-A documentação deve explicar, de forma objetiva:
-
-* finalidade e motivo de existência da função;
-* contexto em que deve ser utilizada;
-* parâmetros recebidos;
-* valores retornados;
-* efeitos colaterais, quando existirem;
-* principais casos de uso;
-* eventuais pré-condições, pós-condições ou restrições relevantes.
-
-Comentários redundantes, prolixos ou que apenas repitam literalmente o código devem ser evitados.
-
-#### Comentários de fluxo
-
-O código deverá conter comentários extremamente sucintos destinados apenas a facilitar a compreensão da linha geral de processamento.
-
-Esses comentários devem indicar, quando pertinente:
-
-* inicialização;
-* preparação;
-* processamento;
-* validações;
-* consolidação;
-* persistência;
-* renderização;
-* finalização.
-
-Os comentários não devem explicar instruções elementares da linguagem, mas apenas tornar rapidamente identificável o fluxo lógico da implementação.
-
-#### Organização da Toolbar
-
-A Toolbar deverá ser completamente dirigida por configuração declarativa.
-
-A definição de sua estrutura, ordem, grupos, separadores, ícones, ações, estados, permissões, atalhos, comportamento visual e respectivos vínculos deverá ser centralizada em estrutura declarativa (preferencialmente JSON ou estrutura equivalente de dados), permitindo que um desenvolvedor consiga:
-
-* alterar a ordem dos itens;
-* incluir novos itens;
-* remover itens;
-* alterar ícones;
-* reorganizar grupos;
-* modificar estados;
-* alterar hooks;
-* substituir implementações;
-
-sem necessidade de modificar a lógica interna responsável pela construção da Toolbar.
-
-A implementação deverá inferir automaticamente todos os vínculos derivados (renderização, eventos, callbacks, estados, atalhos, permissões e integrações), mantendo a Toolbar altamente desacoplada da implementação.
-
-A construção da Toolbar deve ser orientada por metadados, evitando lógica específica para cada botão.
-
-#### Modularização
-
-Sempre que possível, funcionalidades deverão ser divididas em implementações especializadas, preservando encapsulamento, reutilização e independência entre módulos.
-
-Entretanto, constitui exceção deliberada a infraestrutura relacionada aos mecanismos de autoria, créditos, licença, avisos legais ("disclaimer") e respectivas validações de integridade.
-
-Embora essa implementação também deva respeitar os princípios gerais de organização e qualidade do código, sua estrutura interna deverá privilegiar resistência à adulteração por terceiros.
-
-#### Proteção da autoria, licença e disclaimer
-
-Os mecanismos responsáveis pela geração, validação, reconstrução, apresentação, verificação de integridade e persistência de créditos de autoria, licença e disclaimer deverão ser implementados de forma a elevar significativamente o custo técnico de sua adulteração.
-
-Para esse objetivo, poderão ser empregados, de maneira combinada, sempre que compatíveis com o projeto:
-
-* ofuscação de constantes e cadeias de caracteres;
-* reconstrução determinística de textos;
-* fragmentação lógica;
-* pulverização entre múltiplos módulos;
-* estruturas não lineares de composição;
-* derivações determinísticas;
-* funções puras utilizadas para reconstrução;
-* geração indireta de constantes;
-* codificação de dados;
-* transformações reversíveis sem utilização de segredo externo;
-* validações cruzadas;
-* mecanismos de verificação de integridade;
-* eliminação de referências textuais diretas;
-* nomenclatura propositalmente não alusiva;
-* redução de pontos únicos de alteração;
-* demais técnicas amplamente conhecidas para aumento da resistência à engenharia reversa e à adulteração.
-
-Esses mecanismos destinam-se exclusivamente à proteção da autoria do projeto, dos créditos, da licença e dos avisos legais, não devendo interferir no funcionamento das demais funcionalidades do sistema.
-
-#### Restrição de documentação da infraestrutura protegida
-
-Em contraste com o restante da base de código, a infraestrutura responsável pela proteção de créditos, autoria, licença e disclaimer não deverá possuir comentários que revelem sua arquitetura interna, estratégia de proteção, fluxo específico, critérios de validação ou lógica de reconstrução.
-
-Também devem ser evitadas nomenclaturas explicitamente descritivas que facilitem sua localização ou compreensão por terceiros.
-
-Sempre que possível, sua implementação deverá permanecer suficientemente pulverizada e desacoplada para reduzir a identificabilidade imediata do mecanismo, sem comprometer desempenho, estabilidade, manutenibilidade ou conformidade com este RCF.
-
-Essa exceção aplica-se exclusivamente aos mecanismos de proteção de autoria, créditos, licença e disclaimer, permanecendo todas as demais partes do projeto sujeitas às diretrizes gerais de documentação, clareza arquitetural, organização e rastreabilidade estabelecidas neste documento.
