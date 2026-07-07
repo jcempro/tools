@@ -40,6 +40,7 @@ export const MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT = 40;
 export const SIMPLES_NACIONAL_LIMIT_CENTS = 480_000_000;
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", { currency: "BRL", style: "currency" });
+const legalCompanySuffixPattern = /\b(?:EIRELI|EPP|LIMITADA|LTDA|M\s*E|ME|S\s*A|S\s*S|SA|SLU|SOCIEDADE\s+ANONIMA|SOCIEDADE\s+SIMPLES)\b$/i;
 const percentFormatter = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 2,
   minimumFractionDigits: 0,
@@ -48,6 +49,26 @@ const percentFormatter = new Intl.NumberFormat("pt-BR", {
 
 export function onlyDigits(value: string): string {
   return (value || "").replace(/[^\d]/g, "");
+}
+
+export function normalizeCompanyFileBasename(value: string, fallback = "Relacao-Faturamento"): string {
+  let normalized = `${value ?? ""}`
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Za-z0-9]+/g, " ")
+    .trim();
+
+  while (legalCompanySuffixPattern.test(normalized)) {
+    normalized = normalized.replace(legalCompanySuffixPattern, "").trim();
+  }
+
+  const capitalized = normalized
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join("-");
+
+  return capitalized || fallback;
 }
 
 export function parseCurrencyToCents(value: string): number | null {

@@ -10,6 +10,7 @@ import {
   formatMesAno,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
+  normalizeCompanyFileBasename,
   parseCurrencyToCents,
   parseMesAno,
   referenceFromPeriodAndSignature,
@@ -168,4 +169,11 @@ test("faturamento blocks tax regimes above configured annual limits", () => {
   assert.equal(isRegimeAllowed("Simples Nacional", SIMPLES_NACIONAL_LIMIT_CENTS), true);
   assert.equal(isRegimeAllowed("Simples Nacional", SIMPLES_NACIONAL_LIMIT_CENTS + 1), false);
   assert.equal(isRegimeAllowed("Lucro Presumido", SIMPLES_NACIONAL_LIMIT_CENTS + 1), true);
+});
+
+test("faturamento suggests clean company file basenames", () => {
+  assert.equal(normalizeCompanyFileBasename("FULANO  DE   TAL LTDA ME"), "Fulano-De-Tal");
+  assert.equal(normalizeCompanyFileBasename("São João & Filhos S.A."), "Sao-Joao-Filhos");
+  assert.equal(normalizeCompanyFileBasename("ACME Comércio!!! EPP"), "Acme-Comercio");
+  assert.equal(normalizeCompanyFileBasename("LTDA", "Relacao-Faturamento"), "Relacao-Faturamento");
 });

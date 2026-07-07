@@ -169,6 +169,7 @@ declare global {
 
   interface PrintPdfOptions extends PrintModeOptions {
     filename?: string | (() => string);
+    margin?: [number, number, number, number];
     orientation?: "portrait" | "landscape";
     pageConfig: PageConfig;
     scale?: number;
@@ -331,6 +332,7 @@ declare global {
 
   interface ToolbarRuntimeConfig {
     acceptVersions?: string[];
+    exportBasename?: string | (() => string);
     exportPayload?: () => Record<string, unknown> | null | undefined;
     fileExtension?: string;
     importPayload?: (data: Record<string, unknown>, envelope: PortableDocumentEnvelope) => void;

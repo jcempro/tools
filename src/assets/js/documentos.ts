@@ -520,7 +520,7 @@ import {
           html2canvas: { scale: options.scale ?? 6 },
           image: { quality: 0.98, type: "jpeg" },
           jsPDF: { format: options.pageConfig.size, orientation: options.orientation ?? "portrait", unit: options.pageConfig.unit },
-          margin: [options.pageConfig.top, options.pageConfig.left, options.pageConfig.bottom, options.pageConfig.right]
+          margin: options.margin ?? [options.pageConfig.top, options.pageConfig.left, options.pageConfig.bottom, options.pageConfig.right]
         });
         w.setTimeout(restore, 50);
       }, 100);
@@ -968,7 +968,13 @@ import {
   function exportFilling(config: ToolbarRuntimeConfig = {}): PortableDocumentEnvelope | null {
     const envelope = portableEnvelope(config);
     const extension = config.fileExtension ?? ".json";
-    const basename = safeBasename(w.prompt(config.messages?.exportBasename ?? "Nome do arquivo:", envelope.moduleId) ?? "", envelope.moduleId);
+    const suggestion = typeof config.exportBasename === "function" ? config.exportBasename() : config.exportBasename;
+    const fallback = safeBasename(suggestion ?? envelope.moduleId, envelope.moduleId);
+    const prompted = w.prompt(config.messages?.exportBasename ?? "Nome do arquivo:", fallback);
+    if (prompted === null) {
+      return null;
+    }
+    const basename = safeBasename(prompted, fallback);
     if (!basename) {
       return null;
     }

@@ -68,7 +68,7 @@ A responsividade pode melhorar a edicao Web, mas nao pode alterar medidas, marge
 
 Toda area imprimivel que simule a pagina fisica deve manter aparencia de papel independentemente do tema do sistema operacional, tema do navegador, modo escuro forcado ou recurso equivalente. A superficie imprimivel deve declarar fundo branco, cores compativeis com impressao, contraste adequado, `color-scheme` claro e protecao contra ajuste forcado de cores. Apenas a interface Web externa a folha pode adaptar-se a tema claro/escuro.
 
-Impressao deve funcionar por Ctrl+P ou equivalente e por botao dedicado quando existente. A acao dedicada deve preparar o documento, ocultar placeholders/interface, aplicar configuracao de pagina e restaurar o estado visual.
+Impressao deve funcionar por Ctrl+P ou equivalente e por botao dedicado quando existente. A acao dedicada deve preparar o documento, ocultar placeholders/interface, aplicar configuracao de pagina e restaurar o estado visual. Quando a propria folha ja define dimensoes e margens internas A4, o PDF dedicado nao deve acrescentar margem externa que provoque escala, overflow ou pagina extra.
 
 ## 5. Infraestrutura Compartilhada
 

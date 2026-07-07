@@ -36,7 +36,7 @@ O usuario informa apenas o Mes inicial exibido na tabela, apresentado no formato
 
 O Mes/Ano de Referencia nao e campo editavel. Ele e valor derivado da data de assinatura e do ultimo mes classificado como `REALIZADO` na tabela. Quando nenhum mes da tabela estiver realizado, usa-se o ultimo mes encerrado antes do mes da data de assinatura como referencia deterministica de compatibilidade.
 
-Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica e nao pode ser editada manualmente.
+Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica, nao pode ser editada manualmente e nao deve ocupar coluna no formulario; a coluna equivalente permanece apenas no impresso.
 
 ## 5. Mercado Interno e Totais
 
@@ -86,9 +86,11 @@ Autosave local deve preservar dados cadastrais, financeiros, mes inicial, period
 
 A exportacao local pela toolbar global deve usar envelope do modulo `faturamento`, schema `jcem.faturamento.v1` e payload equivalente ao compartilhamento preenchido. A importacao local deve validar modulo, schema e versao antes de aplicar dados, reutilizando os mesmos aliases e normalizacoes do JSON Base64. Arquivos de outros modulos devem ser recusados sem alterar o formulario.
 
+Ao salvar/exportar preenchimento ou gerar PDF, a sugestao de nome do arquivo deve derivar da Razao Social: remover acentos e caracteres nao alfanumericos, colapsar espacos para um unico hifen, capitalizar palavras e remover sufixos juridicos finais comuns que nao agregam identificacao, como LTDA, ME, EPP, S.A., SA, EIRELI, SLU e equivalentes.
+
 ## 9. Impressao, PDF e Interface
 
-O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Espaços entre titulo, dados cadastrais, resumo, tabelas, local/data e assinatura devem seguir proporcao editorial formal, sem colar blocos nem desperdiçar a pagina. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas.
+O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Espaços entre titulo, dados cadastrais, resumo, tabelas, local/data e assinatura devem seguir proporcao editorial formal, sem colar blocos nem desperdiçar a pagina. A pagina imprimivel nao deve gerar pagina extra por altura estrutural, margem externa duplicada, overflow ou arredondamento do motor de impressao/PDF. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas.
 
 A interface Web nao precisa reproduzir exatamente a folha durante edicao. Deve priorizar produtividade, clareza, rapidez, validacao em tempo real, prevencao de inconsistencias e revisao visual fiel antes da impressao. Campos curtos, percentuais, datas, UF, prazos e seletores nao devem ocupar largura desnecessaria; grupos de formulario devem evitar paineis isolados para campo unico quando houver agrupamento semantico coerente.
 

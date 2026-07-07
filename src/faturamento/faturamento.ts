@@ -10,6 +10,7 @@ import {
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
   MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT,
+  normalizeCompanyFileBasename,
   parseCurrencyToCents,
   parseMesAno,
   parsePercent,
@@ -275,7 +276,6 @@ import {
         <td class="month-label" data-month="${label}">${label}</td>
         <td><input id="mes-${index}-vista" class="money month-money" data-column="vista" type="text" inputmode="decimal"></td>
         <td><input id="mes-${index}-prazo" class="money month-money" data-column="prazo" type="text" inputmode="decimal"></td>
-        <td class="month-status">${status}</td>
       `;
       editor.appendChild(editorRow);
 
@@ -960,8 +960,7 @@ import {
   }
 
   function filename(): string {
-    const company = input("razao-social").value.trim() || "Relacao de Faturamento";
-    return `${company}.pdf`;
+    return `${normalizeCompanyFileBasename(input("razao-social").value)}.pdf`;
   }
 
   function printPdf(): void {
@@ -973,6 +972,7 @@ import {
 
     api.print.pdf({
       filename,
+      margin: [0, 0, 0, 0],
       pageConfig,
       source: inputDocument()
     });
@@ -1038,6 +1038,7 @@ import {
   api.ready(() => {
     api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".faturamento-shell" });
     api.toolbar.configure({
+      exportBasename: () => normalizeCompanyFileBasename(input("razao-social").value),
       exportPayload: payload,
       importPayload: (data) => {
         applyDataPayload(data);

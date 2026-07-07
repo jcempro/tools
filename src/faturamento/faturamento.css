@@ -122,7 +122,7 @@
 
 .market-block {
   display: grid;
-  grid-template-columns: 11.55cm 5.55cm;
+  grid-template-columns: minmax(0, 1fr) 5.55cm;
   gap: 0.32cm;
   align-items: stretch;
   margin-bottom: 0.12cm;
@@ -311,7 +311,7 @@
   .print-page {
     width: 21cm;
     min-height: 0;
-    height: 29.7cm;
+    height: auto;
     margin: 0;
     padding: 0.82cm 0.86cm 0.72cm;
     box-shadow: none;
@@ -329,7 +329,7 @@ body.imprimir {
 body.imprimir .print-page {
   width: 21cm;
   min-height: 0;
-  height: 29.7cm;
+  height: auto;
   margin: 0;
   padding: 0.82cm 0.86cm 0.72cm;
   box-shadow: none;
