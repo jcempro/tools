@@ -1,4 +1,3 @@
-````markdown
 # AGENTS.md — Governança Operacional Global
 
 ## 0. Finalidade, autoridade e portabilidade
@@ -422,4 +421,3 @@ Toda entrega deve incluir:
 COMMIT_SUGERIDO: <texto PT-BR, objetivo, suficientemente detalhado, máximo 512 caracteres; separar fix, melhoria/aprimoramento e ajuste quando aplicável>
 PENDENCIAS: <informar explicitamente etapas, tarefas ou pendências restantes; usar “nenhuma” quando concluído>
 ```
-````
