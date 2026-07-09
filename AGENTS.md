@@ -17,7 +17,7 @@ Os domínios cooperam, mas não se incorporam, substituem ou sobrepõem; a autor
 
 **0.5 — Autoridade da IA** No domínio definido em [0.4], o `AGENTS.md` pode e deve ser explícito, determinístico e vinculante sobre nomenclatura, paths relativos, cache, proporções humano/máquina, `agents.local.md`, `continue.ia`, `continue.dev`, artefatos intermediários, codificação, distribuição, transpilação, build, validação e mecanismos equivalentes. Essas normas regulam processamento por IA, não negócio.
 
-**0.6 — Limite de autoridade** O `AGENTS.md` não pode criar, limitar, reinterpretar ou alterar comportamento funcional, cálculo, permissão, critério comercial ou regra pertencente ao RCF e aos cenários. Pode referenciá-los e definir somente o método técnico empregado para implementá-los, verificá-los ou documentá-los.
+**0.6 — Limite de autoridade** O `AGENTS.md` não pode criar, limitar, reinterpretar ou alterar comportamento funcional, cálculo, permissão, critério comercial ou regra pertencente ao RCF e aos cenários. Pode referenciá-los e definir somente o método técnico empregado para implementá-los, verificá-los ou documentá-los. Observar "Diretriz de Alteração das RCFs pela IA".
 
 **0.7 — Fronteiras exemplificadas**
 
@@ -36,6 +36,21 @@ Os domínios cooperam, mas não se incorporam, substituem ou sobrepõem; a autor
 
 1. regra de processamento por IA em regra do projeto; ou
 2. regra de negócio em norma do `AGENTS.md`.
+
+**0.12 — Atualização automática da governança operacional** Todo repositório regido por este `AGENTS.md` deve possuir comando local de atualização da governança, criado na adoção desta norma se inexistente:
+
+- ecossistema Node.js: `npm run agents:update`;
+- demais ecossistemas: comando equivalente, com o mesmo nome semântico e documentado na interface operacional vigente.
+- Normas de aplicáveis em `./.agents.md/autoupdate.md`, leia e analise se e, quando, necessário ou na ausência de comando pertinente para criá-lo.
+
+
+### Diretriz de Alteração das RCFs pela IA
+
+A IA está autorizada a alterar as RCFs para atender a novas solicitações, implementações e ajustes. Contudo, a autonomia da IA é restrita e exige as seguintes validações:
+
+- **Riscos e Dubiedades**: Riscos de má interpretação e ambiguidades devem ser validados ou confirmados.
+- **Regressões**: Possíveis regressões precisam ser efetivamente confirmadas.
+- **Validação Humana**: Estas confirmações com o desenvolvedor são obrigatórias, mesmo que a IDE/equivalente negue ou rejeite os questionamentos.
 
 ## 1. Domínios normativos e precedência
 
