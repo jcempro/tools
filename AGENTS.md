@@ -2,13 +2,40 @@
 
 ## 0. Finalidade, autoridade e portabilidade
 
-Este arquivo normatiza o comportamento operacional da IA/Codex sem alterar instruções intrínsecas da plataforma, atuais ou futuras. Deve ser copiável entre repositórios sem adaptação.
+**0.1 — Finalidade** Este arquivo normatiza o comportamento operacional da IA/Codex, sem alterar instruções intrínsecas da plataforma, atuais ou futuras, e deve ser reutilizável entre repositórios sem adaptação.
 
-- **Desacoplamento:** proibidos URLs, paths físicos, nomes próprios ou regras exclusivas do repositório.
-- **Referências universais:** permitidos conceitos não arbitrários do ecossistema, como `.gitignore`, `AGENTS.md`, `agents.local.md`, `continue.ia`, `continue.dev`, RCF, build, cache, branch, commit e CI/CD, sem localização concreta.
-- **Especialidade:** este arquivo governa método de trabalho, raciocínio operacional, cache, FT, codificação, distribuição, transpilação, build e validação; não substitui RCF nem define negócio.
-- **Extensão local:** `agents.local.md`, quando existente, é incluído pelo AGENTS global e contém somente particularidades não replicáveis do repositório. Regra, conceito ou refinamento útil a múltiplos projetos pertence ao AGENTS global, nunca ao local.
-- **Código de terceiros:** conteúdo importado (`node_modules/` e equivalentes) não deve ser analisado como alvo de manutenção, editado ou programado. Torna-se elegível apenas após incorporação definitiva ao código pertencente ao repositório.
+**0.2 — Portabilidade** São proibidos URLs, nomes próprios, paths físicos exclusivos e regras particulares de repositório. São permitidos paths relativos e conceitos universais do ecossistema — como `.gitignore`, `AGENTS.md`, `agents.local.md`, `continue.ia`, `continue.dev`, RCF, `src`, `dist`, build, cache, branch, commit e CI/CD — desde que independentes de localização ou estrutura exclusiva.
+
+**0.3 — Especialidade** Este arquivo governa método de trabalho, raciocínio operacional, cache, FT, codificação, distribuição, transpilação, build e validação. Não substitui o RCF nem define negócio.
+
+**0.4 — Compartimentação normativa** Por analogia à compartimentação militar, cada documento exerce autoridade somente no domínio correspondente à sua missão:
+
+- **RCF e cenários:** definem **o que o projeto deve fazer**;
+- **`AGENTS.md` e auxiliares:** definem **como a IA deve processar o projeto**.
+
+Os domínios cooperam, mas não se incorporam, substituem ou sobrepõem; a autoridade de um termina onde começa a competência do outro.
+
+**0.5 — Autoridade da IA** No domínio definido em [0.4], o `AGENTS.md` pode e deve ser explícito, determinístico e vinculante sobre nomenclatura, paths relativos, cache, proporções humano/máquina, `agents.local.md`, `continue.ia`, `continue.dev`, artefatos intermediários, codificação, distribuição, transpilação, build, validação e mecanismos equivalentes. Essas normas regulam processamento por IA, não negócio.
+
+**0.6 — Limite de autoridade** O `AGENTS.md` não pode criar, limitar, reinterpretar ou alterar comportamento funcional, cálculo, permissão, critério comercial ou regra pertencente ao RCF e aos cenários. Pode referenciá-los e definir somente o método técnico empregado para implementá-los, verificá-los ou documentá-los.
+
+**0.7 — Fronteiras exemplificadas**
+
+- O RCF define **o cálculo do imposto**; o `AGENTS.md`, **como implementá-lo, validá-lo e documentá-lo**.
+- O RCF exige **um relatório**; o `AGENTS.md`, **seus artefatos, nomenclatura, cache e fluxo de produção**.
+- O RCF define **proporções do negócio**; o `AGENTS.md`, **proporções entre processamento automatizado e intervenção humana**.
+- O RCF define **o resultado funcional**; o `AGENTS.md`, **o método operacional para produzi-lo e validá-lo**.
+
+**0.8 — Extensão local** `agents.local.md`, quando existente, é incluído pelo AGENTS global e contém somente particularidades não replicáveis do repositório. Regra, conceito ou refinamento reutilizável pertence ao AGENTS global.
+
+**0.9 — Código de terceiros** Conteúdo importado, como `node_modules/` e equivalentes, não é alvo de análise de manutenção, edição ou programação. Torna-se elegível somente após incorporação definitiva ao código pertencente ao repositório.
+
+**0.10 — Localização normativa** `AGENTS.md`, `agents.local.md`, `continue.ia`, `continue.dev` e normativos equivalentes podem residir na raiz ou em `./.agents/`, local preferencial para organização, isolamento e manutenção. Essa estrutura pertence ao domínio de IA definido em [0.4] e pode ser integralmente normatizada conforme [0.5].
+
+**0.11 — Regressão de compartimentação** Constitui regressão arquitetural — e deve ser considerada não aplicada — qualquer alteração que remova, enfraqueça, transfira ou converta:
+
+1. regra de processamento por IA em regra do projeto; ou
+2. regra de negócio em norma do `AGENTS.md`.
 
 ## 1. Domínios normativos e precedência
 
@@ -35,7 +62,7 @@ Esta seção é a autoridade global para edição de RCFs, AGENTS, `agents.local
 
 ### 2.1 Regra de ouro
 
-Maximizar informação por caractere: eliminar redundância, introduções longas, floreios, preenchimento e explicações óbvias; preservar integralmente regras, restrições, exceções, prioridades, precedências, condicionantes, dependências, precisão, profundidade, contexto, rastreabilidade, nuances interpretativas, exemplos, analogias, contraexemplos e referências úteis. **Concisão reduz forma, nunca substância.** Preferir referências internas e microexplicações quando reduzirem tokens sem perda semântica.
+Maximizar a informação por caractere por meio de normas coesas, baixo acoplamento, mínima redundância, máxima reutilização e microtextos reutilizáveis (referênciáveis) de alta densidade informacional, eliminando redundâncias, introduções extensas, floreios, preenchimentos e explicações óbvias, mas preservando integralmente regras, restrições, exceções, prioridades, precedências, condicionantes, dependências, precisão, profundidade, contexto, rastreabilidade, nuances interpretativas, exemplos, analogias, contraexemplos e referências úteis; concisão deve reduzir apenas a forma, nunca a substância, priorizando referências internas e microexplicações sempre que reduzirem tokens sem perda semântica.
 
 ### 2.2 Perfis obrigatórios
 
@@ -43,10 +70,13 @@ Maximizar informação por caractere: eliminar redundância, introduções longa
 - RCFs: **75% máquina/IA; 25% humano** — alta densidade técnica com contexto humano mínimo suficiente.
 - README e documentação análoga: **50% máquina/IA; 50% humano** — equilíbrio entre didática e indexação limpa.
 
-### 2.3 Preservação de autoria
+### 2.3 Preservação de autoria e rastreabilidade editorial
 
 - Alterações manuais do desenvolvedor não podem regredir.
-- Todo parágrafo, título ou elemento criado/alterado por máquina deve receber marcador estável, não renderizado e não imprimível, conforme mecanismo definido pelo fluxo/RCF; o marcador não pode afetar conteúdo, diffs semânticos, build ou publicação.
+- Marcação de processamento por IA aplica-se exclusivamente a conteúdo editorial, documentação destinada a consumo humano ou artefato textual de FT com escopo `Negócio`, quando houver geração ou transformação semântica.
+- Não aplicar marcadores de IA a `AGENTS.md`, `agents.local.md`, RCFs, `continue.ia`/`continue.dev`, código, configurações, manifestos, workflows ou artefatos técnicos/normativos análogos, salvo exigência explícita do RCF aplicável.
+- Correções exclusivamente ortográficas, gramaticais, tipográficas, de links ou metadados não exigem marcação.
+- O cenário ou RCF aplicável define formato, granularidade e persistência da marcação; ela deve ser invisível ao leitor, pesquisável por automação e incapaz de alterar conteúdo renderizado, build ou publicação.
 - Cabeçalhos, comentários úteis e convenções existentes devem ser preservados. Comentário só muda se ficar incorreto ou induzir interpretação errada.
 
 ## 3. Mapa de arquivos, leitura e cache
@@ -262,7 +292,7 @@ Se o branch atual não for `dev` e houver alterações unstaged, parar e solicit
 3. alternar para `dev`, levando o estado atual e mesclando-o;
 4. continuar no branch atual.
 
-Quando tecnicamente possível, cada tarefa e, obrigatoriamente com maior prioridade, cada etapa terminam em commit seguido de push. Não declarar commit/push/merge sem comprovação objetiva (crie comando npm que automatizem e reduzam custos de IA).
+Quando tecnicamente possível, cada tarefa e, obrigatoriamente com maior prioridade, cada etapa terminam em commit seguido de push. Não declarar commit/push/merge sem comprovação objetiva. Quando o cenário aplicável normatizar interface npm, criar e reutilizar os comandos Git obrigatórios desse cenário para automatizar a sequência e reduzir comandos, erros, tempo e processamento da IA.
 
 ## 10. Implementação, regressão e sincronização
 
@@ -421,3 +451,158 @@ Toda entrega deve incluir:
 COMMIT_SUGERIDO: <texto PT-BR, objetivo, suficientemente detalhado, máximo 512 caracteres; separar fix, melhoria/aprimoramento e ajuste quando aplicável>
 PENDENCIAS: <informar explicitamente etapas, tarefas ou pendências restantes; usar “nenhuma” quando concluído>
 ```
+
+## 17. Cenários
+
+Cenário é especialização normativa reutilizável aplicável somente ao tipo de projeto, repositório, entrega ou contexto correspondente. A lista é aberta, cumulativa e não exaustiva. Novos cenários devem ser adicionados por arquivo especializado e registrados no índice (§17.3), sem ampliar estruturalmente o `AGENTS.md` nem duplicar sua governança global.
+
+Esta seção contém apenas regras comuns a todos os cenários, sua arquitetura de carregamento e o índice vigente. Toda regra específica deve residir no arquivo do cenário correspondente.
+
+Valores arbitrários relativos a projeto, produto ou cenário — números, portas, comandos, ferramentas, bibliotecas, URLs, URIs, paths, diretórios, arquivos, formatos, horários, limites, ícones ou plataformas — somente podem ser normatizados no cenário que os justifique ou no RCF. Esta restrição não alcança nomenclaturas, paths, proporções, cache, arquivos ou convenções que normatizem exclusivamente o funcionamento da própria IA e estejam definidos nas demais seções do `AGENTS.md`.
+
+Regra de cenário somente pode migrar ao núcleo global quando sua aplicabilidade independente estiver comprovada em múltiplos cenários e sua redação não carregar particularidade tecnológica, local ou de negócio.
+
+### 17.1 Diretrizes gerais dos cenários
+
+#### 17.1.1 Finalidade, alcance e extensibilidade
+
+Aplicar estas diretrizes a todo cenário técnica e semanticamente pertinente, sem substituir, contrariar ou enfraquecer disposições superiores, RCFs, requisitos específicos, plataforma, ambiente ou contrato de distribuição.
+
+Cenários podem coexistir e devem ser aplicados cumulativamente. Regra específica restringe ou especializa regra geral somente quando:
+
+1. estiver dentro do escopo declarado;
+2. for tecnicamente justificada;
+3. não contradizer norma superior;
+4. preservar, tanto quanto possível, o objetivo original.
+
+Dispensa exige incompatibilidade real, irrelevância ou custo desproporcional verificável; preferência ou conveniência não bastam.
+
+Novo cenário deve declarar, no mínimo: finalidade, aplicabilidade, limites, relação com cenários cumulativos, dependências, contratos públicos, artefatos afetados, regras, exceções, precedência local, segurança, privacidade, acessibilidade, desempenho, compatibilidade, validações e critérios de conclusão. Regra replicável entre cenários permanece nesta seção; particularidade de cenário reside em seu arquivo; particularidade de um único projeto pertence ao RCF ou `agents.local.md`, conforme §1.
+
+#### 17.1.2 Precedência e contradições
+
+Aplicar integralmente §1.2. Dentro do mesmo nível normativo, regra específica prevalece sobre geral somente no próprio escopo. Contradição material não pode ser ocultada; registrar:
+
+```text
+CONTRADIÇÃO DETECTADA: <origem> vs <regra> — Aplicando a regra de maior precedência.
+```
+
+#### 17.1.3 Objetivos normativos
+
+Toda decisão de cenário deve, conforme aplicável:
+
+1. preservar conformidade normativa;
+2. maximizar reutilização;
+3. maximizar generalização sem apagar requisitos reais;
+4. reduzir comandos, fluxos e interfaces distintos;
+5. eliminar duplicidade funcional;
+6. privilegiar composição;
+7. reduzir decisões recorrentes;
+8. reduzir processamento humano, automático e por IA;
+9. reduzir tokens e contexto;
+10. permitir evolução tecnológica sem quebra desnecessária de interface;
+11. preservar acessibilidade, segurança, privacidade, desempenho e manutenibilidade.
+
+Simplificação não pode remover capacidade obrigatória, ocultar erro, reduzir rastreabilidade nem concentrar responsabilidades incompatíveis.
+
+#### 17.1.4 Ordem de generalização
+
+Antes de criar interface, comando, componente, biblioteca, workflow ou convenção:
+
+1. reutilizar solução universal existente;
+2. reutilizar solução do grupo funcional;
+3. compor soluções existentes;
+4. especializar por parâmetro ou configuração;
+5. criar solução somente quando as anteriores não satisfizerem o requisito.
+
+É vedado criar variação apenas para refletir implementação interna quando a semântica pública permanecer igual.
+
+#### 17.1.5 Interface pública estável
+
+Toda interface exposta a pessoas, automações, CI/CD ou IA é API pública: nomenclatura semântica, previsível e estável; implementação interna variável; incompatibilidade somente por necessidade técnica real, com justificativa, documentação e transição compatível quando viável.
+
+A intenção pública deve permanecer estável; o mecanismo interno pode evoluir.
+
+#### 17.1.6 Composição e não duplicação
+
+Fluxos compostos devem reutilizar operações existentes, sem copiar lógica. Podem coordenar, parametrizar e tratar falhas; nunca manter implementações divergentes.
+
+#### 17.1.7 Escolha tecnológica e proporcionalidade
+
+Não adotar tecnologia por preferência, popularidade ou mera possibilidade. Avaliar requisito, arquitetura, hospedagem/publicação, desenvolvimento local, CI/CD, custo operacional/cognitivo, manutenção, segurança, privacidade, acessibilidade, peso ao cliente, degradação segura e alternativa local/nativa.
+
+Preferir a solução mais simples que cumpra integralmente o contrato. Avaliar solução madura antes de implementação própria; não adicionar dependência quando solução local pequena, testável e menos arriscada cumprir o mesmo contrato. Não duplicar bibliotecas equivalentes; reutilizar a padrão salvo incompatibilidade comprovada.
+
+#### 17.1.8 Processos existentes e validação local
+
+Antes de iniciar servidor, watcher ou processo, verificar instância adequada em execução. Não encerrar, reiniciar ou substituir processo existente sem necessidade técnica ou autorização, especialmente se puder pertencer a outra atividade. Preferir ambiente ativo e registrar limitações frente à produção.
+
+#### 17.1.9 Correções textuais incidentais
+
+Ao alterar texto no escopo autorizado, corrigir erros ortográficos, gramaticais e tipográficos apenas na região modificada, sem reescrita extrínseca, alteração semântica não solicitada ou perda de terminologia/voz. Informar, ao final, arquivos corrigidos, natureza da correção e eventual reorganização ou mudança semântica.
+
+### 17.2 Organização dos cenários
+
+#### 17.2.1 Arquivos especializados
+
+Cada cenário deve residir em arquivo Markdown independente, referenciado por nome no índice (§17.3) e resolvido relativamente ao diretório do `AGENTS.md` global, salvo convenção explícita superior da própria governança da IA.
+
+Arquivos de cenário são extensões normativas diretas do `AGENTS.md`, não RCFs nem extensões locais. Devem permanecer genéricos para a categoria que regulam, reutilizáveis entre repositórios e livres de particularidades exclusivas de projeto. Regras locais continuam pertencendo ao RCF ou `agents.local.md`.
+
+Um arquivo pode conter o cenário-base e especializações cumulativas do mesmo domínio quando isso reduzir fragmentação sem criar acoplamento indevido. Cenários independentes devem usar arquivos distintos.
+
+#### 17.2.2 Estrutura mínima
+
+Cada arquivo deve conter:
+
+- identificação inequívoca do cenário;
+- relação normativa com `AGENTS.md` §17;
+- definição, escopo, aplicabilidade e limites;
+- dependências e especializações cumulativas;
+- contratos, padrões, regras, exceções e prioridades;
+- critérios de segurança, privacidade, acessibilidade, desempenho e compatibilidade pertinentes;
+- validações e critérios de conclusão;
+- referências internas estáveis.
+
+Não repetir regras dos §§17.1–17.2; referenciá-las. Regra comum identificada em múltiplos arquivos deve ser centralizada em §17.1 somente quando atender ao critério de generalização desta seção.
+
+#### 17.2.3 Carregamento e aplicação
+
+Antes de implementar:
+
+1. classificar o projeto, entrega e solicitação;
+2. identificar no índice todos os cenários potencialmente aplicáveis;
+3. carregar integralmente cada arquivo indicado e suas dependências;
+4. aplicar cumulativamente `AGENTS.md`, cenários e RCFs conforme §1.2;
+5. registrar na memória operacional os cenários efetivamente aplicados e eventual dispensa justificada.
+
+Leitura parcial somente é permitida quando o arquivo integral já estiver validamente em cache e não tiver sido alterado. Arquivo ausente, ilegível, divergente do índice ou com dependência irresolvida constitui falha de integridade normativa; não substituir seu conteúdo por inferência silenciosa.
+
+#### 17.2.4 Evolução e manutenção
+
+Adicionar cenário exige somente:
+
+1. criar seu arquivo especializado;
+2. registrar uma entrada no índice;
+3. declarar dependências e relação cumulativa;
+4. validar ausência de duplicidade, contradição e particularidade local.
+
+Não criar nova estrutura no `AGENTS.md` para cada cenário. Alterar §§17.1–17.2 somente quando surgir regra comprovadamente comum ou necessidade arquitetural transversal.
+
+Ao mover regra entre núcleo e cenário, preservar integralmente conteúdo, força normativa, exceções, exemplos, prioridades, dependências e referências; atualizar todos os vínculos na mesma alteração.
+
+Sempre que uma nova regra ou norma possuir potencial de reutilização além do cenário atual, priorize sua incorporação a uma seção geral (preferencialmente `$17` ou, quando cabível, ao escopo global), em vez de mantê-la vinculada a um cenário específico.
+
+Ao identificar regras ou normas já existentes em cenários específicos com aplicabilidade potencialmente multicenário ou de escopo amplo, avalie continuamente sua extração para `$17` ou para a documentação global, conforme a abrangência.
+
+### 17.3 Cenários disponíveis
+
+Leia e analise os subarquivos apenas se, e quando, for aplicável ao projeto/repositório atual.
+
+| Cenário                                                     | Arquivo/seção                                             | Dependências                       | Aplicabilidade resumida                                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| Web Page Like                                               | [`./agents/webPageLike.md` §1](./agents/webPageLike.md#1) | —                                  | Entrega principal consumida por navegador ou engine web.                                    |
+| Web Page Like com gerador estático ou hospedagem de páginas | [`./agents/webPageLike.md` §2](./agents/webPageLike.md#2) | Web Page Like                      | Gerador estático, templates ou hospedagem de páginas.                                       |
+| Sites e blogs com conteúdo editorial                        | [`./agents/webPageLike.md` §3](./agents/webPageLike.md#3) | Web Page Like; §2 quando aplicável | Publicação de artigos, posts, sermões, ensaios, notícias ou conteúdo editorial equivalente. |
+
+Novos cenários devem ser acrescentados apenas a esta tabela, preservando a arquitetura definida em §17.2.

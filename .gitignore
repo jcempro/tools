@@ -3,3 +3,8 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+0. Autoriza .md em ./.agents/
+/.agents/*
+!/.agents/*.md
+!/.agents/**/*.md
