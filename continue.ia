@@ -1,0 +1,61 @@
+# Memoria operacional canonica
+
+## FT-001 - Manutencao, contexto e continuidade
+
+- Objetivo: executar a sequencia completa de manutencao, atualizacao de contexto, padronizacao, diagnostico do modulo `admissional` e continuidade de implementacao.
+- Prioridade: alta.
+- Escopo: Tecnico.
+- Status: em andamento.
+- Inicio: 20260714.1527.21.
+- Atualizacao: 20260714.1605.00.
+
+### Plano vigente
+
+1. Releitura e reanalise das diretrizes do projeto. Status: concluido.
+2. Atualizacao dos arquivos de contexto e continuidade. Status: concluido.
+3. Validacao e correcao de configuracoes de pacotes. Status: concluido.
+4. Compactacao do contexto. Status: concluido.
+5. Diagnostico e correcao de modulos travados, especialmente `admissional`. Status: concluido.
+6. Continuidade das implementacoes pendentes. Status: concluido com pendencia registrada.
+
+### Estado registrado
+
+- Branch inicial observada: `master`.
+- Estado migrado para branch `dev` por solicitacao humana em 20260714.1527.21.
+- `continue.ia` e o arquivo canonico de memoria operacional vigente; `continue.dev` nao foi encontrado.
+- Alteracoes locais ja existiam antes da atuacao desta FT: `AGENTS.md`, `.agents/.autoupdate.md`, `.agents/webPageLike.md`, `.agents/microconceitos.md`, `.agents/publish.md`, `.agents/release.md`, `.agents/meta/*`, `scripts/.agents/`, `scripts/lib/`, `package.json`, `package-lock.json`, `src/faturamento/index.html`, `src/oficios/admissional/index.html`, `dist/faturamento/index.html` e `dist/oficios/admissional/index.html`.
+- `dist/` e artefato gerado conforme `RCF.md` e `.agents/agents.local.md`; nao deve ser editado manualmente.
+- Etapa 1 releu integralmente `AGENTS.md` recebido no contexto, `.agents/microconceitos.md`, `.agents/webPageLike.md`, `.agents/release.md`, `.agents/publish.md`, `.agents/.autoupdate.md`, `.agents/agents.local.md`, `.agents/meta/*.md`, `.agents/meta/index.json`, `RCF.md`, `src/oficios/admissional/RCF.md`, `src/faturamento/RCF.md` e `src/csv-bd/RCF.md`.
+
+### Decisoes e regras aplicadas
+
+- Governanca ativa: `AGENTS.md`, `.agents/`, `RCF.md` global e RCFs especificos aplicaveis.
+- Cenario aplicavel: Web Page Like; Release e Publicacao de Conteudo somente quando o RCF declarar o escopo correspondente.
+- `src/` e fonte canonica; `dist/` e saida publicada reconstruivel.
+- Desenvolvimento deve ocorrer em `dev`; convergencia para branch primaria so ocorre com FT concluida e sistema funcional.
+- Alteracoes funcionais devem sincronizar RCF aplicavel, memoria, implementacao e artefatos gerados quando necessario.
+
+### Verificacoes executadas
+
+- `git status --short --branch`: confirmou alteracoes locais e branch inicial `master`.
+- `npm run`: confirmou scripts `agent:*`, `build`, `check`, `test`, `lint`, `type-check` e validadores.
+- `git branch --list dev`: confirmou ausencia previa de `dev`.
+- `git switch -c dev`: criou branch `dev` apos aprovacao de escrita em `.git`.
+- `npm pkg get scripts dependencies devDependencies agentsGovernance`: confirmou manifesto NPM parseavel, scripts `agent:*`, `agentsGovernance` e `html2pdf.js` atualizado para `^0.14.0`.
+- `npm install --package-lock-only --dry-run`: confirmou lockfile consistente sem escrita necessaria.
+
+### Compactacao vigente
+
+- Contexto normativo carregado: AGENTS global recebido, microconceitos, Web Page Like, autoupdate, release, publicacao, metarquivos e RCFs global/admissional/faturamento/csv-bd.
+- Regras operacionais ativas para continuidade: atuar em `dev`; editar fonte canonica em `src/`; tratar `dist/` como gerado; sincronizar memoria/RCF quando comportamento mudar; validar por NPM; preservar alteracoes preexistentes.
+- Resultado da Etapa 3: `package.json` mantem scripts e metadado de governanca, com formatacao JSON normalizada; `package-lock.json` permanece coerente com dependencias.
+- Causa raiz do loading no `admissional`: o HTML passou a referenciar `html2pdf.js` 0.14.0 com SRI de outro artefato. O navegador bloqueava o recurso externo. Hash real confirmado: `sha512-IgpImqjrCPtoJXRBavoYDDfWTnz8lBuklWs9yRsDRwC37l4XXH5KJDSqq108swbqMaWg+5UEZUFwpJhgD+QC7g==`.
+- Correcao aplicada: SRI atualizado em `src/oficios/admissional/index.html` e `src/faturamento/index.html`; `scripts/build-bundles.mjs` passou a mapear tambem a URL CDN 0.14.0 para a copia local de `node_modules/html2pdf.js/dist/html2pdf.bundle.min.js`, preservando bundle offline.
+- Correcao adicional de validacao: `eslint.config.mjs` passou a reconhecer scripts CommonJS de governanca em `scripts/.agents/**/*.js` e `scripts/lib/**/*.js`; `scripts/.agents/release-workflow.js` corrigido de `error` inexistente para `err` no tratamento de falha.
+- Validacao visual: `http://127.0.0.1:4173/oficios/admissional/` renderizou no navegador interno com `body.jcem-printable-layout`, chrome global, autosave, workspace e preview, sem erros ou warnings de console. A CDN nao carregou no navegador interno local, deixando `window.html2pdf` indefinido nessa sessao, mas a pagina deixou de ficar presa em loading e o bundle offline contem a dependencia local.
+- Validacao completa: `npm run check` concluido com sucesso apos type-check, lint, 36 testes, build, bundles offline e `validate:publication`.
+
+### Pendencias imediatas
+
+- Pendencia de `NOSCRIPT.html` resolvida em 20260714.1605.00: `scripts/compile.mjs` exclui `src/NOSCRIPT.html` da copia estatica, extrai o conteudo renderizavel e estilos para um fragmento oficial e injeta `<noscript>` nas paginas HTML publicadas. `scripts/validate-publication.mjs` bloqueia `dist/NOSCRIPT.html`, bloqueia redirecionamento para `/NOSCRIPT.html` e exige `<noscript>` oficial em HTML publicado. `tests/infrastructure.test.ts` cobre o contrato.
+- Validacao final apos NOSCRIPT: `npm run check` concluido com sucesso; 37 testes passaram; build gerou bundles offline; `validate:publication` confirmou 4 paginas e 26 arquivos em `dist/`.

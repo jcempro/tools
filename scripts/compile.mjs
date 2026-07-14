@@ -32,6 +32,8 @@ const staticSourceExtensions = new Set([
   ".woff2"
 ]);
 const optimizableTextExtensions = new Set([".css", ".html", ".js", ".json"]);
+const noscriptSource = "NOSCRIPT.html";
+let noscriptFragmentCache;
 
 async function ensureParent(file) {
   await mkdir(path.dirname(path.join(root, file)), { recursive: true });
@@ -49,7 +51,47 @@ function isStaticSource(file) {
   if (path.basename(file).toLowerCase() === "rcf.md") {
     return false;
   }
+  if (normalizeRel(file).toLowerCase() === noscriptSource.toLowerCase()) {
+    return false;
+  }
   return staticSourceExtensions.has(path.extname(file).toLowerCase());
+}
+
+function extractTagContent(html, tagName) {
+  const match = html.match(new RegExp(`<${tagName}\\b[^>]*>([\\s\\S]*?)<\\/${tagName}>`, "i"));
+  return match?.[1]?.trim() ?? "";
+}
+
+async function officialNoscriptFragment() {
+  if (noscriptFragmentCache) {
+    return noscriptFragmentCache;
+  }
+
+  const source = await readFile(path.join(srcRoot, noscriptSource), "utf8");
+  const styleBlocks = [...source.matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi)].map((match) => match[0].trim());
+  const body = extractTagContent(source, "body");
+
+  if (!body) {
+    throw new Error(`${noscriptSource} nao contem corpo renderizavel para <noscript>.`);
+  }
+
+  noscriptFragmentCache = `<noscript>${styleBlocks.join("")}${body}</noscript>`;
+  return noscriptFragmentCache;
+}
+
+async function withOfficialNoscript(html, rel) {
+  if (path.extname(rel).toLowerCase() !== ".html") {
+    return html;
+  }
+
+  const fragment = await officialNoscriptFragment();
+  const withoutNoscript = html.replace(/<noscript\b[\s\S]*?<\/noscript>/gi, "");
+
+  if (/<\/body>/i.test(withoutNoscript)) {
+    return withoutNoscript.replace(/<\/body>/i, `${fragment}</body>`);
+  }
+
+  return `${withoutNoscript}${fragment}`;
 }
 
 function bundleForIndex(rel) {
@@ -101,7 +143,9 @@ async function readStaticOutput(src, rel) {
     return await readFile(src);
   }
 
-  return Buffer.from(await optimizeTextByPath(rel, await readFile(src, "utf8")), "utf8");
+  const source = await readFile(src, "utf8");
+  const prepared = await withOfficialNoscript(source, rel);
+  return Buffer.from(await optimizeTextByPath(rel, prepared), "utf8");
 }
 
 async function copyStaticSources() {

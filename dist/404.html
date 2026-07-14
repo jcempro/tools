@@ -1,0 +1,213 @@
+<!doctype html><html lang="pt-br"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content="noindex"/><title>Redirecting...</title> <script>
+      (async (L, w) => {
+        /* normalização de URLs (ou canonicalização), que reduz diferentes representações equivalentes a uma forma única e estável.
+         * A ideia é tratar URLs como equivalentes quando só variam em detalhes irrelevantes (ex: http ↔ https, / no final, #, etc.).
+         */
+        const normUrl = (u) => {
+          const x = new URL(u, L.origin);
+          let p = x.pathname.replace(/\/+$/, "") || "/";
+          const s = /^(https?|wss?)$/.test(x.protocol.replace(":", ""));
+          return (
+            (s ? "" : x.protocol + "//") +
+            x.hostname.toLowerCase() +
+            (x.port && !/^(80|443)$/.test(x.port) ? ":" + x.port : "") +
+            p +
+            (x.search || "")
+          );
+        };
+
+        const isInt = (v) =>
+          Number.isInteger(v) ||
+          (typeof v === "string" && /^[+-]?\d+$/.test(v));
+
+        const GO = async (t, flbk) => {
+          const p = (L.pathname + L.search).replace(
+            /^\/\s*404\.html(\/|\?)/gi,
+            "/",
+          );
+          if (/\/[^/]*\.[^/]*$/.test(p)) throw 4;
+          try {
+            const r = await fetch(
+              p.replace(/(\/?[^\/]*\/?)$/, "/") + "data.json",
+            );
+            if (!r.ok) throw 1;
+            const j = await r.json().catch(() => {
+              throw 2;
+            });
+            const u = j?.[0];
+            new URL(u); // lança se inválida
+            if (Array.isArray(j) && j.length == 1 && typeof u == "string")
+              L.href = u;
+            else throw 3;
+          } catch (e) {
+            flbk(e, isInt(t) ? t + 1 : 1);
+          }
+        };
+
+        const STP2 = (e) => {
+          throw e;
+        };
+
+        GO(0, STP2);
+      })(window.location, window);
+    </script> <style>
+      :root {
+        --blue: #c08282;
+        --blue2: #2b92db;
+        --amber: #cc4c1e;
+        --bg: #ebebeb;
+        --text: #222;
+        --radius: 1rem;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: "Noto Sans", "Segoe UI", "Tahoma", sans-serif;
+        color: var(--text);
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Loader top bar */
+      .loader-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 0.7rem;
+        background: linear-gradient(
+          90deg,
+          var(--blue2) 0%,
+          var(--blue2) 50%,
+          transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: loading 1s linear infinite;
+        z-index: 9999;
+        border-bottom: 1px solid #eee;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    </style> </head><body><div class="loader-bar"></div><noscript><style>
+      :root {
+        --blue: #c08282;
+        --blue2: #2b92db;
+        --amber: #cc4c1e;
+        --bg: #ebebeb;
+        --text: #222;
+        --radius: 1rem;
+        --padding: clamp(1rem, 3vw, 1.5rem);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        font-family: "Noto Sans", "Segoe UI", Tahoma, sans-serif;
+        color: var(--text);
+      }
+
+      body {
+        margin: 0;
+        min-height: 100svh;
+        padding: 1rem;
+        display: grid;
+        place-items: center;
+        background: var(--bg);
+      }
+
+      main {
+        width: min(100%, 28rem);
+        background: #fff;
+        border: 0.1rem solid var(--blue);
+        border-radius: var(--radius);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+        padding: var(--padding);
+        overflow: hidden;
+      }
+
+      h1 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        margin: calc(var(--padding) * -1);
+        margin-bottom: 1rem;
+
+        padding: 0.75rem 1rem;
+
+        background: #845050;
+        color: #fff;
+
+        font-size: clamp(1.2rem, 2vw + 0.8rem, 1.5rem);
+        font-weight: 700;
+      }
+
+      h1 span {
+        font-size: 1.4em;
+        line-height: 1;
+      }
+
+      .lang + .lang {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      .lang h2 {
+        margin: 0 0 0.35rem;
+        font-size: 0.95rem;
+        color: var(--blue);
+      }
+
+      p {
+        margin: 0;
+        line-height: 1.45;
+        word-break: break-word;
+      }
+
+      p span {
+        font-size: 1.2rem;
+        vertical-align: text-bottom;
+      }
+
+      strong {
+        color: var(--amber);
+        font-style: italic;
+        font-size: 1.02rem;
+        margin-left: 0.35rem;
+      }
+
+      @media (max-width: 420px) {
+        body {
+          padding: 0.75rem;
+        }
+
+        p {
+          font-size: 0.92rem;
+        }
+
+        .lang h2 {
+          font-size: 0.9rem;
+        }
+      }
+    </style><main><h1><span>⚠️</span>Problema / Problem / Problema / 问题</h1><section class="lang"><h2>🇧🇷 Português (Brasil)</h2><p><span>⚠️</span><strong>O JavaScript está desativado.</strong><br/> Ele é o motor desta aplicação. Sem ele, o redirecionamento automático e os recursos do site não funcionam. </p></section><section class="lang"><h2>🇺🇸 English</h2><p><span>⚠️</span><strong>JavaScript is disabled.</strong><br/> It is the engine that powers this application. Without it, automatic redirection and site features cannot work. </p></section><section class="lang"><h2>🇪🇸 Español</h2><p><span>⚠️</span><strong>JavaScript está deshabilitado.</strong><br/> Es el motor de esta aplicación. Sin él, la redirección automática y las funciones del sitio no pueden funcionar. </p></section><section class="lang"><h2>🇨🇳 中文（普通话）</h2><p><span>⚠️</span><strong>JavaScript 已被禁用。</strong><br/> 它是此应用程序的引擎。没有它，自动跳转和网站功能都无法正常工作。 </p></section></main></noscript></body></html>

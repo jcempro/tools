@@ -84,6 +84,17 @@ test("compile pruning preserves bundle zips for current index pages", async () =
   assert.match(compile, /generated\.add\(bundle\)/);
 });
 
+test("NOSCRIPT source is incorporated without direct publication", async () => {
+  const compile = await readFile("scripts/compile.mjs", "utf8");
+  const validate = await readFile("scripts/validate-publication.mjs", "utf8");
+
+  assert.match(compile, /const noscriptSource = "NOSCRIPT\.html"/);
+  assert.match(compile, /officialNoscriptFragment/);
+  assert.match(compile, /withOfficialNoscript/);
+  assert.match(validate, /distSet\.has\(noscriptSource\)/);
+  assert.match(validate, /assertOfficialNoscript/);
+});
+
 test("modules use shared institutional chrome except dizimo", async () => {
   const violations: string[] = [];
 

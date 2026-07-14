@@ -17,6 +17,10 @@ const externalResources = new Map([
     path.join(root, "node_modules", "html2pdf.js", "dist", "html2pdf.bundle.min.js")
   ],
   [
+    "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.14.0/html2pdf.bundle.min.js",
+    path.join(root, "node_modules", "html2pdf.js", "dist", "html2pdf.bundle.min.js")
+  ],
+  [
     "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js",
     path.join(root, "node_modules", "zepto", "dist", "zepto.min.js")
   ]

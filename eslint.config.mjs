@@ -28,5 +28,19 @@ export default [
     rules: {
       "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }]
     }
+  },
+  {
+    files: ["scripts/.agents/**/*.js", "scripts/lib/**/*.js"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.node,
+      sourceType: "commonjs"
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-redeclare": "off",
+      "no-control-regex": "off"
+    }
   }
 ];

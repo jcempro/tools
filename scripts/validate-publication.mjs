@@ -46,6 +46,7 @@ const compiledOutputs = new Map([
   ...buildConfig.browserScripts,
   ...buildConfig.bookmarklets
 ].map(({ output, source }) => [output, source.replace(/^src\//, "")]));
+const noscriptSource = "NOSCRIPT.html";
 
 function normalizeRel(file) {
   return file.split(path.sep).join("/");
@@ -57,6 +58,9 @@ function hasForbiddenPublicSegment(rel) {
 
 function isStaticSource(rel) {
   if (path.basename(rel).toLowerCase() === "rcf.md") {
+    return false;
+  }
+  if (normalizeRel(rel).toLowerCase() === noscriptSource.toLowerCase()) {
     return false;
   }
   return staticSourceExtensions.has(path.extname(rel).toLowerCase());
@@ -122,6 +126,20 @@ function assertNoPublicSourceReferences(rel, content) {
 function assertNoSourceMapReference(rel, content) {
   if (/sourceMappingURL/i.test(content)) {
     throw new Error(`dist/${rel} contem referencia a source map em artefato de producao`);
+  }
+}
+
+function assertOfficialNoscript(rel, content) {
+  if (path.extname(rel).toLowerCase() !== ".html") {
+    return;
+  }
+
+  if (!/<noscript\b[\s\S]*?<\/noscript>/i.test(content)) {
+    throw new Error(`dist/${rel} nao contem <noscript> oficial incorporado.`);
+  }
+
+  if (/url\s*=\s*["']?\/NOSCRIPT\.html/i.test(content)) {
+    throw new Error(`dist/${rel} redireciona para NOSCRIPT.html publicado, fluxo vedado pelo RCF.`);
   }
 }
 
@@ -227,6 +245,7 @@ async function validatePublicText(files) {
     const content = await readFile(path.join(distDir, rel), "utf8");
     assertNoPublicSourceReferences(rel, content);
     assertNoSourceMapReference(rel, content);
+    assertOfficialNoscript(rel, content);
     if (path.extname(rel).toLowerCase() === ".js") {
       assertNoProtectedChromeText(rel, content);
     }
@@ -275,6 +294,10 @@ async function main() {
     if (distSet.has(rel)) {
       throw new Error(`README nao deve integrar o artefato publico Pages: ${rel}`);
     }
+  }
+
+  if (distSet.has(noscriptSource)) {
+    throw new Error(`${noscriptSource} nao deve integrar o artefato publico Pages.`);
   }
 
   for (const rel of sourceStaticFiles) {
