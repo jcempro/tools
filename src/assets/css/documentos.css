@@ -403,6 +403,7 @@ img.logo {
 .jcem-document-form-region .monthly-editor .month-label {
   font-weight: 700;
   white-space: nowrap;
+  width: 1%;
 }
 
 .jcem-document-form-region .status {
