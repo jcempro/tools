@@ -5,127 +5,110 @@ import { createServer } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const compile = spawn("npm", ["run", "compile:watch"], { shell: true, stdio: "inherit" });
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const srcRoot = path.join(root, "src");
 const distRoot = path.join(root, "dist");
 const port = Number(process.env.PORT || 4173);
 const clients = new Set();
+let activeBuild;
+let buildQueued = false;
+let buildTimer;
+let stopped = false;
 
-const liveSnippet = `
-<script>
-(() => {
-  const events = new EventSource("/__live");
-  events.addEventListener("reload", () => window.location.reload());
-})();
-</script>`;
+const liveSnippet = `<script>(()=>{const e=new EventSource("/__live");e.addEventListener("reload",()=>location.reload())})()</script>`;
 
-const mime = new Map([
-  [".css", "text/css; charset=utf-8"],
-  [".html", "text/html; charset=utf-8"],
-  [".js", "text/javascript; charset=utf-8"],
-  [".json", "application/json; charset=utf-8"],
-  [".md", "text/markdown; charset=utf-8"],
-  [".svg", "image/svg+xml"]
-]);
+function injectLiveReload(html) {
+  // PROTECAO: somente o fechamento estrutural final; bundles podem conter </body> em JavaScript inline.
+  return /<\/body>\s*<\/html>\s*$/i.test(html)
+    ? html.replace(/<\/body>\s*<\/html>\s*$/i, `${liveSnippet}</body></html>`)
+    : `${html}${liveSnippet}`;
+}
+const mime = new Map([[".css", "text/css; charset=utf-8"], [".html", "text/html; charset=utf-8"], [".js", "text/javascript; charset=utf-8"], [".json", "application/json; charset=utf-8"], [".svg", "image/svg+xml"]]);
 
-function isInside(base, target) {
-  const relative = path.relative(base, target);
-  return Boolean(relative) && !relative.startsWith("..") && !path.isAbsolute(relative);
+function runNodeScript(relativePath) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [path.join(root, relativePath)], { cwd: root, shell: false, stdio: "inherit" });
+    child.once("error", reject);
+    child.once("exit", (code, signal) => code === 0 ? resolve() : reject(new Error(`${relativePath} falhou (${signal || code}).`)));
+  });
+}
+
+function runBuild() {
+  if (activeBuild) {
+    buildQueued = true;
+    return activeBuild;
+  }
+  activeBuild = runNodeScript("scripts/compile.mjs")
+    .then(() => runNodeScript("scripts/build-bundles.mjs"))
+    .finally(async () => {
+    activeBuild = undefined;
+    if (buildQueued && !stopped) {
+      buildQueued = false;
+      await runBuild().catch(reportBuildError);
+    }
+  });
+  return activeBuild;
+}
+
+function reportBuildError(error) {
+  console.error(`[dev-live] ${error instanceof Error ? error.message : String(error)}`);
 }
 
 function notifyReload() {
-  for (const response of clients) {
-    response.write("event: reload\ndata: now\n\n");
-  }
+  for (const response of clients) response.write("event: reload\ndata: now\n\n");
+}
+
+function scheduleBuild() {
+  clearTimeout(buildTimer);
+  buildTimer = setTimeout(async () => {
+    try { await runBuild(); notifyReload(); }
+    catch (error) { reportBuildError(error); }
+  }, 180);
+}
+
+function isInside(base, target) {
+  const relative = path.relative(base, target);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${request.headers.host || "127.0.0.1"}`);
-
     if (url.pathname === "/__live") {
-      response.writeHead(200, {
-        "cache-control": "no-cache",
-        "connection": "keep-alive",
-        "content-type": "text/event-stream; charset=utf-8"
-      });
-      response.write("\n");
-      clients.add(response);
-      request.on("close", () => clients.delete(response));
-      return;
+      response.writeHead(200, { "cache-control": "no-cache", connection: "keep-alive", "content-type": "text/event-stream; charset=utf-8" });
+      response.write("\n"); clients.add(response); request.on("close", () => clients.delete(response)); return;
     }
-
-    const pathname = decodeURIComponent(url.pathname);
-    const requested = path.normalize(path.join(distRoot, pathname));
-
-    if (requested !== distRoot && !isInside(distRoot, requested)) {
-      response.writeHead(403);
-      response.end("Forbidden");
-      return;
-    }
-
+    const requested = path.normalize(path.join(distRoot, decodeURIComponent(url.pathname)));
+    if (!isInside(distRoot, requested)) { response.writeHead(403); response.end("Forbidden"); return; }
     const info = await stat(requested).catch(() => undefined);
-    if (info?.isDirectory() && pathname !== "/" && !pathname.endsWith("/")) {
-      response.writeHead(308, { location: `${url.pathname}/${url.search}` });
-      response.end();
-      return;
-    }
-
+    if (info?.isDirectory() && url.pathname !== "/" && !url.pathname.endsWith("/")) { response.writeHead(308, { location: `${url.pathname}/${url.search}` }); response.end(); return; }
     const file = info?.isDirectory() ? path.join(requested, "index.html") : requested;
-    const fileInfo = await stat(file);
-
-    if (!fileInfo.isFile()) {
-      response.writeHead(404);
-      response.end("Not found");
-      return;
-    }
-
+    if (!(await stat(file)).isFile()) throw new Error("Arquivo ausente");
     if (path.extname(file).toLowerCase() === ".html") {
       const html = await readFile(file, "utf8");
-      response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-      response.end(html.includes("</body>") ? html.replace("</body>", `${liveSnippet}</body>`) : `${html}${liveSnippet}`);
-      return;
+      response.writeHead(200, { "cache-control": "no-store", "content-type": "text/html; charset=utf-8" });
+      response.end(injectLiveReload(html)); return;
     }
-
-    response.writeHead(200, { "content-type": mime.get(path.extname(file)) || "application/octet-stream" });
+    response.writeHead(200, { "cache-control": "no-store", "content-type": mime.get(path.extname(file)) || "application/octet-stream" });
     createReadStream(file).pipe(response);
-  } catch (_error) {
-    response.writeHead(404);
-    response.end("Not found");
-  }
+  } catch { response.writeHead(404); response.end("Not found"); }
 });
 
-let timer;
-function scheduleReload() {
-  clearTimeout(timer);
-  timer = setTimeout(notifyReload, 120);
+async function stop() {
+  if (stopped) return;
+  stopped = true; clearTimeout(buildTimer); sourceWatcher.close();
+  for (const response of clients) response.end();
+  await new Promise((resolve) => server.close(resolve));
 }
 
-try {
-  await mkdir(distRoot, { recursive: true });
-  watchFs(distRoot, { recursive: true }, scheduleReload);
-} catch (_error) {
-  watchFs(distRoot, scheduleReload);
-}
-
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Servidor live em http://127.0.0.1:${port}/ servindo dist/`);
+await mkdir(distRoot, { recursive: true });
+console.log("[dev-live] Gerando Web e bundles antes de abrir o servidor...");
+await runBuild();
+const sourceWatcher = watchFs(srcRoot, { recursive: true }, scheduleBuild);
+server.once("error", async (error) => {
+  reportBuildError(error.code === "EADDRINUSE" ? new Error(`Porta ${port} ocupada. Encerre o processo anterior ou defina PORT.`) : error);
+  sourceWatcher.close(); process.exitCode = 1;
 });
-
-function stop() {
-  compile.kill();
-  server.close();
-  for (const response of clients) {
-    response.end();
-  }
-}
-
-process.on("SIGINT", () => {
-  stop();
-  process.exit(0);
-});
-
-process.on("SIGTERM", () => {
-  stop();
-  process.exit(0);
-});
+server.listen(port, "127.0.0.1", () => console.log(`Servidor live pronto em http://127.0.0.1:${port}/ (Web + bundles sincronizados)`));
+process.on("SIGINT", () => void stop().then(() => process.exit(0)));
+process.on("SIGTERM", () => void stop().then(() => process.exit(0)));

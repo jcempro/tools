@@ -161,6 +161,7 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.doesNotMatch(sharedCss, /body\.jcem-printable-layout\s*{[^}]*overflow:\s*hidden;/s);
   assert.match(sharedCss, /\.jcem-document-workspace\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\);/s);
   assert.match(sharedCss, /@media\s*\(min-width:\s*1120px\)\s*{[^}]*\.jcem-document-workspace\s*{[^}]*grid-template-columns:/s);
+  assert.match(sharedCss, /\.jcem-document-workspace\.jcem-document-workspace--document-only\s*{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*padding:\s*1rem;/s);
   assert.match(sharedCss, /\.jcem-document-form-region\.no-print,\s*\.jcem-document-form-region\s*{[^}]*background:\s*#e7edf2;/s);
   assert.doesNotMatch(sharedCss, /\.jcem-chrome-footer\s*{[^}]*position:\s*fixed;/s);
@@ -279,4 +280,26 @@ test("all published applications have SVG identity and SCSS sources", async () =
   const files = await collectAllFiles("src");
   assert.equal(files.some((file) => file.endsWith(".css")), false);
   assert.ok(files.filter((file) => file.endsWith(".scss")).length >= 6);
+});
+
+test("dev-live builds before serving and keeps Web plus bundles synchronized", async () => {
+  const live = await readFile("scripts/dev-live.mjs", "utf8");
+  assert.match(live, /await runBuild\(\);[\s\S]*server\.listen/);
+  assert.match(live, /watchFs\(srcRoot/);
+  assert.match(live, /scripts\/compile\.mjs/);
+  assert.match(live, /scripts\/build-bundles\.mjs/);
+  assert.match(live, /buildQueued/);
+  assert.match(live, /EADDRINUSE/);
+  assert.match(live, /<\\\/body>\\s\*<\\\/html>\\s\*\$/i);
+});
+
+test("offline bundles embed the app catalog as metadata with absolute upstream routes", async () => {
+  const bundles = await readFile("scripts/build-bundles.mjs", "utf8");
+  const shared = await readFile("src/assets/js/documentos.ts", "utf8");
+  assert.match(bundles, /jcem-app-catalog/);
+  assert.match(bundles, /charCodeAt\(0\)/);
+  assert.match(bundles, /replace\(\/<head\\b\[\^>\]\*>\/i/);
+  assert.match(bundles, /replace\(\/<script\/gi, "<\\\\x73cript"\)/);
+  assert.match(shared, /__JCEM_APP_CATALOG__/);
+  assert.match(shared, /meta\[name="jcem-app-catalog"\]/);
 });

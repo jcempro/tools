@@ -218,6 +218,10 @@ Todas as versões exibem aviso explícito sobre cookies essenciais e armazenamen
 
 SCSS é a única fonte canônica de estilos. O build transpila todo `.scss` não parcial para CSS comprimido no mesmo caminho lógico em `dist/`; HTML e consumidores públicos referenciam somente o CSS gerado. Logotipos vetoriais ficam em `src/assets/brand/logo.svg` para o workspace e `src/<modulo>/logo.svg` para cada aplicativo.
 
+`dev-live` deve concluir build Web e bundles antes de abrir a porta, servir `dist/` sem cache, observar `src/`, serializar rebuilds concorrentes, regenerar Web e todos os ZIPs a cada alteração e emitir reload somente após sucesso integral. Em Windows, deve executar os scripts Node canônicos diretamente, sem subprocesso NPM aninhado. Porta ocupada deve produzir diagnóstico controlado e encerrar sem processo órfão.
+
+Bundles devem incorporar o catálogo de aplicativos no próprio HTML, com rotas convertidas para URLs absolutas de `https://tools.jcem.pro/`. A navegação offline deve consumir esse catálogo embutido sem requisição local ou remota; recursos funcionais continuam integralmente locais.
+
 # Aditivo Normativo — Páginas Estáticas, GitHub Pages e Recursos Compartilhados
 
 Sem prejuízo das demais disposições deste RCF, passam a integrar sua arquitetura as seguintes diretrizes relativas às páginas HTML especiais, ao pipeline de build e à publicação no GitHub Pages.
