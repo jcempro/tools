@@ -1522,9 +1522,11 @@ import { g as guard } from "./guard";
   }
 
   function removeExistingChrome(): void {
-    for (const element of $(".jcem-chrome-header,.jcem-chrome-footer")) {
+    for (const element of $(".jcem-chrome-header,.jcem-chrome-footer,.jcem-app-nav")) {
       element.remove();
     }
+    for (const element of $(".jcem-app-shell-content")) element.classList.remove("jcem-app-shell-content");
+    d.body.classList.remove("jcem-has-app-nav", "jcem-has-app-nav-right");
   }
 
   function updateChromeScrollState(): void {
@@ -1574,13 +1576,34 @@ import { g as guard } from "./guard";
       if (!Array.isArray(catalog.apps)) return;
       const aside = d.createElement("aside");
       aside.className = `jcem-app-nav no-print jcem-app-nav-${catalog.navigationPosition === "right" ? "right" : "left"}`;
-      aside.innerHTML = `<button class="jcem-nav-toggle" type="button" aria-expanded="false" aria-label="Expandir aplicativos">☰</button><nav aria-label="Aplicativos"><a href="/" title="Workspace"><img src="/assets/brand/logo.svg" alt=""><span>Workspace</span></a>${catalog.apps.map((app) => `<a href="${escapeHtml(app.href)}" title="${escapeHtml(app.title)}"><span class="jcem-nav-dot" aria-hidden="true"></span><span>${escapeHtml(app.title)}</span></a>`).join("")}</nav>`;
+      aside.innerHTML = `<button class="jcem-nav-toggle" type="button" aria-expanded="false" aria-label="Expandir aplicativos"><span aria-hidden="true">›</span></button><nav aria-label="Aplicativos"><a href="/" title="Workspace"><img src="/assets/brand/logo.svg" alt=""><span>Workspace</span></a>${catalog.apps.map((app) => `<a href="${escapeHtml(app.href)}" title="${escapeHtml(app.title)}"><span class="jcem-nav-dot" aria-hidden="true"></span><span>${escapeHtml(app.title)}</span></a>`).join("")}</nav>`;
       on(one<HTMLButtonElement>(".jcem-nav-toggle", aside), "click", (event) => {
         const button = event.currentTarget as HTMLButtonElement;
         const expanded = aside.classList.toggle("is-expanded");
         button.setAttribute("aria-expanded", String(expanded));
+        button.setAttribute("aria-label", expanded ? "Recolher aplicativos" : "Expandir aplicativos");
       });
       d.body.appendChild(aside);
+      const right = catalog.navigationPosition === "right";
+      d.body.classList.add("jcem-has-app-nav");
+      d.body.classList.toggle("jcem-has-app-nav-right", right);
+      for (const child of Array.from(d.body.children)) {
+        if (!child.matches(".jcem-chrome-header,.jcem-chrome-footer,.jcem-app-nav,script,.jcem-consent-blocker")) {
+          child.classList.add("jcem-app-shell-content");
+        }
+      }
+      const syncGeometry = (): void => {
+        const header = one<HTMLElement>(".jcem-chrome-header");
+        const footer = one<HTMLElement>(".jcem-chrome-footer");
+        const top = Math.max(0, header?.getBoundingClientRect().bottom ?? 0);
+        const footerTop = footer?.getBoundingClientRect().top ?? w.innerHeight;
+        aside.style.setProperty("--jcem-nav-top", `${Math.round(top)}px`);
+        aside.style.setProperty("--jcem-nav-bottom", `${Math.round(Math.max(0, w.innerHeight - footerTop))}px`);
+      };
+      w.addEventListener("resize", syncGeometry, { passive: true });
+      w.addEventListener("scroll", syncGeometry, { passive: true });
+      new ResizeObserver(syncGeometry).observe(one<HTMLElement>(".jcem-chrome-header") ?? d.body);
+      syncGeometry();
     } catch { /* PROTECAO: falha do catalogo nao bloqueia o aplicativo. */ }
   }
 

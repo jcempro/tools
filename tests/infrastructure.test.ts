@@ -271,6 +271,13 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(dashboard, /data-app-grid/);
   assert.match(shared, /jcem-theme/);
   assert.match(shared, /assets\/config\/apps\.json/);
+  assert.match(shared, /jcem-app-shell-content/);
+  assert.match(shared, /--jcem-nav-top/);
+  const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
+  assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-app-shell-content\s*{\s*margin-left:\s*3\.5rem/);
+  assert.match(sharedCss, /\.jcem-app-nav\s*{[^}]*top:\s*var\(--jcem-nav-top[^}]*bottom:\s*var\(--jcem-nav-bottom/s);
+  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-chrome-actions\.menu > \*/);
+  assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\)\s*{\s*background:\s*#18191b/);
 });
 
 test("all published applications have SVG identity and SCSS sources", async () => {
