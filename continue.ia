@@ -104,3 +104,13 @@
 - Evidencia Bundle: Faturamento offline preservou trilho de 48 px, quatro links absolutos, ausencia de overflow e a mesma alternancia grafite com papel branco.
 - Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
 - Proximo ponto: gerar handoff e commitar em duas unidades operacionais.
+
+### Polimento visual 20260716.2315.00 - tema, identidade e Bundle
+
+- Solicitacao humana: aprofundar hierarquia do modo escuro; impedir quebra causada pelo switch; usar logos reais e tematicos; ocultar integralmente labels retraidos; tornar dimensoes responsivas; compactar a licenca; alinhar logo do aplicativo junto à marca; manter tema proprio com switch no dashboard raiz.
+- Implementacao: sete niveis grafite para workspace, preview, formulario, fieldset, controle, tabela e estados; medidas estruturais convertidas para `rem`; metadados do cabecalho em linha unica; autosave com elipse; badge `MPL 2.0`; logo do aplicativo à direita de Tools JeanCarloEM; dashboard raiz com switch persistente e cards tematicos.
+- Navegacao: labels retraidos usam `visibility: hidden`; cinco logos reais substituem pontos genericos; filtro de tema preserva identidade e melhora contraste.
+- Correcao orientada por capturas: Bundle passou a consumir representacoes SVG `data:` do catalogo para logo de cabecalho, workspace e quatro aplicativos; nenhuma imagem quebrada. Preview escuro passou a `rgb(43,46,50)`, distinto do workspace `rgb(23,24,26)`, formulario `rgb(31,32,35)`, fieldset `rgb(41,43,47)`, input `rgb(54,56,61)` e papel branco.
+- Evidencia visual: Bundle Faturamento apresentou seis SVGs Base64 carregados, labels ocultos e toolbar intacta; dashboard raiz apresentou quatro cards com logos e switch independente.
+- Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
+- Proximo ponto: atualizar handoff, criar dois commits e liberar `dev` para validacao humana.
