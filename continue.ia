@@ -75,3 +75,9 @@
 - Commits intermediarios: `764245d` e `b608f86`.
 - Validacoes: type-check, lint e 37 testes aprovados. Build Web e quatro bundles gerados. Publicacao validada com 5 paginas e 32 arquivos apos impedir bundle indevido do dashboard raiz.
 - Etapa atual: 6/6 - validacao visual, sincronizacao documental, commits finais e convergencia.
+
+### Bloqueio de conclusao 20260716.2030.00
+
+- Implementacao e validacao automatizada concluidas por `npm run check`: type-check, lint, 39 testes, build, quatro bundles e publicacao aprovados.
+- Validacao visual no navegador integrado foi tentada com servidor local ativo; `127.0.0.1` retornou conexao recusada e `localhost` foi bloqueado pelo cliente. Nenhuma conclusao visual foi inferida.
+- Pendencia unica para concluir a FT: validar dashboard, 404, tema, menu retraido/expandido e impressao/PDF em navegador com acesso ao servidor local; depois gerar handoff final e convergir `dev` em `master`.

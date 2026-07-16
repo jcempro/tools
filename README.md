@@ -2,6 +2,12 @@
 
 Projeto estático para modelos e utilitários Web publicados em GitHub Pages.
 
+O caminho `/` publica um workspace sem aplicativo aberto por padrão. Catálogo, aplicativo inicial e orientação da navegação ficam em `src/assets/config/apps.json`. Temas claro/escuro são persistidos localmente sem alterar a folha impressa. Estilos-fonte usam SCSS e são transpilados para CSS comprimido no build.
+
+O site público carrega o Silktide Consent Manager por CDN conforme `src/assets/config/consent.json`; bundles offline não carregam recursos remotos e exibem o aviso de cookies essenciais e armazenamento local.
+
+O estado técnico retomável está em [handoff.md](handoff.md).
+
 ## Desenvolvimento
 
 ```bash

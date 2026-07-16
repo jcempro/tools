@@ -19,6 +19,17 @@ async function collectIndexFiles(dir = "src"): Promise<string[]> {
   return files;
 }
 
+async function collectAllFiles(dir = "src"): Promise<string[]> {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const files: string[] = [];
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...await collectAllFiles(full));
+    else if (entry.isFile()) files.push(full);
+  }
+  return files;
+}
+
 test("package exposes the full development lifecycle", async () => {
   const pkg = JSON.parse(await readFile("package.json", "utf8")) as {
     scripts: Record<string, string>;
@@ -246,4 +257,26 @@ test("institutional chrome protects author, license and legal notices", async ()
   assert.match(validate, /assertNoSourceMapReference/);
   assert.match(validate, /assertNoProtectedChromeText/);
   assert.match(sharedCss, /\.jcem-chrome-footer\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\);/s);
+});
+
+test("dashboard catalog, themes and consent remain centralized", async () => {
+  const catalog = JSON.parse(await readFile("src/assets/config/apps.json", "utf8"));
+  const consent = JSON.parse(await readFile("src/assets/config/consent.json", "utf8"));
+  const dashboard = await readFile("src/index.html", "utf8");
+  const shared = await readFile("src/assets/js/documentos.ts", "utf8");
+  assert.equal(catalog.defaultApp, null);
+  assert.equal(catalog.apps.length, 4);
+  assert.equal(consent.cdnVersion, "2.0.0");
+  assert.match(dashboard, /data-app-grid/);
+  assert.match(shared, /jcem-theme/);
+  assert.match(shared, /assets\/config\/apps\.json/);
+});
+
+test("all published applications have SVG identity and SCSS sources", async () => {
+  for (const directory of ["csv-bd", "dizimo", "faturamento", "oficios/admissional"]) {
+    assert.match(await readFile(`src/${directory}/logo.svg`, "utf8"), /<svg/);
+  }
+  const files = await collectAllFiles("src");
+  assert.equal(files.some((file) => file.endsWith(".css")), false);
+  assert.ok(files.filter((file) => file.endsWith(".scss")).length >= 6);
 });

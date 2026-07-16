@@ -10,6 +10,7 @@ const path = require("path");
 
 const ROOT_DIR = path.resolve(__dirname, "..", "..");
 const CANONICAL_FILES = [
+  "continue.ia",
   path.join(".agents", "continue.ia"),
 ];
 const STATUS_FILE = "handoff.md";
@@ -36,7 +37,7 @@ function resolveCanonicalContinueFile(rootDir) {
     .filter((entry) => fs.existsSync(entry.path) && fs.statSync(entry.path).isFile());
 
   if (found.length !== 1) {
-    throw new Error("Deve existir exatamente um arquivo canonico: .agents/continue.ia.");
+    throw new Error("Deve existir exatamente um arquivo canonico continue.ia na raiz ou em .agents/.");
   }
 
   return found[0];

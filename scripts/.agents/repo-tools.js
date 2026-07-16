@@ -528,7 +528,7 @@ function repairGeneratedArtifacts() {
 }
 
 function setup() {
-  const required = ["package.json", "README.md", "RCF.md", "AGENTS.md", path.join(".agents", "continue.ia")];
+  const required = ["package.json", "README.md", "RCF.md", "AGENTS.md", "continue.ia"];
   const missing = required.filter((entry) => !fs.existsSync(path.join(ROOT_DIR, entry)));
   return ok(missing.length ? "SETUP_DEGRADED" : "SETUP_OK", { missing });
 }
@@ -536,7 +536,7 @@ function setup() {
 function doctor() {
   const scripts = readPackageScripts();
   const commandSummary = summarizeCommands(scripts);
-  const requiredFiles = ["README.md", "RCF.md", "AGENTS.md", "package.json", "index.json", path.join(".agents", "continue.ia")];
+  const requiredFiles = ["README.md", "RCF.md", "AGENTS.md", "package.json", "index.json", "continue.ia"];
   const missing = requiredFiles.filter((entry) => !fs.existsSync(path.join(ROOT_DIR, entry)));
   const git = runProcess("git", ["status", "--short"], { optional: true });
   return ok(missing.length ? "DOCTOR_DEGRADED" : "DOCTOR_OK", {
@@ -973,9 +973,9 @@ function assertFile(filePath, message) {
 }
 
 function compactOperationalContext() {
-  const memoryPath = path.join(ROOT_DIR, ".agents", "continue.ia");
+  const memoryPath = path.join(ROOT_DIR, "continue.ia");
   const handoffPath = path.join(ROOT_DIR, "handoff.md");
-  assertFile(memoryPath, ".agents/continue.ia ausente.");
+  assertFile(memoryPath, "continue.ia ausente.");
   const result = runProcess(process.execPath, [path.join(ROOT_DIR, "scripts", ".agents", "generate-agents-status.js")]);
   if (result.status !== 0) {
     throw new Error("Falha ao gerar projecao compacta do estado operacional.");
@@ -985,7 +985,7 @@ function compactOperationalContext() {
     .split(/\r?\n/u)
     .filter((line) => /^FT-\d+\|.*\|status=em_andamento\b/u.test(line))
     .map((line) => line.split("|")[0]);
-  return ok("COMPACT_OK", { activeFronts, canonical: ".agents/continue.ia", projection: "handoff.md" });
+  return ok("COMPACT_OK", { activeFronts, canonical: "continue.ia", projection: "handoff.md" });
 }
 
 function assertNormativeMirrors() {
