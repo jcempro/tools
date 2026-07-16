@@ -913,6 +913,9 @@ import { g as guard } from "./guard";
     { id: "separator-fill", order: 30, type: "separator" as const }
   ];
   const toolbarLegacyBlueprints: ToolbarLegacyBlueprint[] = [
+    // FIX-BUG: preserva ações utilitárias do CSV na normalização da toolbar global.
+    { hint: "Abrir CSV", icon: { unicode: "f574" }, id: "csv-open", label: "", order: 20, selector: ".csv-open" },
+    { hint: "Baixar CSV convertido", icon: { unicode: "f56d" }, id: "csv-download", label: "", order: 40, selector: ".csv-download" },
     { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icons: [{ unicode: "f49e" }, { unicode: "f358" }], id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
     { hint: "Imprimir PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
     { hint: "Imprimir em branco", icon: { unicode: "f1c1" }, id: "blank-pdf", label: "fixed:em branco", order: 45, selector: ".pdf.formulario" },

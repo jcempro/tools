@@ -111,7 +111,7 @@ test("application modules use shared institutional chrome except declared specia
 
   for (const file of await collectIndexFiles()) {
     const normalized = file.split(path.sep).join("/");
-    if (normalized === "src/dizimo/index.html" || normalized === "src/index.html") {
+    if (normalized === "src/index.html") {
       continue;
     }
 
@@ -158,11 +158,14 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.match(sharedCss, /body\.jcem-printable-layout\s*{[^}]*min-height:\s*100vh;/s);
   assert.match(sharedCss, /body\.jcem-printable-layout\s*{[^}]*margin:\s*0;/s);
   assert.match(sharedCss, /body\.jcem-printable-layout\s*{[^}]*overflow-y:\s*auto;/s);
+  assert.match(sharedCss, /html\s*{[^}]*overflow-x:\s*clip;/s);
   assert.doesNotMatch(sharedCss, /body\.jcem-printable-layout\s*{[^}]*overflow:\s*hidden;/s);
   assert.match(sharedCss, /\.jcem-document-workspace\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\);/s);
+  assert.match(sharedCss, /\.jcem-document-workspace\s*{[^}]*overflow:\s*clip;/s);
   assert.match(sharedCss, /@media\s*\(min-width:\s*1120px\)\s*{[^}]*\.jcem-document-workspace\s*{[^}]*grid-template-columns:/s);
   assert.match(sharedCss, /\.jcem-document-workspace\.jcem-document-workspace--document-only\s*{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*padding:\s*1rem;/s);
+  assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*contain:\s*inline-size layout paint;/s);
   assert.match(sharedCss, /\.jcem-document-form-region\.no-print,\s*\.jcem-document-form-region\s*{[^}]*background:\s*#e7edf2;/s);
   assert.doesNotMatch(sharedCss, /\.jcem-chrome-footer\s*{[^}]*position:\s*fixed;/s);
   assert.match(faturamentoTs, /api\.layout\.printable/);
@@ -271,6 +274,7 @@ test("institutional chrome protects author, license and legal notices", async ()
   assert.match(validate, /assertNoSourceMapReference/);
   assert.match(validate, /assertNoProtectedChromeText/);
   assert.match(sharedCss, /\.jcem-chrome-footer\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\);/s);
+  assert.match(sharedCss, /\.jcem-chrome-footer\s*{[^}]*padding:\s*2rem 1rem 2\.25rem;/s);
 });
 
 test("dashboard catalog, themes and consent remain centralized", async () => {
@@ -279,7 +283,7 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   const dashboard = await readFile("src/index.html", "utf8");
   const shared = await readFile("src/assets/js/documentos.ts", "utf8");
   assert.equal(catalog.defaultApp, null);
-  assert.equal(catalog.apps.length, 4);
+  assert.equal(catalog.apps.length, 3);
   assert.equal(consent.cdnVersion, "2.0.0");
   assert.match(dashboard, /data-app-grid/);
   assert.match(dashboard, /data-dashboard-theme/);
@@ -297,6 +301,10 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*transition:\s*width \.18s ease/s);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-header\s*{[^}]*animation-timeline:\s*scroll\(root block\)[^}]*animation-range:\s*0 7rem/s);
   assert.match(sharedCss, /@keyframes jcem-header-nav-clearance\s*{[^}]*padding-left:\s*1rem[\s\S]*padding-left:\s*4\.5rem/s);
+  assert.match(sharedCss, /@keyframes jcem-toolbar-nav-clearance\s*{[^}]*margin-right:\s*-1rem[\s\S]*margin-right:\s*-4\.5rem/s);
+  assert.match(sharedCss, /:root\[data-theme="light"\] \.jcem-nav-toggle\s*{[^}]*color:\s*#29465b/s);
+  assert.match(sharedCss, /\.jcem-dashboard-footer p\s*{[^}]*color:\s*inherit/s);
+  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-dashboard-footer p\s*{[^}]*color:\s*#b6bac0/s);
   assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav::before\s*{[^}]*width:\s*min\(18rem/s);
   assert.doesNotMatch(shared, /addEventListener\("(?:resize|scroll)"|ResizeObserver/);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-chrome-actions\.menu > \*/);
@@ -307,13 +315,32 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-document-form-region fieldset\s*{[^}]*background:\s*#292b2f/s);
 });
 
+test("CSV module preserves readable local surfaces in both themes", async () => {
+  const css = await readFile("src/csv-bd/bd.scss", "utf8");
+  const html = await readFile("src/csv-bd/index.html", "utf8");
+  const ts = await readFile("src/csv-bd/bd.ts", "utf8");
+  const shared = await readFile("src/assets/js/documentos.ts", "utf8");
+
+  assert.match(css, /:root\[data-theme="dark"\]\s*{[^}]*--panel:\s*#292c30[^}]*--ink:\s*#eef0f2/s);
+  assert.match(css, /:root\[data-theme="dark"\] \.bd-app input,[\s\S]*background:\s*#35383d[^}]*color:\s*var\(--ink\)/s);
+  assert.match(css, /:root\[data-theme="dark"\] \.bd-app \.summary-grid div\s*{[^}]*background:\s*#32353a/s);
+  assert.match(css, /:root\[data-theme="dark"\] \.bd-app \.decisions\s*{[^}]*background:\s*#3a3525/s);
+  assert.match(html, /class="ico csv-open"/);
+  assert.match(html, /class="ico csv-download"/);
+  assert.match(html, /class="ico clear"/);
+  assert.match(ts, /"csv-open":\s*\(\)\s*=>\s*input\("#csv-file"\)\.click\(\)/);
+  assert.match(ts, /"csv-download":\s*downloadCsv/);
+  assert.match(shared, /selector:\s*"\.csv-open"/);
+  assert.match(shared, /selector:\s*"\.csv-download"/);
+});
+
 test("all published applications have SVG identity and SCSS sources", async () => {
-  for (const directory of ["csv-bd", "dizimo", "faturamento", "oficios/admissional"]) {
+  for (const directory of ["csv-bd", "faturamento", "oficios/admissional"]) {
     assert.match(await readFile(`src/${directory}/logo.svg`, "utf8"), /<svg/);
   }
   const files = await collectAllFiles("src");
   assert.equal(files.some((file) => file.endsWith(".css")), false);
-  assert.ok(files.filter((file) => file.endsWith(".scss")).length >= 6);
+  assert.equal(files.filter((file) => file.endsWith(".scss")).length, 4);
 });
 
 test("dev-live builds before serving and keeps Web plus bundles synchronized", async () => {

@@ -136,3 +136,12 @@
 - Botao offline normatizado com primeiro icone principal maior e opaco; `f358` complementar menor e de opacidade reduzida.
 - Switch vetorial centralizado explicitamente; autosave ampliado para 1,6 rem com confirmacao animada curta e respeito a movimento reduzido.
 - Validacao Web: marca remota 64x64 carregada, link correto, ordem confirmada, superficie expandida em 240 px com transicao de 0,18 s e texto de autosave sem truncagem.
+
+### Auditoria visual e simplificacao 20260717.0035.00
+
+- Contraste claro/escuro normatizado no dashboard, shell documental e Conversor CSV; o painel Logs, controles, resumos e decisões agora usam superfícies locais compatíveis com o tema.
+- Rodapés receberam maior respiro superior e inferior; textos do dashboard deixaram de depender da regra global de parágrafos.
+- Toolbar do CSV corrigida na origem: o normalizador agora preserva abrir CSV, baixar convertido, limpar e Bundle, todos com Font Awesome e ações funcionais.
+- Preview A4 isolado por contenção de layout/pintura, mantendo scroll interno e eliminando overflow horizontal do documento raiz em viewport de 625 px.
+- Módulo de dízimo removido da fonte, catálogo, compilação, publicação e Bundle por solicitação humana; catálogo vigente contém Faturamento, Ofício admissional e Conversor CSV.
+- Evidência de navegador: tema claro com menu `rgb(41,70,91)` sobre `rgb(215,225,231)`; tema escuro do CSV com Logs `rgb(41,44,48)` e texto `rgb(237,237,237)`; toolbar completa com quatro ações; header e toolbar terminam em 625 px tanto no topo quanto após rolagem.

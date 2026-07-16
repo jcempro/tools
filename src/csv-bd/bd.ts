@@ -371,6 +371,13 @@ import {
 
   ready(() => {
     const shared = w.JCEMDocumentos;
+    shared?.toolbar.configure({
+      actions: {
+        "csv-open": () => input("#csv-file").click(),
+        "csv-download": downloadCsv,
+        clear: clearAll
+      }
+    });
     shared?.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".bd-app" });
     shared?.bundle.bindDownload();
 

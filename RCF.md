@@ -24,7 +24,6 @@
 │   ├── assets/
 │   ├── components/
 │   ├── csv-bd/
-│   ├── dizimo/
 │   ├── faturamento/
 │   ├── favoritos/
 │   └── oficios/
@@ -82,7 +81,7 @@ Recursos compartilhados obrigatorios quando aplicaveis:
 - validadores, normalizadores, mensagens e estados de erro reutilizaveis;
 - nucleos reutilizaveis de utilitarios nao documentais, como transformacao tabular.
 
-Cabecalho, toolbar e rodape globais sao obrigatorios para modulos publicados, exceto `dizimo` por compatibilidade visual e historica. Modulos nao podem duplicar cabecalhos/rodapes nem alterar a estrutura base; excecoes exigem previsao expressa neste RCF ou no RCF especifico.
+Cabecalho, toolbar e rodape globais sao obrigatorios para todos os modulos publicados. Modulos nao podem duplicar cabecalhos/rodapes nem alterar a estrutura base; excecoes exigem previsao expressa neste RCF ou no RCF especifico.
 
 O cabecalho e o rodape globais devem consumir uma unica fonte institucional compartilhada. A autoria exibida na interface deve ser apresentada exclusivamente como `JeanCarloEM`, sempre com hyperlink para `https://www.jeancarloem.com`, aberto em nova aba com `rel="noopener noreferrer"` ou equivalente. Siglas como `JCEM` podem permanecer apenas em identificadores tecnicos, dominio, namespace, historico ou nome de projeto quando houver justificativa funcional.
 
@@ -216,7 +215,7 @@ Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplica
 
 `src/index.html` é o dashboard publicado e não integra bundles. O catálogo em `src/assets/config/apps.json` é a fonte configurável de aplicativos, rota padrão e orientação da navegação. `defaultApp: null` mantém o workspace sem aplicativo aberto; um identificador válido ativa o redirecionamento. Nos aplicativos, a navegação global deve formar uma barra lateral fixa abaixo do cabeçalho e acima do rodapé, reservar no conteúdo somente a largura retraída e expandir sobre o conteúdo sob comando acessível alinhado ao topo da barra. A expansão não deve deslocar a superfície documental. Links públicos absolutos devem permanecer funcionais em execução `file:`.
 
-Interface não imprimível suporta temas claro e escuro. O tema escuro usa paleta neutra grafite/chumbo e deve adaptar fundos, textos, links, bordas, toolbar, controles, ícones e navegação com contraste legível; deve distinguir fundo global, painel, grupo, controle, hover, foco e estado desabilitado por tons próximos mas perceptíveis, sem matiz azul dominante ou superfície monótona. O dashboard raiz mantém composição própria e deve oferecer o mesmo switch persistente, sem incorporar o contêiner documental. A preferência explícita usa armazenamento local; em sua ausência prevalece `prefers-color-scheme`, com claro como fallback. A folha imprimível permanece branca e em esquema claro. `404.html` reutiliza o catálogo, preserva redirecionamentos válidos e não carrega consentimento ou persistência.
+Interface não imprimível suporta temas claro e escuro. Ambos devem adaptar explicitamente fundos, textos, links, bordas, toolbar, controles, ícones e navegação com contraste legível, distinguindo fundo global, painel, grupo, controle, hover, foco e estado desabilitado por tons próximos mas perceptíveis. O tema escuro usa paleta neutra grafite/chumbo, sem matiz azul dominante ou superfície monótona; o tema claro preserva hierarquia equivalente por superfícies claras graduais e não pode depender de herança cromática ambígua. Painel local de módulo não pode conservar superfície fixa incompatível com o tema nem combinar texto herdado e fundo sem contraste. O dashboard raiz mantém composição própria e deve oferecer o mesmo switch persistente, sem incorporar o contêiner documental. A preferência explícita usa armazenamento local; em sua ausência prevalece `prefers-color-scheme`, com claro como fallback. A folha imprimível permanece branca e em esquema claro. `404.html` reutiliza o catálogo, preserva redirecionamentos válidos e não carrega consentimento ou persistência.
 
 Todas as versões exibem aviso explícito sobre cookies essenciais e armazenamento local. Exclusivamente em HTTPS público, `src/assets/js/consent.ts` carrega o Silktide Consent Manager por CDN na versão declarada em `src/assets/config/consent.json`. Sem aceitação registrada, uma camada modal bloqueia o uso; recusa mantém o bloqueio. Bundles offline não carregam CDN e permanecem autossuficientes.
 

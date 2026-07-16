@@ -13,6 +13,19 @@
   --ok: #226342;
 }
 
+:root[data-theme="dark"] {
+  --bg: #1b1d20;
+  --panel: #292c30;
+  --ink: #eef0f2;
+  --muted: #b7bdc4;
+  --line: #4c5157;
+  --accent: #397f97;
+  --accent-strong: #a9d0dc;
+  --danger: #ffaaa0;
+  --warning: #e8c875;
+  --ok: #8fd0ae;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -277,6 +290,34 @@ button:focus {
 #logs .warning,
 #logs .decision {
   color: var(--warning);
+}
+
+:root[data-theme="dark"] .bd-app .panel {
+  box-shadow: 0 6px 18px rgb(0 0 0 / 24%);
+}
+
+:root[data-theme="dark"] .bd-app input,
+:root[data-theme="dark"] .bd-app select,
+:root[data-theme="dark"] .bd-app textarea {
+  border-color: #5c6269;
+  background: #35383d;
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .bd-app button.secondary,
+:root[data-theme="dark"] .bd-app #copy-log {
+  border-color: #68727a;
+  background: #35383d;
+  color: #c6e2ea;
+}
+
+:root[data-theme="dark"] .bd-app .summary-grid div {
+  background: #32353a;
+}
+
+:root[data-theme="dark"] .bd-app .decisions {
+  border-color: #756a3f;
+  background: #3a3525;
 }
 
 #logs .info {

@@ -22,10 +22,6 @@
         "output": "faturamento/faturamento.js"
       },
       {
-        "source": "src/dizimo/assets/js/main.ts",
-        "output": "dizimo/assets/js/main.js"
-      },
-      {
         "source": "src/csv-bd/bd.ts",
         "output": "csv-bd/bd.js"
       }

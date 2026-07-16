@@ -99,6 +99,8 @@ Inconsistencias recuperaveis devem ser corrigidas automaticamente; quando imposs
 
 Logs da interface devem ser sucintos e continuamente atualizados, informando inicio, etapa, progresso, avisos, inconsistencias, decisoes pendentes, conclusao e falhas sem verbosidade excessiva.
 
+Painel, titulo, itens de log, controles, resumos e decisoes devem acompanhar os temas claro e escuro do layout global com superfícies graduais e contraste explicito. Nenhuma superfície local fixa pode tornar texto, icone ou estado ilegivel ao alternar o tema.
+
 ## 12. Extensibilidade
 
 Novos modelos, formatos, adaptadores, transformacoes, validadores e normalizadores devem ser adicionaveis sem alterar o nucleo. A implementacao nao deve assumir conhecimento fixo alem das regras deste RCF.
@@ -120,7 +122,7 @@ O modulo deve consumir `src/assets/js/tabular.ts` para deteccao/leitura de CSV, 
 ## 14. Decisoes Locais
 
 - O modulo permanece estatico, offline e executado no navegador.
-- Nao consome regras A4/PDF, mas usa cabecalho, barra extensivel e rodape globais.
+- Nao consome regras A4/PDF, mas usa cabecalho, barra extensivel e rodape globais. A toolbar deve manter visiveis as acoes de abrir CSV, baixar o CSV convertido, limpar e obter o Bundle offline, com icones e comportamento normalizados pela infraestrutura compartilhada.
 - O nucleo tabular pertence a camada compartilhada por potencial de reuso.
 - A saida CSV e sempre UTF-8 com BOM.
 - Conflitos de nomes ficam rastreaveis e expostos antes da exportacao.
