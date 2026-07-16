@@ -93,3 +93,14 @@
 - Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, build, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
 - Prova de integracao: `/`, `/faturamento/`, `/oficios/admissional/` e os dois ZIPs responderam HTTP 200; toque em SCSS regenerou o ZIP e o servidor permaneceu HTTP 200.
 - Proximo ponto: atualizar handoff, commitar e disponibilizar a branch `dev` para validacao humana.
+
+### Ajuste visual 20260716.2215.00 - shell dos aplicativos
+
+- Solicitacao humana: preservar o `index` aprovado; substituir o azul do tema escuro por grafite/chumbo; adaptar textos, toolbar e icones; integrar a navegacao lateral ao shell sem sobrepor conteudo quando retraida.
+- Causa raiz: tema escuro alterava somente fundos e poucos textos; toolbar, controles, icones e bordas mantinham tokens claros. A navegacao era um painel flutuante centralizado com `z-index`, sem reserva estrutural.
+- Implementacao: paleta neutra completa; barra lateral fixa entre cabecalho e rodape; trilho retraido de 3,5 rem reservado no conteudo; expansao sobreposta sem reflow; botao vertical no topo; geometria sincronizada em scroll/resize; links offline preservados.
+- Evidencia Web: Faturamento e Admissional com trilho retraido de 48 px, inicio alinhado ao fim do cabecalho, conteudo deslocado sem sobreposicao, expansao de 241 px sem alterar a geometria documental; Admissional preservou A4 de 794 px e ausencia de overflow.
+- Evidencia de tema: fundo `rgb(24,25,27)`, cabecalho `rgb(32,34,37)`, toolbar `rgb(44,46,50)`, controles `rgb(48,50,54)`, icones claros e papel branco.
+- Evidencia Bundle: Faturamento offline preservou trilho de 48 px, quatro links absolutos, ausencia de overflow e a mesma alternancia grafite com papel branco.
+- Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
+- Proximo ponto: gerar handoff e commitar em duas unidades operacionais.
