@@ -203,6 +203,13 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedTs, /icons:\s*\[\{ unicode:\s*"f49e" \},\s*\{ unicode:\s*"f358" \}\]/);
   assert.match(sharedTs, /separator-print-clear/);
   assert.match(sharedTs, /item\.icons/);
+  assert.match(sharedTs, /renderIcon\(\{ unicode: "f042" \}\)/);
+  assert.match(sharedCss, /\.jcem-theme-toggle \.jcem-fa-icon\s*{[^}]*width:\s*1\.65rem[^}]*height:\s*1\.65rem/s);
+  assert.match(sharedCss, /\.jcem-author-badge:hover[\s\S]*transform:\s*translateY\(-0\.08rem\)/);
+  assert.match(sharedCss, /\.jcem-theme-toggle\s*{[^}]*place-items:\s*center[^}]*padding:\s*0/s);
+  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon:first-child\s*{[^}]*width:\s*1\.8rem[^}]*opacity:\s*1/s);
+  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon:nth-child\(2\)\s*{[^}]*opacity:\s*0\.68[^}]*scale\(0\.82\)/s);
+  assert.match(sharedCss, /@keyframes jcem-autosave-confirm/);
   assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon\s*{[^}]*height:\s*2rem/s);
   assert.match(faturamentoTs, /actions:\s*{/);
   assert.match(admissionalTs, /actions:\s*{/);
@@ -286,6 +293,11 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
   assert.match(sharedCss, /\.jcem-app-shell\s*{[^}]*grid-template-columns:\s*3\.5rem minmax\(0, 1fr\)/s);
   assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav/);
+  assert.match(shared, /renderIcon\(\{ unicode: "f0c9" \}\)/);
+  assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*transition:\s*width \.18s ease/s);
+  assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-header\s*{[^}]*animation-timeline:\s*scroll\(root block\)[^}]*animation-range:\s*0 7rem/s);
+  assert.match(sharedCss, /@keyframes jcem-header-nav-clearance\s*{[^}]*padding-left:\s*1rem[\s\S]*padding-left:\s*4\.5rem/s);
+  assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav::before\s*{[^}]*width:\s*min\(18rem/s);
   assert.doesNotMatch(shared, /addEventListener\("(?:resize|scroll)"|ResizeObserver/);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-chrome-actions\.menu > \*/);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\)\s*{\s*background:\s*#18191b/);
@@ -316,7 +328,9 @@ test("dev-live builds before serving and keeps Web plus bundles synchronized", a
 });
 
 test("offline bundles embed the app catalog as metadata with absolute upstream routes", async () => {
-  const bundles = await readFile("scripts/build-bundles.mjs", "utf8");
+  const bundleEntry = await readFile("scripts/build-bundles.mjs", "utf8");
+  const bundleCore = await readFile("scripts/build-bundles-core.mjs", "utf8");
+  const bundles = `${bundleEntry}\n${bundleCore}`;
   const shared = await readFile("src/assets/js/documentos.ts", "utf8");
   assert.match(bundles, /jcem-app-catalog/);
   assert.match(bundles, /charCodeAt\(0\)/);
@@ -325,4 +339,10 @@ test("offline bundles embed the app catalog as metadata with absolute upstream r
   assert.match(shared, /__JCEM_APP_CATALOG__/);
   assert.match(shared, /meta\[name="jcem-app-catalog"\]/);
   assert.match(shared, /offlineLogo/);
+  assert.match(bundleEntry, /https:\/\/jcem\.pro\/logo\/64-yellow\.png/);
+  assert.match(bundleEntry, /const authorLogo\s*=\s*await authorLogoDataUrl/);
+  assert.match(bundleEntry, /catalog\.authorLogo\s*=\s*authorLogo/);
+  assert.match(bundleEntry, /originalSharedScript\.replaceAll\(authorLogoUrl, authorLogo\)/);
+  assert.match(shared, /authorLogo\?\.startsWith\("data:image\/png;base64,"\)/);
+  assert.match(shared, /authorImage\.src\s*=\s*"https:\/\/jcem\.pro\/logo\/64-yellow\.png"/);
 });

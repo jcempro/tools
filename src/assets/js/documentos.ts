@@ -1,7 +1,9 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
 import {
   faBoxOpen,
+  faBars,
   faCircleDown,
+  faCircleHalfStroke,
   faFolderOpen,
   faEraser,
   faFilePdf,
@@ -872,7 +874,9 @@ import { g as guard } from "./guard";
 
   const iconDefinitions: FaIconDefinition[] = [
     faBoxOpen,
+    faBars,
     faCircleDown,
+    faCircleHalfStroke,
     faFolderOpen,
     faEraser,
     faFileArrowDown,
@@ -1557,14 +1561,14 @@ import { g as guard } from "./guard";
     button.className = "jcem-theme-toggle";
     button.type = "button";
     button.setAttribute("aria-label", "Alternar tema claro e escuro");
-    button.innerHTML = '<span aria-hidden="true">◐</span>';
+    button.innerHTML = renderIcon({ unicode: "f042" });
     on(button, "click", () => applyTheme(d.documentElement.dataset.theme === "dark" ? "light" : "dark"));
     return button;
   }
 
   async function renderAppNavigation(): Promise<void> {
     try {
-      type AppCatalog = { apps?: Array<{ href: string; id: string; logo?: string; offlineLogo?: string; title: string }>; currentAppId?: string; navigationPosition?: string; workspaceLogo?: string; workspaceOfflineLogo?: string };
+      type AppCatalog = { apps?: Array<{ href: string; id: string; logo?: string; offlineLogo?: string; title: string }>; authorLogo?: string; currentAppId?: string; navigationPosition?: string; workspaceLogo?: string; workspaceOfflineLogo?: string };
       const embedded = (w as Window & { __JCEM_APP_CATALOG__?: AppCatalog }).__JCEM_APP_CATALOG__;
       const encoded = one<HTMLMetaElement>('meta[name="jcem-app-catalog"]')?.content;
       const metadata: AppCatalog | undefined = encoded
@@ -1573,6 +1577,10 @@ import { g as guard } from "./guard";
       const catalog = embedded ?? metadata ?? await fetch("/assets/config/apps.json").then((response) => response.json()) as AppCatalog;
       if (!Array.isArray(catalog.apps)) return;
       const bundled = Boolean(encoded);
+      const authorImage = one<HTMLImageElement>(".jcem-author-badge img");
+      if (authorImage && bundled && catalog.authorLogo?.startsWith("data:image/png;base64,")) {
+        authorImage.src = catalog.authorLogo;
+      }
       const appLogo = (app: NonNullable<AppCatalog["apps"]>[number]): string => bundled ? (app.offlineLogo ?? app.logo ?? "") : (app.logo ?? "");
       const aside = d.createElement("aside");
       aside.className = `jcem-app-nav no-print jcem-app-nav-${catalog.navigationPosition === "right" ? "right" : "left"}`;
@@ -1586,7 +1594,7 @@ import { g as guard } from "./guard";
       toggleLabel.className = "jcem-nav-toggle";
       toggleLabel.htmlFor = toggle.id;
       toggleLabel.setAttribute("aria-label", "Expandir ou recolher aplicativos");
-      toggleLabel.innerHTML = '<span aria-hidden="true">›</span>';
+      toggleLabel.innerHTML = renderIcon({ unicode: "f0c9" });
       aside.innerHTML = `<nav aria-label="Aplicativos"><a href="/" title="Workspace"><span class="jcem-app-logo" data-logo="${escapeHtml(workspaceLogo)}"></span><span>Workspace</span></a>${appLinks}</nav>`;
       for (const slot of $<HTMLElement>("[data-logo]", aside)) {
         const image = d.createElement("img");
@@ -1594,16 +1602,6 @@ import { g as guard } from "./guard";
         image.src = slot.dataset.logo ?? "";
         image.alt = "";
         slot.replaceWith(image);
-      }
-      const currentPath = `${w.location.pathname.replace(/(?:index\.html)?$/, "").replace(/\/+$/, "")}/`;
-      const currentApp = catalog.apps.find((app) => app.id === catalog.currentAppId || new URL(app.href, w.location.href).pathname === currentPath || currentPath.includes(`/${app.id}`));
-      const brand = one<HTMLElement>(".jcem-project-slot");
-      if (brand && currentApp && appLogo(currentApp)) {
-        const image = d.createElement("img");
-        image.className = "jcem-project-logo";
-        image.src = appLogo(currentApp);
-        image.alt = "";
-        brand.appendChild(image);
       }
       const header = one<HTMLElement>(".jcem-chrome-header");
       header?.insertAdjacentElement("afterend", toggle);
@@ -1648,7 +1646,6 @@ import { g as guard } from "./guard";
     header.innerHTML = `
       <div class="jcem-chrome-identity">
         <a class="jcem-chrome-brand" href="https://${domain}/"><img class="jcem-global-logo" src="/assets/brand/logo.svg" alt=""><span>${escapeHtml(brandName)}</span></a>
-        <a class="jcem-license-badge" href="${escapeHtml(licenseUrl)}" target="_blank" rel="license noopener noreferrer" aria-label="${escapeHtml(seal.__p9 + licenseName)}" title="${escapeHtml(licenseName)}"><span>MPL</span><strong>2.0</strong></a>
       </div>
       <div class="jcem-chrome-meta">
         <span class="ico autosave jcem-autosave" title="${escapeHtml(seal.__p11)}"><span class="jcem-autosave-copy"><span>Salvamento local, offline e </span><strong>automático</strong></span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
@@ -1688,9 +1685,26 @@ import { g as guard } from "./guard";
     d.body.insertBefore(header, mount ?? null);
     const meta = one<HTMLElement>(".jcem-chrome-meta", header);
     meta?.appendChild(initTheme());
-    const projectSlot = d.createElement("span");
-    projectSlot.className = "jcem-project-slot";
-    meta?.appendChild(projectSlot);
+    const licenseBadge = d.createElement("a");
+    licenseBadge.className = "jcem-license-badge";
+    licenseBadge.href = licenseUrl;
+    licenseBadge.target = "_blank";
+    licenseBadge.rel = "license noopener noreferrer";
+    licenseBadge.setAttribute("aria-label", seal.__p9 + licenseName);
+    licenseBadge.title = licenseName;
+    licenseBadge.innerHTML = "<span>MPL</span><strong>2.0</strong>";
+    meta?.appendChild(licenseBadge);
+    const authorBadge = d.createElement("a");
+    authorBadge.className = "jcem-author-badge";
+    authorBadge.href = authorUrl;
+    authorBadge.target = "_blank";
+    authorBadge.rel = "noopener noreferrer";
+    authorBadge.setAttribute("aria-label", authorName);
+    const authorImage = d.createElement("img");
+    authorImage.src = "https://jcem.pro/logo/64-yellow.png";
+    authorImage.alt = "";
+    authorBadge.appendChild(authorImage);
+    meta?.appendChild(authorBadge);
     d.body.appendChild(footer);
     void renderAppNavigation();
     initTooltips(header);
