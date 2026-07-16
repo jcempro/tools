@@ -952,3 +952,8 @@ body.imprimir input::placeholder {
 :root[data-theme="dark"] .jcem-app-nav { background: rgb(24 37 52 / .96); border-color: #38506a; }
 :root[data-theme="dark"] .jcem-app-nav a { color: #e8f0f7; }
 @media (prefers-reduced-motion: reduce) { .jcem-app-nav, .jcem-app-card { transition: none; } }
+.jcem-consent-blocker { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; padding: 1rem; background: rgb(8 19 30 / .78); backdrop-filter: blur(.3rem); }
+.jcem-consent-blocker section { width: min(34rem, 100%); padding: 1.5rem; background: #fff; color: #173047; border-radius: 1rem; box-shadow: 0 1rem 4rem rgb(0 0 0 / .4); }
+.jcem-consent-blocker section > div { display: flex; flex-wrap: wrap; gap: .75rem; }
+.jcem-consent-blocker button { min-height: 2.75rem; padding: .6rem 1rem; border: 1px solid #1b5f8c; border-radius: .5rem; background: #1b5f8c; color: #fff; font-weight: 700; cursor: pointer; }
+.jcem-consent-blocker button + button { background: #fff; color: #1b5f8c; }

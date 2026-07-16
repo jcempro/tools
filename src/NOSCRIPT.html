@@ -40,6 +40,21 @@
         background: var(--bg);
       }
 
+      body > :not(noscript) {
+        display: none !important;
+      }
+
+      body > noscript {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        overflow: auto;
+        padding: 1rem;
+        background: var(--bg);
+      }
+
       main {
         width: min(100%, 28rem);
         background: #fff;

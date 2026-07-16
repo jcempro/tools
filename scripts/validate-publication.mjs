@@ -275,9 +275,11 @@ async function main() {
   const distSet = new Set(distFiles);
   const sourceStaticFiles = srcFiles.filter(isStaticSource);
   const sourceIndexFiles = sourceStaticFiles.filter((file) => path.basename(file).toLowerCase() === "index.html");
+  const styleOutputs = new Map(srcFiles.filter((file) => file.endsWith(".scss") && !path.basename(file).startsWith("_")).map((source) => [source.replace(/\.scss$/i, ".css"), source]));
   const expectedFiles = new Set([
     ...sourceStaticFiles,
     ...compiledOutputs.keys(),
+    ...styleOutputs.keys(),
     ...buildConfig.rootPassthroughFiles,
     ...buildConfig.generatedRootFiles.map(({ output }) => output)
   ]);
@@ -313,6 +315,10 @@ async function main() {
     if (!distSet.has(output)) {
       throw new Error(`Artefato compilado ausente: dist/${output}`);
     }
+  }
+
+  for (const [output, source] of styleOutputs) {
+    if (!distSet.has(output)) throw new Error(`CSS compilado ausente para src/${source}: dist/${output}`);
   }
 
   for (const rel of sourceIndexFiles) {

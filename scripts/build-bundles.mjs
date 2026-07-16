@@ -354,6 +354,7 @@ try {
   const bundles = [];
 
   for (const rel of indexes) {
+    if (rel.replace(/\\/g, "/") === "index.html") continue;
     bundles.push(await buildBundle(rel));
   }
 

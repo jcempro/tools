@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, rm, rmdir, writeFile } from "node:fs/promises
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
+import * as sass from "sass";
 import { optimizeTextByPath } from "./asset-optimizer.mjs";
 import { loadBuildConfig } from "./config.mjs";
 
@@ -241,6 +242,17 @@ async function buildBrowserScripts() {
   }
 }
 
+async function buildStyles() {
+  for (const rel of await collectFiles(srcRoot)) {
+    if (!rel.endsWith(".scss") || path.basename(rel).startsWith("_")) continue;
+    const output = normalizeRel(rel.replace(/\.scss$/i, ".css"));
+    const result = await sass.compileAsync(path.join(srcRoot, rel), { loadPaths: [srcRoot], style: "compressed" });
+    await ensureParent(path.join("dist", output));
+    await writeFile(path.join(distRoot, output), result.css, "utf8");
+    generatedFiles.add(output);
+  }
+}
+
 async function buildBookmarklets() {
   for (const { source, output } of buildConfig.bookmarklets) {
     const outfile = path.join("dist", output);
@@ -264,6 +276,7 @@ async function buildBookmarklets() {
 
 async function buildAll() {
   const copied = await copyStaticSources();
+  await buildStyles();
   await buildBrowserScripts();
   await buildBookmarklets();
   await pruneDist();

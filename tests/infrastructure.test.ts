@@ -120,7 +120,7 @@ test("application modules use shared institutional chrome except declared specia
 });
 
 test("shared printable surface stays light under forced dark modes", async () => {
-  const css = await readFile("src/assets/css/documentos.css", "utf8");
+  const css = await readFile("src/assets/css/documentos.scss", "utf8");
 
   assert.match(css, /\.print-page,\s*div\.main\s*{/);
   assert.match(css, /color-scheme:\s*only light;/);
@@ -139,8 +139,8 @@ test("printable modules consume the shared document workspace layout", async () 
   const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
   const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
   const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
-  const faturamentoCss = await readFile("src/faturamento/faturamento.css", "utf8");
-  const sharedCss = await readFile("src/assets/css/documentos.css", "utf8");
+  const faturamentoCss = await readFile("src/faturamento/faturamento.scss", "utf8");
+  const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
 
   assert.match(sharedTs, /renderPrintableLayout/);
   assert.match(sharedTs, /jcem-document-workspace/);
@@ -164,7 +164,7 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
     devDependencies: Record<string, string>;
   };
   const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
-  const sharedCss = await readFile("src/assets/css/documentos.css", "utf8");
+  const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
   const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
   const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
 
@@ -196,7 +196,7 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
 test("institutional chrome protects author, license and legal notices", async () => {
   const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
   const guardTs = await readFile("src/assets/js/guard.ts", "utf8");
-  const sharedCss = await readFile("src/assets/css/documentos.css", "utf8");
+  const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
   const compile = await readFile("scripts/compile.mjs", "utf8");
   const validate = await readFile("scripts/validate-publication.mjs", "utf8");
   const { g } = await import("../src/assets/js/guard");

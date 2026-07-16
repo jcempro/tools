@@ -473,11 +473,9 @@ import { g as guard } from "./guard";
     const style = d.createElement("style");
     const [width, height] = pageConfig.size;
     const unit = pageConfig.unit;
-    const contentWidth = width - pageConfig.left - pageConfig.right;
-
-    style.textContent = `@page{size:${width}${unit} ${height}${unit};margin-left:${pageConfig.left}${unit};margin-right:${pageConfig.right}${unit};margin-top:${pageConfig.top}${unit};margin-bottom:${pageConfig.bottom}${unit};}`;
+    style.textContent = `@page{size:${width}${unit} ${height}${unit};margin:0;}`;
     style.textContent += `@media screen{body:not(.imprimir) div.main{width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}}`;
-    style.textContent += `@media print{div.main{max-width:${contentWidth}${unit};}}body.imprimir div.main{max-width:${contentWidth}${unit};}`;
+    style.textContent += `@media print{div.main{box-sizing:border-box;width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}}body.imprimir div.main{box-sizing:border-box;width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}`;
     d.head.appendChild(style);
   }
 
@@ -540,7 +538,7 @@ import { g as guard } from "./guard";
           html2canvas: { scale: options.scale ?? 6 },
           image: { quality: 0.98, type: "jpeg" },
           jsPDF: { format: options.pageConfig.size, orientation: options.orientation ?? "portrait", unit: options.pageConfig.unit },
-          margin: options.margin ?? [options.pageConfig.top, options.pageConfig.left, options.pageConfig.bottom, options.pageConfig.right]
+          margin: options.margin ?? [0, 0, 0, 0]
         });
         w.setTimeout(restore, 50);
       }, 100);
@@ -1637,6 +1635,7 @@ import { g as guard } from "./guard";
         <p>${seal.__p21}</p>
         <p>${seal.__p22}</p>
         <p>${seal.__p23}</p>
+        <p>Este site utiliza cookies essenciais e armazenamento local para preferências e dados preenchidos.</p>
       </section>
     `;
 

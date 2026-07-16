@@ -68,3 +68,10 @@
 - Falha confirmada: `scripts/.agents/repo-tools.js` usa CommonJS sob o pacote raiz ESM, produzindo `ReferenceError: require is not defined`.
 - Correcao em validacao: limite CommonJS declarado em `scripts/package.json`, preservando os bootstraps `.mjs`.
 - Proximas tarefas: inventariar implementacoes existentes, confrontar requisitos novos com RCFs e executar as etapas tecnicas sequencialmente.
+
+### Progresso 20260716.2015.00
+
+- Etapas 1 a 5 implementadas: API operacional corrigida; memoria duplicada removida; toolbar e localizacao padronizadas; geometria Ctrl+P/PDF unificada; `noscript` isolado; dashboard, 404, catalogo, navegacao e temas criados; consentimento online configuravel adicionado; seis folhas CSS migradas para SCSS; logotipos SVG global e por modulo criados.
+- Commits intermediarios: `764245d` e `b608f86`.
+- Validacoes: type-check, lint e 37 testes aprovados. Build Web e quatro bundles gerados. Publicacao validada com 5 paginas e 32 arquivos apos impedir bundle indevido do dashboard raiz.
+- Etapa atual: 6/6 - validacao visual, sincronizacao documental, commits finais e convergencia.

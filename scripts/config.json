@@ -2,6 +2,10 @@
   "build": {
     "browserScripts": [
       {
+        "source": "src/assets/js/consent.ts",
+        "output": "assets/js/consent.js"
+      },
+      {
         "source": "src/assets/js/dashboard.ts",
         "output": "assets/js/dashboard.js"
       },

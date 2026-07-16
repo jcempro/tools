@@ -208,6 +208,16 @@ Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplica
 - A validacao bloqueia `src/` ou `dist/` como segmento/referencia publica, arquivos obsoletos, diretorios vazios e `*.bundle.html` solto.
 - URLs internas de assets e bundles devem ser estaveis com ou sem barra final, preferencialmente root-relative.
 
+## 13. Dashboard, navegação, tema, consentimento e estilos
+
+`src/index.html` é o dashboard publicado e não integra bundles. O catálogo em `src/assets/config/apps.json` é a fonte configurável de aplicativos, rota padrão e orientação da navegação. `defaultApp: null` mantém o workspace sem aplicativo aberto; um identificador válido ativa o redirecionamento. A navegação global inicia retraída, expande sob comando acessível e preserva links públicos absolutos em execução `file:`.
+
+Interface não imprimível suporta temas claro e escuro. A preferência explícita usa armazenamento local; em sua ausência prevalece `prefers-color-scheme`, com claro como fallback. A folha imprimível permanece branca e em esquema claro. `404.html` reutiliza o catálogo, preserva redirecionamentos válidos e não carrega consentimento ou persistência.
+
+Todas as versões exibem aviso explícito sobre cookies essenciais e armazenamento local. Exclusivamente em HTTPS público, `src/assets/js/consent.ts` carrega o Silktide Consent Manager por CDN na versão declarada em `src/assets/config/consent.json`. Sem aceitação registrada, uma camada modal bloqueia o uso; recusa mantém o bloqueio. Bundles offline não carregam CDN e permanecem autossuficientes.
+
+SCSS é a única fonte canônica de estilos. O build transpila todo `.scss` não parcial para CSS comprimido no mesmo caminho lógico em `dist/`; HTML e consumidores públicos referenciam somente o CSS gerado. Logotipos vetoriais ficam em `src/assets/brand/logo.svg` para o workspace e `src/<modulo>/logo.svg` para cada aplicativo.
+
 # Aditivo Normativo — Páginas Estáticas, GitHub Pages e Recursos Compartilhados
 
 Sem prejuízo das demais disposições deste RCF, passam a integrar sua arquitetura as seguintes diretrizes relativas às páginas HTML especiais, ao pipeline de build e à publicação no GitHub Pages.
