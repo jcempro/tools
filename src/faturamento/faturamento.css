@@ -198,6 +198,15 @@
   width: 2.95cm;
 }
 
+.monthly-editor > table{/* PROTECAO: garante que não haja scrool horizontal desnecessário */
+  min-width:fit-content !important;
+  max-width: fit-content !important;
+}
+
+.monthly-editor > table td{/* PROTECAO: garante que não haja scrool horizontal desnecessário */
+  max-width: fit-content !important;
+}
+
 .market-table th:nth-child(4) {
   width: 2.15cm;
 }
