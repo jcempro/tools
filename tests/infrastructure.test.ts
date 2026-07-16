@@ -269,6 +269,10 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.equal(catalog.apps.length, 4);
   assert.equal(consent.cdnVersion, "2.0.0");
   assert.match(dashboard, /data-app-grid/);
+  assert.match(dashboard, /data-dashboard-theme/);
+  assert.ok(catalog.apps.every((app: { logo?: string }) => app.logo?.endsWith("/logo.svg")));
+  assert.ok(catalog.apps.every((app: { offlineLogo?: string }) => app.offlineLogo?.startsWith("data:image/svg+xml;base64,")));
+  assert.match(catalog.workspaceOfflineLogo, /^data:image\/svg\+xml;base64,/);
   assert.match(shared, /jcem-theme/);
   assert.match(shared, /assets\/config\/apps\.json/);
   assert.match(shared, /jcem-app-shell-content/);
@@ -278,6 +282,9 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /\.jcem-app-nav\s*{[^}]*top:\s*var\(--jcem-nav-top[^}]*bottom:\s*var\(--jcem-nav-bottom/s);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-chrome-actions\.menu > \*/);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\)\s*{\s*background:\s*#18191b/);
+  assert.match(sharedCss, /\.jcem-license-badge/);
+  assert.match(sharedCss, /\.jcem-app-nav a > span:last-child\s*{[^}]*visibility:\s*hidden/s);
+  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-document-form-region fieldset\s*{[^}]*background:\s*#292b2f/s);
 });
 
 test("all published applications have SVG identity and SCSS sources", async () => {
@@ -309,4 +316,5 @@ test("offline bundles embed the app catalog as metadata with absolute upstream r
   assert.match(bundles, /replace\(\/<script\/gi, "<\\\\x73cript"\)/);
   assert.match(shared, /__JCEM_APP_CATALOG__/);
   assert.match(shared, /meta\[name="jcem-app-catalog"\]/);
+  assert.match(shared, /offlineLogo/);
 });

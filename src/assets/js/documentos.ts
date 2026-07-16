@@ -1566,7 +1566,7 @@ import { g as guard } from "./guard";
 
   async function renderAppNavigation(): Promise<void> {
     try {
-      type AppCatalog = { apps?: Array<{ href: string; id: string; title: string }>; navigationPosition?: string };
+      type AppCatalog = { apps?: Array<{ href: string; id: string; logo?: string; offlineLogo?: string; title: string }>; currentAppId?: string; navigationPosition?: string; workspaceLogo?: string; workspaceOfflineLogo?: string };
       const embedded = (w as Window & { __JCEM_APP_CATALOG__?: AppCatalog }).__JCEM_APP_CATALOG__;
       const encoded = one<HTMLMetaElement>('meta[name="jcem-app-catalog"]')?.content;
       const metadata: AppCatalog | undefined = encoded
@@ -1574,9 +1574,30 @@ import { g as guard } from "./guard";
         : undefined;
       const catalog = embedded ?? metadata ?? await fetch("/assets/config/apps.json").then((response) => response.json()) as AppCatalog;
       if (!Array.isArray(catalog.apps)) return;
+      const bundled = Boolean(encoded);
+      const appLogo = (app: NonNullable<AppCatalog["apps"]>[number]): string => bundled ? (app.offlineLogo ?? app.logo ?? "") : (app.logo ?? "");
       const aside = d.createElement("aside");
       aside.className = `jcem-app-nav no-print jcem-app-nav-${catalog.navigationPosition === "right" ? "right" : "left"}`;
-      aside.innerHTML = `<button class="jcem-nav-toggle" type="button" aria-expanded="false" aria-label="Expandir aplicativos"><span aria-hidden="true">›</span></button><nav aria-label="Aplicativos"><a href="/" title="Workspace"><img src="/assets/brand/logo.svg" alt=""><span>Workspace</span></a>${catalog.apps.map((app) => `<a href="${escapeHtml(app.href)}" title="${escapeHtml(app.title)}"><span class="jcem-nav-dot" aria-hidden="true"></span><span>${escapeHtml(app.title)}</span></a>`).join("")}</nav>`;
+      const appLinks = catalog.apps.map((app) => `<a href="${escapeHtml(app.href)}" title="${escapeHtml(app.title)}"><span class="jcem-app-logo" data-logo="${escapeHtml(appLogo(app))}"></span><span>${escapeHtml(app.title)}</span></a>`).join("");
+      const workspaceLogo = bundled ? (catalog.workspaceOfflineLogo ?? catalog.workspaceLogo ?? "") : (catalog.workspaceLogo ?? "");
+      aside.innerHTML = `<button class="jcem-nav-toggle" type="button" aria-expanded="false" aria-label="Expandir aplicativos"><span aria-hidden="true">›</span></button><nav aria-label="Aplicativos"><a href="/" title="Workspace"><span class="jcem-app-logo" data-logo="${escapeHtml(workspaceLogo)}"></span><span>Workspace</span></a>${appLinks}</nav>`;
+      for (const slot of $<HTMLElement>("[data-logo]", aside)) {
+        const image = d.createElement("img");
+        image.className = slot.className;
+        image.src = slot.dataset.logo ?? "";
+        image.alt = "";
+        slot.replaceWith(image);
+      }
+      const currentPath = `${w.location.pathname.replace(/(?:index\.html)?$/, "").replace(/\/+$/, "")}/`;
+      const currentApp = catalog.apps.find((app) => app.id === catalog.currentAppId || new URL(app.href, w.location.href).pathname === currentPath || currentPath.includes(`/${app.id}`));
+      const brand = one<HTMLElement>(".jcem-chrome-brand");
+      if (brand && currentApp && appLogo(currentApp)) {
+        const image = d.createElement("img");
+        image.className = "jcem-project-logo";
+        image.src = appLogo(currentApp);
+        image.alt = "";
+        brand.appendChild(image);
+      }
       on(one<HTMLButtonElement>(".jcem-nav-toggle", aside), "click", (event) => {
         const button = event.currentTarget as HTMLButtonElement;
         const expanded = aside.classList.toggle("is-expanded");
@@ -1627,13 +1648,13 @@ import { g as guard } from "./guard";
     header.className = "jcem-chrome jcem-chrome-header no-print";
     header.innerHTML = `
       <div class="jcem-chrome-identity">
-        <a class="jcem-chrome-brand" href="https://${domain}/">${escapeHtml(brandName)}</a>
+        <a class="jcem-chrome-brand" href="https://${domain}/"><span>${escapeHtml(brandName)}</span></a>
         <p>${seal.__p6}${authorLink}${seal.__p7}${escapeHtml(domain)}${seal.__p8}</p>
-        <p>${seal.__p9}${licenseLink}${seal.__p10}</p>
+        <a class="jcem-license-badge" href="${escapeHtml(licenseUrl)}" target="_blank" rel="license noopener noreferrer" aria-label="${escapeHtml(seal.__p9 + licenseName)}" title="${escapeHtml(licenseName)}"><span>MPL</span><strong>2.0</strong></a>
       </div>
       <div class="jcem-chrome-meta">
         <span class="jcem-chrome-domain">${domain}</span>
-        <span class="ico autosave jcem-autosave"><span>${seal.__p11}</span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
+        <span class="ico autosave jcem-autosave" title="${escapeHtml(seal.__p11)}"><span>${seal.__p11}</span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
       </div>
       <nav class="menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
     `;
