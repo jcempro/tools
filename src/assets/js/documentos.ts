@@ -1,6 +1,8 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
 import {
   faBoxOpen,
+  faCircleDown,
+  faFolderOpen,
   faEraser,
   faFilePdf,
   faFileArrowDown,
@@ -33,6 +35,7 @@ import { g as guard } from "./guard";
     hook?: string;
     hrefSource?: ToolbarHrefSource;
     icon?: ToolbarIconRef | string;
+    icons?: Array<ToolbarIconRef | string>;
     id: string;
     label: ToolbarLabelSource;
     order: number;
@@ -43,7 +46,6 @@ import { g as guard } from "./guard";
   const placeholders = new WeakMap<HTMLInputElement, string | null>();
   const autosaveBound = new WeakSet<HTMLInputElement>();
   const tooltipBound = new WeakSet<HTMLElement>();
-  let chromeScrollStateBound = false;
 
   function $<T extends Element = Element>(selector: string, root: ParentNode = d): T[] {
     return Array.from(root.querySelectorAll<T>(selector));
@@ -870,6 +872,8 @@ import { g as guard } from "./guard";
 
   const iconDefinitions: FaIconDefinition[] = [
     faBoxOpen,
+    faCircleDown,
+    faFolderOpen,
     faEraser,
     faFileArrowDown,
     faFileArrowUp,
@@ -900,12 +904,12 @@ import { g as guard } from "./guard";
     }
   };
   const toolbarFillItems: ToolbarItemConfig[] = [
-    { className: "ico save-fill jcem-export-fill", hint: "Salvar localmente", hook: "document.export", icon: { unicode: "f56d" }, id: "export-fill", label: "", order: 10 },
-    { className: "ico open-fill jcem-import-fill", hint: "Abrir a partir do arquivo", hook: "document.import", icon: { unicode: "f574" }, id: "import-fill", label: "", order: 20 },
+    { className: "ico save-fill jcem-export-fill", hint: "Salvar localmente", hook: "document.export", icon: { unicode: "f0c7" }, id: "export-fill", label: "", order: 10 },
+    { className: "ico open-fill jcem-import-fill", hint: "Abrir a partir do arquivo", hook: "document.import", icon: { unicode: "f07c" }, id: "import-fill", label: "", order: 20 },
     { id: "separator-fill", order: 30, type: "separator" as const }
   ];
   const toolbarLegacyBlueprints: ToolbarLegacyBlueprint[] = [
-    { datasetSource: "bundle", download: true, hint: "Baixar versao offline", hrefSource: "href", icon: { unicode: "f49e" }, id: "bundle", label: "fixed:Versão Offline", order: 90, selector: "[data-bundle-download],.bundle" },
+    { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icons: [{ unicode: "f49e" }, { unicode: "f358" }], id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
     { hint: "Imprimir PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
     { hint: "Imprimir em branco", icon: { unicode: "f1c1" }, id: "blank-pdf", label: "fixed:em branco", order: 45, selector: ".pdf.formulario" },
     { hint: "Imprimir", hook: "window.print", icon: { unicode: "f02f" }, id: "print", label: "", order: 50, selector: ".browser-print,.print:not(.pdf):not(.formulario)" },
@@ -1021,7 +1025,7 @@ import { g as guard } from "./guard";
     const extension = config.fileExtension ?? ".json";
     const suggestion = typeof config.exportBasename === "function" ? config.exportBasename() : config.exportBasename;
     const fallback = safeBasename(suggestion ?? envelope.moduleId, envelope.moduleId);
-    const prompted = w.prompt(config.messages?.exportBasename ?? "Nome do arquivo:", fallback);
+    const prompted = w.prompt(config.messages?.exportBasename ?? "Salvar os dados diretamente em um arquivo local. Informe o nome do arquivo:", fallback);
     if (prompted === null) {
       return null;
     }
@@ -1247,7 +1251,7 @@ import { g as guard } from "./guard";
       element.setAttribute("aria-disabled", "true");
     }
 
-    const iconHtml = renderIcon(item.icon);
+    const iconHtml = (item.icons ?? (item.icon ? [item.icon] : [])).map(renderIcon).join("");
     const labelHtml = item.label ? `<span class="jcem-toolbar-label">${item.label}</span>` : "";
     element.innerHTML = `${iconHtml}${labelHtml}`;
     if (!item.label) {
@@ -1363,6 +1367,7 @@ import { g as guard } from "./guard";
       hook: blueprint.hook,
       href: toolbarHref(element, blueprint.hrefSource),
       icon: blueprint.icon,
+      icons: blueprint.icons,
       id: toolbarId(element, blueprint, textValue),
       label: toolbarLabel(blueprint.label, textValue),
       order: blueprint.order
@@ -1416,8 +1421,10 @@ import { g as guard } from "./guard";
 
     const { controls, items: legacyItems } = toolbarItemsFromSlot(source);
     const hasPdf = legacyItems.some((item) => item.id === "pdf");
+    const hasPrintAndClear = legacyItems.some((item) => item.id === "print") && legacyItems.some((item) => item.id === "clear");
     const items = sortToolbarItems([
       ...(hasPdf ? toolbarFillItems : []),
+      ...(hasPrintAndClear ? [{ id: "separator-print-clear", order: 55, type: "separator" as const }] : []),
       ...legacyItems
     ]);
 
@@ -1525,24 +1532,15 @@ import { g as guard } from "./guard";
     for (const element of $(".jcem-chrome-header,.jcem-chrome-footer,.jcem-app-nav")) {
       element.remove();
     }
+    one<HTMLInputElement>(".jcem-nav-state")?.remove();
+    const shell = one<HTMLElement>(".jcem-app-shell");
+    const content = one<HTMLElement>(".jcem-app-shell-content", shell ?? d);
+    if (shell && content) {
+      for (const child of Array.from(content.children)) d.body.insertBefore(child, shell);
+      shell.remove();
+    }
     for (const element of $(".jcem-app-shell-content")) element.classList.remove("jcem-app-shell-content");
     d.body.classList.remove("jcem-has-app-nav", "jcem-has-app-nav-right");
-  }
-
-  function updateChromeScrollState(): void {
-    d.body.classList.toggle("jcem-chrome-compact", w.scrollY > 24);
-  }
-
-  function bindChromeScrollState(): void {
-    if (chromeScrollStateBound) {
-      updateChromeScrollState();
-      return;
-    }
-
-    chromeScrollStateBound = true;
-    on(w, "scroll", updateChromeScrollState);
-    on(w, "resize", updateChromeScrollState);
-    updateChromeScrollState();
   }
 
   function applyTheme(theme: "dark" | "light"): void {
@@ -1580,7 +1578,16 @@ import { g as guard } from "./guard";
       aside.className = `jcem-app-nav no-print jcem-app-nav-${catalog.navigationPosition === "right" ? "right" : "left"}`;
       const appLinks = catalog.apps.map((app) => `<a href="${escapeHtml(app.href)}" title="${escapeHtml(app.title)}"><span class="jcem-app-logo" data-logo="${escapeHtml(appLogo(app))}"></span><span>${escapeHtml(app.title)}</span></a>`).join("");
       const workspaceLogo = bundled ? (catalog.workspaceOfflineLogo ?? catalog.workspaceLogo ?? "") : (catalog.workspaceLogo ?? "");
-      aside.innerHTML = `<button class="jcem-nav-toggle" type="button" aria-expanded="false" aria-label="Expandir aplicativos"><span aria-hidden="true">›</span></button><nav aria-label="Aplicativos"><a href="/" title="Workspace"><span class="jcem-app-logo" data-logo="${escapeHtml(workspaceLogo)}"></span><span>Workspace</span></a>${appLinks}</nav>`;
+      const toggle = d.createElement("input");
+      toggle.className = "jcem-nav-state";
+      toggle.id = "jcem-nav-state";
+      toggle.type = "checkbox";
+      const toggleLabel = d.createElement("label");
+      toggleLabel.className = "jcem-nav-toggle";
+      toggleLabel.htmlFor = toggle.id;
+      toggleLabel.setAttribute("aria-label", "Expandir ou recolher aplicativos");
+      toggleLabel.innerHTML = '<span aria-hidden="true">›</span>';
+      aside.innerHTML = `<nav aria-label="Aplicativos"><a href="/" title="Workspace"><span class="jcem-app-logo" data-logo="${escapeHtml(workspaceLogo)}"></span><span>Workspace</span></a>${appLinks}</nav>`;
       for (const slot of $<HTMLElement>("[data-logo]", aside)) {
         const image = d.createElement("img");
         image.className = slot.className;
@@ -1590,7 +1597,7 @@ import { g as guard } from "./guard";
       }
       const currentPath = `${w.location.pathname.replace(/(?:index\.html)?$/, "").replace(/\/+$/, "")}/`;
       const currentApp = catalog.apps.find((app) => app.id === catalog.currentAppId || new URL(app.href, w.location.href).pathname === currentPath || currentPath.includes(`/${app.id}`));
-      const brand = one<HTMLElement>(".jcem-chrome-brand");
+      const brand = one<HTMLElement>(".jcem-project-slot");
       if (brand && currentApp && appLogo(currentApp)) {
         const image = d.createElement("img");
         image.className = "jcem-project-logo";
@@ -1598,33 +1605,25 @@ import { g as guard } from "./guard";
         image.alt = "";
         brand.appendChild(image);
       }
-      on(one<HTMLButtonElement>(".jcem-nav-toggle", aside), "click", (event) => {
-        const button = event.currentTarget as HTMLButtonElement;
-        const expanded = aside.classList.toggle("is-expanded");
-        button.setAttribute("aria-expanded", String(expanded));
-        button.setAttribute("aria-label", expanded ? "Recolher aplicativos" : "Expandir aplicativos");
-      });
-      d.body.appendChild(aside);
+      const header = one<HTMLElement>(".jcem-chrome-header");
+      header?.insertAdjacentElement("afterend", toggle);
+      toggle.insertAdjacentElement("afterend", toggleLabel);
+      aside.prepend(toggleLabel);
+      const shell = d.createElement("div");
+      shell.className = "jcem-app-shell";
+      const content = d.createElement("main");
+      content.className = "jcem-app-shell-content";
+      const footer = one<HTMLElement>(".jcem-chrome-footer");
+      for (const child of Array.from(d.body.children)) {
+        if (!child.matches(".jcem-chrome-header,.jcem-chrome-footer,.jcem-nav-state,script,.jcem-consent-blocker")) {
+          content.appendChild(child);
+        }
+      }
+      shell.append(aside, content);
+      d.body.insertBefore(shell, footer ?? null);
       const right = catalog.navigationPosition === "right";
       d.body.classList.add("jcem-has-app-nav");
       d.body.classList.toggle("jcem-has-app-nav-right", right);
-      for (const child of Array.from(d.body.children)) {
-        if (!child.matches(".jcem-chrome-header,.jcem-chrome-footer,.jcem-app-nav,script,.jcem-consent-blocker")) {
-          child.classList.add("jcem-app-shell-content");
-        }
-      }
-      const syncGeometry = (): void => {
-        const header = one<HTMLElement>(".jcem-chrome-header");
-        const footer = one<HTMLElement>(".jcem-chrome-footer");
-        const top = Math.max(0, header?.getBoundingClientRect().bottom ?? 0);
-        const footerTop = footer?.getBoundingClientRect().top ?? w.innerHeight;
-        aside.style.setProperty("--jcem-nav-top", `${Math.round(top)}px`);
-        aside.style.setProperty("--jcem-nav-bottom", `${Math.round(Math.max(0, w.innerHeight - footerTop))}px`);
-      };
-      w.addEventListener("resize", syncGeometry, { passive: true });
-      w.addEventListener("scroll", syncGeometry, { passive: true });
-      new ResizeObserver(syncGeometry).observe(one<HTMLElement>(".jcem-chrome-header") ?? d.body);
-      syncGeometry();
     } catch { /* PROTECAO: falha do catalogo nao bloqueia o aplicativo. */ }
   }
 
@@ -1648,13 +1647,11 @@ import { g as guard } from "./guard";
     header.className = "jcem-chrome jcem-chrome-header no-print";
     header.innerHTML = `
       <div class="jcem-chrome-identity">
-        <a class="jcem-chrome-brand" href="https://${domain}/"><span>${escapeHtml(brandName)}</span></a>
-        <p>${seal.__p6}${authorLink}${seal.__p7}${escapeHtml(domain)}${seal.__p8}</p>
+        <a class="jcem-chrome-brand" href="https://${domain}/"><img class="jcem-global-logo" src="/assets/brand/logo.svg" alt=""><span>${escapeHtml(brandName)}</span></a>
         <a class="jcem-license-badge" href="${escapeHtml(licenseUrl)}" target="_blank" rel="license noopener noreferrer" aria-label="${escapeHtml(seal.__p9 + licenseName)}" title="${escapeHtml(licenseName)}"><span>MPL</span><strong>2.0</strong></a>
       </div>
       <div class="jcem-chrome-meta">
-        <span class="jcem-chrome-domain">${domain}</span>
-        <span class="ico autosave jcem-autosave" title="${escapeHtml(seal.__p11)}"><span>${seal.__p11}</span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
+        <span class="ico autosave jcem-autosave" title="${escapeHtml(seal.__p11)}"><span class="jcem-autosave-copy"><span>Salvamento local, offline e </span><strong>automático</strong></span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>
       </div>
       <nav class="menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
     `;
@@ -1689,11 +1686,14 @@ import { g as guard } from "./guard";
     `;
 
     d.body.insertBefore(header, mount ?? null);
-    one<HTMLElement>(".jcem-chrome-meta", header)?.appendChild(initTheme());
+    const meta = one<HTMLElement>(".jcem-chrome-meta", header);
+    meta?.appendChild(initTheme());
+    const projectSlot = d.createElement("span");
+    projectSlot.className = "jcem-project-slot";
+    meta?.appendChild(projectSlot);
     d.body.appendChild(footer);
     void renderAppNavigation();
     initTooltips(header);
-    bindChromeScrollState();
   }
 
   w.JCEMDocumentos = {

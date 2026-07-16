@@ -196,8 +196,14 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedTs, /exportFilling/);
   assert.match(sharedTs, /importFilling/);
   assert.match(sharedTs, /computePosition/);
-  assert.match(sharedCss, /--jcem-toolbar-icon-color:\s*#888;\/\*\s*não regredir/);
+  assert.match(sharedCss, /--jcem-toolbar-icon-color:\s*#425b70/);
   assert.match(sharedCss, /\.jcem-chrome-actions\.menu \.jcem-fa-icon\s*{[^}]*var\(--jcem-toolbar-icon-color\)/s);
+  assert.match(sharedTs, /unicode:\s*"f0c7"[^\n]*id:\s*"export-fill"/);
+  assert.match(sharedTs, /unicode:\s*"f07c"[^\n]*id:\s*"import-fill"/);
+  assert.match(sharedTs, /icons:\s*\[\{ unicode:\s*"f49e" \},\s*\{ unicode:\s*"f358" \}\]/);
+  assert.match(sharedTs, /separator-print-clear/);
+  assert.match(sharedTs, /item\.icons/);
+  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon\s*{[^}]*height:\s*2rem/s);
   assert.match(faturamentoTs, /actions:\s*{/);
   assert.match(admissionalTs, /actions:\s*{/);
   assert.doesNotMatch(faturamentoTs, /api\.toolbar\.bind|api\.share\.bindToolbar/);
@@ -276,14 +282,16 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(shared, /jcem-theme/);
   assert.match(shared, /assets\/config\/apps\.json/);
   assert.match(shared, /jcem-app-shell-content/);
-  assert.match(shared, /--jcem-nav-top/);
+  assert.match(shared, /jcem-nav-state/);
   const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
-  assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-app-shell-content\s*{\s*margin-left:\s*3\.5rem/);
-  assert.match(sharedCss, /\.jcem-app-nav\s*{[^}]*top:\s*var\(--jcem-nav-top[^}]*bottom:\s*var\(--jcem-nav-bottom/s);
+  assert.match(sharedCss, /\.jcem-app-shell\s*{[^}]*grid-template-columns:\s*3\.5rem minmax\(0, 1fr\)/s);
+  assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav/);
+  assert.doesNotMatch(shared, /addEventListener\("(?:resize|scroll)"|ResizeObserver/);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-chrome-actions\.menu > \*/);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\)\s*{\s*background:\s*#18191b/);
   assert.match(sharedCss, /\.jcem-license-badge/);
   assert.match(sharedCss, /\.jcem-app-nav a > span:last-child\s*{[^}]*visibility:\s*hidden/s);
+  assert.match(sharedCss, /\.jcem-app-nav img\s*{[^}]*justify-self:\s*center/s);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-document-form-region fieldset\s*{[^}]*background:\s*#292b2f/s);
 });
 

@@ -310,6 +310,7 @@ declare global {
     hook?: string;
     href?: string;
     icon?: ToolbarIconRef | string;
+    icons?: Array<ToolbarIconRef | string>;
     id: string;
     label?: string;
     onClick?: (element: HTMLElement) => void;
