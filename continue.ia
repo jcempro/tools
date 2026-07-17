@@ -248,3 +248,12 @@
 - Correcao aplicada: o cabecalho passou a usar grid de linha unica com autosave/update na area sempre visivel e `input[type="checkbox"]` + `label` + `nav` para submenu CSS. Switch de tema, MPL, autoria e acoes da toolbar ficam no submenu absoluto acionado pelo icone `f142`, sem JavaScript de estado visual.
 - RCF global sincronizado para formalizar linha unica do cabecalho, visibilidade obrigatoria de autosave/update, submenu CSS para acoes nao essenciais e area interna de rolagem do formulario documental.
 - Evidencia automatizada: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovaram. Testes: 44 aprovados. Publicacao: 4 paginas e 30 arquivos em `dist/`.
+
+### Correcao responsiva de cabecalho, toolbar e gaveta 20260717.1745.00
+
+- Ajuste de requisito: barra institucional do cabecalho e toolbar sao contextos separados. Cada uma possui seu proprio overflow `f142`, calculado independentemente, movendo apenas os ultimos itens que nao couberem e recalculando em resize, orientacao e exibicao de update.
+- Correcao aplicada: o texto do autosave e compactado antes de mover controles institucionais; autosave e alerta de update permanecem sempre visiveis. A toolbar conserva seus botoes visiveis enquanto couberem e envia somente o excedente final para submenu proprio.
+- Correcao aplicada: regra legada de debug que aplicava `background: #ff3333` a `.menu`, `.no-print`, `.autosave`, `.nota` e `.cookie` foi removida para impedir flash vermelho durante carregamento.
+- Correcao aplicada: a gaveta de formulario nao exibe scrollbar no trilho retraido; a rolagem existe somente em `.jcem-document-form-scroll` quando expandida. O gatilho exibe icone `f142`, texto `Campos preenchíveis` no estado retraido e `Recolher campos` no expandido; em layout lateral fica no topo da barra, centralizado horizontalmente e com texto ampliado sem aumentar a espessura do trilho.
+- RCF global sincronizado para bloquear regressao nesses pontos, incluindo separacao cabecalho/toolbar, recalculo responsivo, ausencia de fundo vermelho legado e contrato visual da barra da gaveta.
+- Evidencia automatizada: `npm run check` aprovado com type-check, lint, 44 testes, build, tres bundles offline e publicacao validada com 4 paginas/30 arquivos.

@@ -725,7 +725,9 @@ declare const __JCEM_BUILD_VERSION__: string;
       toggle = d.createElement("label");
       toggle.className = "jcem-document-form-toggle";
       toggle.htmlFor = control.id;
-      toggle.innerHTML = "<span>Preencher campos</span>";
+      toggle.setAttribute("aria-label", "Abrir ou recolher campos do formulario");
+      toggle.title = "Abrir ou recolher campos do formulario";
+      toggle.innerHTML = `${renderIcon({ unicode: "f142" })}<span class="jcem-form-toggle-copy jcem-form-toggle-copy--open">Campos preenchíveis</span><span class="jcem-form-toggle-copy jcem-form-toggle-copy--close">Recolher campos</span>`;
       form.prepend(toggle);
     }
 
@@ -739,6 +741,72 @@ declare const __JCEM_BUILD_VERSION__: string;
       }
       form.appendChild(scroll);
     }
+  }
+
+  function initOverflowGroup(root: HTMLElement, actions: HTMLElement, overflow: HTMLElement, stateSelector: string, options: { compactAutosave?: boolean } = {}): void {
+    const state = one<HTMLInputElement>(stateSelector, root);
+    const items = Array.from(actions.children) as HTMLElement[];
+    let pending = 0;
+
+    const fits = (): boolean => root.scrollWidth <= root.clientWidth + 1 && actions.scrollWidth <= actions.clientWidth + 1;
+
+    const restoreItems = (): void => {
+      for (const item of items) {
+        actions.appendChild(item);
+      }
+    };
+
+    const rebalance = (): void => {
+      pending = 0;
+      root.classList.remove("jcem-header-autosave-compact", "jcem-header-autosave-icon-only", "jcem-has-overflow");
+      restoreItems();
+      if (state) {
+        state.checked = false;
+      }
+
+      if (fits()) {
+        return;
+      }
+
+      if (options.compactAutosave) {
+        root.classList.add("jcem-header-autosave-compact");
+        if (fits()) {
+          return;
+        }
+
+        root.classList.add("jcem-header-autosave-icon-only");
+        if (fits()) {
+          return;
+        }
+      }
+
+      root.classList.add("jcem-has-overflow");
+      while (!fits() && actions.lastElementChild) {
+        overflow.prepend(actions.lastElementChild);
+      }
+
+      if (!overflow.children.length) {
+        root.classList.remove("jcem-has-overflow");
+      }
+    };
+
+    const schedule = (): void => {
+      if (pending) {
+        return;
+      }
+      pending = w.requestAnimationFrame(rebalance);
+    };
+
+    if ("ResizeObserver" in w) {
+      const observer = new ResizeObserver(schedule);
+      observer.observe(root);
+    } else {
+      w.addEventListener("resize", schedule, { passive: true });
+    }
+    w.addEventListener("orientationchange", schedule, { passive: true });
+    root.addEventListener("jcem:overflow-refresh", schedule);
+
+    schedule();
   }
 
   function renderPrintableLayout(options: PrintableLayoutOptions): void {
@@ -1756,12 +1824,27 @@ declare const __JCEM_BUILD_VERSION__: string;
         ${autosave}
         ${updateIndicator}
       </div>
-      <input class="jcem-toolbar-menu-state" id="jcem-toolbar-menu-state" type="checkbox" aria-label="Mostrar ferramentas">
-      <label class="jcem-toolbar-menu-toggle" for="jcem-toolbar-menu-state" aria-label="Mostrar ferramentas">${renderIcon({ unicode: "f142" })}</label>
-      <nav class="menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
+      <div class="jcem-chrome-header-actions" aria-label="Controles do cabeçalho"></div>
+      <div class="jcem-header-overflow">
+        <input class="jcem-header-menu-state" id="jcem-header-menu-state" type="checkbox" aria-label="Mostrar controles do cabeçalho">
+        <label class="jcem-header-menu-toggle" for="jcem-header-menu-state" aria-label="Mostrar controles do cabeçalho">${renderIcon({ unicode: "f142" })}</label>
+        <nav class="menu jcem-chrome-header-overflow" aria-label="Controles adicionais do cabeçalho"></nav>
+      </div>
+      <div class="jcem-chrome-toolbar-row">
+        <nav class="jcem-chrome-toolbar menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
+        <div class="jcem-toolbar-overflow">
+          <input class="jcem-toolbar-menu-state" id="jcem-toolbar-menu-state" type="checkbox" aria-label="Mostrar ferramentas adicionais">
+          <label class="jcem-toolbar-menu-toggle" for="jcem-toolbar-menu-state" aria-label="Mostrar ferramentas adicionais">${renderIcon({ unicode: "f142" })}</label>
+          <nav class="menu jcem-chrome-toolbar-overflow" aria-label="Ferramentas adicionais"></nav>
+        </div>
+      </div>
     `;
 
     const actions = one<HTMLElement>(".jcem-chrome-actions", header);
+    const headerActions = one<HTMLElement>(".jcem-chrome-header-actions", header);
+    const headerOverflow = one<HTMLElement>(".jcem-chrome-header-overflow", header);
+    const toolbarRow = one<HTMLElement>(".jcem-chrome-toolbar-row", header);
+    const toolbarOverflow = one<HTMLElement>(".jcem-chrome-toolbar-overflow", header);
 
     const footer = d.createElement("footer");
     footer.className = "jcem-chrome jcem-chrome-footer no-print";
@@ -1789,7 +1872,7 @@ declare const __JCEM_BUILD_VERSION__: string;
 
     d.body.insertBefore(header, mount ?? null);
     const meta = one<HTMLElement>(".jcem-chrome-meta", header);
-    actions?.appendChild(initTheme());
+    headerActions?.appendChild(initTheme());
     const licenseBadge = d.createElement("a");
     licenseBadge.className = "jcem-license-badge";
     licenseBadge.href = licenseUrl;
@@ -1798,7 +1881,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     licenseBadge.setAttribute("aria-label", seal.__p9 + licenseName);
     licenseBadge.title = licenseName;
     licenseBadge.innerHTML = mpl2BadgeSvg;
-    actions?.appendChild(licenseBadge);
+    headerActions?.appendChild(licenseBadge);
     const authorBadge = d.createElement("a");
     authorBadge.className = "jcem-author-badge";
     authorBadge.href = authorUrl;
@@ -1809,14 +1892,25 @@ declare const __JCEM_BUILD_VERSION__: string;
     authorImage.src = authorLogoUrl;
     authorImage.alt = "";
     authorBadge.appendChild(authorImage);
-    actions?.appendChild(authorBadge);
+    headerActions?.appendChild(authorBadge);
     if (actions) {
       renderToolbarFromSlot(actions, options.actionsSelector);
+    }
+    if (headerActions && headerOverflow) {
+      initOverflowGroup(header, headerActions, headerOverflow, ".jcem-header-menu-state", { compactAutosave: true });
+    }
+    if (toolbarRow && actions && toolbarOverflow) {
+      initOverflowGroup(toolbarRow, actions, toolbarOverflow, ".jcem-toolbar-menu-state");
     }
     d.body.appendChild(footer);
     void renderAppNavigation();
     initTooltips(header);
-    queueMicrotask(() => void checkForUpdate(meta, domain));
+    queueMicrotask(() => {
+      void checkForUpdate(meta, domain).finally(() => {
+        header.dispatchEvent(new Event("jcem:overflow-refresh"));
+        toolbarRow?.dispatchEvent(new Event("jcem:overflow-refresh"));
+      });
+    });
   }
 
   w.JCEMDocumentos = {
