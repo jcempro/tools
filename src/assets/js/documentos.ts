@@ -1662,7 +1662,10 @@ declare const __JCEM_BUILD_VERSION__: string;
 
   /** Executa uma checagem fail-safe por carregamento e alterna somente a classe visual de estado. */
   async function checkForUpdate(container: HTMLElement | null, domain: string): Promise<void> {
-    if (updateCheckStarted || !container || __JCEM_BUILD_VERSION__ === "development") return;
+    // ENSAIO TEMPORARIO: parametro isolado para captura visual, removido antes da entrega final.
+    const testVersion = new URLSearchParams(w.location.search).get("__jcem_update_test");
+    const localVersion = testVersion && /^[0-9a-f]{40}$/i.test(testVersion) ? testVersion : __JCEM_BUILD_VERSION__;
+    if (updateCheckStarted || !container || localVersion === "development") return;
     updateCheckStarted = true;
     const endpoint = `https://${domain}/version.json`;
     try {
@@ -1672,7 +1675,7 @@ declare const __JCEM_BUILD_VERSION__: string;
       } catch {
         upstream = await fetchVersionIndex(`${endpoint}?t=${Date.now()}`, "no-store");
       }
-      container.classList.toggle("has-update", upstream.hash !== __JCEM_BUILD_VERSION__.toLowerCase());
+      container.classList.toggle("has-update", upstream.hash !== localVersion.toLowerCase());
     } catch { /* PROTECAO: atualizacao indisponivel nunca interfere na interface principal. */ }
   }
 
