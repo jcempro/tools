@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = path.join(root, "dist", "assets", "config", "apps.json");
 const sharedScriptPath = path.join(root, "dist", "assets", "js", "documentos.js");
-const defaultAuthorLogoUrl = "https://jcem.pro/logo/64-dark.png";
-const authorLogoCachePath = path.join(root, ".cache", "build", "author-logo-64-dark.png");
+const defaultAuthorLogoUrl = "https://jcem.pro/logo/64.png";
+const authorLogoCachePath = path.join(root, ".cache", "build", "author-logo-64.png");
 
 async function authorLogoDataUrl(authorLogoUrl) {
   try {
