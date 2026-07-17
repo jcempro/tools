@@ -716,15 +716,29 @@ declare const __JCEM_BUILD_VERSION__: string;
 
   function ensureFormDrawerToggle(form: HTMLElement): void {
     const control = one<HTMLInputElement>(".jcem-form-drawer-state");
-    if (!control || one(".jcem-document-form-toggle", form)) {
+    if (!control) {
       return;
     }
 
-    const toggle = d.createElement("label");
-    toggle.className = "jcem-document-form-toggle";
-    toggle.htmlFor = control.id;
-    toggle.innerHTML = "<span>Preencher campos</span>";
-    form.prepend(toggle);
+    let toggle = one<HTMLLabelElement>(".jcem-document-form-toggle", form);
+    if (!toggle) {
+      toggle = d.createElement("label");
+      toggle.className = "jcem-document-form-toggle";
+      toggle.htmlFor = control.id;
+      toggle.innerHTML = "<span>Preencher campos</span>";
+      form.prepend(toggle);
+    }
+
+    if (!one(".jcem-document-form-scroll", form)) {
+      const scroll = d.createElement("div");
+      scroll.className = "jcem-document-form-scroll";
+      for (const child of Array.from(form.children)) {
+        if (child !== toggle) {
+          scroll.appendChild(child);
+        }
+      }
+      form.appendChild(scroll);
+    }
   }
 
   function renderPrintableLayout(options: PrintableLayoutOptions): void {
@@ -1742,13 +1756,12 @@ declare const __JCEM_BUILD_VERSION__: string;
         ${autosave}
         ${updateIndicator}
       </div>
+      <input class="jcem-toolbar-menu-state" id="jcem-toolbar-menu-state" type="checkbox" aria-label="Mostrar ferramentas">
+      <label class="jcem-toolbar-menu-toggle" for="jcem-toolbar-menu-state" aria-label="Mostrar ferramentas">${renderIcon({ unicode: "f142" })}</label>
       <nav class="menu jcem-chrome-actions" aria-label="Ferramentas"></nav>
     `;
 
     const actions = one<HTMLElement>(".jcem-chrome-actions", header);
-    if (actions) {
-      renderToolbarFromSlot(actions, options.actionsSelector);
-    }
 
     const footer = d.createElement("footer");
     footer.className = "jcem-chrome jcem-chrome-footer no-print";
@@ -1776,7 +1789,7 @@ declare const __JCEM_BUILD_VERSION__: string;
 
     d.body.insertBefore(header, mount ?? null);
     const meta = one<HTMLElement>(".jcem-chrome-meta", header);
-    meta?.appendChild(initTheme());
+    actions?.appendChild(initTheme());
     const licenseBadge = d.createElement("a");
     licenseBadge.className = "jcem-license-badge";
     licenseBadge.href = licenseUrl;
@@ -1785,7 +1798,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     licenseBadge.setAttribute("aria-label", seal.__p9 + licenseName);
     licenseBadge.title = licenseName;
     licenseBadge.innerHTML = mpl2BadgeSvg;
-    meta?.appendChild(licenseBadge);
+    actions?.appendChild(licenseBadge);
     const authorBadge = d.createElement("a");
     authorBadge.className = "jcem-author-badge";
     authorBadge.href = authorUrl;
@@ -1796,7 +1809,10 @@ declare const __JCEM_BUILD_VERSION__: string;
     authorImage.src = authorLogoUrl;
     authorImage.alt = "";
     authorBadge.appendChild(authorImage);
-    meta?.appendChild(authorBadge);
+    actions?.appendChild(authorBadge);
+    if (actions) {
+      renderToolbarFromSlot(actions, options.actionsSelector);
+    }
     d.body.appendChild(footer);
     void renderAppNavigation();
     initTooltips(header);

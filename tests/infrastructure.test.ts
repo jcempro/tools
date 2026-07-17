@@ -204,11 +204,13 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.match(sharedCss, /\.jcem-document-form-region\.no-print,\s*\.jcem-document-form-region\s*{[^}]*--jcem-form-toggle-bg:\s*#185a7d;/s);
   assert.match(sharedCss, /\.jcem-document-form-toggle\s*{[^}]*font-size:\s*0\.9rem;[^}]*text-shadow:/s);
   assert.match(sharedTs, /className = "jcem-form-drawer-state"/);
+  assert.match(sharedTs, /className = "jcem-document-form-scroll"/);
   assert.match(sharedTs, /toggle\.innerHTML = "<span>Preencher campos<\/span>"/);
   assert.match(sharedCss, /\.jcem-document-workspace:has\(> \.jcem-form-drawer-state:not\(:checked\)\) \.jcem-document-form-region\s*{[^}]*max-block-size:\s*44px/s);
   assert.match(sharedCss, /body\.jcem-printable-layout \.jcem-document-workspace:has\(> \.jcem-form-drawer-state:checked\)\s*{[^}]*grid-template-columns:\s*clamp\(21rem,\s*32vw,\s*31rem\) minmax\(0,\s*1fr\) !important/s);
   assert.match(sharedCss, /@media\s*\(min-width:\s*1120px\)\s*{[\s\S]*\.jcem-document-form-region\s*{[^}]*align-self:\s*stretch;[^}]*min-block-size:\s*100%;[\s\S]*linear-gradient\(/s);
-  assert.match(sharedCss, /\.jcem-document-workspace:has\(> \.jcem-form-drawer-state:checked\) \.jcem-document-form-region > :not\(\.jcem-document-form-toggle\)\s*{[^}]*visibility:\s*visible;[^}]*opacity:\s*1;[^}]*pointer-events:\s*auto;/s);
+  assert.match(sharedCss, /\.jcem-document-workspace:has\(> \.jcem-form-drawer-state:checked\) \.jcem-document-form-scroll\s*{[^}]*visibility:\s*visible;[^}]*opacity:\s*1;[^}]*pointer-events:\s*auto;/s);
+  assert.match(sharedCss, /\.jcem-document-form-scroll\s*{[^}]*overflow:\s*auto;[^}]*overscroll-behavior:\s*contain;/s);
   assert.doesNotMatch(sharedTs, /jcem-form-drawer-state[\s\S]{0,300}addEventListener\("click"/);
   assert.doesNotMatch(sharedCss, /\.jcem-chrome-footer\s*{[^}]*position:\s*fixed;/s);
   assert.match(faturamentoTs, /api\.layout\.printable/);
@@ -251,6 +253,11 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedTs, /separator-print-clear/);
   assert.match(sharedTs, /item\.icons/);
   assert.match(sharedTs, /renderIcon\(\{ unicode: "f042" \}\)/);
+  assert.match(sharedTs, /renderIcon\(\{ unicode: "f142" \}\)/);
+  assert.match(sharedTs, /class="jcem-toolbar-menu-state"/);
+  assert.match(sharedCss, /\.jcem-toolbar-menu-state:checked ~ \.jcem-chrome-actions\.menu\s*{[^}]*opacity:\s*1;[^}]*visibility:\s*visible;[^}]*pointer-events:\s*auto;/s);
+  assert.match(sharedCss, /\.jcem-chrome-actions\.menu\s*{[^}]*position:\s*absolute;[^}]*visibility:\s*hidden;/s);
+  assert.match(sharedCss, /\.jcem-chrome-header\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\) auto 44px/s);
   assert.match(sharedCss, /\.jcem-theme-toggle \.jcem-fa-icon\s*{[^}]*width:\s*1\.8rem[^}]*height:\s*1\.8rem/s);
   assert.match(sharedCss, /\.jcem-author-badge:hover[\s\S]*transform:\s*translateY\(-0\.08rem\)/);
   assert.match(sharedCss, /\.jcem-theme-toggle\s*{[^}]*place-items:\s*center[^}]*padding:\s*0/s);
@@ -258,7 +265,7 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon:nth-child\(2\)\s*{[^}]*opacity:\s*0\.68[^}]*scale\(0\.82\)/s);
   assert.match(sharedCss, /@keyframes jcem-autosave-breathe/);
   assert.match(sharedCss, /animation:\s*jcem-autosave-breathe 1\.2s cubic-bezier\(\.4, 0, \.2, 1\) infinite/);
-  assert.match(sharedCss, /\.jcem-theme-toggle, \.jcem-nav-toggle\s*{[^}]*min-width:\s*44px[^}]*min-height:\s*44px/s);
+  assert.match(sharedCss, /\.jcem-theme-toggle, \.jcem-nav-toggle, \.jcem-toolbar-menu-toggle\s*{[^}]*min-width:\s*44px[^}]*min-height:\s*44px/s);
   assert.match(sharedCss, /\.jcem-license-badge\s*{[^}]*min-width:\s*44px[^}]*height:\s*44px[^}]*border:\s*0/s);
   assert.match(sharedCss, /\.jcem-chrome-actions\.menu > \*\s*{[^}]*min-height:\s*44px[^}]*border:\s*0/s);
   assert.match(sharedTs, /const mpl2BadgeSvg = `<svg class="jcem-mpl2-icon"/);
@@ -358,7 +365,7 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*transition:\s*width \.18s ease/s);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-header\s*{[^}]*animation-timeline:\s*scroll\(root block\)[^}]*animation-range:\s*0 7rem/s);
   assert.match(sharedCss, /@keyframes jcem-header-nav-clearance\s*{[^}]*padding-left:\s*1rem[\s\S]*padding-left:\s*4\.5rem/s);
-  assert.match(sharedCss, /@keyframes jcem-toolbar-nav-clearance\s*{[^}]*margin-right:\s*-1rem[\s\S]*margin-right:\s*-4\.5rem/s);
+  assert.doesNotMatch(sharedCss, /@keyframes jcem-toolbar-nav-clearance/);
   assert.match(sharedCss, /:root\[data-theme="light"\] \.jcem-nav-toggle\s*{[^}]*color:\s*#29465b/s);
   assert.match(sharedCss, /:root\[data-theme="light"\] \.jcem-theme-toggle\s*{[^}]*color:\s*#526a7a/s);
   assert.match(sharedCss, /\.jcem-dashboard-footer p\s*{[^}]*color:\s*inherit/s);

@@ -240,3 +240,11 @@
 - Correcao aplicada: o build de bundle baixa a URL de autoria configurada, grava cache operacional em `.cache/build/author-logo-64-dark.png` e incorpora PNG como Data URL; `dev-live` deixou de substituir a autoria por SVG local de aplicacao.
 - Evidencia automatizada: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovaram. Os tres ZIPs extraidos continham Data URL PNG de autoria, sem `64-dark.png`, sem `64-yellow` e sem `MPL 2.0</span>`.
 - Observacao de validacao visual: Chrome/Edge headless locais falharam no ambiente por GPU/CDP antes de gerar captura confiavel; a validacao ficou coberta por testes estruturais, build, publicacao e inspecao de artefato extraido.
+
+### Correcao de overflow e toolbar 20260717.1705.00
+
+- Solicitacao humana: formulario nao pode cortar conteudo; cabecalho nao pode quebrar icones em segunda linha; icone de salvamento e alerta de update devem permanecer sempre visiveis; demais acoes podem ir para submenu; gatilho do submenu deve usar Font Awesome `f142` e estado CSS puro.
+- Correcao aplicada: `ensureFormDrawerToggle` passou a envolver o conteudo do formulario em `.jcem-document-form-scroll`, mantendo o gatilho fora da area rolavel. O conteudo expandido agora rola internamente e preserva campos, tabelas, botoes e controles sem corte.
+- Correcao aplicada: o cabecalho passou a usar grid de linha unica com autosave/update na area sempre visivel e `input[type="checkbox"]` + `label` + `nav` para submenu CSS. Switch de tema, MPL, autoria e acoes da toolbar ficam no submenu absoluto acionado pelo icone `f142`, sem JavaScript de estado visual.
+- RCF global sincronizado para formalizar linha unica do cabecalho, visibilidade obrigatoria de autosave/update, submenu CSS para acoes nao essenciais e area interna de rolagem do formulario documental.
+- Evidencia automatizada: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovaram. Testes: 44 aprovados. Publicacao: 4 paginas e 30 arquivos em `dist/`.
