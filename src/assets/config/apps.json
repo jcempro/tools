@@ -3,7 +3,7 @@
   "siteNameFull": "Tools JeanCarloEM",
   "siteNameShort": "Tools JCEM",
   "navigationPosition": "left",
-  "authorLogoUrl": "https://jcem.pro/logo/64-dark.png",
+  "authorLogoUrl": "https://jcem.pro/logo/64.png",
   "workspaceLogo": "/assets/brand/logo.svg",
   "apps": [
     { "id": "faturamento", "title": "Faturamento", "description": "Declaração e projeção de faturamento.", "href": "/faturamento/", "logo": "/faturamento/logo.svg" },
