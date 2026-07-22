@@ -407,6 +407,41 @@ export function referenceFromPeriodAndSignature(period: MesAno[], signatureDate:
   return lastRealized ?? previousClosedMonth(signatureDate);
 }
 
+export function firstBusinessDayOfNextMonth(month: MesAno): Date {
+  const date = new Date(month.ano, month.mes, 1);
+
+  while (date.getDay() === 0 || date.getDay() === 6) {
+    date.setDate(date.getDate() + 1);
+  }
+
+  return date;
+}
+
+export function signatureDateForInitialMonth(initial: MesAno, today = new Date()): Date {
+  return compareMesAno(initial, monthFromDate(today)) >= 0 ? firstBusinessDayOfNextMonth(initial) : today;
+}
+
+export function averageRealizedColumns(rows: LinhaFaturamento[]): { prazo: number; vista: number } {
+  const realized = rows.filter((row) => row.situacao === "REALIZADO");
+
+  if (realized.length === 0) {
+    return { prazo: 0, vista: 0 };
+  }
+
+  return {
+    prazo: Math.round(realized.reduce((sum, row) => sum + row.vendasPrazo, 0) / realized.length),
+    vista: Math.round(realized.reduce((sum, row) => sum + row.vendasVista, 0) / realized.length)
+  };
+}
+
+export function normalizePredictedRows(rows: LinhaFaturamento[]): LinhaFaturamento[] {
+  const averages = averageRealizedColumns(rows);
+
+  return rows.map((row) => row.situacao === "PREVISTO"
+    ? { ...row, vendasPrazo: averages.prazo, vendasVista: averages.vista }
+    : row);
+}
+
 export function distributeCents(total: number, count = 12): number[] {
   const normalizedTotal = Math.max(0, Math.round(total));
 

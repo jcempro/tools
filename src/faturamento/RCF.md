@@ -22,7 +22,7 @@ O documento aceita um ou mais assinantes, cada um com Nome e CPF. A interface in
 
 Localidade deve conter cidade e UF brasileira, aceitar variantes usuais como `Cidade/UF` ou `Cidade-UF`, normalizar espacos e apresentar `Cidade-UF`. UF deve ter duas letras e pertencer as unidades federativas brasileiras.
 
-Data de assinatura inicia na data atual e pode ser alterada. Todas as regras temporais usam exclusivamente a data vigente no documento; o relogio do computador nao recalcula depois da definicao pelo usuario. A apresentacao e:
+Data de assinatura inicia na data atual e pode ser ajustada automaticamente a partir do Mes inicial. Quando o Mes inicial for igual ou posterior ao mes corrente do sistema, a data de assinatura deve ser o primeiro dia util do mes imediatamente posterior ao Mes inicial. Quando o Mes inicial for anterior ao mes corrente do sistema, a data de assinatura deve ser a data atual da execucao. A apresentacao e:
 
 ```text
 Cidade-UF, dd de Mes de aaaa,
@@ -36,7 +36,7 @@ O usuario informa apenas o Mes inicial exibido na tabela, apresentado no formato
 
 O Mes/Ano de Referencia nao e campo editavel. Ele e valor derivado da data de assinatura e do ultimo mes classificado como `REALIZADO` na tabela. Quando nenhum mes da tabela estiver realizado, usa-se o ultimo mes encerrado antes do mes da data de assinatura como referencia deterministica de compatibilidade.
 
-Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica, nao pode ser editada manualmente e nao deve ocupar coluna no formulario; a coluna equivalente permanece apenas no impresso.
+Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica, nao pode ser editada manualmente e nao deve ocupar coluna no formulario; a coluna equivalente permanece apenas no impresso. O gatilho de Mes inicial igual ou posterior ao mes corrente deve tornar o Mes inicial `REALIZADO` e todos os meses subsequentes `PREVISTO`.
 
 ## 5. Mercado Interno e Totais
 
@@ -68,7 +68,7 @@ Por padrao, a distribuicao entre a vista e a prazo nao fica fixada: alteracoes m
 
 Quando o usuario marcar a opcao de fixar distribuicao, os percentuais globais informados passam a ser imposicao anual. Se uma coluna estiver com 0%, seus campos mensais devem ficar desabilitados e zerados. Se houver percentual limitado, a redistribuicao deve preservar o percentual anual imposto, sem exigir que cada mes siga a mesma proporcao; a divergencia mensal entre a vista e a prazo pode variar ate 40 pontos percentuais em relacao ao percentual global fixado.
 
-Meses `PREVISTO` devem ter valores derivados automaticamente, salvo edicao manual explicita. Previsao de Vendas a Vista usa apenas dados dessa coluna; Vendas a Prazo usa apenas dados dessa coluna.
+Meses `PREVISTO` devem ter valores derivados automaticamente e ficar imunes a variacao sazonal ou edicao mensal direta. A previsao de Vendas a Vista usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Vista; Vendas a Prazo usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Prazo. O valor previsto de cada coluna deve ser constante e identico em todas as linhas `PREVISTO`, sem exigir igualdade entre as duas colunas.
 
 ## 7. Percentuais e Regime
 

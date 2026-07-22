@@ -1,5 +1,6 @@
 import {
   addMonths,
+  averageRealizedColumns,
   buildPeriodFromStart,
   classifyMonthBySignatureDate,
   compareMesAno,
@@ -16,12 +17,14 @@ import {
   parsePercent,
   referenceFromPeriodAndSignature,
   redistributeAnnualValues,
+  signatureDateForInitialMonth,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
   sumRows,
   type LinhaFaturamento,
   type MesAno
 } from "./regras";
+import faturamentoConfig from "../assets/config/faturamento.json";
 
 (function bootstrapFaturamento(w: Window): void {
   "use strict";
@@ -42,35 +45,8 @@ import {
     unit: "cm"
   };
 
-  const ufs = new Set([
-    "AC",
-    "AL",
-    "AP",
-    "AM",
-    "BA",
-    "CE",
-    "DF",
-    "ES",
-    "GO",
-    "MA",
-    "MT",
-    "MS",
-    "MG",
-    "PA",
-    "PB",
-    "PR",
-    "PE",
-    "PI",
-    "RJ",
-    "RN",
-    "RS",
-    "RO",
-    "RR",
-    "SC",
-    "SP",
-    "SE",
-    "TO"
-  ]);
+  const moduleDefaults = faturamentoConfig.defaults;
+  const ufs = new Set(faturamentoConfig.ufs);
 
   const validation: ValidationConfig = {
     emptyFieldMessage: "Campo '${0}' vazio ou invalido",
@@ -156,9 +132,13 @@ import {
 
   function todayIso(): string {
     const today = new Date();
-    const month = `${today.getMonth() + 1}`.padStart(2, "0");
-    const day = `${today.getDate()}`.padStart(2, "0");
-    return `${today.getFullYear()}-${month}-${day}`;
+    return dateToIso(today);
+  }
+
+  function dateToIso(date: Date): string {
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${date.getFullYear()}-${month}-${day}`;
   }
 
   function dateFromInput(value: string): Date {
@@ -210,11 +190,11 @@ import {
     }
 
     if (!input("cidade").value) {
-      setValue("cidade", "Pirassununga");
+      setValue("cidade", moduleDefaults.cidade);
     }
 
     if (!input("uf").value) {
-      setValue("uf", "SP");
+      setValue("uf", moduleDefaults.uf);
     }
 
     if (!input("mes-inicial").value) {
@@ -223,15 +203,15 @@ import {
     }
 
     if (!input("distribuicao-vista").value) {
-      setValue("distribuicao-vista", "100%");
+      setValue("distribuicao-vista", moduleDefaults.distribuicaoVista);
     }
 
     if (!input("distribuicao-prazo").value) {
-      setValue("distribuicao-prazo", "0%");
+      setValue("distribuicao-prazo", moduleDefaults.distribuicaoPrazo);
     }
 
     if (!input("prazo-medio").value) {
-      setValue("prazo-medio", "45");
+      setValue("prazo-medio", moduleDefaults.prazoMedio);
     }
 
     applyDefaultReceiptPercentages();
@@ -244,9 +224,9 @@ import {
 
   function applyDefaultReceiptPercentages(): void {
     const defaults: Record<string, string> = {
-      "percentual-cartoes": "40%",
-      "percentual-cheques": "30%",
-      "percentual-titulos": "30%"
+      "percentual-cartoes": moduleDefaults.percentuaisRecebimento.cartoes,
+      "percentual-cheques": moduleDefaults.percentuaisRecebimento.cheques,
+      "percentual-titulos": moduleDefaults.percentuaisRecebimento.titulos
     };
 
     for (const [id, value] of Object.entries(defaults)) {
@@ -272,6 +252,7 @@ import {
       const label = formatMesAno(month);
       const status = classifyMonthBySignatureDate(month, signatureDate());
       const editorRow = document.createElement("tr");
+      editorRow.dataset.status = status;
       editorRow.innerHTML = `
         <td class="month-label" data-month="${label}">${label}</td>
         <td><input id="mes-${index}-vista" class="money month-money" data-column="vista" type="text" inputmode="decimal"></td>
@@ -296,7 +277,7 @@ import {
       const mesAno = parseMesAno(monthText) ?? initialMonth();
       const vista = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="vista"]')?.value ?? "") ?? 0;
       const prazo = parseCurrencyToCents(row.querySelector<HTMLInputElement>('[data-column="prazo"]')?.value ?? "") ?? 0;
-      const prazoMedio = Number.parseInt(input("prazo-medio").value || "45", 10);
+      const prazoMedio = Number.parseInt(input("prazo-medio").value || moduleDefaults.prazoMedio, 10);
 
       return {
         mesAno,
@@ -328,6 +309,40 @@ import {
     return formatCurrencyFromCents(value).replace(/^R\$\s?/, "");
   }
 
+  function syncInitialMonthSignatureDate(): void {
+    const start = parseMesAno(input("mes-inicial").value);
+    if (!start) {
+      return;
+    }
+
+    setValue("data-assinatura", dateToIso(signatureDateForInitialMonth(start)));
+  }
+
+  function applyPredictedAverages(): void {
+    const rows = monthRows();
+    const averages = averageRealizedColumns(rows);
+
+    rows.forEach((row, index) => {
+      const readonly = row.situacao === "PREVISTO";
+      const vista = input(`mes-${index}-vista`);
+      const prazo = input(`mes-${index}-prazo`);
+      vista.readOnly = readonly;
+      prazo.readOnly = readonly;
+      vista.closest("tr")?.classList.toggle("is-predicted", readonly);
+      vista.closest("tr")?.setAttribute("data-status", row.situacao);
+      if (!readonly) {
+        return;
+      }
+
+      vista.value = formatCurrencyFromCents(averages.vista);
+      prazo.value = formatCurrencyFromCents(averages.prazo);
+      setMonthlyLock(vista, false);
+      setMonthlyLock(prazo, false);
+      api.storage.setItem(vista.id, vista.value);
+      api.storage.setItem(prazo.id, prazo.value);
+    });
+  }
+
   function abbreviatedRegime(value: string): string {
     const regimes: Record<string, string> = {
       "Lucro Presumido": "Lucro Pres.",
@@ -341,11 +356,12 @@ import {
   }
 
   function renderPreview(): void {
+    applyPredictedAverages();
     const rows = monthRows();
     const totals = sumRows(rows);
     const reference = referenceFromPeriodAndSignature(rows.map((row) => row.mesAno), signatureDate());
-    const city = input("cidade").value.trim() || "Pirassununga";
-    const uf = input("uf").value.trim().toUpperCase() || "SP";
+    const city = input("cidade").value.trim() || moduleDefaults.cidade;
+    const uf = input("uf").value.trim().toUpperCase() || moduleDefaults.uf;
 
     text("print-razao-social", input("razao-social").value);
     text("print-cnpj", input("cnpj").value);
@@ -357,7 +373,7 @@ import {
     text("print-cheques", input("percentual-cheques").value);
     text("print-titulos", input("percentual-titulos").value);
     text("print-regime", abbreviatedRegime(select("regime-tributacao").value));
-    text("print-prazo-medio", input("prazo-medio").value || "45");
+    text("print-prazo-medio", input("prazo-medio").value || moduleDefaults.prazoMedio);
     text("print-cidade-uf", `${city}-${uf}`);
     text("print-data", formatDatePtBr(input("data-assinatura").value));
     text("print-assinantes", joinedSignerValues(".signer-name"));
@@ -1010,6 +1026,9 @@ import {
       });
       api.on(element, "blur", () => {
         if (element.id === "mes-inicial" || element.id === "data-assinatura") {
+          if (element.id === "mes-inicial") {
+            syncInitialMonthSignatureDate();
+          }
           refreshPeriodIfNeeded();
           return;
         }
@@ -1082,7 +1101,9 @@ import {
     api.autosave.init({ selector: "#faturamento-app input", validation });
     restoreFixedDistribution();
     normalizeDefaults();
+    syncInitialMonthSignatureDate();
     applyJsonPayload();
+    syncInitialMonthSignatureDate();
     refreshPeriodIfNeeded();
     updateDistributionLockState();
     bindStaticInputs();

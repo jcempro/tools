@@ -1,0 +1,328 @@
+# Memoria operacional canonica
+
+## FT-001 - Manutencao, contexto e continuidade
+
+- Objetivo: executar a sequencia completa de manutencao, atualizacao de contexto, padronizacao, diagnostico do modulo `admissional` e continuidade de implementacao.
+- Prioridade: alta.
+- Escopo: Tecnico.
+- Status: concluido.
+- Inicio: 20260714.1527.21.
+- Atualizacao: 20260714.1605.00.
+
+### Plano vigente
+
+1. Releitura e reanalise das diretrizes do projeto. Status: concluido.
+2. Atualizacao dos arquivos de contexto e continuidade. Status: concluido.
+3. Validacao e correcao de configuracoes de pacotes. Status: concluido.
+4. Compactacao do contexto. Status: concluido.
+5. Diagnostico e correcao de modulos travados, especialmente `admissional`. Status: concluido.
+6. Continuidade das implementacoes pendentes. Status: concluido com pendencia registrada.
+
+### Estado registrado
+
+- Branch inicial observada: `master`.
+- Estado migrado para branch `dev` por solicitacao humana em 20260714.1527.21.
+- `continue.ia` e o arquivo canonico de memoria operacional vigente; `continue.dev` nao foi encontrado.
+- Alteracoes locais ja existiam antes da atuacao desta FT: `AGENTS.md`, `.agents/.autoupdate.md`, `.agents/webPageLike.md`, `.agents/microconceitos.md`, `.agents/publish.md`, `.agents/release.md`, `.agents/meta/*`, `scripts/.agents/`, `scripts/lib/`, `package.json`, `package-lock.json`, `src/faturamento/index.html`, `src/oficios/admissional/index.html`, `dist/faturamento/index.html` e `dist/oficios/admissional/index.html`.
+- `dist/` e artefato gerado conforme `RCF.md` e `.agents/agents.local.md`; nao deve ser editado manualmente.
+- Etapa 1 releu integralmente `AGENTS.md` recebido no contexto, `.agents/microconceitos.md`, `.agents/webPageLike.md`, `.agents/release.md`, `.agents/publish.md`, `.agents/.autoupdate.md`, `.agents/agents.local.md`, `.agents/meta/*.md`, `.agents/meta/index.json`, `RCF.md`, `src/oficios/admissional/RCF.md`, `src/faturamento/RCF.md` e `src/csv-bd/RCF.md`.
+
+### Decisoes e regras aplicadas
+
+- Governanca ativa: `AGENTS.md`, `.agents/`, `RCF.md` global e RCFs especificos aplicaveis.
+- Cenario aplicavel: Web Page Like; Release e Publicacao de Conteudo somente quando o RCF declarar o escopo correspondente.
+- `src/` e fonte canonica; `dist/` e saida publicada reconstruivel.
+- Desenvolvimento deve ocorrer em `dev`; convergencia para branch primaria so ocorre com FT concluida e sistema funcional.
+- Alteracoes funcionais devem sincronizar RCF aplicavel, memoria, implementacao e artefatos gerados quando necessario.
+
+### Verificacoes executadas
+
+- `git status --short --branch`: confirmou alteracoes locais e branch inicial `master`.
+- `npm run`: confirmou scripts `agent:*`, `build`, `check`, `test`, `lint`, `type-check` e validadores.
+- `git branch --list dev`: confirmou ausencia previa de `dev`.
+- `git switch -c dev`: criou branch `dev` apos aprovacao de escrita em `.git`.
+- `npm pkg get scripts dependencies devDependencies agentsGovernance`: confirmou manifesto NPM parseavel, scripts `agent:*`, `agentsGovernance` e `html2pdf.js` atualizado para `^0.14.0`.
+- `npm install --package-lock-only --dry-run`: confirmou lockfile consistente sem escrita necessaria.
+
+### Compactacao vigente
+
+- Contexto normativo carregado: AGENTS global recebido, microconceitos, Web Page Like, autoupdate, release, publicacao, metarquivos e RCFs global/admissional/faturamento/csv-bd.
+- Regras operacionais ativas para continuidade: atuar em `dev`; editar fonte canonica em `src/`; tratar `dist/` como gerado; sincronizar memoria/RCF quando comportamento mudar; validar por NPM; preservar alteracoes preexistentes.
+- Resultado da Etapa 3: `package.json` mantem scripts e metadado de governanca, com formatacao JSON normalizada; `package-lock.json` permanece coerente com dependencias.
+- Causa raiz do loading no `admissional`: o HTML passou a referenciar `html2pdf.js` 0.14.0 com SRI de outro artefato. O navegador bloqueava o recurso externo. Hash real confirmado: `sha512-IgpImqjrCPtoJXRBavoYDDfWTnz8lBuklWs9yRsDRwC37l4XXH5KJDSqq108swbqMaWg+5UEZUFwpJhgD+QC7g==`.
+- Correcao aplicada: SRI atualizado em `src/oficios/admissional/index.html` e `src/faturamento/index.html`; `scripts/build-bundles.mjs` passou a mapear tambem a URL CDN 0.14.0 para a copia local de `node_modules/html2pdf.js/dist/html2pdf.bundle.min.js`, preservando bundle offline.
+- Correcao adicional de validacao: `eslint.config.mjs` passou a reconhecer scripts CommonJS de governanca em `scripts/.agents/**/*.js` e `scripts/lib/**/*.js`; `scripts/.agents/release-workflow.js` corrigido de `error` inexistente para `err` no tratamento de falha.
+- Validacao visual: `http://127.0.0.1:4173/oficios/admissional/` renderizou no navegador interno com `body.jcem-printable-layout`, chrome global, autosave, workspace e preview, sem erros ou warnings de console. A CDN nao carregou no navegador interno local, deixando `window.html2pdf` indefinido nessa sessao, mas a pagina deixou de ficar presa em loading e o bundle offline contem a dependencia local.
+- Validacao completa: `npm run check` concluido com sucesso apos type-check, lint, 36 testes, build, bundles offline e `validate:publication`.
+
+### Pendencias imediatas
+
+- Pendencia de `NOSCRIPT.html` resolvida em 20260714.1605.00: `scripts/compile.mjs` exclui `src/NOSCRIPT.html` da copia estatica, extrai o conteudo renderizavel e estilos para um fragmento oficial e injeta `<noscript>` nas paginas HTML publicadas. `scripts/validate-publication.mjs` bloqueia `dist/NOSCRIPT.html`, bloqueia redirecionamento para `/NOSCRIPT.html` e exige `<noscript>` oficial em HTML publicado. `tests/infrastructure.test.ts` cobre o contrato.
+- Validacao final apos NOSCRIPT: `npm run check` concluido com sucesso; 37 testes passaram; build gerou bundles offline; `validate:publication` confirmou 4 paginas e 26 arquivos em `dist/`.
+
+### Retomada evolutiva 20260716.1946.00
+
+- Objetivo ampliado por solicitacao humana: consolidar arquitetura e legado; corrigir toolbar, localizacao e impressao; implementar dashboard, navegacao, temas, consentimento, SCSS e identidades visuais; validar Web, PDF, bundle e publicacao sem regressao.
+- Etapa atual: 1/6 - preparacao, governanca e auditoria.
+- Tarefa atual: 1.1 - corrigir a execucao ESM/CommonJS da API `agent:*`.
+- Falha confirmada: `scripts/.agents/repo-tools.js` usa CommonJS sob o pacote raiz ESM, produzindo `ReferenceError: require is not defined`.
+- Correcao em validacao: limite CommonJS declarado em `scripts/package.json`, preservando os bootstraps `.mjs`.
+- Proximas tarefas: inventariar implementacoes existentes, confrontar requisitos novos com RCFs e executar as etapas tecnicas sequencialmente.
+
+### Progresso 20260716.2015.00
+
+- Etapas 1 a 5 implementadas: API operacional corrigida; memoria duplicada removida; toolbar e localizacao padronizadas; geometria Ctrl+P/PDF unificada; `noscript` isolado; dashboard, 404, catalogo, navegacao e temas criados; consentimento online configuravel adicionado; seis folhas CSS migradas para SCSS; logotipos SVG global e por modulo criados.
+- Commits intermediarios: `764245d` e `b608f86`.
+- Validacoes: type-check, lint e 37 testes aprovados. Build Web e quatro bundles gerados. Publicacao validada com 5 paginas e 32 arquivos apos impedir bundle indevido do dashboard raiz.
+- Etapa atual: 6/6 - validacao visual, sincronizacao documental, commits finais e convergencia.
+
+### Bloqueio de conclusao 20260716.2030.00
+
+- Implementacao e validacao automatizada concluidas por `npm run check`: type-check, lint, 39 testes, build, quatro bundles e publicacao aprovados.
+- Validacao visual no navegador integrado foi tentada com servidor local ativo; `127.0.0.1` retornou conexao recusada e `localhost` foi bloqueado pelo cliente. Nenhuma conclusao visual foi inferida.
+- Pendencia unica para concluir a FT: validar dashboard, 404, tema, menu retraido/expandido e impressao/PDF em navegador com acesso ao servidor local; depois gerar handoff final e convergir `dev` em `master`.
+
+### Retomada 20260716.1740.00 - dev-live e bundles
+
+- Causa raiz do live: servidor abria antes do build pronto, dependia de subprocesso NPM watch e nao regenerava bundles; porta ocupada terminava por excecao sem diagnostico controlado.
+- Causa raiz da diferenca offline: navegacao global buscava `/assets/config/apps.json`, indisponivel sob `file:`, ocultando parte da evolucao dentro do ZIP.
+- Correcao aplicada: build inicial direto por Node; servidor somente apos Web+ZIP; watch unico de `src/`; rebuild completo serializado; reload pos-sucesso; `no-store`; diagnostico `EADDRINUSE`; catalogo embutido no bundle como metadado codificado com URLs upstream absolutas.
+- Falhas adicionais encontradas na validacao real: injecao live substituia o primeiro `</body>` inclusive dentro do JavaScript de `html2pdf`; strings da dependencia com `<script>` ativavam parsing HTML duplamente escapado; grade desktop sobrescrevia o modo documental do Admissional.
+- Correcoes adicionais: live reload inserido somente no fechamento estrutural final; tags de script escapadas no empacotamento; catalogo offline independente de globais e `fetch`; especificidade da grade documental preservada.
+- Evidencia visual: Web e ZIP de Faturamento e Admissional renderizados no navegador; toolbar, tema e navegacao presentes; quatro links de aplicativos absolutos; Faturamento com editor e A4; Admissional centralizado em 794 px; sem overflow horizontal.
+- Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, build, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
+- Prova de integracao: `/`, `/faturamento/`, `/oficios/admissional/` e os dois ZIPs responderam HTTP 200; toque em SCSS regenerou o ZIP e o servidor permaneceu HTTP 200.
+- Proximo ponto: atualizar handoff, commitar e disponibilizar a branch `dev` para validacao humana.
+
+### Ajuste visual 20260716.2215.00 - shell dos aplicativos
+
+- Solicitacao humana: preservar o `index` aprovado; substituir o azul do tema escuro por grafite/chumbo; adaptar textos, toolbar e icones; integrar a navegacao lateral ao shell sem sobrepor conteudo quando retraida.
+- Causa raiz: tema escuro alterava somente fundos e poucos textos; toolbar, controles, icones e bordas mantinham tokens claros. A navegacao era um painel flutuante centralizado com `z-index`, sem reserva estrutural.
+- Implementacao: paleta neutra completa; barra lateral fixa entre cabecalho e rodape; trilho retraido de 3,5 rem reservado no conteudo; expansao sobreposta sem reflow; botao vertical no topo; geometria sincronizada em scroll/resize; links offline preservados.
+- Evidencia Web: Faturamento e Admissional com trilho retraido de 48 px, inicio alinhado ao fim do cabecalho, conteudo deslocado sem sobreposicao, expansao de 241 px sem alterar a geometria documental; Admissional preservou A4 de 794 px e ausencia de overflow.
+- Evidencia de tema: fundo `rgb(24,25,27)`, cabecalho `rgb(32,34,37)`, toolbar `rgb(44,46,50)`, controles `rgb(48,50,54)`, icones claros e papel branco.
+- Evidencia Bundle: Faturamento offline preservou trilho de 48 px, quatro links absolutos, ausencia de overflow e a mesma alternancia grafite com papel branco.
+- Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
+- Proximo ponto: gerar handoff e commitar em duas unidades operacionais.
+
+### Polimento visual 20260716.2315.00 - tema, identidade e Bundle
+
+- Solicitacao humana: aprofundar hierarquia do modo escuro; impedir quebra causada pelo switch; usar logos reais e tematicos; ocultar integralmente labels retraidos; tornar dimensoes responsivas; compactar a licenca; alinhar logo do aplicativo junto à marca; manter tema proprio com switch no dashboard raiz.
+- Implementacao: sete niveis grafite para workspace, preview, formulario, fieldset, controle, tabela e estados; medidas estruturais convertidas para `rem`; metadados do cabecalho em linha unica; autosave com elipse; badge `MPL 2.0`; logo do aplicativo à direita de Tools JeanCarloEM; dashboard raiz com switch persistente e cards tematicos.
+- Navegacao: labels retraidos usam `visibility: hidden`; cinco logos reais substituem pontos genericos; filtro de tema preserva identidade e melhora contraste.
+- Correcao orientada por capturas: Bundle passou a consumir representacoes SVG `data:` do catalogo para logo de cabecalho, workspace e quatro aplicativos; nenhuma imagem quebrada. Preview escuro passou a `rgb(43,46,50)`, distinto do workspace `rgb(23,24,26)`, formulario `rgb(31,32,35)`, fieldset `rgb(41,43,47)`, input `rgb(54,56,61)` e papel branco.
+- Evidencia visual: Bundle Faturamento apresentou seis SVGs Base64 carregados, labels ocultos e toolbar intacta; dashboard raiz apresentou quatro cards com logos e switch independente.
+- Validacao final: `npm run check` aprovado com type-check, lint, 41 testes, quatro ZIPs e publicacao de 5 paginas/36 arquivos.
+- Proximo ponto: atualizar handoff, criar dois commits e liberar `dev` para validacao humana.
+
+### Refatoracao GUI CSS-first 20260716.2355.00
+
+- Solicitacao humana: remover JavaScript de responsividade, geometria, scroll e alternancia da sidebar; refinar toolbar, marca, autosave e rodape.
+- Contrato: layout e estado visual pertencem ao SASS; JavaScript permanece apenas para comportamento funcional e montagem estrutural. Sidebar usa checkbox, label e seletores de irmaos, integra o fluxo entre header/footer e expande sobre o conteudo sem mover o eixo dos icones.
+- Implementacao: listeners de scroll/resize e ResizeObserver removidos; compactacao por scroll removida; shell em grid CSS; logos reposicionados; textos institucionais removidos do header; toolbar ganhou multi-icone generico, f0c7/f07c, f49e+f358 e separador imprimir/limpar; footer recebeu maior respiro; autosave oculta texto progressivamente por CSS.
+- Evidencia automatizada: `npm run check` aprovou type-check, lint, 41 testes, quatro bundles e publicacao de 5 paginas/36 arquivos.
+- Evidencia visual Web: header sem dominio/frase institucional; logos global/projeto carregados; bundle com dois SVGs; separador entre imprimir/limpar; sidebar expandiu para 249 px sem alterar eixo de 23,33 px e sem overflow; breakpoint de 500 px ocultou o texto de autosave, preservou o icone e manteve header/toolbar sem overflow; tema escuro preservou toolbar grafite e icones claros.
+- Correcao adicional por evidencia visual: os dois icones da versao offline preservam largura compacta individual, mas usam a mesma altura de 2 rem dos demais icones da toolbar.
+- Proximo ponto: validar ajuste cromatico e altura final, gerar handoff e criar dois commits operacionais.
+
+### Refinamento de marca e navegacao 20260717.0015.00
+
+- Marca de autoria do header configurada como `https://jcem.pro/logo/64-dark.png`, com link para `https://www.jeancarloem.com`; Web conserva URL remota e Bundle incorpora PNG Base64 sem asset local distinto.
+- Construtor segregado em entrada de preparacao remota e nucleo preservado; catalogo e JavaScript Web sao restaurados após cada build, enquanto o ZIP fica integralmente autocontido.
+- Ordem do header: autosave, switch, MPL e autoria. Badge MPL e autoria usam altura compativel; switch usa Font Awesome `f042` ampliado; trio possui hover/foco suave.
+- Autosave deixou de usar elipse: frase completa quando couber, resumo por breakpoint e somente icone em largura critica.
+- Sidebar usa `f0c9`; expansao por CSS projeta superficie unica, continua e animada por toda a altura, sem reflow nem deslocamento do eixo dos icones.
+- Ao alcançar o topo durante a rolagem, o trilho permanece visivel e uma animacao CSS de scroll reserva progressivamente 3,5 rem no header e toolbar; no topo normal, nenhum recuo residual permanece.
+- Botao offline normatizado com primeiro icone principal maior e opaco; `f358` complementar menor e de opacidade reduzida.
+- Switch vetorial centralizado explicitamente; autosave ampliado para 1,6 rem com confirmacao animada curta e respeito a movimento reduzido.
+- Validacao Web: marca remota 64x64 carregada, link correto, ordem confirmada, superficie expandida em 240 px com transicao de 0,18 s e texto de autosave sem truncagem.
+
+### Auditoria visual e simplificacao 20260717.0035.00
+
+- Contraste claro/escuro normatizado no dashboard, shell documental e Conversor CSV; o painel Logs, controles, resumos e decisões agora usam superfícies locais compatíveis com o tema.
+- Rodapés receberam maior respiro superior e inferior; textos do dashboard deixaram de depender da regra global de parágrafos.
+- Toolbar do CSV corrigida na origem: o normalizador agora preserva abrir CSV, baixar convertido, limpar e Bundle, todos com Font Awesome e ações funcionais.
+- Preview A4 isolado por contenção de layout/pintura, mantendo scroll interno e eliminando overflow horizontal do documento raiz em viewport de 625 px.
+- Módulo de dízimo removido da fonte, catálogo, compilação, publicação e Bundle por solicitação humana; catálogo vigente contém Faturamento, Ofício admissional e Conversor CSV.
+- Evidência de navegador: tema claro com menu `rgb(41,70,91)` sobre `rgb(215,225,231)`; tema escuro do CSV com Logs `rgb(41,44,48)` e texto `rgb(237,237,237)`; toolbar completa com quatro ações; header e toolbar terminam em 625 px tanto no topo quanto após rolagem.
+- Refinamento cirurgico posterior: o seletor visivel `Arquivo CSV` foi removido do formulario; o mesmo `input[type=file]` permanece oculto como controle funcional da toolbar, sem duplicacao visual. Navegador confirmou zero labels redundantes e a acao `csv-open` com SVG ativo.
+- Sidebar corrigida na causa raiz: a pintura do trilho pertence ao shell completo, com contraste claro `rgb(214,224,231)` e escuro `rgb(37,39,42)`; o `body` deixou de criar scroll container inerte, permitindo que o menu permaneça sticky em `top: 0` sem crop durante toda a rolagem. Expansão preservou 240 px e eixo dos ícones em 23,33 px.
+- Chrome global passou a aceitar `autosave: false`; o CSV declara a inaplicabilidade e não renderiza texto nem ícone, preservando tema, licença, autoria e toolbar. Nenhuma ocultação ficou sob CSS ou manipulação local do módulo.
+- Cabeçalho refinado: badge MPL reduzido para `0.68rem`; switch usa contraste intermediário por tema; autosave usa texto compacto `Local e automático`, tooltip integral e ícone com cores legíveis. A antiga alternância por temporizador foi removida e substituída por animação CSS pura de 1,2 s, suave, curta e perceptível, respeitando `prefers-reduced-motion`.
+
+## FT-002 - Verificacao assincrona de atualizacoes
+
+- Objetivo: publicar indexador efemero de versao e sinalizar bundles desatualizados sem bloquear a interface.
+- Prioridade: alta.
+- Escopo: Tecnico.
+- Status: em andamento.
+- Inicio: 20260716.
+
+### Plano vigente
+
+1. Auditar pipeline, build, chrome e contrato de publicacao. Status: concluido.
+2. Formalizar indexador, contingencia e estado visual no RCF. Status: concluido.
+3. Implementar revisao de build, geracao exclusiva no deploy e verificador client-side. Status: concluido.
+4. Validar testes automatizados e comportamento visual local. Status: concluido.
+5. Executar publicacoes reais e comprovar deteccao por bundle anterior. Status: concluido.
+6. Atualizar derivados, concluir FT e convergir `dev`/`master`. Status: concluido.
+
+### Decisoes vigentes
+
+- `version.json` nao possui fonte em `src/` nem copia rastreada em `dist/`; o workflow o cria somente no artefato Pages da branch primaria.
+- A revisao local e a revisao do indexador derivam do mesmo SHA imutavel da execucao de deploy.
+- O indicador existe oculto no chrome; JavaScript apenas alterna `.has-update` apos comparacao assincrona.
+- Cada carregamento executa um fluxo unico, com no maximo duas requisicoes: tentativa normal e um unico desvio anti-cache por falha imediata.
+
+### Evidencia da primeira publicacao
+
+- Commit publicado: `0192a511fc66fdfa2a88ff9b6ca6d4d35569a544`.
+- Workflow Pages `29545446382`: validacao, geracao do indexador, upload e deploy concluidos com sucesso.
+- `https://tools.jcem.pro/version.json` retornou o mesmo SHA e timestamp Unix inteiro.
+- A pagina produtiva de Faturamento manteve `.has-update` ausente e o indicador em `display: none` quando revisao local e upstream coincidiram.
+- O ZIP publicado foi preservado fora da arvore versionada para comprovar divergencia apos a publicacao seguinte.
+
+### Evidencia final
+
+- `npm run check` aprovou type-check, lint, 44 testes, build dos tres bundles e validacao de 4 paginas/30 arquivos.
+- Publicacoes reais `29545446382`, `29545558954`, `29545826744`, `29545988985`, `29546147791` e `29546308639` comprovaram geracao efemera, upload e deploy; o ensaio `29545709044` foi corretamente bloqueado pelo teste que exige `github.sha` como revisao do build.
+- A divergencia controlada aplicou `.has-update`, exibiu link canonico, glifo `f019` e animacao `jcem-update-pulse`; a primeira captura revelou o glifo vazio por importacao Font Awesome incorreta, corrigida para `faDownload` e protegida por teste.
+- Capturas reais registraram indicador e tooltip integral nos temas claro e escuro. Claro: fundo `rgb(255, 241, 199)` e texto `rgb(154, 88, 0)`. Escuro: fundo `rgb(76, 58, 32)` e texto `rgb(255, 210, 123)`.
+- Todo parametro e cache-buster temporario do ensaio foi removido antes do build e da publicacao final.
+
+## FT-003 - Refatoracao da GUI global, MPL2 e gaveta de formularios
+
+- Objetivo: padronizar o ativo MPL2 no bundle, reequilibrar o cabecalho para ergonomia movel e criar gaveta de formulario documental com estado e transicao controlados por CSS/SASS puro.
+- Prioridade: alta.
+- Escopo: Tecnico.
+- Status: concluido.
+- Inicio: 20260717.
+
+### Plano vigente
+
+1. Atualizar contexto, confirmar memoria canonica e limpar correlatos obsoletos comprovados. Status: concluido.
+2. Incorporar SVG MPL2 no componente global e remover dependencia visual de arquivo externo no badge. Status: concluido.
+3. Refatorar cabecalho para alvos minimos de 44 px, sem bordas visuais padrao em icones e com alinhamento proporcional da marca. Status: concluido.
+4. Implementar gaveta de formulario externo com `input[type="checkbox"]`, `label`, seletores de irmaos e transicoes CSS. Status: concluido.
+5. Mapear breakpoints para retracao horizontal em layout lateral e vertical em layout superior. Status: concluido.
+6. Validar build, publicacao, contraste claro/escuro e ausencia de JavaScript de estado visual. Status: concluido.
+
+### Estado registrado
+
+- Branch observada: `dev`.
+- Memoria canonica vigente: `continue.ia` na raiz; `continue.dev` nao existe. Nenhuma duplicata canonica concorrente foi encontrada fora de `node_modules`.
+- Alteracoes preexistentes antes desta FT incluem `dist/`, `src/assets/js/documentos.ts`, `src/assets/js/tabular.ts`, `package-lock.json`, `src/assets/brand/MPL2.svg` e derivados de bundle. Devem ser preservadas e tratadas como estado de trabalho do repositorio.
+- RCF global sincronizado para exigir SVG MPL2 incorporado no componente distribuido, alvos de toque de 44 px sem bordas padrao nos icones do cabecalho e gaveta de formulario documental retraida por CSS puro.
+- `src/assets/brand/MPL2.svg` foi removido por se tornar copia externa redundante; `dist/assets/brand/MPL2.svg` foi purgado pelo build.
+- Validacao automatizada final: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovados. Testes: 44 aprovados. Build: tres bundles offline. Publicacao: 4 paginas e 30 arquivos em `dist/`.
+- Validacao renderizada final no Chrome instalado via Playwright: cabecalho com logo, switch, MPL2, autoria e botoes de toolbar em 44 px e borda 0; SVG MPL2 inline presente e nenhum `img` usando `MPL2.svg`; formulario inicia retraido; desktop retraido em coluna de 44 px com barra vertical; desktop expandido estabiliza em 413 px, conteudo visivel, opacidade 1 e eventos ativos; mobile retraido em 44 px de altura com barra horizontal; texto `Preencher campos` legivel em modo claro e escuro; sem overflow horizontal.
+
+### Compactacao vigente
+
+- Fonte canonica para UI global: `src/assets/js/documentos.ts` e `src/assets/css/documentos.scss`.
+- `dist/` permanece artefato gerado pelo pipeline; alteracoes manuais devem ser evitadas e substituidas por `npm run build` ou `npm run check`.
+- Formulario externo documental deve iniciar retraido. JavaScript pode criar estrutura sem registrar eventos de layout; abertura/fechamento pertence a CSS por checkbox e seletores.
+- A regra expandida desktop usa `clamp(21rem, 32vw, 31rem) minmax(0, 1fr)`; a forma anterior com `minmax(..., clamp(...))` casava no CSSOM, mas nao produzia coluna expandida no Chrome.
+
+### Correcao dev-live 20260717.1500.00
+
+- Falha confirmada: `dev-live` interrompia a abertura quando `scripts/build-bundles.mjs` nao conseguia baixar a URL remota vigente da marca de autoria para incorporar no ZIP. A pagina live tambem preservava CDN/SRI remotos de dependencias documentais, criando fragilidade local sem necessidade.
+- Correcao vigente: `scripts/build-bundles.mjs` grava cache operacional da marca remota em `.cache/build/author-logo-64-dark.png`; em `JCEM_DEV_LIVE=1`, usa esse cache ou mantem a URL remota configurada apenas no bundle live. O build normal fora de `dev-live` continua rigoroso e falha sem origem/cache valido.
+- Correcao vigente: `scripts/dev-live.mjs` injeta `JCEM_DEV_LIVE=1`, serve `html2pdf.js` e `zepto` por rotas internas `__vendor`, remove SRI/crossorigin/referrerpolicy dessas rotas na resposta HTML live e responde `/favicon.ico` com 204.
+- Evidencia automatizada: `npm test` aprovou 44 testes; `npm run lint` e `npm run type-check` aprovaram.
+- Evidencia operacional: `dev-live` abriu em sandbox, `/faturamento/` respondeu 200, `/__vendor/html2pdf.bundle.min.js` respondeu 200, o HTML live referenciou `__vendor` sem SRI remoto e `/favicon.ico` respondeu 204.
+
+### Ajuste visual e autoria 20260717.1610.00
+
+- Solicitacao humana: remover label visual do icone MPL, elevar legibilidade e alinhamento da barra `Preencher campos`, fazer a barra vertical pintar toda a aresta durante rolagem e tornar o icone de autoria configuravel, usando obrigatoriamente `https://jcem.pro/logo/64-dark.png` ate edicao manual.
+- Correcao aplicada: `src/assets/js/documentos.ts` removeu o texto visual `MPL 2.0` do badge, mantendo aria-label/title; `src/assets/css/documentos.scss` passou a pintar a barra de formulario por variaveis e gradiente no layout lateral, com texto maior, centralizado e alto contraste em claro/escuro.
+- Correcao aplicada: `src/assets/config/apps.json` ganhou `authorLogoUrl`; `ChromeOptions` ganhou `authorLogoUrl`; o header usa `https://jcem.pro/logo/64-dark.png` como fallback normativo e nunca usa logo de aplicativo como autoria.
+- Correcao aplicada: o build de bundle baixa a URL de autoria configurada, grava cache operacional em `.cache/build/author-logo-64-dark.png` e incorpora PNG como Data URL; `dev-live` deixou de substituir a autoria por SVG local de aplicacao.
+- Evidencia automatizada: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovaram. Os tres ZIPs extraidos continham Data URL PNG de autoria, sem `64-dark.png`, sem `64-yellow` e sem `MPL 2.0</span>`.
+- Observacao de validacao visual: Chrome/Edge headless locais falharam no ambiente por GPU/CDP antes de gerar captura confiavel; a validacao ficou coberta por testes estruturais, build, publicacao e inspecao de artefato extraido.
+
+### Correcao de overflow e toolbar 20260717.1705.00
+
+- Solicitacao humana: formulario nao pode cortar conteudo; cabecalho nao pode quebrar icones em segunda linha; icone de salvamento e alerta de update devem permanecer sempre visiveis; demais acoes podem ir para submenu; gatilho do submenu deve usar Font Awesome `f142` e estado CSS puro.
+- Correcao aplicada: `ensureFormDrawerToggle` passou a envolver o conteudo do formulario em `.jcem-document-form-scroll`, mantendo o gatilho fora da area rolavel. O conteudo expandido agora rola internamente e preserva campos, tabelas, botoes e controles sem corte.
+- Correcao aplicada: o cabecalho passou a usar grid de linha unica com autosave/update na area sempre visivel e `input[type="checkbox"]` + `label` + `nav` para submenu CSS. Switch de tema, MPL, autoria e acoes da toolbar ficam no submenu absoluto acionado pelo icone `f142`, sem JavaScript de estado visual.
+- RCF global sincronizado para formalizar linha unica do cabecalho, visibilidade obrigatoria de autosave/update, submenu CSS para acoes nao essenciais e area interna de rolagem do formulario documental.
+- Evidencia automatizada: `npm run type-check`, `npm test`, `npm run lint`, `npm run build` e `npm run validate:publication` aprovaram. Testes: 44 aprovados. Publicacao: 4 paginas e 30 arquivos em `dist/`.
+
+### Correcao responsiva de cabecalho, toolbar e gaveta 20260717.1745.00
+
+- Ajuste de requisito: barra institucional do cabecalho e toolbar sao contextos separados. Cada uma possui seu proprio overflow `f142`, calculado independentemente, movendo apenas os ultimos itens que nao couberem e recalculando em resize, orientacao e exibicao de update.
+- Correcao aplicada: o texto do autosave e compactado antes de mover controles institucionais; autosave e alerta de update permanecem sempre visiveis. A toolbar conserva seus botoes visiveis enquanto couberem e envia somente o excedente final para submenu proprio.
+- Correcao aplicada: regra legada de debug que aplicava `background: #ff3333` a `.menu`, `.no-print`, `.autosave`, `.nota` e `.cookie` foi removida para impedir flash vermelho durante carregamento.
+- Correcao aplicada: a gaveta de formulario nao exibe scrollbar no trilho retraido; a rolagem existe somente em `.jcem-document-form-scroll` quando expandida. O gatilho exibe icone `f142`, texto `Campos preenchíveis` no estado retraido e `Recolher campos` no expandido; em layout lateral fica no topo da barra, centralizado horizontalmente e com texto ampliado sem aumentar a espessura do trilho.
+- RCF global sincronizado para bloquear regressao nesses pontos, incluindo separacao cabecalho/toolbar, recalculo responsivo, ausencia de fundo vermelho legado e contrato visual da barra da gaveta.
+- Evidencia automatizada: `npm run check` aprovado com type-check, lint, 44 testes, build, tres bundles offline e publicacao validada com 4 paginas/30 arquivos.
+
+### Correcao de marca e icone f142 20260717.1815.00
+
+- Falha confirmada: os botoes `f142` renderizavam vazios porque `faEllipsisVertical` nao estava importado no bundle Font Awesome modular.
+- Correcao aplicada: `faEllipsisVertical` foi incorporado ao conjunto de icones renderizaveis, preservando `f142` para menus retrateis de cabecalho, toolbar e gaveta.
+- Correcao aplicada: `src/assets/config/apps.json` passou a declarar `siteNameFull: "Tools JeanCarloEM"` e `siteNameShort: "Tools JCEM"`. O chrome consome essa configuracao, tenta exibir o nome completo, alterna para o reduzido quando o espaco real nao couber e so entao recolhe controles institucionais para o menu, sem permitir que icones cortem ou ocultem a marca exibida.
+- RCF global sincronizado para tornar obrigatoria a configuracao JSON de nome completo/reduzido e a regra de recolher controles antes de cortar a marca.
+- Evidencia automatizada: `npm run check` aprovado com type-check, lint, 44 testes, build, tres bundles offline e publicacao validada com 4 paginas/30 arquivos.
+
+### Normatizacao de assets editaveis e embedding 20260717.1830.00
+
+- Ajuste de requisito: SVGs, logos e assets analogos devem permanecer como arquivos fonte isolados e editaveis. Catalogos Web/GitHub Pages devem referenciar caminhos/URLs cacheaveis; `data:` nao deve ficar versionado na configuracao fonte.
+- Correcao aplicada: `src/assets/config/apps.json` removeu `workspaceOfflineLogo` e `offlineLogo`, mantendo `workspaceLogo` e `apps[].logo` como referencias aos SVGs reais.
+- Correcao aplicada: `scripts/build-bundles-core.mjs` passou a gerar `workspaceOfflineLogo` e `offlineLogo` somente durante `embedOfflineCatalog`, lendo os arquivos em `dist/` e incorporando-os como Data URL apenas no HTML offline do ZIP.
+- RCF global sincronizado para exigir asset isolado unico e permitir embedding exclusivamente em tempo de bundle, sem persistir Data URL na fonte nem no catalogo Web restaurado.
+- Evidencia automatizada: `npm run check` aprovado. Inspecao direta confirmou `dist/assets/config/apps.json` sem `data:image`, `offlineLogo` ou `workspaceOfflineLogo`; o ZIP `dist/faturamento/faturamento.bundle.zip` contem `offlineLogo`, `workspaceOfflineLogo` e `data:image/svg+xml;base64`.
+
+## FT-004 - Centralizacao da configuracao e consolidacao da publicacao
+
+- Objetivo: eliminar valores customizaveis ou personalizaveis embutidos nos scripts locais e no workflow GitHub Pages, estabelecer uma fonte canonica centralizada e oferecer um comando all-in-one de publicacao.
+- Prioridade: alta.
+- Escopo: Tecnico.
+- Status: concluido.
+- Inicio: 20260717.
+- Branch: `dev`.
+
+### Plano vigente
+
+1. Etapa 1/5 - inventariar configuracoes duplicadas, scripts genericos e contratos de build, validacao e publicacao. Status: concluido.
+   1.1. Mapear valores customizaveis presentes em `scripts/`, `.github/workflows/`, manifestos e configuracoes de `src/`. Previsao: curta. Status: concluido.
+   1.2. Classificar cada script por finalidade, consumidor e especializacao. Previsao: curta. Status: concluido.
+2. Etapa 2/5 - definir e documentar a fonte unica de configuracao e seu carregador validado. Status: concluido.
+   2.1. Consolidar configuracoes de build, bundle, validacao, desenvolvimento e publicacao. Previsao: moderada. Status: concluido.
+   2.2. Sincronizar o contrato arquitetural no RCF global. Previsao: curta. Status: concluido.
+3. Etapa 3/5 - migrar scripts e workflow para consumo exclusivo da configuracao central. Status: concluido.
+   3.1. Remover constantes customizaveis duplicadas dos scripts locais. Previsao: moderada. Status: concluido.
+   3.2. Substituir valores personalizaveis do GitHub Pages por entradas derivadas da fonte central. Previsao: moderada. Status: concluido.
+   3.3. Renomear ou consolidar entradas vagas, preservando aliases de compatibilidade quando exigidos. Previsao: moderada. Status: concluido.
+4. Etapa 4/5 - implementar publicacao all-in-one com validacao, build, empacotamento e preparacao deterministica do artefato. Status: concluido.
+   4.1. Criar comando especializado `agent:publish` e entrada NPM explicita. Previsao: moderada. Status: concluido.
+   4.2. Integrar o workflow Pages ao mesmo orquestrador sem duplicar regras. Previsao: moderada. Status: concluido.
+5. Etapa 5/5 - comprovar ausencia de duplicacao e regressao, atualizar memoria e concluir a FT. Status: concluido.
+   5.1. Executar type-check, lint, testes, build, bundles e validacao da publicacao. Previsao: moderada. Status: concluido.
+   5.2. Validar configuracao central, nomes publicos, artefato Pages e fluxo all-in-one. Previsao: moderada. Status: concluido.
+
+### Estado inicial
+
+- A solicitacao humana determinou migracao para `dev`, remocao de `dist/` e preservacao das demais alteracoes.
+- `dist/` foi removido integralmente e permanece como exclusao local rastreada; nenhum arquivo externo a `dist/` estava modificado no momento da migracao.
+- A implementacao somente pode iniciar depois do commit e push deste registro inicial da FT.
+
+### Resultado
+
+- Commit inicial da FT publicado em `origin/dev`: `01c34c8`.
+- `scripts/config.json` centraliza caminhos, URL publica, host/porta, debounce, recursos CDN e copias locais, branch primaria e contrato do artefato Pages; `scripts/config.mjs` valida e distribui essa configuracao.
+- Build Web, bundles, servidores locais, gerador de versao, validador e workflow Pages consomem a fonte central; a URL de autoria permanece exclusivamente no catalogo runtime `src/assets/config/apps.json`.
+- Entradas especializadas vigentes: `build:web`, `build:offline-bundles`, `validate:publication`, `validate:all`, `publish`, `publish:pages` e `agent:publish`; aliases anteriores delegam sem duplicar implementacao.
+- `scripts/publish-pages.mjs` executa o fluxo all-in-one e fornece ao GitHub Actions a decisao de deploy e o caminho do artefato, eliminando regras duplicadas do YAML.
+- `dist/` foi removido do versionamento e incluido no `.gitignore`; permanece saida reconstruivel local e efemera no CI.
+- Validacao final: `npm run publish` aprovado com type-check, lint, 44 testes, build Web, tres bundles offline, validacao de 4 paginas/30 arquivos e preparacao do artefato.
+
+### Refinamento final da GUI global 20260717.1905.00
+
+- Ajuste de requisito: o indicador da gaveta de campos deve preservar o texto contextual `Campos preenchíveis`, mas o estado de expandir/recolher deve ser expresso por icones Font Awesome adequados, com respiro proprio e sem corte.
+- Correcao aplicada: a gaveta usa `f054`/`f053` no eixo lateral e `f078`/`f077` no eixo superior; o CSS alterna os icones por checkbox e breakpoint, mantendo o texto contextual fixo. O icone recebeu caixa circular translucida, gap real e limite de texto vertical.
+- Correcao aplicada: a gaveta lateral de campos foi desacoplada da navegacao vertical de aplicativos. O chrome mede a altura real do cabecalho com `ResizeObserver` e expõe `--jcem-chrome-header-block-size`; a gaveta lateral passa a ficar sticky abaixo do header, sem subir para dentro dele durante a rolagem.
+- Correcao aplicada: a linha divisoria da toolbar passou a ser pseudo-elemento com recuo quando ha trilho de aplicativos, evitando atravessar visualmente a barra vertical retraida.
+- Correcao aplicada: as animacoes do autosave e do alerta de update foram restauradas e reforcadas. O autosave anima contêiner e SVG com `transform-box: fill-box`; o alerta de update anima botao e glifo quando visivel; `prefers-reduced-motion` desativa ambas.
+- RCF global sincronizado para bloquear regressao de assets editaveis, iconografia da gaveta, desacoplamento da gaveta lateral, refinamento visual do gatilho e animacoes globais perceptiveis.
