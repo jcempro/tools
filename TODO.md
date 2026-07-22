@@ -34,3 +34,7 @@
 ## Aderência a centralização de configs
 
 * [ ] Todas as configurações deve ser unificadas, não necessariamente em um único arquivo, mas em um único local. A segregação em multiplos arquivo é permitido pelo `agents.md` e permite separar por contexto, entretando não deve-se permitir que os dados claramente personalizáveis, existam soltos em várias estruturas hierarquicas, e nem diretamente em múltiplos arquivos de código/script.
+
+## barra de campos preenchíveis cor destacável
+
+* [ ] torne a cor da barra retrátivel de campos preenchível mais destacada, talvez até com alguma cor que destoe da paleta de cores geral do tema, mas ainda se mantenha bonita no layout. Adicione algum ícone ou emoji, não muito chamativo, mas suscinentemente adequado para dar maior destaque à ela.
