@@ -23,10 +23,6 @@
 *   [ ] **Prevenção de Regressão Crítica:** Executar varredura lógica após qualquer alteração no formulário para garantir que nenhum cálculo de média utilize dados projetados (`"PREVISTO"`) como entrada, mantendo o fluxo estritamente unidirecional (`"REALIZADO"` $\rightarrow$ gera média $\rightarrow$ popula `"PREVISTO"`).
 *   [ ] **Alinhamento de Roteamento Temporal:** Certificar-se de que os ajustes automáticos de data de assinatura disparem a atualização em cascata das regras descritas no bloco de cálculo de médias sem travar a interface do usuário (UI).
 
-## 4 Crie uma Issue para `agents.md`
-
-* [ ]  Reportar formalmente uma issue estruturada de aprimoramento no `agents.md` justificando a padronização universal do TODO.md e detalhando seus modelos, ciclo de vida, condições e benefícios de generalização; a proposta deve codificar regras otimizadas de tratamento tolerantes a falhas e flexíveis para uma sintaxe confeccionada 95% por humanos (liberdade de expressão e mitigação de erros de digitação e sintaxe) e 5% atualizada de forma determinística por IAs para expurgo e mutação de status. Objetivo principal: ser como prompts de pendencias a sere colocados na fila de processamento/implementação ou correção para a IA. Preferir o nome `TODO.ia.md` para declarar o destino do TODO: ia.
-
 ## Ícone de MPL2
 
 * [ ] O ícone de MPL2 exibido no cabeçalho deve utilizar o .svg existente em `src\assets\img\mpl2.svg`. No github pages, ele deve ser lincado, e não incorporado, e no bundles, deve ser incorporado.
@@ -38,3 +34,7 @@
 ## barra de campos preenchíveis cor destacável
 
 * [ ] torne a cor da barra retrátivel de campos preenchível mais destacada, talvez até com alguma cor que destoe da paleta de cores geral do tema, mas ainda se mantenha bonita no layout. Adicione algum ícone ou emoji, não muito chamativo, mas suscinentemente adequado para dar maior destaque à ela.
+
+## Alterações minimas mas suficiente
+
+* [ ] ajustes agents.local.md para normatizar codificação minimos suficientes para implementar, mas o suficiente para garantir a integração completa e funcional da solicitação, de tal forma a evitar potencial quebra de recursos e códigos
