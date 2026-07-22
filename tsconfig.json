@@ -16,6 +16,7 @@
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
     "outDir": ".cache/ts-out",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2020",

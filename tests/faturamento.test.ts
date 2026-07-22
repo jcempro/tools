@@ -7,14 +7,17 @@ import {
   classifyMonth,
   classifyMonthBySignatureDate,
   distributeCents,
+  firstBusinessDayOfNextMonth,
   formatMesAno,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
+  normalizePredictedRows,
   normalizeCompanyFileBasename,
   parseCurrencyToCents,
   parseMesAno,
   referenceFromPeriodAndSignature,
   redistributeAnnualValues,
+  signatureDateForInitialMonth,
   SIMPLES_NACIONAL_LIMIT_CENTS,
   splitAnnualTargets,
   sumRows,
@@ -88,6 +91,35 @@ test("faturamento derives reference from the last realized visible month", () =>
   const reference = referenceFromPeriodAndSignature(buildPeriodFromStart(start), new Date(2026, 6, 6));
 
   assert.equal(formatMesAno(reference), "06/2026");
+});
+
+test("faturamento adjusts signature date from selected initial month", () => {
+  const futureStart = parseMesAno("07/2026");
+  const pastStart = parseMesAno("06/2026");
+  const today = new Date(2026, 6, 22);
+
+  assert.ok(futureStart);
+  assert.ok(pastStart);
+  assert.equal(firstBusinessDayOfNextMonth(futureStart).toISOString().slice(0, 10), "2026-08-03");
+  assert.equal(signatureDateForInitialMonth(futureStart, today).toISOString().slice(0, 10), "2026-08-03");
+  assert.equal(signatureDateForInitialMonth(pastStart, today), today);
+});
+
+test("faturamento fills predicted rows with realized column averages only", () => {
+  const month = parseMesAno("05/2026");
+  assert.ok(month);
+
+  const rows = normalizePredictedRows([
+    { mesAno: month, prazoMedio: 30, situacao: "REALIZADO", vendasPrazo: 400, vendasVista: 1000 },
+    { mesAno: month, prazoMedio: 30, situacao: "REALIZADO", vendasPrazo: 800, vendasVista: 3000 },
+    { mesAno: month, prazoMedio: 30, situacao: "PREVISTO", vendasPrazo: 1, vendasVista: 2 },
+    { mesAno: month, prazoMedio: 30, situacao: "PREVISTO", vendasPrazo: 9, vendasVista: 10 }
+  ]);
+
+  assert.deepEqual(rows.slice(2).map((row) => ({ prazo: row.vendasPrazo, vista: row.vendasVista })), [
+    { prazo: 600, vista: 2000 },
+    { prazo: 600, vista: 2000 }
+  ]);
 });
 
 test("faturamento distribution is deterministic and reconciles cents", () => {

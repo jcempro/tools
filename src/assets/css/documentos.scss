@@ -210,7 +210,7 @@ img.logo {
 .jcem-document-form-region.no-print,
 .jcem-document-form-region {
   --jcem-form-surface: #e7edf2;
-  --jcem-form-toggle-bg: #185a7d;
+  --jcem-form-toggle-bg: #9a4b00;
   --jcem-form-toggle-text: #fff;
   --jcem-form-toggle-shadow: rgb(255 255 255 / 22%);
   box-sizing: border-box;
@@ -280,6 +280,16 @@ img.logo {
   background: rgb(255 255 255 / 14%);
   line-height: 0;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 18%);
+}
+
+.jcem-form-toggle-marker {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.45rem;
+  block-size: 1.45rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 20%);
+  line-height: 0;
 }
 
 .jcem-document-form-region > .jcem-document-form-toggle {
@@ -510,6 +520,11 @@ img.logo {
 .jcem-document-form-region .monthly-editor input {
   min-height: 1.875rem;
   margin: 0;
+}
+
+.jcem-document-form-region .monthly-editor tr.is-predicted input {
+  background: #f1f4f6;
+  color: #53616d;
 }
 
 .jcem-document-form-region .monthly-editor .month-label {
@@ -1485,7 +1500,7 @@ body.imprimir input::placeholder {
 :root[data-theme="dark"] .jcem-chrome { background: #1f2023; color: #ededed; border-color: #45484d; }
 :root[data-theme="dark"] .jcem-document-form-region {
   --jcem-form-surface: #1f2023;
-  --jcem-form-toggle-bg: #1f6f98;
+  --jcem-form-toggle-bg: #ad5b13;
   --jcem-form-toggle-text: #fff;
   --jcem-form-toggle-shadow: rgb(255 255 255 / 20%);
   background: var(--jcem-form-surface);
@@ -1563,7 +1578,7 @@ body.imprimir input::placeholder {
 :root[data-theme="light"] .jcem-chrome { --jcem-toolbar-icon-color: #35566f; --jcem-toolbar-icon-hover-color: #0d4f7a; }
 :root[data-theme="light"] .jcem-document-form-region {
   --jcem-form-surface: #e4ebf0;
-  --jcem-form-toggle-bg: #175b80;
+  --jcem-form-toggle-bg: #9a4b00;
   --jcem-form-toggle-text: #fff;
   --jcem-form-toggle-shadow: rgb(255 255 255 / 24%);
   background: var(--jcem-form-surface);

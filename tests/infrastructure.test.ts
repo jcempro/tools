@@ -212,7 +212,7 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.match(sharedCss, /\.jcem-document-workspace\.jcem-document-workspace--document-only\s*{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*padding:\s*1rem;/s);
   assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*contain:\s*inline-size layout paint;/s);
-  assert.match(sharedCss, /\.jcem-document-form-region\.no-print,\s*\.jcem-document-form-region\s*{[^}]*--jcem-form-toggle-bg:\s*#185a7d;/s);
+  assert.match(sharedCss, /\.jcem-document-form-region\.no-print,\s*\.jcem-document-form-region\s*{[^}]*--jcem-form-toggle-bg:\s*#9a4b00;/s);
   assert.match(sharedCss, /\.jcem-document-form-toggle\s*{[^}]*font-size:\s*1\.05rem;[^}]*text-shadow:/s);
   assert.match(sharedTs, /className = "jcem-form-drawer-state"/);
   assert.match(sharedTs, /className = "jcem-document-form-scroll"/);
@@ -306,8 +306,8 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedCss, /\.jcem-theme-toggle, \.jcem-nav-toggle, \.jcem-header-menu-toggle, \.jcem-toolbar-menu-toggle\s*{[^}]*min-width:\s*44px[^}]*min-height:\s*44px/s);
   assert.match(sharedCss, /\.jcem-license-badge\s*{[^}]*min-width:\s*44px[^}]*height:\s*44px[^}]*border:\s*0/s);
   assert.match(sharedCss, /\.jcem-chrome-actions\.menu > \*,[\s\S]*\.jcem-chrome-toolbar-overflow\.menu > \*\s*{[^}]*min-height:\s*44px[^}]*border:\s*0/s);
-  assert.match(sharedTs, /const mpl2BadgeSvg = `<svg class="jcem-mpl2-icon"/);
-  assert.match(sharedTs, /licenseBadge\.innerHTML = mpl2BadgeSvg;/);
+  assert.match(sharedTs, /const mpl2BadgeMarkup = `<img class="jcem-mpl2-icon" src="\/assets\/img\/mpl2\.svg" alt="">`;/);
+  assert.match(sharedTs, /licenseBadge\.innerHTML = mpl2BadgeMarkup;/);
   assert.doesNotMatch(sharedTs, /licenseBadge\.innerHTML = `\$\{mpl2BadgeSvg\}<span>MPL 2\.0<\/span>`;/);
   assert.doesNotMatch(sharedTs, /MPL2\.svg/);
   assert.doesNotMatch(sharedTs, /setTimeout\(\(\) => tick/);
