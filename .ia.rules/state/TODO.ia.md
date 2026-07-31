@@ -48,5 +48,4 @@
 - [x] Padronizar folha, PDF e impressão. FT-005 e FT-006 concluídas, validadas visual e integralmente em 2026-07-31; evidências temporárias removidas.
 - [x] Gerar favicons e manifests por aplicação e bundle. FT-007 e FT-008 concluídas, com identidades Web/offline e validação integral em 2026-07-31.
 - [x] Entrada `TODO.ia.md` da raiz conciliada ao TODO canônico e removida como fonte concorrente; SHA-256 de origem: `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`.
-- [ ] Restaurar o lifecycle local de `publish`, integrar `dev` na branch primaria e confirmar a revisao no GitHub Pages. Vinculos: FT-009 e FT-010.
 
