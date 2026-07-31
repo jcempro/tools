@@ -33,7 +33,12 @@
     ]
   },
   "publication": {
+    "developmentBranch": "dev",
     "primaryBranch": "master",
+    "remote": "origin",
+    "deploymentPollMs": 5000,
+    "deploymentRequestTimeoutMs": 15000,
+    "deploymentTimeoutMs": 600000,
     "versionIndex": "version.json",
     "requiredFiles": ["CNAME", ".nojekyll"],
     "forbiddenRoots": ["src", "dist", "README.md"],
