@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "profiles": {
+    "admissional": {
+      "orientation": "portrait",
+      "size": [21, 29.7],
+      "unit": "cm",
+      "margins": { "top": 1, "right": 0.5, "bottom": 1.5, "left": 1.4 }
+    },
+    "faturamento": {
+      "orientation": "portrait",
+      "size": [21, 29.7],
+      "unit": "cm",
+      "margins": { "top": 1, "right": 0.9, "bottom": 0.9, "left": 0.9 }
+    }
+  }
+}

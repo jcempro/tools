@@ -4,8 +4,8 @@
 *   [x] **Isolamento de Estado:** Garantir de forma imperativa que as linhas identificadas com o valor `"PREVISTO"` na coluna `"PREVISTO/REALIZADO"` fiquem totalmente imunes às oscilações e variações sazonais aplicadas às linhas do tipo `"REALIZADO"`.
 *   [x] **Cálculo de Média Contextualizada:** Implementar rotina para calcular a média aritmética simples de todos os registros preenchidos como `"REALIZADO"`, segregando estritamente os escopos de cada coluna de valor.
 *   [x] **Bloqueio de Contaminação Dinâmica:** Impedir sumariamente a mistura de conceitos contábeis:
-    *   A média gerada sobre a coluna `"vendas à vista"` deve abastecer única e exclusivamente as células de `"vendas à vista"` das linhas `"PREVISTO"`.
-    *   A média gerada sobre a coluna `"venda a prazo"` deve abastecer única e exclusivamente as células de `"venda a prazo"` das linhas `"PREVISTO"`.
+    *   [x] A média gerada sobre a coluna `"vendas à vista"` deve abastecer única e exclusivamente as células de `"vendas à vista"` das linhas `"PREVISTO"`.
+    *   [x] A média gerada sobre a coluna `"venda a prazo"` deve abastecer única e exclusivamente as células de `"venda a prazo"` das linhas `"PREVISTO"`.
 *   [x] **Injeção de Valores Constantes:** Aplicar o resultado das respectivas médias de forma arbitrária e rigorosamente idêntica (valor fixo e constante) em todas as linhas marcadas como `"PREVISTO"`.
 *   [x] **Garantia de Simetria Linear:** Validar que, para as linhas `"PREVISTO"`, os valores presentes em uma mesma coluna sejam sempre 100% iguais entre si ao longo de todos os meses projetados, sem exigir qualquer paridade ou igualdade de valores entre colunas distintas (ex: o valor constante de "à vista" pode diferir do valor constante de "à prazo").
 
@@ -42,4 +42,10 @@
 ## Aplicação
 
 - [x] Aplicado em 2026-07-22: migração operacional para .ia.rules, regras de faturamento, MPL2, centralização de configuração, destaque da barra e norma local mínima suficiente validadas por npm run check.
+
+## Triagem de 2026-07-31
+
+- [x] Padronizar folha, PDF e impressão. FT-005 e FT-006 concluídas, validadas visual e integralmente em 2026-07-31; evidências temporárias removidas.
+- [x] Gerar favicons e manifests por aplicação e bundle. FT-007 e FT-008 concluídas, com identidades Web/offline e validação integral em 2026-07-31.
+- [x] Entrada `TODO.ia.md` da raiz conciliada ao TODO canônico e removida como fonte concorrente; SHA-256 de origem: `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`.
 

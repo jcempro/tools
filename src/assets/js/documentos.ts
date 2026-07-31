@@ -20,6 +20,7 @@ import {
   faPrint,
   faStamp
 } from "@fortawesome/free-solid-svg-icons";
+import printingConfig from "../config/printing.json";
 import { g as guard } from "./guard";
 
 declare const __JCEM_BUILD_VERSION__: string;
@@ -471,19 +472,41 @@ declare const __JCEM_BUILD_VERSION__: string;
     }
   }
 
+  function resolvePageProfile(id: string): PageConfig {
+    const profile = printingConfig.profiles[id as keyof typeof printingConfig.profiles];
+    const orientation = profile?.orientation;
+    const unit = profile?.unit;
+    const width = profile?.size[0];
+    const height = profile?.size[1];
+    if (!profile || typeof width !== "number" || typeof height !== "number" || profile.size.length !== 2 || (orientation !== "portrait" && orientation !== "landscape") || !["cm", "mm", "in", "pt"].includes(unit)) {
+      throw new Error(`Perfil de impressao inexistente: ${id}`);
+    }
+    const result: PageConfig = { id, orientation, size: [width, height], unit: unit as PageConfig["unit"], ...profile.margins };
+    return Object.freeze(result);
+  }
+
   function createPageStyle(pageConfig: PageConfig): void {
+    one("#jcem-print-profile")?.remove();
     const style = d.createElement("style");
+    style.id = "jcem-print-profile";
     const [width, height] = pageConfig.size;
     const unit = pageConfig.unit;
+    const geometry = `box-sizing:border-box;width:${width}${unit};height:${height}${unit};min-width:${width}${unit};min-height:${height}${unit};max-width:${width}${unit};max-height:${height}${unit};margin:0;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};overflow:visible;`;
+    // FIX-BUG: evita pagina vazia causada pelo arredondamento do canvas no limite exato do A4.
+    const pdfGeometry = geometry.replaceAll(`${height}${unit}`, `calc(${height}${unit} - 1px)`);
+    const printGeometry = geometry.replaceAll(`${height}${unit}`, `calc(${height}${unit} - 4px)`);
     style.textContent = `@page{size:${width}${unit} ${height}${unit};margin:0;}`;
-    style.textContent += `@media screen{body:not(.imprimir) div.main{width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}}`;
-    style.textContent += `@media print{div.main{box-sizing:border-box;width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}}body.imprimir div.main{box-sizing:border-box;width:${width}${unit};min-height:${height}${unit};max-width:none;padding:${pageConfig.top}${unit} ${pageConfig.right}${unit} ${pageConfig.bottom}${unit} ${pageConfig.left}${unit};}`;
+    style.textContent += `@media screen{body:not(.imprimir) .jcem-print-sheet{${geometry}}}`;
+    style.textContent += `@media print{body .jcem-print-sheet{${printGeometry}}}`;
+    style.textContent += `body.imprimir .jcem-print-sheet{${pdfGeometry}}`;
+    d.documentElement.dataset.jcemPrintProfile = pageConfig.id;
     d.head.appendChild(style);
   }
 
-  function withPrintMode(callback: (restore: () => void) => void, options: PrintModeOptions = {}): void {
+  async function withPrintMode(callback: (restore: () => void) => void | PromiseLike<void>, options: PrintModeOptions = {}): Promise<void> {
     const previousClass = d.body.className;
     const inputs = $<HTMLInputElement>("input");
+    let restored = false;
 
     d.body.className = `${previousClass ? `${previousClass} ` : ""}${options.printClass ?? "imprimir"}`;
 
@@ -492,7 +515,9 @@ declare const __JCEM_BUILD_VERSION__: string;
       input.removeAttribute("placeholder");
     }
 
-    callback(() => {
+    const restore = (): void => {
+      if (restored) return;
+      restored = true;
       for (const input of inputs) {
         const placeholder = placeholders.get(input);
         if (placeholder !== undefined && placeholder !== null) {
@@ -501,7 +526,14 @@ declare const __JCEM_BUILD_VERSION__: string;
       }
 
       d.body.className = previousClass;
-    });
+    };
+
+    try {
+      await new Promise<void>((resolve) => w.requestAnimationFrame(() => w.requestAnimationFrame(() => resolve())));
+      await callback(restore);
+    } finally {
+      restore();
+    }
   }
 
   function resolveHtml2Pdf(): Html2PdfFactory | null {
@@ -518,7 +550,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     return null;
   }
 
-  function printPdf(options: PrintPdfOptions): void {
+  async function printPdf(options: PrintPdfOptions): Promise<void> {
     const html2pdf = resolveHtml2Pdf();
 
     if (!html2pdf) {
@@ -526,24 +558,30 @@ declare const __JCEM_BUILD_VERSION__: string;
       return;
     }
 
-    withPrintMode((restore) => {
-      w.setTimeout(() => {
-        let filename = typeof options.filename === "function" ? options.filename() : options.filename;
-        filename = filename || "documento.pdf";
+    const source = options.source;
+    if (!source) {
+      w.alert("Folha imprimivel nao configurada.");
+      return;
+    }
 
-        if (!/\.pdf$/i.test(filename)) {
-          filename += ".pdf";
-        }
+    await withPrintMode(async () => {
+      let filename = typeof options.filename === "function" ? options.filename() : options.filename;
+      filename = filename || "documento.pdf";
 
-        html2pdf(options.source ?? d.documentElement, {
-          filename,
-          html2canvas: { scale: options.scale ?? 6 },
-          image: { quality: 0.98, type: "jpeg" },
-          jsPDF: { format: options.pageConfig.size, orientation: options.orientation ?? "portrait", unit: options.pageConfig.unit },
-          margin: options.margin ?? [0, 0, 0, 0]
-        });
-        w.setTimeout(restore, 50);
-      }, 100);
+      if (!/\.pdf$/i.test(filename)) {
+        filename += ".pdf";
+      }
+
+      const result = html2pdf(source, {
+        filename,
+        html2canvas: { scale: options.scale ?? 6 },
+        image: { quality: 0.98, type: "jpeg" },
+        jsPDF: { format: options.pageConfig.size, orientation: options.orientation ?? options.pageConfig.orientation, unit: options.pageConfig.unit },
+        margin: options.margin ?? [0, 0, 0, 0]
+      });
+      if (result && typeof result.then === "function") {
+        await result;
+      }
     }, options);
   }
 
@@ -853,6 +891,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     }
 
     d.body.classList.add("jcem-printable-layout");
+    ensureClass(documentElement, "jcem-print-sheet");
 
     const currentParent = documentElement.parentElement;
     const workspace = resolveLayoutElement(options.workspace) ?? d.createElement("main");
@@ -2008,6 +2047,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     print: {
       createPageStyle,
       pdf: printPdf,
+      profile: resolvePageProfile,
       withPrintMode
     },
     query: {

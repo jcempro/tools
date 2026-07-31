@@ -33,6 +33,8 @@ npm run publish
 
 `scripts/config.json` é a fonte central da toolchain: caminhos, URL pública, servidor local, dependências offline, entradas de build e contrato GitHub Pages. `build:web`, `build:offline-bundles`, `validate:publication` e `validate:all` explicitam a especialização; `publish`/`agent:publish` executa o fluxo all-in-one de preparação, enquanto `publish:pages` é a mesma entrada usada pelo CI.
 
-Toolbar, ícones, tooltips, exportação/importação local e layout de módulos imprimíveis são infraestrutura global em `src/assets/`. Ícones usam pacotes Font Awesome modulares e apenas as definições gratuitas efetivamente importadas entram no bundle.
+Toolbar, ícones, tooltips, exportação/importação local e o contrato único de folha/Ctrl+P/PDF são infraestrutura global em `src/assets/`; módulos declaram apenas perfil e conteúdo interno. Ícones usam pacotes Font Awesome modulares e apenas as definições gratuitas efetivamente importadas entram no bundle.
+
+Favicons e manifests devem ser gerados por alvo durante o build a partir do logo global ou do logo próprio do módulo, conforme configuração central. A publicação Web recebe o perfil completo compatível com sua base path; cada Bundle incorpora somente o favicon offline útil de sua própria identidade.
 
 Autoria, licença, disclaimer, isenção de responsabilidade e textos institucionais são fonte única do chrome global. O autor exibido é sempre JeanCarloEM, com link para `https://www.jeancarloem.com`.

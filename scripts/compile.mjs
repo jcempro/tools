@@ -6,6 +6,7 @@ import * as esbuild from "esbuild";
 import * as sass from "sass";
 import { optimizeTextByPath } from "./asset-optimizer.mjs";
 import { loadBuildConfig, loadProjectConfig } from "./config.mjs";
+import { buildFavicons } from "./favicons.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const projectConfig = await loadProjectConfig();
@@ -282,6 +283,14 @@ async function buildAll() {
   await buildStyles();
   await buildBrowserScripts();
   await buildBookmarklets();
+  const faviconOutputs = await buildFavicons({
+    cacheRoot: path.join(root, projectConfig.paths.cache, "favicons"),
+    distRoot,
+    publicBaseUrl: projectConfig.site.publicBaseUrl,
+    root,
+    srcRoot
+  });
+  for (const output of faviconOutputs) generatedFiles.add(output);
   await pruneDist();
   await pruneEmptyDirectories();
   return copied;

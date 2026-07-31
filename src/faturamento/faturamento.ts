@@ -36,14 +36,7 @@ import faturamentoConfig from "../assets/config/faturamento.json";
   }
   const api: JCEMDocumentosApi = documentos;
 
-  const pageConfig: PageConfig = {
-    bottom: 0.9,
-    left: 0.9,
-    right: 0.9,
-    size: [21, 29.7],
-    top: 1,
-    unit: "cm"
-  };
+  const pageConfig = api.print.profile("faturamento");
 
   const moduleDefaults = faturamentoConfig.defaults;
   const ufs = new Set(faturamentoConfig.ufs);
@@ -986,7 +979,7 @@ import faturamentoConfig from "../assets/config/faturamento.json";
       return;
     }
 
-    api.print.pdf({
+    void api.print.pdf({
       filename,
       margin: [0, 0, 0, 0],
       pageConfig,

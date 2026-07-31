@@ -8,14 +8,7 @@
   }
   const api: JCEMDocumentosApi = doc;
 
-  const pageConfig: PageConfig = {
-    bottom: 1.5,
-    left: 1.4,
-    right: 0.5,
-    size: [21, 29.7],
-    top: 1,
-    unit: "cm"
-  };
+  const pageConfig = api.print.profile("admissional");
 
   const phoneTitle = "TELEFONE da empresa INVALIDO!";
   const validation: ValidationConfig = {
@@ -62,7 +55,7 @@
       return;
     }
 
-    api.print.pdf({ filename, pageConfig });
+    void api.print.pdf({ filename, pageConfig, source: api.one(".main") ?? undefined });
   }
 
   function printBlankPdf(): void {
@@ -71,7 +64,7 @@
     }
 
     api.autosave.clearAutoFields({ removeStorage: false });
-    api.print.pdf({ filename, pageConfig });
+    void api.print.pdf({ filename, pageConfig, source: api.one(".main") ?? undefined });
   }
 
   function fieldValue(selector: string): string {
@@ -194,7 +187,7 @@
       schema: "jcem.admissional.v1",
       version: "1.0.1"
     });
-    api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".versao" });
+    api.chrome.render({ actionsSelector: "[data-jcem-actions]", mountBefore: ".main" });
     api.layout.printable({
       document: ".main",
       forms: [{ placement: "internal", selector: ".main" }]

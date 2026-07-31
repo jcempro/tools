@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "common": {
+    "backgroundColor": "#ffffff",
+    "themeColor": "#174a7c",
+    "skipMetadataInjection": true
+  },
+  "workspace": {
+    "entries": ["index.html", "404.html"],
+    "logo": "/assets/brand/logo.svg",
+    "name": "Tools JeanCarloEM",
+    "shortName": "Tools JCEM"
+  },
+  "applications": [
+    { "id": "faturamento", "entry": "faturamento/index.html" },
+    { "id": "admissional", "entry": "oficios/admissional/index.html" },
+    { "id": "csv-bd", "entry": "csv-bd/index.html" }
+  ],
+  "web": {
+    "directory": "favicons",
+    "manifest": true,
+    "touchIcon": true
+  },
+  "offline": {
+    "preferredFile": "favicon.svg",
+    "manifest": false,
+    "touchIcon": false
+  }
+}

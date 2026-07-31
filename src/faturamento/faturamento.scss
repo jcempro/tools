@@ -1,10 +1,5 @@
 @charset "UTF-8";
 
-@page {
-  size: A4 portrait;
-  margin: 0;
-}
-
 :root {
   --ink: #111;
   --line: #202020;
@@ -21,14 +16,7 @@
   padding: 1.5mm 1mm;
 }
 
-.print-page {
-  box-sizing: border-box;
-  width: 21cm;
-  min-height: 29.7cm;
-  margin: 0;
-  padding: 0.82cm 0.86cm 0.72cm;
-  background: var(--paper);
-}
+.print-page { background: var(--paper); }
 
 .print-page,
 .print-page * {
@@ -306,41 +294,4 @@
 
 .committee {
   margin-top: 0.32cm;
-}
-
-@media print {
-  html,
-  body {
-    width: 21cm;
-    min-height: 29.7cm;
-    margin: 0;
-    background: #fff;
-  }
-
-  .print-page {
-    width: 21cm;
-    min-height: 0;
-    height: auto;
-    margin: 0;
-    padding: 0.82cm 0.86cm 0.72cm;
-    box-shadow: none;
-    overflow: hidden;
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-}
-
-body.imprimir {
-  margin: 0;
-  background: #fff;
-}
-
-body.imprimir .print-page {
-  width: 21cm;
-  min-height: 0;
-  height: auto;
-  margin: 0;
-  padding: 0.82cm 0.86cm 0.72cm;
-  box-shadow: none;
-  overflow: hidden;
 }
