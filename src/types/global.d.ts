@@ -51,8 +51,9 @@ declare global {
     };
     print: {
       createPageStyle: (pageConfig: PageConfig) => void;
-      pdf: (options: PrintPdfOptions) => void;
-      withPrintMode: (callback: (restore: () => void) => void, options?: PrintModeOptions) => void;
+      pdf: (options: PrintPdfOptions) => Promise<void>;
+      profile: (id: string) => PageConfig;
+      withPrintMode: (callback: (restore: () => void) => void | PromiseLike<void>, options?: PrintModeOptions) => Promise<void>;
     };
     image: {
       load: (options: StoredImageOptions) => void;
@@ -156,7 +157,9 @@ declare global {
 
   interface PageConfig {
     bottom: number;
+    id: string;
     left: number;
+    orientation: "portrait" | "landscape";
     right: number;
     size: [number, number];
     top: number;
@@ -209,7 +212,7 @@ declare global {
     margin: [number, number, number, number];
   }
 
-  type Html2PdfFactory = (source: Element, options: PdfOptions) => void;
+  type Html2PdfFactory = (source: Element, options: PdfOptions) => PromiseLike<unknown> | void;
 
   interface StoredImageOptions {
     key?: string;

@@ -186,8 +186,8 @@ test("print page sizing does not constrain application chrome globally", async (
   const ts = await readFile("src/assets/js/documentos.ts", "utf8");
 
   assert.doesNotMatch(ts, /\*\{max-width:/);
-  assert.match(ts, /body:not\(\.imprimir\) div\.main/);
-  assert.match(ts, /body\.imprimir div\.main/);
+  assert.match(ts, /body:not\(\.imprimir\) \.jcem-print-sheet/);
+  assert.match(ts, /body\.imprimir \.jcem-print-sheet/);
 });
 
 test("printable modules consume the shared document workspace layout", async () => {
@@ -241,6 +241,73 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.match(admissionalTs, /api\.layout\.printable/);
   assert.doesNotMatch(faturamentoCss, /\.faturamento-shell\s*{/);
   assert.doesNotMatch(faturamentoCss, /\.preview-wrap\s*{/);
+});
+
+test("print profiles centralize A4 geometry and asynchronous PDF completion", async () => {
+  const config = JSON.parse(await readFile("src/assets/config/printing.json", "utf8")) as {
+    schema: number;
+    profiles: Record<string, { orientation: string; size: number[]; unit: string; margins: Record<string, number> }>;
+  };
+  const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
+  const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
+  const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
+  const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
+  const faturamentoCss = await readFile("src/faturamento/faturamento.scss", "utf8");
+
+  assert.equal(config.schema, 1);
+  assert.deepEqual(Object.keys(config.profiles).sort(), ["admissional", "faturamento"]);
+  for (const profile of Object.values(config.profiles)) {
+    assert.equal(profile.orientation, "portrait");
+    assert.deepEqual(profile.size, [21, 29.7]);
+    assert.equal(profile.unit, "cm");
+    assert.deepEqual(Object.keys(profile.margins).sort(), ["bottom", "left", "right", "top"]);
+  }
+  assert.match(sharedTs, /@media print\{body \.jcem-print-sheet/);
+  assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 1px\)/);
+  assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 4px\)/);
+  assert.match(sharedTs, /if \(result && typeof result\.then === "function"\)\s*{\s*await result;/);
+  assert.match(sharedTs, /if \(!source\)\s*{\s*w\.alert\("Folha imprimivel nao configurada\."\);/);
+  assert.match(sharedCss, /@media print[\s\S]*\.jcem-app-shell-content\s*{[\s\S]*display:\s*block !important/s);
+  assert.match(sharedCss, /@media print[\s\S]*\.jcem-document-preview-region\s*{[\s\S]*padding:\s*0 !important;[\s\S]*background:\s*#fff !important;/s);
+  assert.match(faturamentoTs, /api\.print\.profile\("faturamento"\)/);
+  assert.match(admissionalTs, /api\.print\.profile\("admissional"\)/);
+  assert.doesNotMatch(`${faturamentoTs}\n${admissionalTs}`, /const pageConfig\s*=\s*\{/);
+  assert.doesNotMatch(faturamentoCss, /@page|\bwidth:\s*21cm|\bheight:\s*29\.7cm/);
+  assert.match(sharedCss, /div\.main > div\.versao\s*{\s*display:\s*block !important;/);
+  assert.match(admissionalTs, /source:\s*api\.one\("\.main"\)/);
+  assert.match(admissionalTs, /mountBefore:\s*"\.main"/);
+});
+
+test("favicon build uses official tooling with target isolation and pinned svgdom compatibility", async () => {
+  const pkg = JSON.parse(await readFile("package.json", "utf8")) as { devDependencies: Record<string, string> };
+  const config = JSON.parse(await readFile("src/assets/config/favicons.json", "utf8")) as {
+    applications: Array<{ id: string; entry: string }>;
+    offline: { manifest: boolean; preferredFile: string; touchIcon: boolean };
+    web: { manifest: boolean; touchIcon: boolean };
+  };
+  const compile = await readFile("scripts/compile.mjs", "utf8");
+  const bundles = await readFile("scripts/build-bundles-core.mjs", "utf8");
+  const validate = await readFile("scripts/validate-publication.mjs", "utf8");
+  // @ts-expect-error Build scripts are JavaScript-only and do not publish declarations.
+  const { faviconValidationPlan } = await import("../scripts/favicons.mjs");
+  const plan = await faviconValidationPlan({
+    publicBaseUrl: "https://example.test/tools/",
+    root: process.cwd(),
+    srcRoot: path.join(process.cwd(), "src")
+  });
+
+  assert.equal(pkg.devDependencies["@realfavicongenerator/generate-favicon"], "^0.8.4");
+  assert.equal(pkg.devDependencies["@realfavicongenerator/image-adapter-node"], "^0.8.4");
+  assert.equal(pkg.devDependencies["@realfavicongenerator/inject-markups"], "^0.8.0");
+  assert.equal(pkg.devDependencies.svgdom, "0.1.22");
+  assert.deepEqual(config.applications.map(({ id }) => id).sort(), ["admissional", "csv-bd", "faturamento"]);
+  assert.deepEqual(config.web, { directory: "favicons", manifest: true, touchIcon: true });
+  assert.deepEqual(config.offline, { preferredFile: "favicon.svg", manifest: false, touchIcon: false });
+  assert.equal(plan.find(({ id }: { id: string }) => id === "faturamento")?.startUrl, "/tools/faturamento/");
+  assert.match(compile, /buildFavicons/);
+  assert.match(bundles, /embedOfflineFavicon/);
+  assert.match(validate, /assertWebFavicons/);
+  assert.match(validate, /exatamente um favicon autocontido/);
 });
 
 test("shared toolbar uses declarative Font Awesome icons and portable data actions", async () => {

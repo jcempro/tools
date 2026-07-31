@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { constants as zlibConstants, deflateRawSync } from "node:zlib";
 import { minifyCssText, minifyHtmlText, minifyJsText, stripSourceMapReferences } from "./asset-optimizer.mjs";
 import { loadProjectConfig } from "./config.mjs";
+import { embedOfflineFavicon } from "./favicons.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const config = await loadProjectConfig();
@@ -341,6 +342,7 @@ async function buildBundle(rel) {
   ];
 
   let html = await readFile(indexFile, "utf8");
+  html = await embedOfflineFavicon({ html, indexRel: rel, distRoot: distDir, publicBaseUrl: config.site.publicBaseUrl, root, srcRoot: path.join(root, config.paths.source) });
   html = await embedOfflineCatalog(html);
   html = await inlineStyles(html, indexFile);
   html = await inlineScripts(html, indexFile);

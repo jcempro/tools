@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { inflateRawSync } from "node:zlib";
 import { loadBuildConfig, loadProjectConfig } from "./config.mjs";
+import { expectedFaviconOutputs, faviconValidationPlan } from "./favicons.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const projectConfig = await loadProjectConfig();
@@ -222,6 +223,40 @@ function assertAutonomousBundleHtml(rel, html) {
   if (externalResource.test(withoutScripts) || cssExternal.test(withoutScripts)) {
     throw new Error(`Bundle offline contem recurso externo automatico em dist/: ${rel}`);
   }
+
+  const faviconLinks = [...withoutScripts.matchAll(/<link\b[^>]*\brel\s*=\s*(["'])(?:shortcut\s+)?icon\1[^>]*>/gi)];
+  if (faviconLinks.length !== 1 || !/\bhref\s*=\s*(["'])data:image\/(?:svg\+xml|png|x-icon);base64,/i.test(faviconLinks[0]?.[0] ?? "")) {
+    throw new Error(`Bundle offline deve conter exatamente um favicon autocontido em dist/: ${rel}`);
+  }
+  if (/<link\b[^>]*\brel\s*=\s*(["'])(?:manifest|apple-touch-icon)\1/i.test(withoutScripts)) {
+    throw new Error(`Bundle offline contem manifest ou touch icon Web em dist/: ${rel}`);
+  }
+}
+
+async function assertWebFavicons(plan) {
+  for (const target of plan) {
+    const manifest = JSON.parse(await readFile(path.join(distDir, target.manifest), "utf8"));
+    if (manifest.start_url !== target.startUrl || manifest.scope !== target.startUrl) {
+      throw new Error(`Manifest com escopo incorreto para ${target.id}: ${target.manifest}`);
+    }
+    if (!Array.isArray(manifest.icons) || manifest.icons.length !== 2 || manifest.icons.some(({ src }) => !String(src).startsWith(target.outputPath))) {
+      throw new Error(`Manifest com icones incompletos ou fora do namespace para ${target.id}: ${target.manifest}`);
+    }
+    for (const entry of target.entries) {
+      const html = await readFile(path.join(distDir, entry), "utf8");
+      const iconLinks = [...html.matchAll(/<link\b[^>]*\brel\s*=\s*(["'])(?:shortcut\s+)?icon\1[^>]*>/gi)];
+      const manifests = [...html.matchAll(/<link\b[^>]*\brel\s*=\s*(["'])manifest\1[^>]*>/gi)];
+      const touchIcons = [...html.matchAll(/<link\b[^>]*\brel\s*=\s*(["'])apple-touch-icon\1[^>]*>/gi)];
+      const themes = [...html.matchAll(/<meta\b[^>]*\bname\s*=\s*(["'])theme-color\1[^>]*>/gi)];
+      if (iconLinks.length !== 3 || manifests.length !== 1 || touchIcons.length !== 1 || themes.length !== 1) {
+        throw new Error(`Marcacao de favicon incompleta ou duplicada em dist/${entry}.`);
+      }
+      const markups = [...iconLinks, ...manifests, ...touchIcons].map((match) => match[0]);
+      if (markups.some((markup) => !markup.includes(target.outputPath)) || !themes[0][0].includes(target.themeColor)) {
+        throw new Error(`Marcacao de favicon aponta para identidade incorreta em dist/${entry}.`);
+      }
+    }
+  }
 }
 
 async function assertBundleLink(rel, bundle) {
@@ -276,13 +311,16 @@ async function main() {
   const distSet = new Set(distFiles);
   const sourceStaticFiles = srcFiles.filter(isStaticSource);
   const sourceIndexFiles = sourceStaticFiles.filter((file) => path.basename(file).toLowerCase() === "index.html");
+  const faviconOutputs = await expectedFaviconOutputs({ publicBaseUrl: projectConfig.site.publicBaseUrl, root, srcRoot: srcDir });
+  const faviconPlan = await faviconValidationPlan({ publicBaseUrl: projectConfig.site.publicBaseUrl, root, srcRoot: srcDir });
   const styleOutputs = new Map(srcFiles.filter((file) => file.endsWith(".scss") && !path.basename(file).startsWith("_")).map((source) => [source.replace(/\.scss$/i, ".css"), source]));
   const expectedFiles = new Set([
     ...sourceStaticFiles,
     ...compiledOutputs.keys(),
     ...styleOutputs.keys(),
     ...buildConfig.rootPassthroughFiles,
-    ...buildConfig.generatedRootFiles.map(({ output }) => output)
+    ...buildConfig.generatedRootFiles.map(({ output }) => output),
+    ...faviconOutputs
   ]);
 
   assertNoForbiddenPublicSegments(distFiles);
@@ -347,6 +385,7 @@ async function main() {
 
   assertExactFiles(distFiles, expectedFiles);
   assertNoEmptyDirectories(distDirectories, distFiles);
+  await assertWebFavicons(faviconPlan);
   await validatePublicText(distFiles);
 
   console.log(`Publicacao validada: ${sourceIndexFiles.length} paginas, ${distFiles.length} arquivos em dist/.`);
