@@ -331,7 +331,7 @@
 
 - Tipo: implementacao_normativa.
 - criado_em: 2026-07-31T13:45:20-03:00.
-- Origem: solicitacao humana de 2026-07-31 e `.ia.rules/state/requests/FT-005.md`, SHA-256 de origem `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`.
+- Origem: solicitacao humana de 2026-07-31, SHA-256 `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`, integralmente coberta por esta FT e pelo RCF.
 - Vinculos: FT-006; `RCF.md`; RCFs documentais especificos.
 - Escopo: Tecnico.
 - Objetivo: normatizar uma unica fonte geometrica e implementacional para visualizacao, Ctrl+P e PDF, consumida por todos os modulos documentais atuais e futuros.
@@ -362,37 +362,45 @@
 
 ### Proximo ponto
 
-- FT-006 aguarda nova autorizacao humana explicita para implementar a norma concluida.
+- Norma materializada e validada pela FT-006 concluida.
 
 ## FT-006 - Implementacao do invólucro unico de folha, PDF e impressao
 
 - Tipo: implementacao_codigo.
 - criado_em: 2026-07-31T13:45:21-03:00.
-- Origem: solicitacao humana de 2026-07-31 e `.ia.rules/state/requests/FT-005.md`.
+- Origem: solicitacao humana de 2026-07-31, SHA-256 `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`, coberta por FT-005 e RCF.
 - Vinculos: FT-005; `RCF.md`; `src/assets/`; modulos documentais.
 - Escopo: Tecnico.
 - Objetivo: centralizar a implementacao da folha e migrar Faturamento e Oficio admissional para o contrato normativo homologado.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: conclusao e validacao da FT-005; nova autorizacao humana explicita apos a normatizacao.
 - Aceite: uma implementacao compartilhada governa visualizacao, Ctrl+P e PDF; modulos nao duplicam geometria; evidencias deixam de reproduzir cortes/desalinhamentos; testes e validacao visual cobrem fluxos e limites.
 
 ### Plano vigente
 
-1. Etapa 1/4 - reproduzir e medir falhas atuais em todos os documentos. Status: pendente.
-2. Etapa 2/4 - implementar contrato compartilhado e adaptadores tecnicos. Status: pendente.
-3. Etapa 3/4 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: pendente.
-4. Etapa 4/4 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: pendente.
+1. Etapa 1/4 - reproduzir e medir falhas atuais em todos os documentos. Status: concluido.
+2. Etapa 2/4 - implementar contrato compartilhado e adaptadores tecnicos. Status: concluido.
+3. Etapa 3/4 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: concluido.
+4. Etapa 4/4 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: concluido.
+
+### Resultado e verificacoes
+
+- `src/assets/config/printing.json` centraliza os perfis A4; `documentos.ts` materializa folha, `@page`, margens e tolerancias especificas dos adaptadores de impressao e `html2canvas`.
+- Faturamento e Admissional consomem `api.print.profile`, aguardam o termino assincrono do PDF e nao repetem geometria local; a versao lateral admissional integra a propria folha.
+- Inspecao visual em navegador e renderizacao Poppler confirmaram uma pagina A4, sem chrome, corte ou pagina residual, nos PDFs dedicados; o Ctrl+P do Chromium confirmou Faturamento em uma pagina A4 apos neutralizar padding, contain e tema do workspace.
+- `npm run validate:all` aprovou tipagem, lint, 48 testes, Web, tres bundles offline e publicacao de 4 paginas/62 arquivos.
+- Evidencias anexadas e artefatos temporarios gerados foram removidos apos a validacao.
 
 ### Proximo ponto
 
-- Aguardar conclusao da FT-005 e nova autorizacao humana explicita.
+- FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.
 
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 
 - Tipo: implementacao_normativa.
 - criado_em: 2026-07-31T13:45:22-03:00.
-- Origem: solicitacao humana de 2026-07-31 e `.ia.rules/state/requests/FT-005.md`.
+- Origem: solicitacao humana de 2026-07-31, SHA-256 `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`, integralmente coberta por esta FT e pelo RCF.
 - Vinculos: FT-008; `RCF.md`; documentacao oficial do RealFaviconGenerator.
 - Escopo: Tecnico.
 - Objetivo: normatizar geracao deterministica de favicons, manifests e marcacoes para Web/GitHub Pages e bundles offline, com identidade por alvo e configuracao central.
@@ -425,28 +433,36 @@
 
 ### Proximo ponto
 
-- FT-008 aguarda nova autorizacao humana explicita para implementar a norma concluida.
+- Norma materializada e validada pela FT-008 concluida.
 
 ## FT-008 - Implementacao de favicons e manifests por alvo
 
 - Tipo: implementacao_codigo.
 - criado_em: 2026-07-31T13:45:23-03:00.
-- Origem: solicitacao humana de 2026-07-31 e `.ia.rules/state/requests/FT-005.md`.
+- Origem: solicitacao humana de 2026-07-31, SHA-256 `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`, coberta por FT-007 e RCF.
 - Vinculos: FT-007; `RCF.md`; pipeline Web e de bundles.
 - Escopo: Tecnico.
 - Objetivo: integrar os pacotes oficiais do RealFaviconGenerator ao build central, gerar identidades Web por aplicacao e incorporar somente favicon util em cada bundle offline.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: conclusao e validacao da FT-007; nova autorizacao humana explicita apos a normatizacao.
 - Aceite: dependencias e lock versionados; geracao incremental por entradas; base path nao raiz suportado; alvo sem logo falha; Web possui tags/manifest coerentes; bundles sao autocontidos e sem assets Web inuteis; builds/testes aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/4 - instalar dependencias oficiais e estender configuracao central validada. Status: pendente.
-2. Etapa 2/4 - implementar gerador incremental e injecao Web por alvo. Status: pendente.
-3. Etapa 3/4 - integrar favicon minimo e identidade propria aos bundles offline. Status: pendente.
-4. Etapa 4/4 - validar reproducao, base path, falhas, artefatos, bundles e GitHub Pages. Status: pendente.
+1. Etapa 1/4 - instalar dependencias oficiais e estender configuracao central validada. Status: concluido.
+2. Etapa 2/4 - implementar gerador incremental e injecao Web por alvo. Status: concluido.
+3. Etapa 3/4 - integrar favicon minimo e identidade propria aos bundles offline. Status: concluido.
+4. Etapa 4/4 - validar reproducao, base path, falhas, artefatos, bundles e GitHub Pages. Status: concluido.
+
+### Resultado e verificacoes
+
+- Pacotes oficiais do RealFaviconGenerator e lock foram integrados; `svgdom` permanece fixado em `0.1.22` por incompatibilidade reproduzida nas versoes posteriores com o adaptador vigente.
+- `src/assets/config/favicons.json` e o catalogo de aplicativos governam workspace e tres alvos; geracao incremental usa hash de configuracao, catalogo, logo, base path e versoes das ferramentas.
+- Web recebe tres favicons, touch icon, manifest, tema, `start_url` e `scope` por namespace; cada bundle recebe exatamente um favicon Data URL e nenhum asset Web inutil.
+- Validacao de publicacao comprova unicidade, isolamento, manifests, arquivos exatos e bundles autocontidos; inspecao visual confirmou as quatro identidades geradas.
+- `npm audit --omit=dev` encontrou zero vulnerabilidades; a auditoria completa registra avisos sem correcao somente nas cadeias de desenvolvimento de `brace-expansion` e `sharp`.
 
 ### Proximo ponto
 
-- Aguardar conclusao da FT-007 e nova autorizacao humana explicita.
+- FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.

@@ -45,7 +45,7 @@
 
 ## Triagem de 2026-07-31
 
-- [ ] Padronizar folha, PDF e impressão. Origem integral preservada transitoriamente em `.ia.rules/state/requests/FT-005.md`; normatização: FT-005 concluída; código: FT-006 pendente de nova autorização humana.
-- [ ] Gerar favicons e manifests por aplicação e bundle. Origem integral preservada transitoriamente em `.ia.rules/state/requests/FT-005.md`; normatização: FT-007 concluída; código: FT-008 pendente de nova autorização humana.
+- [x] Padronizar folha, PDF e impressão. FT-005 e FT-006 concluídas, validadas visual e integralmente em 2026-07-31; evidências temporárias removidas.
+- [x] Gerar favicons e manifests por aplicação e bundle. FT-007 e FT-008 concluídas, com identidades Web/offline e validação integral em 2026-07-31.
 - [x] Entrada `TODO.ia.md` da raiz conciliada ao TODO canônico e removida como fonte concorrente; SHA-256 de origem: `4061D33883EA5FA52F0332F648C4B2DA675ED51CAE5A8DFF54CA11C027D6AC90`.
 
