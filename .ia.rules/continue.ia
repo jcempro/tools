@@ -408,14 +408,14 @@
 - Escopo: Tecnico.
 - Objetivo: equalizar o contrato local de `publish` ao lifecycle global all-in-one, cobrindo validacao, sincronizacao de `dev`, integracao na branch primaria, push, acionamento e confirmacao do GitHub Pages.
 - Prioridade: critica.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: nenhuma.
 - Aceite: RCF e README distinguem preparacao CI de publicacao local; definem precondicoes Git, ordem de integracao, retorno de branch, falha fechada e confirmacao da revisao implantada.
 
 ### Plano vigente
 
 1. Etapa 1/2 - auditar o fluxo atual e conciliar a regressao com FT-004 e normas vigentes. Status: concluido.
-2. Etapa 2/2 - sincronizar RCF, README, memoria e validar o contrato. Status: em andamento.
+2. Etapa 2/2 - sincronizar RCF, README, memoria e validar o contrato. Status: concluido.
 
 ### Diagnostico inicial
 
@@ -425,7 +425,7 @@
 
 ### Proximo ponto
 
-- Concluir a equalizacao normativa e liberar FT-010 para implementacao.
+- Norma concluida e validada; FT-010 liberada para implementar a correcao solicitada.
 
 ## FT-010 - Restauracao dos hooks de publicacao e implantacao Pages
 
@@ -436,19 +436,19 @@
 - Escopo: Tecnico.
 - Objetivo: implementar a especializacao local de `publish` para validar, sincronizar Git, integrar `dev` na branch primaria, enviar refs e comprovar a revisao publicada.
 - Prioridade: critica.
-- Status: pendente.
-- Dependencias: conclusao e validacao da FT-009; autorizacao humana explicita para a correcao relatada.
+- Status: em andamento.
+- Dependencias: FT-009 concluida; correcao explicitamente solicitada pelo relato humano que originou a frente.
 - Aceite: hook principal presente; arvore suja, branch incorreta e divergencia remota bloqueiam; validacao precede mutacao; `dev` e primaria sao enviadas sem reescrita; branch inicial e restaurada; Pages confirma o SHA esperado; testes isolados e `npm run check` aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/3 - implementar configuracao validada, hook e orquestracao Git deterministica. Status: pendente.
+1. Etapa 1/3 - implementar configuracao validada, hook e orquestracao Git deterministica. Status: em andamento.
 2. Etapa 2/3 - cobrir precondicoes, integracao, falhas, restauracao e confirmacao remota com testes isolados. Status: pendente.
 3. Etapa 3/3 - executar publicacao real, confirmar Pages, atualizar memoria e remover a entrada concluida do TODO. Status: pendente.
 
 ### Proximo ponto
 
-- Aguardar conclusao da FT-009.
+- Implementar o hook local e a orquestracao isoladamente testavel.
 
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 

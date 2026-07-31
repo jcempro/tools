@@ -230,6 +230,8 @@ Novas regras de negocio devem ser documentadas no RCF apropriado. Logica duplica
 - Toda configuracao customizavel da toolchain, inclusive build, bundle, desenvolvimento, validacao e Pages, fica em `scripts/config.json` e e consumida por `scripts/config.mjs`.
 - Cada ferramenta com `index.html` gera ZIP offline no mesmo caminho publico.
 - Publicacao estatica usa `dist/` como raiz unica do Pages.
+- `publish:pages` prepara e valida `dist/` exclusivamente dentro do CI, sem mutar Git. O comando local `publish` e o lifecycle all-in-one da publicacao: exige execucao em `dev` com arvore limpa e commits ja consolidados, valida integralmente antes de qualquer mutacao remota, atualiza referencias do remoto configurado, rejeita divergencia que exija rebase ou reescrita, envia `dev`, integra seu estado na branch primaria preservando ambos os historicos, envia a branch primaria e restaura a branch inicial mesmo em falha. Integracao usa fast-forward quando a primaria for ancestral de `dev` e merge normal quando houver divergencia compativel; conflito bloqueia sem push da primaria.
+- O push da branch primaria deve acionar o workflow GitHub Pages. `publish` so conclui depois que o `version.json` publico informar exatamente o SHA enviado ou deve falhar por indisponibilidade, timeout ou revisao divergente. Reexecucao com as mesmas refs deve ser idempotente, sem merge ou push artificial, mas ainda deve validar o artefato e a disponibilidade publica.
 - A validacao bloqueia `src/` ou `dist/` como segmento/referencia publica, arquivos obsoletos, diretorios vazios e `*.bundle.html` solto.
 - URLs internas de assets e bundles devem ser estaveis com ou sem barra final, preferencialmente root-relative.
 
