@@ -293,6 +293,7 @@
   10. Remover implementações, arquivos e marcações redundantes somente após migração e validação.
   11. Atualizar workflows, documentação e testes.
   12. Executar builds completos e inspecionar os artefatos finais.
+  13. Refatoração dos favicon/icones/manifestos e equivalentes apenas quando houver alteração na cnfiguração ou nos arquivos fontes de origem (como o logo de origem) - identifique de forma automática sempre no build
 
   ## Validação
 
