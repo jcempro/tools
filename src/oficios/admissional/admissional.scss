@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+div.main {
+  /* FIX-BUG: mantem a marca lateral dentro da caixa capturada pelo gerador de PDF. */
+  padding-right: .45cm;
+}
+
+div.main > div.versao {
+  right: .3cm;
+}
+
 table.ass tr td {
   width: 1rem;
   line-height: 1rem;

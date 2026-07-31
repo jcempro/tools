@@ -278,6 +278,13 @@ test("print profiles centralize A4 geometry and asynchronous PDF completion", as
   assert.match(admissionalTs, /mountBefore:\s*"\.main"/);
 });
 
+test("admissional keeps the vertical version mark inside the captured sheet", async () => {
+  const css = await readFile("src/oficios/admissional/admissional.scss", "utf8");
+
+  assert.match(css, /div\.main\s*{[^}]*padding-right:\s*\.45cm;/s);
+  assert.match(css, /div\.main\s*>\s*div\.versao\s*{[^}]*right:\s*\.3cm;/s);
+});
+
 test("favicon build uses official tooling with target isolation and pinned svgdom compatibility", async () => {
   const pkg = JSON.parse(await readFile("package.json", "utf8")) as { devDependencies: Record<string, string> };
   const config = JSON.parse(await readFile("src/assets/config/favicons.json", "utf8")) as {

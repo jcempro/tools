@@ -379,10 +379,11 @@
 
 ### Plano vigente
 
-1. Etapa 1/4 - reproduzir e medir falhas atuais em todos os documentos. Status: concluido.
-2. Etapa 2/4 - implementar contrato compartilhado e adaptadores tecnicos. Status: concluido.
-3. Etapa 3/4 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: concluido.
-4. Etapa 4/4 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: concluido.
+1. Etapa 1/5 - reproduzir e medir falhas atuais em todos os documentos. Status: concluido.
+2. Etapa 2/5 - implementar contrato compartilhado e adaptadores tecnicos. Status: concluido.
+3. Etapa 3/5 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: concluido.
+4. Etapa 4/5 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: concluido.
+5. Etapa 5/5 - corrigir o corte da marca lateral admissional reportado em 2026-07-31, validar PDF e impressao e remover evidencias temporarias. Status: concluido.
 
 ### Resultado e verificacoes
 
@@ -391,6 +392,8 @@
 - Inspecao visual em navegador e renderizacao Poppler confirmaram uma pagina A4, sem chrome, corte ou pagina residual, nos PDFs dedicados; o Ctrl+P do Chromium confirmou Faturamento em uma pagina A4 apos neutralizar padding, contain e tema do workspace.
 - `npm run validate:all` aprovou tipagem, lint, 48 testes, Web, tres bundles offline e publicacao de 4 paginas/62 arquivos.
 - Evidencias anexadas e artefatos temporarios gerados foram removidos apos a validacao.
+- Correcao de conformidade de 2026-07-31 reservou `0,45 cm` no lado direito do conteudo admissional e recuou a marca para `0,30 cm`; captura da propria caixa `.main` em modo de impressao confirmou texto integral e folga de `6,34 px` antes do limite de recorte.
+- `npm run validate:all` aprovou tipagem, lint, 49 testes, Web, tres bundles offline e publicacao de 4 paginas/62 arquivos apos a correcao.
 
 ### Proximo ponto
 
