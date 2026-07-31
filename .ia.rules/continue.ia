@@ -373,16 +373,17 @@
 - Escopo: Tecnico.
 - Objetivo: centralizar a implementacao da folha e migrar Faturamento e Oficio admissional para o contrato normativo homologado.
 - Prioridade: alta.
-- Status: concluido.
+- Status: em andamento.
 - Dependencias: conclusao e validacao da FT-005; nova autorizacao humana explicita apos a normatizacao.
 - Aceite: uma implementacao compartilhada governa visualizacao, Ctrl+P e PDF; modulos nao duplicam geometria; evidencias deixam de reproduzir cortes/desalinhamentos; testes e validacao visual cobrem fluxos e limites.
 
 ### Plano vigente
 
-1. Etapa 1/4 - reproduzir e medir falhas atuais em todos os documentos. Status: concluido.
-2. Etapa 2/4 - implementar contrato compartilhado e adaptadores tecnicos. Status: concluido.
-3. Etapa 3/4 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: concluido.
-4. Etapa 4/4 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: concluido.
+1. Etapa 1/5 - reproduzir e medir falhas atuais em todos os documentos. Status: concluido.
+2. Etapa 2/5 - implementar contrato compartilhado e adaptadores tecnicos. Status: concluido.
+3. Etapa 3/5 - migrar modulos, remover redundancias comprovadas e adicionar protecoes. Status: concluido.
+4. Etapa 4/5 - validar Web, Ctrl+P, PDF dedicado, bundles e publicacao; remover evidencias temporarias apos aceite. Status: concluido.
+5. Etapa 5/5 - corrigir o corte da marca lateral admissional reportado em 2026-07-31, validar PDF e impressao e remover evidencias temporarias. Status: em andamento.
 
 ### Resultado e verificacoes
 
@@ -394,7 +395,7 @@
 
 ### Proximo ponto
 
-- FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.
+- Correcao de conformidade autorizada em 2026-07-31: reservar largura interna no documento admissional para manter a marca lateral integralmente dentro da caixa capturada, sem alterar o perfil A4 compartilhado nem o Faturamento.
 
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 
