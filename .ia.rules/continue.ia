@@ -455,10 +455,11 @@
 - `npm run check` aprovou type-check, lint, 52 testes, build Web, tres bundles offline e validacao de 4 paginas/62 arquivos.
 - Primeira execucao real apos o commit tecnico revelou que `package.json` ainda delegava `publish` diretamente a `scripts/publish-pages.mjs`; o hook nao foi acionado e a saida terminou em `deploy=false`. FT reaberta para corrigir a entrada publica e impedir recorrencia por teste.
 - `package.json` passou a delegar `publish` a `shared:lifecycle:publish`; teste estrutural exige essa cadeia e a nova validacao integral aprovou novamente os 52 testes e todos os artefatos.
+- Execucao real corrigida concluiu em 78 s com `PUBLISH_OK`: enviou `dev` em `f2290b3`, integrou `master` por merge em `4af45297658c4aa6650eb645cd954ba474eb5e51`, restaurou `dev` com arvore limpa e confirmou o mesmo SHA no `version.json` publico por HTTP 200.
 
 ### Proximo ponto
 
-- Executar novamente o lifecycle corrigido para convergir as refs e confirmar o SHA publico.
+- FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.
 
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 
