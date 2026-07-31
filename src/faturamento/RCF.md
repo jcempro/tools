@@ -92,6 +92,8 @@ Ao salvar/exportar preenchimento ou gerar PDF, a sugestao de nome do arquivo dev
 
 O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Espaços entre titulo, dados cadastrais, resumo, tabelas, local/data e assinatura devem seguir proporcao editorial formal, sem colar blocos nem desperdiçar a pagina. A pagina imprimivel nao deve gerar pagina extra por altura estrutural, margem externa duplicada, overflow ou arredondamento do motor de impressao/PDF. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas.
 
+O Faturamento DEVE declarar somente o perfil A4 retrato e o conteudo interno exigido, consumindo integralmente `../../RCF.md`, secao `4.1 Contrato unico de folha e impressao`. Visualizacao, Ctrl+P e PDF dedicado DEVEM usar o mesmo perfil e o elemento `#documento-faturamento`. Wrapper, `@page`, dimensoes externas, aplicacao de margens, box model, escala, overflow, quebra, ocultacao da GUI e adaptadores NAO DEVEM existir como implementacao local concorrente. Conteudo nominal e limite DEVEM permanecer em uma pagina; excesso DEVE bloquear a saida com diagnostico, nunca ser cortado por `overflow: hidden`.
+
 A interface Web nao precisa reproduzir exatamente a folha durante edicao. Deve priorizar produtividade, clareza, rapidez, validacao em tempo real, prevencao de inconsistencias e revisao visual fiel antes da impressao. Campos curtos, percentuais, datas, UF, prazos e seletores nao devem ocupar largura desnecessaria; grupos de formulario devem evitar paineis isolados para campo unico quando houver agrupamento semantico coerente.
 
 ## 10. Fluxo Operacional

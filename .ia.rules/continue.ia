@@ -336,24 +336,33 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar uma unica fonte geometrica e implementacional para visualizacao, Ctrl+P e PDF, consumida por todos os modulos documentais atuais e futuros.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: nenhuma.
 - Aceite: RCF global define folha logica, variaveis permitidas, adaptadores, invariantes geometricas, proibicoes locais, validacao visual/automatizada e heranca obrigatoria por novos modulos.
 
 ### Plano vigente
 
-1. Etapa 1/3 - auditar norma e arquitetura documental existente. Status: em andamento.
-   1.1. Mapear configuracoes, wrappers, `@page`, `@media print`, Ctrl+P e geracao dedicada de PDF. Previsao: moderada. Status: em andamento.
-   1.2. Inspecionar evidencias anexadas sem presumir causa. Previsao: moderada. Status: pendente.
-2. Etapa 2/3 - consolidar contrato global e limites dos modulos. Status: pendente.
-   2.1. Definir geometria, box model, escala, overflow, paginacao, GUI nao imprimivel e adaptadores por motor. Previsao: moderada. Status: pendente.
-   2.2. Sincronizar RCF global e RCFs documentais aplicaveis. Previsao: moderada. Status: pendente.
-3. Etapa 3/3 - validar norma, registrar resultado e encerrar FT. Status: pendente.
-   3.1. Verificar completude, ausencia de contradicao e cobertura dos criterios de aceite. Previsao: curta. Status: pendente.
+1. Etapa 1/3 - auditar norma e arquitetura documental existente. Status: concluido.
+   1.1. Mapear configuracoes, wrappers, `@page`, `@media print`, Ctrl+P e geracao dedicada de PDF. Previsao: moderada. Status: concluido.
+   1.2. Inspecionar evidencias anexadas sem presumir causa. Previsao: moderada. Status: concluido.
+2. Etapa 2/3 - consolidar contrato global e limites dos modulos. Status: concluido.
+   2.1. Definir geometria, box model, escala, overflow, paginacao, GUI nao imprimivel e adaptadores por motor. Previsao: moderada. Status: concluido.
+   2.2. Sincronizar RCF global e RCFs documentais aplicaveis. Previsao: moderada. Status: concluido.
+3. Etapa 3/3 - validar norma, registrar resultado e encerrar FT. Status: concluido.
+   3.1. Verificar completude, ausencia de contradicao e cobertura dos criterios de aceite. Previsao: curta. Status: concluido.
+
+### Resultado e verificacoes
+
+- Evidencias renderizadas com Poppler: Faturamento produz uma pagina em ambos os fluxos, mas o Ctrl+P fica deslocado/cortado; Admissional produz duas paginas em ambos, com segunda pagina residual.
+- Causa registrada no RCF: `.jcem-app-shell` preserva coluna de `3.5rem`; `body` adiciona `0.9cm`; folha usa `21cm`; geometria e repetida no CSS global, CSS local e estilo dinamico.
+- Hipotese descartada: formato A4 incorreto; metadados dos quatro PDFs confirmam A4.
+- `RCF.md` secao 4.1 centraliza folha, area util, ancestrais, GUI, Ctrl+P, PDF, pagina unica/multipagina e validacao. RCFs de Faturamento e Admissional foram sincronizados sem alterar negocio.
+- Verificacao normativa: paths referenciados existem; Ctrl+P e PDF consomem o mesmo contrato; compensacao local e `overflow: hidden` como mascara ficaram proibidos.
+- Validacao integral: `npm run check` aprovou type-check, lint, 46 testes, build dos tres bundles e publicacao de 4 paginas/32 arquivos; primeira tentativa foi bloqueada por `EPERM` do sandbox ao gravar `dist/` e a repeticao autorizada concluiu sem falha.
 
 ### Proximo ponto
 
-- Concluir inventario e inspecao das evidencias; depois editar somente a norma aplicavel.
+- FT-006 aguarda nova autorizacao humana explicita para implementar a norma concluida.
 
 ## FT-006 - Implementacao do invólucro unico de folha, PDF e impressao
 
@@ -388,27 +397,35 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar geracao deterministica de favicons, manifests e marcacoes para Web/GitHub Pages e bundles offline, com identidade por alvo e configuracao central.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: nenhuma.
 - Aceite: RCF define ferramentas oficiais mantidas, fonte visual por alvo, base path, perfis Web/offline, cache por hash, limpeza, falhas, unicidade de tags/manifest e validacao reproduzivel.
 
 ### Plano vigente
 
-1. Etapa 1/3 - auditar ativos, alvos, pipeline e documentacao oficial atual. Status: em andamento.
+1. Etapa 1/3 - auditar ativos, alvos, pipeline e documentacao oficial atual. Status: concluido.
    1.1. Confirmar pacotes oficiais e compatibilidade Node/build. Previsao: curta. Status: concluido.
-   1.2. Mapear logos, favicons, manifests, tags e destinos existentes. Previsao: moderada. Status: em andamento.
-2. Etapa 2/3 - consolidar contrato global e perfis de distribuicao. Status: pendente.
-   2.1. Definir configuracao, resolucao de identidade, base path, cache e politica de assets por perfil. Previsao: moderada. Status: pendente.
-   2.2. Sincronizar RCF global e documentacao arquitetural aplicavel. Previsao: moderada. Status: pendente.
-3. Etapa 3/3 - validar norma, registrar resultado e encerrar FT. Status: pendente.
+   1.2. Mapear logos, favicons, manifests, tags e destinos existentes. Previsao: moderada. Status: concluido.
+2. Etapa 2/3 - consolidar contrato global e perfis de distribuicao. Status: concluido.
+   2.1. Definir configuracao, resolucao de identidade, base path, cache e politica de assets por perfil. Previsao: moderada. Status: concluido.
+   2.2. Sincronizar RCF global e documentacao arquitetural aplicavel. Previsao: moderada. Status: concluido.
+3. Etapa 3/3 - validar norma, registrar resultado e encerrar FT. Status: concluido.
 
 ### Decisao documental inicial
 
 - A documentacao oficial vigente identifica `@realfavicongenerator/generate-favicon` para geracao, `@realfavicongenerator/image-adapter-node` para ambiente Node e `@realfavicongenerator/inject-markups` para injecao; a API REST ainda nao esta disponivel e nao integra o caminho normativo.
 
+### Resultado e verificacoes
+
+- Ambiente: Node `v24.16.0`. Registro NPM oficial consultado em 2026-07-31: `generate-favicon` e `image-adapter-node` `0.8.4`; `inject-markups` `0.8.0`; pacotes tipados e vinculados ao monorepo oficial `RealFaviconGenerator/core`.
+- Inventario: identidade global em `src/assets/brand/logo.svg`; identidades de Faturamento, Admissional e CSV em `src/<modulo>/logo.svg`; somente `src/index.html` e `src/404.html` possuem favicon SVG manual; nenhum manifest ou gerador existe.
+- `RCF.md` secao 10.1 define SSOT `src/assets/config/favicons.json`, resolucao pelo catalogo, namespaces, base path, perfis Web/offline, cache por hash, limpeza, falhas e validacao reproduzivel.
+- README sincronizado sem afirmar implementacao concluida.
+- A mesma validacao integral da FT-005 aprovou a documentacao sincronizada e o pipeline vigente.
+
 ### Proximo ponto
 
-- Concluir inventario local e normatizar os perfis Web e offline.
+- FT-008 aguarda nova autorizacao humana explicita para implementar a norma concluida.
 
 ## FT-008 - Implementacao de favicons e manifests por alvo
 
