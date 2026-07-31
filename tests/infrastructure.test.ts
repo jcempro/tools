@@ -1,4 +1,6 @@
-import { readFile, readdir } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -38,6 +40,8 @@ test("package exposes the full development lifecycle", async () => {
   for (const script of ["build", "build:web", "build:offline-bundles", "check", "validate:all", "publish", "publish:pages", "dev", "dev-live", "lint", "test", "type-check", "validate:publication", "agent:publish"]) {
     assert.ok(pkg.scripts[script], `missing npm script: ${script}`);
   }
+  assert.equal(pkg.scripts.publish, "npm run shared:lifecycle:publish --");
+  assert.match(pkg.scripts["shared:lifecycle:publish"] ?? "", /shared-lifecycle\.js publish/);
 });
 
 test("Pages deploy owns the ephemeral version index", async () => {
@@ -53,12 +57,125 @@ test("Pages deploy owns the ephemeral version index", async () => {
   await assert.rejects(() => generateVersionIndex({ GITHUB_ACTIONS: "false", GITHUB_REF: "refs/heads/master", JCEM_DEPLOY_VERSION: hash }), /deploy oficial/);
   assert.match(workflow, /JCEM_BUILD_VERSION:\s*\$\{\{ github\.sha \}\}/);
   assert.equal(config.publication.primaryBranch, "master");
+  assert.equal(config.publication.developmentBranch, "dev");
+  assert.equal(config.publication.remote, "origin");
+  assert.equal(config.publication.deploymentRequestTimeoutMs, 15000);
   assert.doesNotMatch(workflow, /refs\/heads\/master|path:\s*dist/);
   assert.match(workflow, /npm run publish:pages/);
   assert.match(workflow, /steps\.publish\.outputs\.artifact-path/);
   assert.match(publisher, /config\.publication\.primaryBranch/);
   assert.match(publisher, /generateVersionIndex/);
   assert.match(generator, /Math\.floor\(Date\.now\(\) \/ 1000\)/);
+});
+
+test("local publish hook integrates dev and confirms the deployed SHA", async () => {
+  const hook = await readFile(".ia.rules/hooks/publish.js", "utf8");
+  const config = JSON.parse(await readFile("scripts/config.json", "utf8"));
+  // @ts-expect-error Build scripts are JavaScript-only and do not publish declarations.
+  const { publishRepository } = await import("../scripts/publish-project.mjs");
+  const hash = "b".repeat(40);
+  const calls: string[] = [];
+  const responses = new Map<string, { status?: number; stdout?: string }>([
+    ["branch --show-current", { stdout: "dev" }],
+    ["status --porcelain", { stdout: "" }],
+    ["merge-base --is-ancestor origin/dev dev", { status: 0 }],
+    ["merge-base --is-ancestor origin/master master", { status: 0 }],
+    ["merge-base --is-ancestor dev master", { status: 1 }],
+    ["merge-base --is-ancestor master dev", { status: 0 }],
+    ["rev-parse HEAD", { stdout: hash }]
+  ]);
+  const run = (_command: string, args: string[]) => {
+    const key = args.join(" ");
+    calls.push(key);
+    return { status: responses.get(key)?.status ?? 0, stdout: responses.get(key)?.stdout ?? "", stderr: "" };
+  };
+  const result = await publishRepository({
+    config,
+    run,
+    validate: async () => calls.push("validate"),
+    fetchImpl: async () => ({ ok: true, json: async () => ({ hash }) }),
+    now: () => 1,
+    sleep: async () => undefined
+  });
+
+  assert.match(hook, /scripts["',\s]+publish-project\.mjs/);
+  assert.equal(result.expectedHash, hash);
+  assert.equal(result.integration, "fast-forward");
+  assert.ok(calls.indexOf("validate") < calls.indexOf("fetch origin --prune"));
+  assert.ok(calls.indexOf("push origin dev:dev") < calls.indexOf("switch master"));
+  assert.ok(calls.includes("merge --ff-only dev"));
+  assert.ok(calls.indexOf("push origin master:master") < calls.lastIndexOf("switch dev"));
+});
+
+test("local publish performs a real fast-forward against an isolated Git remote", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "jcem-publish-"));
+  const remote = path.join(directory, "remote.git");
+  const repository = path.join(directory, "work");
+  const git = (args: string[], cwd = repository) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
+
+  try {
+    git(["init", "--bare", remote], directory);
+    git(["init", "--initial-branch=master", repository], directory);
+    git(["config", "user.name", "Publication Test"]);
+    git(["config", "user.email", "publication@example.test"]);
+    await writeFile(path.join(repository, "state.txt"), "master\n", "utf8");
+    git(["add", "state.txt"]);
+    git(["commit", "-m", "initial"]);
+    git(["switch", "-c", "dev"]);
+    await writeFile(path.join(repository, "state.txt"), "dev\n", "utf8");
+    git(["commit", "-am", "development"]);
+    const expectedHash = git(["rev-parse", "HEAD"]);
+    git(["remote", "add", "origin", remote]);
+    git(["push", "origin", "master", "dev"]);
+
+    // @ts-expect-error Build scripts are JavaScript-only and do not publish declarations.
+    const { publishRepository } = await import("../scripts/publish-project.mjs");
+    const result = await publishRepository({
+      config: {
+        site: { publicBaseUrl: "https://example.test/" },
+        publication: {
+          developmentBranch: "dev",
+          primaryBranch: "master",
+          remote: "origin",
+          deploymentPollMs: 1,
+          deploymentRequestTimeoutMs: 10,
+          deploymentTimeoutMs: 10,
+          versionIndex: "version.json"
+        }
+      },
+      rootDir: repository,
+      validate: async () => undefined,
+      fetchImpl: async () => ({ ok: true, json: async () => ({ hash: expectedHash }) }),
+      sleep: async () => undefined
+    });
+
+    assert.equal(result.integration, "fast-forward");
+    assert.equal(git(["branch", "--show-current"]), "dev");
+    assert.equal(git(["rev-parse", "master"]), expectedHash);
+    assert.equal(git(["rev-parse", "origin/master"]), expectedHash);
+    assert.equal(git(["status", "--porcelain"]), "");
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("local publish rejects a dirty tree before validation or remote mutation", async () => {
+  // @ts-expect-error Build scripts are JavaScript-only and do not publish declarations.
+  const { publishRepository } = await import("../scripts/publish-project.mjs");
+  let validated = false;
+  const calls: string[] = [];
+  const run = (_command: string, args: string[]) => {
+    calls.push(args.join(" "));
+    return { status: 0, stdout: args[0] === "branch" ? "dev" : " M local.txt", stderr: "" };
+  };
+
+  await assert.rejects(() => publishRepository({
+    config: { site: { publicBaseUrl: "https://example.test/" }, publication: { developmentBranch: "dev" } },
+    run,
+    validate: async () => { validated = true; }
+  }), /PUBLICACAO_EXIGE_ARVORE_LIMPA/);
+  assert.equal(validated, false);
+  assert.deepEqual(calls, ["branch --show-current", "status --porcelain"]);
 });
 
 test("shared chrome checks updates once and delegates presentation to CSS", async () => {

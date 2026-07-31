@@ -83,6 +83,14 @@ function normalizePositiveInteger(value, label) {
   return value;
 }
 
+function normalizeGitName(value, label) {
+  const normalized = `${value ?? ""}`.trim();
+  if (!/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(normalized) || /(?:\.\.|\/\/|@\{|\.lock$|[/.]$)/.test(normalized)) {
+    throw new Error(`Configuracao invalida em ${label}: nome Git seguro esperado.`);
+  }
+  return normalized;
+}
+
 export async function loadProjectConfig() {
   const config = assertRecord(JSON.parse(await readFile(configPath, "utf8")), "scripts/config.json");
   const paths = assertRecord(config.paths, "paths");
@@ -111,7 +119,12 @@ export async function loadProjectConfig() {
       vendor
     },
     publication: {
-      primaryBranch: normalizeRelativePath(publication.primaryBranch, "publication.primaryBranch"),
+      developmentBranch: normalizeGitName(publication.developmentBranch, "publication.developmentBranch"),
+      primaryBranch: normalizeGitName(publication.primaryBranch, "publication.primaryBranch"),
+      remote: normalizeGitName(publication.remote, "publication.remote"),
+      deploymentPollMs: normalizePositiveInteger(publication.deploymentPollMs, "publication.deploymentPollMs"),
+      deploymentRequestTimeoutMs: normalizePositiveInteger(publication.deploymentRequestTimeoutMs, "publication.deploymentRequestTimeoutMs"),
+      deploymentTimeoutMs: normalizePositiveInteger(publication.deploymentTimeoutMs, "publication.deploymentTimeoutMs"),
       versionIndex: normalizeRelativePath(publication.versionIndex, "publication.versionIndex"),
       requiredFiles: normalizeRootFiles(publication.requiredFiles, "publication.requiredFiles"),
       forbiddenRoots: normalizeRootFiles(publication.forbiddenRoots, "publication.forbiddenRoots"),

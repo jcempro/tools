@@ -399,6 +399,67 @@
 
 - FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.
 
+## FT-009 - Contrato de publicacao integral no GitHub Pages
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-07-31T15:46:47-03:00.
+- Origem: relato humano de 2026-07-31 sobre hooks de `publish` sem merge na branch primaria nem reflexo no GitHub Pages.
+- Vinculos: FT-004; FT-010; `RCF.md`; `README.md`; `.ia.rules/state/TODO.ia.md`.
+- Escopo: Tecnico.
+- Objetivo: equalizar o contrato local de `publish` ao lifecycle global all-in-one, cobrindo validacao, sincronizacao de `dev`, integracao na branch primaria, push, acionamento e confirmacao do GitHub Pages.
+- Prioridade: critica.
+- Status: concluido.
+- Dependencias: nenhuma.
+- Aceite: RCF e README distinguem preparacao CI de publicacao local; definem precondicoes Git, ordem de integracao, retorno de branch, falha fechada e confirmacao da revisao implantada.
+
+### Plano vigente
+
+1. Etapa 1/2 - auditar o fluxo atual e conciliar a regressao com FT-004 e normas vigentes. Status: concluido.
+2. Etapa 2/2 - sincronizar RCF, README, memoria e validar o contrato. Status: concluido.
+
+### Diagnostico inicial
+
+- `.ia.rules/hooks/` esta ausente; `shared:lifecycle:publish` retorna sucesso nao aplicavel sem executar `scripts/publish-pages.mjs`.
+- `master` local esta 11 commits a frente de `origin/master`; o workflow Pages somente implanta pushes na branch primaria configurada, portanto o estado publicado permanece em `98e24eb`.
+- A atualizacao de governanca `671d220` substituiu a entrada direta de `publish` pelo lifecycle compartilhado sem materializar a especializacao local requerida.
+
+### Proximo ponto
+
+- Norma concluida e validada; FT-010 liberada para implementar a correcao solicitada.
+
+## FT-010 - Restauracao dos hooks de publicacao e implantacao Pages
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-07-31T15:46:48-03:00.
+- Origem: relato humano de 2026-07-31, normatizado pela FT-009.
+- Vinculos: FT-004; FT-009; `scripts/publish-pages.mjs`; `.ia.rules/hooks/`; workflow GitHub Pages.
+- Escopo: Tecnico.
+- Objetivo: implementar a especializacao local de `publish` para validar, sincronizar Git, integrar `dev` na branch primaria, enviar refs e comprovar a revisao publicada.
+- Prioridade: critica.
+- Status: concluido.
+- Dependencias: FT-009 concluida; correcao explicitamente solicitada pelo relato humano que originou a frente.
+- Aceite: hook principal presente; arvore suja, branch incorreta e divergencia remota bloqueiam; validacao precede mutacao; `dev` e primaria sao enviadas sem reescrita; branch inicial e restaurada; Pages confirma o SHA esperado; testes isolados e `npm run check` aprovados.
+
+### Plano vigente
+
+1. Etapa 1/3 - implementar configuracao validada, hook e orquestracao Git deterministica. Status: concluido.
+2. Etapa 2/3 - cobrir precondicoes, integracao, falhas, restauracao e confirmacao remota com testes isolados. Status: concluido.
+3. Etapa 3/3 - executar publicacao real, confirmar Pages, atualizar memoria e remover a entrada concluida do TODO. Status: concluido.
+
+### Resultado e verificacoes
+
+- `.ia.rules/hooks/publish.js` restaura a especializacao local preservavel e delega ao orquestrador autoritativo `scripts/publish-project.mjs`.
+- Configuracao central declara branch de desenvolvimento, branch primaria, remoto e limites de polling, requisicao e confirmacao do Pages.
+- Precondicoes bloqueiam branch incorreta, arvore suja e refs remotas divergentes antes de push; integracao preserva historico, aborta conflito e restaura a branch inicial.
+- Teste Git com remoto bare temporario comprovou push de `dev`, fast-forward de `master`, push da primaria, retorno a `dev` e arvore limpa; temporarios foram removidos no `finally`.
+- `npm run check` aprovou type-check, lint, 52 testes, build Web, tres bundles offline e validacao de 4 paginas/62 arquivos.
+- Primeira execucao real apos o commit tecnico revelou que `package.json` ainda delegava `publish` diretamente a `scripts/publish-pages.mjs`; o hook nao foi acionado e a saida terminou em `deploy=false`. FT reaberta para corrigir a entrada publica e impedir recorrencia por teste.
+- `package.json` passou a delegar `publish` a `shared:lifecycle:publish`; teste estrutural exige essa cadeia e a nova validacao integral aprovou novamente os 52 testes e todos os artefatos.
+
+### Proximo ponto
+
+- Executar novamente o lifecycle corrigido para convergir as refs e confirmar o SHA publico.
+
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 
 - Tipo: implementacao_normativa.
