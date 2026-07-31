@@ -436,7 +436,7 @@
 - Escopo: Tecnico.
 - Objetivo: implementar a especializacao local de `publish` para validar, sincronizar Git, integrar `dev` na branch primaria, enviar refs e comprovar a revisao publicada.
 - Prioridade: critica.
-- Status: concluido.
+- Status: em andamento.
 - Dependencias: FT-009 concluida; correcao explicitamente solicitada pelo relato humano que originou a frente.
 - Aceite: hook principal presente; arvore suja, branch incorreta e divergencia remota bloqueiam; validacao precede mutacao; `dev` e primaria sao enviadas sem reescrita; branch inicial e restaurada; Pages confirma o SHA esperado; testes isolados e `npm run check` aprovados.
 
@@ -444,7 +444,7 @@
 
 1. Etapa 1/3 - implementar configuracao validada, hook e orquestracao Git deterministica. Status: concluido.
 2. Etapa 2/3 - cobrir precondicoes, integracao, falhas, restauracao e confirmacao remota com testes isolados. Status: concluido.
-3. Etapa 3/3 - executar publicacao real, confirmar Pages, atualizar memoria e remover a entrada concluida do TODO. Status: concluido.
+3. Etapa 3/3 - executar publicacao real, confirmar Pages, atualizar memoria e remover a entrada concluida do TODO. Status: em andamento.
 
 ### Resultado e verificacoes
 
@@ -453,10 +453,11 @@
 - Precondicoes bloqueiam branch incorreta, arvore suja e refs remotas divergentes antes de push; integracao preserva historico, aborta conflito e restaura a branch inicial.
 - Teste Git com remoto bare temporario comprovou push de `dev`, fast-forward de `master`, push da primaria, retorno a `dev` e arvore limpa; temporarios foram removidos no `finally`.
 - `npm run check` aprovou type-check, lint, 52 testes, build Web, tres bundles offline e validacao de 4 paginas/62 arquivos.
+- Primeira execucao real apos o commit tecnico revelou que `package.json` ainda delegava `publish` diretamente a `scripts/publish-pages.mjs`; o hook nao foi acionado e a saida terminou em `deploy=false`. FT reaberta para corrigir a entrada publica e impedir recorrencia por teste.
 
 ### Proximo ponto
 
-- Executar o lifecycle concluido para convergir `dev`/`master` e confirmar o SHA publico.
+- Corrigir a delegacao NPM, revalidar e executar novamente o lifecycle para confirmar o SHA publico.
 
 ## FT-007 - Contrato normativo de favicons e manifests por alvo
 
