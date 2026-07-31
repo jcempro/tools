@@ -16,7 +16,7 @@
     "dev": "node scripts/dev.mjs",
     "dev-live": "node scripts/dev-live.mjs",
     "generate:version-index": "node scripts/generate-version-index.mjs",
-    "publish": "node scripts/publish-pages.mjs",
+    "publish": "npm run shared:lifecycle:publish --",
     "publish:pages": "node scripts/publish-pages.mjs --pages",
     "lint": "eslint .",
     "test": "tsx --test tests/**/*.test.ts",

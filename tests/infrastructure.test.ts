@@ -40,6 +40,8 @@ test("package exposes the full development lifecycle", async () => {
   for (const script of ["build", "build:web", "build:offline-bundles", "check", "validate:all", "publish", "publish:pages", "dev", "dev-live", "lint", "test", "type-check", "validate:publication", "agent:publish"]) {
     assert.ok(pkg.scripts[script], `missing npm script: ${script}`);
   }
+  assert.equal(pkg.scripts.publish, "npm run shared:lifecycle:publish --");
+  assert.match(pkg.scripts["shared:lifecycle:publish"] ?? "", /shared-lifecycle\.js publish/);
 });
 
 test("Pages deploy owns the ephemeral version index", async () => {
