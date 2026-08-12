@@ -107,7 +107,7 @@
     "agent:index-data": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:index-data",
     "agent:query-data": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:query-data",
     "update:agents": "npm run shared:update:agents --",
-    "shared:update:agents": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:autoupdate",
+    "shared:update:agents": "node -e \"const c=require('child_process'),f=require('fs'),p=require('path'),a=process.argv.slice(1).map(v=>['check','dry-run','force','help'].includes(v)?'--'+v:v),m='.ia.rules/core/runtime/scripts/repo-tools.js',b='scripts/.agents/autoupdate.js',l='.agents/core/runtime/scripts/autoupdate.js',s=f.existsSync(m)?[m,'agent:autoupdate',...a]:f.existsSync(b)?[b,...a]:f.existsSync(l)?[l,...a]:null;if(!s)throw new Error('ATUALIZADOR_AGENTS_AUSENTE');const r=c.spawnSync(process.execPath,[p.resolve(s[0]),...s.slice(1)],{stdio:'inherit',windowsHide:true});if(r.error)throw r.error;process.exitCode=Number.isInteger(r.status)?r.status:1\" --",
     "shared:lifecycle:release": "node .ia.rules/core/runtime/scripts/to-ia.js --command release --run node .ia.rules/scenarios/release/scripts/release-publish-resume.js",
     "shared:lifecycle:publish": "node .ia.rules/core/runtime/scripts/to-ia.js --command publish --run node .ia.rules/core/runtime/scripts/shared-lifecycle.js publish",
     "shared:dev-live": "node .ia.rules/core/runtime/scripts/to-ia.js --command dev-live --run node .ia.rules/core/runtime/scripts/shared-lifecycle.js dev-live",
@@ -129,7 +129,14 @@
     "agent:inbox:start": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:inbox:start",
     "agent:inbox:bind-release": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:inbox:bind-release",
     "agent:inbox:complete-release": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:inbox:complete-release",
-    "agent:test:inbox": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:test:inbox"
+    "agent:test:inbox": "node .ia.rules/core/runtime/scripts/repo-tools.js agent:test:inbox",
+    "agent:workflows": "node .ia.rules/core/runtime/scripts/workflow-manager.js",
+    "agent:rcf:trace": "node .ia.rules/core/runtime/scripts/rcf-trace.js",
+    "clean": "npm run agent:clean",
+    "prepare": "npm run agent:setup",
+    "release": "npm run shared:lifecycle:release --",
+    "release:publish": "npm run agent:release:publish --",
+    "release:trigger": "npm run agent:release:trigger"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
@@ -154,24 +161,41 @@
     "schema": 1,
     "managedScriptPrefixes": [
       "agent:",
+      "agents:",
       "shared:"
     ],
     "managedScripts": [
+      "update:agents"
+    ],
+    "installableScripts": [
       "build",
       "check",
       "clean",
       "dev-live",
+      "lint",
       "prepare",
       "publish",
       "release",
       "release:publish",
       "release:trigger",
-      "test",
-      "update:agents",
-      "agents:autoupdate",
-      "agents:update"
+      "test"
     ],
     "dependencies": [],
-    "optionalDependencies": []
+    "optionalDependencies": [],
+    "installedScripts": {
+      "clean": "4b572b952e94947fd52260ba2cdf4e162a6137914f9c64b1e3cd9e8e59c60911",
+      "prepare": "47a5905078e3d737740738c917b423ff1055ca83fe38f2bb726486fab73b4c17",
+      "release": "24aed21cc487891b67bec9c3d870dd5611151c2735f1c2d42e929c9237b6d5ec",
+      "release:publish": "30ab287e3cc36332b2ad5843b284622ac90569eec0c00bcea71401112af7b4cb",
+      "release:trigger": "7f2e16a3a8b363258724b8523a6c5bb057e68728a6e5675a5581281faaa9e238"
+    },
+    "repositoryProfile": "consumer"
+  },
+  "agentsUpstream": {
+    "schema": 1,
+    "upstreamRepository": "jcempro/agents.md",
+    "predecessorRepositories": [
+      "JeanCarloEM/agents.md"
+    ]
   }
 }

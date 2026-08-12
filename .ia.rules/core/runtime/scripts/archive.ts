@@ -1,9 +1,12 @@
 // Autor: JeanCarloEM.com
 // Site do Autor: https://jeancarloem.com
+// Repositorio: https://github.com/jcempro/agents.md
 // Licenca: Mozilla Public License 2.0
 // Site da Licenca: https://www.mozilla.org/MPL/2.0/
 // Resumo da Licenca: uso, copia, modificacao e distribuicao permitidos conforme os termos da MPL-2.0.
-// Disclaimer: fornecido "AS IS", sem garantias de qualquer tipo.
+// Disclaimer: fornecido AS IS, sem garantias de qualquer tipo.
+
+// Núcleo de runtime: arquivo e compactação.
 
 const fs = require("fs");
 const path = require("path");
@@ -13,6 +16,7 @@ const ZIP_EPOCH_DOS_DATE = 0x0021;
 const ZIP_EPOCH_DOS_TIME = 0x0000;
 const CRC_TABLE = createCrcTable();
 
+/** Executa createZipFromDirectory no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function createZipFromDirectory(sourceDir, targetZipPath, options = {}) {
   const entries = listZipEntries(sourceDir)
     .map((entry) => ({
@@ -58,6 +62,7 @@ function createZipFromDirectory(sourceDir, targetZipPath, options = {}) {
   fs.writeFileSync(targetZipPath, Buffer.concat(chunks));
 }
 
+/** Executa extractZip no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function extractZip(zipBuffer, destinationDir) {
   let offset = 0;
 
@@ -105,6 +110,7 @@ function extractZip(zipBuffer, destinationDir) {
   }
 }
 
+/** Executa inflateZipEntry no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function inflateZipEntry(buffer, method, expectedSize) {
   if (method === 0) {
     return buffer;
@@ -123,6 +129,7 @@ function inflateZipEntry(buffer, method, expectedSize) {
   throw new Error(`Método de compressão ZIP não suportado: ${method}`);
 }
 
+/** Executa safeZipPath no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function safeZipPath(name) {
   const normalized = normalizeZipPath(name).replace(/^\/+/u, "");
 
@@ -138,6 +145,7 @@ function safeZipPath(name) {
   return normalized;
 }
 
+/** Executa createLocalFileHeader no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function createLocalFileHeader(nameBuffer, crc, compressedSize, uncompressedSize) {
   const header = Buffer.alloc(30);
   header.writeUInt32LE(0x04034b50, 0);
@@ -154,6 +162,7 @@ function createLocalFileHeader(nameBuffer, crc, compressedSize, uncompressedSize
   return header;
 }
 
+/** Executa createCentralDirectoryHeader no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function createCentralDirectoryHeader(nameBuffer, crc, compressedSize, uncompressedSize, localHeaderOffset) {
   const buffer = Buffer.alloc(46);
   buffer.writeUInt32LE(0x02014b50, 0);
@@ -176,6 +185,7 @@ function createCentralDirectoryHeader(nameBuffer, crc, compressedSize, uncompres
   return { buffer, nameBuffer };
 }
 
+/** Executa createEndOfCentralDirectory no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function createEndOfCentralDirectory(entryCount, centralDirectorySize, centralDirectoryOffset) {
   const buffer = Buffer.alloc(22);
   buffer.writeUInt32LE(0x06054b50, 0);
@@ -189,6 +199,7 @@ function createEndOfCentralDirectory(entryCount, centralDirectorySize, centralDi
   return buffer;
 }
 
+/** Executa crc32 no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function crc32(buffer) {
   let crc = 0xffffffff;
 
@@ -199,6 +210,7 @@ function crc32(buffer) {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
+/** Executa createCrcTable no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function createCrcTable() {
   const table = new Uint32Array(256);
 
@@ -215,6 +227,7 @@ function createCrcTable() {
   return table;
 }
 
+/** Executa shouldExcludeZipEntry no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function shouldExcludeZipEntry(relativePath, excludes) {
   return excludes.some((pattern) => {
     if (typeof pattern === "string") {
@@ -225,6 +238,7 @@ function shouldExcludeZipEntry(relativePath, excludes) {
   });
 }
 
+/** Executa listZipEntries no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function listZipEntries(dirPath) {
   const entries = [];
 
@@ -252,6 +266,7 @@ function listZipEntries(dirPath) {
   return entries;
 }
 
+/** Executa normalizeZipPath no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function normalizeZipPath(value) {
   return String(value || "").replace(/\\/gu, "/");
 }
