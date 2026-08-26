@@ -277,6 +277,25 @@
     },
     {
       "artifacts": [
+        "src/assets/config/printing.json",
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "911e053344d2e16e11e2fea1",
+      "line": 82,
+      "rcf": "RCF.md",
+      "sentenceSha256": "1cab0fde502aa15808486d0ce04cbdd7f158a785901c170603e823d8d1f3a5ba",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
         "RCF.md"
       ],
       "commit": "ce9483e966f13f244646cbd16538008b9ef96ae2",
@@ -433,6 +452,21 @@
     },
     {
       "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "79773a6ee0cbb0ae74db8979",
+      "line": 120,
+      "rcf": "RCF.md",
+      "sentenceSha256": "a698b3cc2fcd9ac9f58a140bd22dcddf1f96bb56100266bf91e2c8fb4a78216b",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
         "RCF.md"
       ],
       "commit": "05d173e55693899637389a8932cc66cbfe14213e",
@@ -455,6 +489,23 @@
       "rcf": "RCF.md",
       "sentenceSha256": "3bfd5850d41dd6e71d1311043ccd0ca422e44a4600d92bd704668a4d92e879bd",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/dashboard.ts",
+        "src/assets/js/documentos.ts",
+        "src/index.html",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "e2c3f9d3cc9f816b2eae5fae",
+      "line": 124,
+      "rcf": "RCF.md",
+      "sentenceSha256": "6788549f5238ef6288a8bce3a39bf67c2768084ffe579a1cf0ed8a373b6589a8",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -1126,6 +1177,41 @@
       "rcf": "RCF.md",
       "sentenceSha256": "a2a98e45a60cc6c57dd2bd49aa9533f3f58b89162ea08e95b4f4b99710debb7e",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/csv-bd/logo.svg",
+        "src/declaracoes/unificada/logo.svg",
+        "src/faturamento/logo.svg",
+        "src/oficios/admissional/logo.svg",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "55e8210a5f5af9f7b81513e8",
+      "line": 264,
+      "rcf": "RCF.md",
+      "sentenceSha256": "edc8769ea1fe6245acb07f09882a662a1a031c659866c075d3c8050a34978b9a",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/favicons.mjs",
+        "src/csv-bd/logo.svg",
+        "src/declaracoes/unificada/logo.svg",
+        "src/faturamento/logo.svg",
+        "src/oficios/admissional/logo.svg",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "dd8c79e8b983849cb08cb5d8",
+      "line": 266,
+      "rcf": "RCF.md",
+      "sentenceSha256": "64a90c48c28933bd3ff5f03aaa16d7ad6683c97a8dcb6f0741c1c53cd6100c5c",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -2603,6 +2689,22 @@
     },
     {
       "artifacts": [
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "bc2fc8abaf0a8741104dc940",
+      "line": 114,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "509e00a650a17aea13f061c2859b972955123ba0b4bc088c1b07b4130a3eb5eb",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
         "scripts/build-bundles-core.mjs",
         "scripts/compile.mjs",
         "scripts/config.json",
@@ -2695,6 +2797,22 @@
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f365a4b0766af5c072d4b5713f6d454f622c7e8382a1c1a159653c3b52e56433",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "111bc8df306502698d3ec8c5",
+      "line": 120,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "c7532bbd45cf322f30b272f847a70e603bd8ec69a09b13d43ce913b9a91aa0bf",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -2855,6 +2973,25 @@
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "e5df5a6e78e4c9c6947a90bc7e7aa772ab17c6e20d819f4abcad110695733bf6",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/printing.json",
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "958ba8da6e511ae2fcfaac3f",
+      "line": 132,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "6051da36bf63101036da7217e5f20e72e257fd74b246f941487d422f56b6c462",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -3260,6 +3397,20 @@
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "c0c93270ee6c491b48c989acbb6786f2d327a8b7cf47311ae1838f215fcf98b8",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "tests/declaracoes-unificada.test.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-015",
+      "id": "49e65103ccdd334eac6de367",
+      "line": 193,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "da7e3f5c6d38ee1155d84e6dde2329ac574dcc2dc1645af8976f37ddaffadfda",
+      "state": "pending",
       "syncCommit": ""
     }
   ]
