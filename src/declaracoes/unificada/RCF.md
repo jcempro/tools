@@ -16,6 +16,10 @@ Na ausência de conflito, o ODT governa texto, ordem, estrutura e semântica doc
 
 As evidências são insumos imutáveis de rastreabilidade e NÃO DEVEM ser editadas, convertidas em fonte runtime nem publicadas em Web ou Bundle. [PENDENTE-CODIGO]
 
+Para a FT-012, o recorte autorizado do ODT DEVE conter exclusivamente as tabelas externas `Tabela1`, `Tabela2`, `Tabela4`, `Tabela6`, `Tabela8` e `Tabela9`, cujas células externas usam fundo `#d9d9d9` e cujos títulos as identificam inequivocamente como declaração, autorização ou adesão. [PENDENTE-CODIGO]
+
+Tabelas internas aninhadas nesses seis blocos DEVEM permanecer como estrutura da respectiva unidade cinza; conteúdo fora deles ou sem a dupla comprovação de fundo cinza e identidade documental NÃO DEVE integrar os Markdown. [PENDENTE-CODIGO]
+
 ## 3. Unidades documentais e ordem
 
 A composição DEVE preservar, nesta ordem estável, as seis unidades existentes no ODT: [PENDENTE-CODIGO]
@@ -32,6 +36,10 @@ Instruções, notas, tabelas, definições, enumerações e ressalvas pertencent
 O texto normativo NÃO DEVE ser editável, ocultável, reordenável nem substituível pela GUI; somente dados explicitamente parametrizados por este RCF PODEM variar. [PENDENTE-CODIGO]
 
 Transcrição para Markdown PODE normalizar codificação, espaços técnicos e quebras sem efeito semântico, mas NÃO DEVE corrigir, resumir, modernizar, completar ou reinterpretar redação, pontuação, numeração, referências legais ou valores do ODT sem autorização humana explícita. [PENDENTE-CODIGO]
+
+Correção sintática autorizada DEVE limitar-se a defeitos mecânicos inequívocos produzidos por fronteiras de runs ou pela conversão para Markdown, como palavras coladas, espaço duplicado, marcador de lista, célula, título ou quebra estrutural inválida; toda correção DEVE possuir registro origem -> Markdown e NÃO DEVE alterar escolha lexical, obrigação, sujeito, objeto, número, valor, referência legal, ordem ou alcance semântico. [PENDENTE-CODIGO]
+
+Quando não for possível distinguir erro sintático de possível erro material do texto, a transcrição DEVE preservar o ODT literalmente e registrar a divergência para decisão humana. [PENDENTE-CODIGO]
 
 ## 4. Fonte Markdown e compilação
 
@@ -181,5 +189,7 @@ A FT-012 somente PODE ser concluída após `npm run validate:all`, testes espec�
 ## 15. Impedimentos e decisões reservadas
 
 A identidade visual própria exigida pelo catálogo global não está definida nas evidências; a implementação NÃO DEVE inventar marca definitiva e DEVE obter ativo ou autorização explícita para derivação antes de concluir o módulo. [PENDENTE-CODIGO]
+
+A autorização vinculada à FT-013 satisfaz essa condição e define `DU`, derivado de `Declarações Unificadas`, como monograma preferencial; o novo `logo.svg` DEVE materializar `DU` no padrão Adobe-like global, com letras personalizadas e imediatamente legíveis e detalhe gráfico somente se sutil e pertinente ao formulário documental. [PENDENTE-CODIGO]
 
 Qualquer divergência textual descoberta durante a transcrição, inclusive possível erro material no ODT, DEVE ser preservada e relatada, não corrigida por inferência. [PENDENTE-CODIGO]

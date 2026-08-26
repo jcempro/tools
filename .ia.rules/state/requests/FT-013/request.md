@@ -5,7 +5,7 @@
 - SHA-256 do corpo canônico: `2066CDE1D007110E336DEFBA54BFCEBAAB0D59DCC63581385EE2BD53F7D97181`.
 - FTs vinculadas: FT-013 (normatização) e FT-012 (implementação posterior).
 - RCFs de destino: `RCF.md` e `src/declaracoes/unificada/RCF.md`.
-- Estado de incorporação: capturado; análise e incorporação pendentes.
+- Estado de incorporação: incorporado integralmente no RCF global, no RCF específico e no handoff da FT-012; implementação ainda não iniciada.
 
 <!-- source:start -->
 Autorizo a continuação:

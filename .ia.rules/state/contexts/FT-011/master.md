@@ -36,8 +36,8 @@
 
 - Auditoria e equalizacao: concluidas.
 - FT-011: concluida e validada.
-- FT-013: em andamento para incorporar o padrao global Adobe-like e a selecao dos blocos cinza do ODT.
-- FT-012: autorizacao recebida, mas execucao suspensa ate a FT-013 ser commitada e receber nova autorizacao posterior.
+- FT-013: concluida e validada no commit normativo da fase.
+- FT-012: execucao suspensa ate o commit da FT-013 e nova autorizacao humana posterior.
 
 ## Mudanca de escopo de 2026-08-26
 

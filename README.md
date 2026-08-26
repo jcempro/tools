@@ -37,9 +37,13 @@ Toolbar, ícones, tooltips, exportação/importação local e o contrato único 
 
 Favicons e manifests devem ser gerados por alvo durante o build a partir do logo global ou do logo próprio do módulo, conforme configuração central. A publicação Web recebe o perfil completo compatível com sua base path; cada Bundle incorpora somente o favicon offline útil de sua própria identidade.
 
+Novos módulos usam identidade visual Adobe-like baseada, preferencialmente, em duas letras estratégicas do nome público. O monograma deve ser próprio, estilizado e legível nos tamanhos reais do catálogo, cabeçalho e favicon; detalhe gráfico é admitido apenas quando sutil e pertinente. A regra é prospectiva e não determina refatoração dos logos preexistentes.
+
 ## Conteúdo Markdown de declarações unificadas
 
-O módulo em preparação `declaracoes/unificada` mantém cada declaração, autorização ou adesão em um arquivo Markdown UTF-8 separado, ordenado por `conteudo/manifest.json`. Cada arquivo usa exatamente um título `#`, parágrafos, listas e tabelas necessários para reproduzir o documento de origem; HTML arbitrário, scripts, estilos, includes remotos e correções editoriais por inferência não fazem parte desse modo de autoria.
+O módulo em preparação `declaracoes/unificada` mantém cada declaração, autorização ou adesão em um arquivo Markdown UTF-8 separado, ordenado por `conteudo/manifest.json`. Entram exclusivamente as seis tabelas externas com fundo cinza `#d9d9d9` do ODT, incluindo suas tabelas internas; conteúdo externo a esses blocos não integra os Markdown. Cada arquivo usa exatamente um título `#`, parágrafos, listas e tabelas necessários para reproduzir o documento de origem; HTML arbitrário, scripts, estilos e includes remotos não fazem parte desse modo de autoria.
+
+Correções limitam-se a defeitos sintáticos mecânicos inequívocos da origem/conversão, com registro da transformação. Escolha lexical, obrigações, valores, referências, ordem, alcance semântico e estrutura documental permanecem intactos; dúvida preserva literalmente o ODT para decisão humana.
 
 O build será responsável por validar o manifesto, converter o Markdown para HTML sanitizado e incorporar o resultado tanto na versão Web quanto no Bundle. Os arquivos `.md` são fonte normativa de desenvolvimento e não devem ser buscados ou publicados como recursos de runtime. Frases, templates, fundo e espaçamentos ficam na configuração central `src/assets/config/declaracoes-unificada.json`, não nos arquivos de conteúdo.
 

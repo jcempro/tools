@@ -473,15 +473,30 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar globalmente o padrao Adobe-like para novos logotipos e restringir a transcricao Markdown do formulario unificado aos blocos cinza do ODT identificados como declaracoes, preservando semantica e estrutura.
 - Prioridade: alta.
-- Status: em_andamento.
+- Status: concluido.
 - Dependencias: FT-011 concluida.
 - Aceite: RCF global define derivacao estrategica preferencial de duas letras, personalizacao, legibilidade, detalhe sutil e aplicacao prospectiva; RCF local define selecao exata do ODT e limite entre correcao sintatica e alteracao semantica; logos existentes permanecem intocados.
 
 ### Plano vigente
 
 1. Etapa 1/3 - capturar a nova fonte, reavaliar escopo e conciliar FT-012/FT-013. Status: concluido.
-2. Etapa 2/3 - atualizar RCF global, RCF local, rastreabilidade e documentacao aplicavel. Status: pendente.
-3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: pendente.
+2. Etapa 2/3 - atualizar RCF global, RCF local, rastreabilidade e documentacao aplicavel. Status: concluido.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: concluido.
+
+### Resultado e verificacoes
+
+- Commit inicial exclusivo da frente: `198070b`.
+- `RCF.md` define prospectivamente o padrao Adobe-like: preferencia por duas letras estrategicas, personalizacao, legibilidade imediata, detalhe sutil pertinente, originalidade e ausencia de refatoracao retroativa obrigatoria.
+- O RCF especifico seleciona exclusivamente `Tabela1`, `Tabela2`, `Tabela4`, `Tabela6`, `Tabela8` e `Tabela9`, todas com celula externa `#d9d9d9`; tabelas internas permanecem parte do respectivo bloco e conteudo externo fica proibido.
+- Correcao sintatica ficou limitada a defeito mecanico inequivoco, com registro origem -> Markdown; duvida, escolha lexical, valor, referencia, ordem, obrigacao, estrutura e alcance semantico preservam literalmente o ODT.
+- O novo modulo usara monograma `DU`, derivado de `Declaracoes Unificadas`, no padrao global; logos preexistentes nao foram alterados.
+- A rastreabilidade global foi adotada: 155 sentencas materiais validas, sendo 83 historicas sincronizadas e 72 pendentes de implementacao, das quais 9 pertencem ao refinamento atual.
+- `npm run check` aprovou type-check, lint, 52 testes, build Web, tres Bundles e validacao de 4 paginas/62 arquivos.
+- Nenhum SVG, Markdown documental, codigo, configuracao runtime ou artefato funcional da FT-012 foi criado.
+
+### Proximo ponto
+
+- A FT-012 permanece pendente e exige nova autorizacao humana explicita apos o commit desta norma.
 
 ## FT-009 - Contrato de publicacao integral no GitHub Pages
 
