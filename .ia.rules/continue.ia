@@ -1,5 +1,61 @@
 # Memoria operacional canonica
 
+## FT-014 - Equalizacao normativa das inconsistencias visuais e de impressao
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-08-26T15:22:45-03:00.
+- Origem: item operacional de `TODO.ia.md`, SHA-256 `939DB4240B331A0C8FAEB1BFFA609EB4F065C52E1AAC2D5864C58EE529E8162F`, e evidencias `evidencia-1a.png` a `evidencia-4.png` versionadas em `.ia.rules/state/evidencias/`.
+- Vinculos: FT-015; `TODO.ia.md`; `RCF.md`; `src/declaracoes/unificada/RCF.md`; infraestrutura global de chrome, navegacao, tema, folha, impressao e PDF; catalogo e logos dos modulos.
+- Escopo: Tecnico.
+- Objetivo: equalizar e normatizar as correcoes cirurgicas de tema, navegacao lateral, identidade dos modulos, composicao de assinaturas e margens de impressao/PDF, preservando mecanismos globais e ausencia de regressao cruzada.
+- Prioridade: alta.
+- Status: em andamento.
+- Dependencias: FT-012 e FT-013 concluidas; estado real e seis evidencias visuais auditados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF global e especifico cobrem integralmente as evidencias, resolvem precedencia, alcance, geometria, estados, especializacoes e validacao sem antecipar codigo nem reduzir contratos vigentes.
+
+### Plano vigente
+
+1. Etapa 1/3 - auditar TODO, evidencias, estado real e contratos vigentes; equalizar objetivo, escopo, precedencias, dependencias, terminologia, lacunas e regressões. Status: em andamento.
+2. Etapa 2/3 - sincronizar o RCF global, o RCF do modulo unificado e a rastreabilidade material aplicavel. Status: pendente.
+3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: pendente.
+
+### Decomposicao inicial
+
+- Tema: o controle deve representar inequivocamente o tema de destino da proxima alternancia, mantendo persistencia, preferencia do sistema, acessibilidade, tema atual e mecanismo global existentes.
+- Navegacao: o trilho lateral integra o shell entre cabecalho e rodape; a correcao deve preservar retracao, expansao sobre o conteudo, responsividade, ambos os lados configuraveis e ambos os temas.
+- Identidade: a substituicao solicitada depois da adocao do padrao Adobe-like submete os quatro logos de modulos vigentes ao contrato atual; a marca global do workspace fica fora do alcance.
+- Documento unificado: a indicacao de assinaturas precisa de separacao superior e area fisica posterior suficiente, sem underlines nos campos indicados e sem alterar conteudo, tipografia ou estrutura alheios.
+- Saida: margens fisicas uniformes pertencem primeiro ao perfil global de folha e devem convergir entre visualizacao paginada, Ctrl+P e PDF; somente a reserva de assinaturas e especializacao local.
+- Integridade: validacao deve comparar as seis evidencias e cobrir temas, viewports, navegacao, modulos, Web, Bundle, visualizacao, Ctrl+P e PDF dedicado.
+
+### Proximo ponto
+
+- Concluir a auditoria bidirecional e materializar exclusivamente a norma da FT-014.
+
+## FT-015 - Implementacao das correcoes visuais e de impressao
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-08-26T15:22:46-03:00.
+- Origem: mesmo item operacional de `TODO.ia.md` e evidencias vinculadas pela FT-014.
+- Vinculos: FT-014; `RCF.md`; `src/declaracoes/unificada/RCF.md`; fontes e testes dos mecanismos afetados.
+- Escopo: Tecnico.
+- Objetivo: implementar e validar as correcoes equalizadas de tema, navegacao, logos, assinaturas e margens sem excecao paralela nem regressao funcional, visual, responsiva ou de saida.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-014 concluida, validada e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: todas as evidencias corrigidas por mecanismos conformes; quatro logos de modulos aderentes; visualizacao, Web, Bundle, Ctrl+P e PDF coerentes; testes automatizados e inspecao visual sem regressao.
+
+### Plano vigente
+
+1. Etapa 1/4 - corrigir estado visual do tema e geometria da navegacao global com testes de estados e viewports. Status: pendente.
+2. Etapa 2/4 - substituir os logos dos modulos e validar catalogo, tema, favicons, Web e Bundle. Status: pendente.
+3. Etapa 3/4 - corrigir rodape, assinaturas e perfil de margens do documento unificado nos tres fluxos de saida. Status: pendente.
+4. Etapa 4/4 - executar validacoes automatizadas, visuais, responsivas e de impressao, sincronizar rastreabilidade e concluir a TO-DO. Status: pendente.
+
+### Proximo ponto
+
+- Aguardar conclusao normativa da FT-014 e nova autorizacao humana explicita.
+
 ## FT-001 - Manutencao, contexto e continuidade
 
 - Objetivo: executar a sequencia completa de manutencao, atualizacao de contexto, padronizacao, diagnostico do modulo `admissional` e continuidade de implementacao.
