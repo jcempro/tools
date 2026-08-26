@@ -37,4 +37,10 @@ Toolbar, ícones, tooltips, exportação/importação local e o contrato único 
 
 Favicons e manifests devem ser gerados por alvo durante o build a partir do logo global ou do logo próprio do módulo, conforme configuração central. A publicação Web recebe o perfil completo compatível com sua base path; cada Bundle incorpora somente o favicon offline útil de sua própria identidade.
 
+## Conteúdo Markdown de declarações unificadas
+
+O módulo em preparação `declaracoes/unificada` mantém cada declaração, autorização ou adesão em um arquivo Markdown UTF-8 separado, ordenado por `conteudo/manifest.json`. Cada arquivo usa exatamente um título `#`, parágrafos, listas e tabelas necessários para reproduzir o documento de origem; HTML arbitrário, scripts, estilos, includes remotos e correções editoriais por inferência não fazem parte desse modo de autoria.
+
+O build será responsável por validar o manifesto, converter o Markdown para HTML sanitizado e incorporar o resultado tanto na versão Web quanto no Bundle. Os arquivos `.md` são fonte normativa de desenvolvimento e não devem ser buscados ou publicados como recursos de runtime. Frases, templates, fundo e espaçamentos ficam na configuração central `src/assets/config/declaracoes-unificada.json`, não nos arquivos de conteúdo.
+
 Autoria, licença, disclaimer, isenção de responsabilidade e textos institucionais são fonte única do chrome global. O autor exibido é sempre JeanCarloEM, com link para `https://www.jeancarloem.com`.

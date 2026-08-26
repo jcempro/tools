@@ -35,5 +35,5 @@
 ## Estado
 
 - Auditoria e equalizacao: concluidas.
-- FT-011: em andamento.
+- FT-011: concluida e validada.
 - FT-012: pendente e bloqueada por fase/autorizacao.

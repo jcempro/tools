@@ -408,15 +408,15 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar o novo modulo documental que unifica declaracoes, autorizacoes e adesoes, preserva conteudo imutavel em Markdown e especializa GUI, declarantes, representantes, cabecalho, rodape e paginacao sem duplicar a infraestrutura global.
 - Prioridade: alta.
-- Status: em_andamento.
+- Status: concluido.
 - Dependencias: nenhuma.
 - Aceite: RCF especifico cobre integralmente as duas evidencias, resolve caminhos e terminologia, delimita responsabilidades globais/locais, define conteudo, dados, composicao multipagina, Markdown, validacao e rastreabilidade material sem antecipar codigo.
 
 ### Plano vigente
 
 1. Etapa 1/3 - auditar TODO, evidencias e arquitetura vigente; equalizar objetivo, requisitos, precedencias, dependencias, terminologia e lacunas. Status: concluido.
-2. Etapa 2/3 - criar o RCF especifico e sincronizar somente os contratos/documentos globais materialmente afetados. Status: pendente.
-3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: pendente.
+2. Etapa 2/3 - criar o RCF especifico e sincronizar somente os contratos/documentos globais materialmente afetados. Status: concluido.
+3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: concluido.
 
 ### Equalizacao inicial
 
@@ -424,6 +424,19 @@
 - O ODT preserva seis unidades documentais: consulta ao SCR; propositos e natureza da relacao; domicilio fiscal; BB Rende Facil; agenda de duplicatas escriturais; agenda de recebiveis de arranjo de pagamento.
 - A composicao do rodape segue a evidencia: pessoas fisicas primeiro e pessoas juridicas depois, cada PJ acompanhada das referencias automaticas aos seus representantes previamente cadastrados.
 - O formulario e uma especializacao local multipagina; folha, chrome, autosave, importacao/exportacao, compartilhamento, impressao e PDF continuam responsabilidades da infraestrutura compartilhada.
+
+### Resultado e verificacoes
+
+- `src/declaracoes/unificada/RCF.md` cobre fontes, seis unidades documentais, Markdown, dados, declarantes PF/PJ, representantes anteriores, cabecalho, corpo, rodape, templates, paginacao, folha, GUI, portabilidade, arquitetura e aceite.
+- `README.md` documenta o modo de autoria Markdown e a separacao entre conteudo imutavel e configuracao versionada.
+- O mapa `.ia.rules/state/traceability/rcf-map.json` registra 63 sentencas implementaveis da FT-012 em estado `pending`, todas com marcador `[PENDENTE-CODIGO]` e artefatos futuros declarados.
+- `npm run check` aprovou type-check, lint, 52 testes, build Web, tres bundles offline e validacao de 4 paginas/62 arquivos; a primeira tentativa foi bloqueada apenas por `EPERM` do sandbox ao gravar `dist/404.html`, e a repeticao autorizada concluiu sem falha.
+- Nenhum codigo, configuracao runtime, Markdown documental, asset visual ou artefato funcional da FT-012 foi criado nesta fase.
+
+### Proximo ponto
+
+- FT-012 permanece pendente e bloqueada ate nova autorizacao humana explicita.
+- A identidade visual propria do novo aplicativo permanece impedimento material: as evidencias nao fornecem logo definitivo e o catalogo global exige um ativo por aplicacao.
 
 ## FT-012 - Implementacao do formulario de declaracoes unificadas
 
