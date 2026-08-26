@@ -372,7 +372,7 @@ test("print profiles centralize A4 geometry and asynchronous PDF completion", as
   const faturamentoCss = await readFile("src/faturamento/faturamento.scss", "utf8");
 
   assert.equal(config.schema, 1);
-  assert.deepEqual(Object.keys(config.profiles).sort(), ["admissional", "faturamento"]);
+  assert.deepEqual(Object.keys(config.profiles).sort(), ["admissional", "declaracoes-unificada", "faturamento"]);
   for (const profile of Object.values(config.profiles)) {
     assert.equal(profile.orientation, "portrait");
     assert.deepEqual(profile.size, [21, 29.7]);
@@ -424,7 +424,7 @@ test("favicon build uses official tooling with target isolation and pinned svgdo
   assert.equal(pkg.devDependencies["@realfavicongenerator/image-adapter-node"], "^0.8.4");
   assert.equal(pkg.devDependencies["@realfavicongenerator/inject-markups"], "^0.8.0");
   assert.equal(pkg.devDependencies.svgdom, "0.1.22");
-  assert.deepEqual(config.applications.map(({ id }) => id).sort(), ["admissional", "csv-bd", "faturamento"]);
+  assert.deepEqual(config.applications.map(({ id }) => id).sort(), ["admissional", "csv-bd", "declaracoes-unificada", "faturamento"]);
   assert.deepEqual(config.web, { directory: "favicons", manifest: true, touchIcon: true });
   assert.deepEqual(config.offline, { preferredFile: "favicon.svg", manifest: false, touchIcon: false });
   assert.equal(plan.find(({ id }: { id: string }) => id === "faturamento")?.startUrl, "/tools/faturamento/");
@@ -574,7 +574,7 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.equal(catalog.defaultApp, null);
   assert.equal(catalog.siteNameFull, "Tools JeanCarloEM");
   assert.equal(catalog.siteNameShort, "Tools JCEM");
-  assert.equal(catalog.apps.length, 3);
+  assert.equal(catalog.apps.length, 4);
   assert.equal(consent.cdnVersion, "2.0.0");
   assert.match(dashboard, /data-app-grid/);
   assert.match(dashboard, /data-dashboard-theme/);
@@ -638,12 +638,12 @@ test("CSV module preserves readable local surfaces in both themes", async () => 
 });
 
 test("all published applications have SVG identity and SCSS sources", async () => {
-  for (const directory of ["csv-bd", "faturamento", "oficios/admissional"]) {
+  for (const directory of ["csv-bd", "declaracoes/unificada", "faturamento", "oficios/admissional"]) {
     assert.match(await readFile(`src/${directory}/logo.svg`, "utf8"), /<svg/);
   }
   const files = await collectAllFiles("src");
   assert.equal(files.some((file) => file.endsWith(".css")), false);
-  assert.equal(files.filter((file) => file.endsWith(".scss")).length, 4);
+  assert.equal(files.filter((file) => file.endsWith(".scss")).length, 5);
 });
 
 test("dev-live builds before serving and keeps Web plus bundles synchronized", async () => {

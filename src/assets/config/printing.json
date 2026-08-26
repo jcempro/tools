@@ -12,6 +12,12 @@
       "size": [21, 29.7],
       "unit": "cm",
       "margins": { "top": 1, "right": 0.9, "bottom": 0.9, "left": 0.9 }
+    },
+    "declaracoes-unificada": {
+      "orientation": "portrait",
+      "size": [21, 29.7],
+      "unit": "cm",
+      "margins": { "top": 0.6, "right": 0.6, "bottom": 0.6, "left": 0.6 }
     }
   }
 }

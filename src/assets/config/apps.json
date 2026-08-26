@@ -8,6 +8,7 @@
   "apps": [
     { "id": "faturamento", "title": "Faturamento", "description": "Declaração e projeção de faturamento.", "href": "/faturamento/", "logo": "/faturamento/logo.svg" },
     { "id": "admissional", "title": "Ofício admissional", "description": "Modelo de solicitação de exame admissional.", "href": "/oficios/admissional/", "logo": "/oficios/admissional/logo.svg" },
-    { "id": "csv-bd", "title": "Conversor CSV", "description": "Conversão e revisão de bases tabulares.", "href": "/csv-bd/", "logo": "/csv-bd/logo.svg" }
+    { "id": "csv-bd", "title": "Conversor CSV", "description": "Conversão e revisão de bases tabulares.", "href": "/csv-bd/", "logo": "/csv-bd/logo.svg" },
+    { "id": "declaracoes-unificada", "title": "Declarações Unificadas", "description": "Declarações, autorizações e adesões em um formulário multipágina.", "href": "/declaracoes/unificada/", "logo": "/declaracoes/unificada/logo.svg" }
   ]
 }

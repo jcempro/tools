@@ -309,6 +309,10 @@ async function main() {
   const distFiles = await collectFiles(distDir);
   const distDirectories = await collectDirectories(distDir);
   const distSet = new Set(distFiles);
+  const publicMarkdown = distFiles.filter((file) => file.toLowerCase().endsWith(".md"));
+  if (publicMarkdown.length > 0) {
+    throw new Error(`Fontes Markdown nao podem integrar dist/: ${publicMarkdown.join(", ")}`);
+  }
   const sourceStaticFiles = srcFiles.filter(isStaticSource);
   const sourceIndexFiles = sourceStaticFiles.filter((file) => path.basename(file).toLowerCase() === "index.html");
   const faviconOutputs = await expectedFaviconOutputs({ publicBaseUrl: projectConfig.site.publicBaseUrl, root, srcRoot: srcDir });

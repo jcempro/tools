@@ -217,6 +217,9 @@ function assertOffline(html, rel) {
   if (automaticExternal.test(html) || cssExternal.test(html)) {
     throw new Error(`Bundle offline ainda contem recurso externo automatico: ${rel}`);
   }
+  if (/<[^>]+(?:src|href|data)\s*=\s*["'][^"']+\.md(?:[?#"'])/i.test(html)) {
+    throw new Error(`Bundle offline referencia fonte Markdown proibida: ${rel}`);
+  }
 }
 
 async function embedOfflineCatalog(html) {

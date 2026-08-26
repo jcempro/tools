@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Declarações Unificadas</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.14.0/html2pdf.bundle.min.js"
+      integrity="sha512-IgpImqjrCPtoJXRBavoYDDfWTnz8lBuklWs9yRsDRwC37l4XXH5KJDSqq108swbqMaWg+5UEZUFwpJhgD+QC7g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link rel="stylesheet" href="/assets/css/documentos.css" />
+    <link rel="stylesheet" href="/declaracoes/unificada/unificada.css" />
+    <script src="/assets/js/documentos.js"></script>
+    <script defer src="/assets/js/consent.js"></script>
+    <script src="/declaracoes/unificada/unificada.js"></script>
+  </head>
+  <body id="declaracoes-unificada-app">
+    <div data-jcem-actions hidden>
+      <button type="button" class="ico pdf print" aria-label="Gerar PDF">PDF</button>
+      <button type="button" class="ico browser-print">Imprimir</button>
+      <button type="button" class="ico clear">Limpar</button>
+      <button type="button" class="ico share">Compartilhar</button>
+      <a class="ico bundle" href="/declaracoes/unificada/unificada.bundle.zip" download hidden data-bundle-download>Bundle</a>
+    </div>
+
+    <main class="du-shell">
+      <section class="du-editor no-print" aria-label="Preenchimento das declarações unificadas">
+        <fieldset>
+          <legend>Documento</legend>
+          <div class="field-row city-uf">
+            <div>
+              <label for="du-city">Município</label>
+              <input id="du-city" name="city" type="text" autocomplete="address-level2" required />
+            </div>
+            <div>
+              <label for="du-uf">UF</label>
+              <input id="du-uf" name="uf" type="text" maxlength="2" autocomplete="address-level1" required />
+            </div>
+          </div>
+          <label for="du-date">Data</label>
+          <input id="du-date" name="date" type="date" required />
+        </fieldset>
+
+        <fieldset>
+          <legend>Declarantes</legend>
+          <div id="du-declarants" class="du-declarants"></div>
+          <button id="du-add-declarant" type="button" class="secondary-action">Adicionar declarante</button>
+        </fieldset>
+        <p id="du-status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="du-preview" aria-label="Pré-visualização das declarações unificadas">
+        <div id="documento-unificado" class="du-document" aria-label="Documento imprimível" aria-busy="true"></div>
+      </section>
+    </main>
+
+    <template id="declaracoes-source"></template>
+  </body>
+</html>

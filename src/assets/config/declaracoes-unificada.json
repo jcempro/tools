@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "declaracoes-unificada",
+  "document": {
+    "headerStatement": "APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S).",
+    "background": "#d9d9d9",
+    "paddingCm": 0.35
+  },
+  "footer": {
+    "intro": "Esta(s) autorização(s)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por",
+    "personTemplate": "[${numero}] ${nome}, CPF ${documento}",
+    "companyTemplate": "[${numero}] ${nome}, CNPJ ${documento}${representantes}",
+    "representationTemplate": ", representada por ${representantes}",
+    "representativeJoin": " e ",
+    "signature": "(assinaturas e visto/s)",
+    "indexPaddingCm": 0.3,
+    "indexMarginCm": 0.3
+  },
+  "defaults": {
+    "city": "Pirassununga",
+    "uf": "SP"
+  }
+}

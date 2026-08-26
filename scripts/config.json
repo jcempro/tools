@@ -70,6 +70,10 @@
       {
         "source": "src/csv-bd/bd.ts",
         "output": "csv-bd/bd.js"
+      },
+      {
+        "source": "src/declaracoes/unificada/unificada.ts",
+        "output": "declaracoes/unificada/unificada.js"
       }
     ],
     "bookmarklets": [

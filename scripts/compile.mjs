@@ -36,8 +36,13 @@ const staticSourceExtensions = new Set([
 ]);
 const optimizableTextExtensions = new Set([".css", ".html", ".js", ".json"]);
 const noscriptSource = "NOSCRIPT.html";
+const declarationsIndex = "declaracoes/unificada/index.html";
+const declarationsContentDir = path.join(srcRoot, "declaracoes", "unificada", "conteudo");
+const declarationsManifestFile = path.join(declarationsContentDir, "manifest.json");
+const declarationsConfigFile = path.join(srcRoot, "assets", "config", "declaracoes-unificada.json");
 const buildVersion = process.env.JCEM_BUILD_VERSION?.trim() || "development";
 let noscriptFragmentCache;
+let declarationsFragmentCache;
 
 async function ensureParent(file) {
   await mkdir(path.dirname(path.join(root, file)), { recursive: true });
@@ -98,6 +103,113 @@ async function withOfficialNoscript(html, rel) {
   return `${withoutNoscript}${fragment}`;
 }
 
+function escapeHtml(value) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+}
+
+function assertSafeMarkdown(source, file) {
+  if (/<\/?[a-z][^>]*>/i.test(source) || /(?:javascript|data|vbscript)\s*:/i.test(source) || /!\s*include|\{\{[^}]+\}\}/i.test(source)) {
+    throw new Error(`Markdown declarativo contem HTML, include ou URL executavel proibida: ${file}`);
+  }
+}
+
+function markdownTableRow(line, file) {
+  if (!/^\|.*\|$/.test(line)) {
+    throw new Error(`Linha de tabela Markdown invalida em ${file}: ${line}`);
+  }
+  const cells = line.slice(1, -1).split("|").map((cell) => cell.trim());
+  if (cells.length !== 2 || cells.some((cell) => !cell)) {
+    throw new Error(`Tabela Markdown deve possuir exatamente duas celulas preenchidas em ${file}.`);
+  }
+  return `<tr>${cells.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`;
+}
+
+function compileDeclarationMarkdown(source, unit) {
+  assertSafeMarkdown(source, unit.file);
+  const normalized = source.replaceAll("\r\n", "\n").replaceAll("\r", "\n").trimEnd();
+  const lines = normalized.split("\n");
+  const headings = lines.filter((line) => line.startsWith("# "));
+  if (headings.length !== 1 || headings[0] !== `# ${unit.title}` || lines[0] !== headings[0]) {
+    throw new Error(`Titulo Markdown diverge do manifesto em ${unit.file}.`);
+  }
+  const blocks = [];
+  for (let index = 1; index < lines.length;) {
+    if (!lines[index]?.trim()) {
+      index += 1;
+      continue;
+    }
+    if (lines[index]?.startsWith("|")) {
+      const rows = [];
+      while (lines[index]?.startsWith("|")) {
+        rows.push(markdownTableRow(lines[index], unit.file));
+        index += 1;
+      }
+      blocks.push(`<table><tbody>${rows.join("")}</tbody></table>`);
+      continue;
+    }
+    const paragraph = [];
+    while (index < lines.length && lines[index]?.trim() && !lines[index]?.startsWith("|")) {
+      if (/^#{1,6}\s/.test(lines[index])) {
+        throw new Error(`Subtitulo Markdown nao autorizado em ${unit.file}.`);
+      }
+      paragraph.push(lines[index].trim());
+      index += 1;
+    }
+    blocks.push(`<p>${escapeHtml(paragraph.join(" "))}</p>`);
+  }
+  return `<section class="du-unit" data-unit-id="${escapeHtml(unit.id)}" data-title="${escapeHtml(unit.title)}"><h2>${escapeHtml(unit.title.toLocaleUpperCase("pt-BR"))}</h2>${blocks.join("")}</section>`;
+}
+
+function assertDeclarationConfig(config) {
+  const allowed = new Set(["numero", "nome", "documento", "representantes"]);
+  const templates = [config.footer?.personTemplate, config.footer?.companyTemplate, config.footer?.representationTemplate];
+  if (config.schema !== 1 || config.id !== "declaracoes-unificada" || !/^#[0-9a-f]{6}$/i.test(config.document?.background ?? "") || !(config.document?.paddingCm > 0)) {
+    throw new Error("Configuracao de declaracoes unificadas invalida.");
+  }
+  for (const template of templates) {
+    if (typeof template !== "string") throw new Error("Template de declaracoes unificadas ausente.");
+    for (const token of template.matchAll(/\$\{([^}]+)\}/g)) {
+      if (!allowed.has(token[1])) throw new Error(`Token desconhecido na configuracao de declaracoes: ${token[1]}`);
+    }
+  }
+}
+
+async function officialDeclarationsFragment() {
+  if (declarationsFragmentCache) return declarationsFragmentCache;
+  const manifest = JSON.parse(await readFile(declarationsManifestFile, "utf8"));
+  const config = JSON.parse(await readFile(declarationsConfigFile, "utf8"));
+  assertDeclarationConfig(config);
+  const units = Array.isArray(manifest.units) ? [...manifest.units].sort((a, b) => a.order - b.order) : [];
+  const expectedFiles = units.map((unit, index) => {
+    if (unit.order !== index + 1 || !/^[a-z0-9-]+$/.test(unit.id ?? "") || !/^\d{2}-[a-z0-9-]+\.md$/.test(unit.file ?? "") || typeof unit.title !== "string" || !unit.title.trim()) {
+      throw new Error("Manifesto de declaracoes unificadas possui identidade, ordem, arquivo ou titulo invalido.");
+    }
+    return unit.file;
+  });
+  if (manifest.schema !== 1 || manifest.id !== "declaracoes-unificada" || units.length !== 6 || new Set(expectedFiles).size !== units.length || new Set(units.map(({ id }) => id)).size !== units.length) {
+    throw new Error("Manifesto de declaracoes unificadas incompleto ou ambiguo.");
+  }
+  const actualFiles = (await readdir(declarationsContentDir)).filter((file) => file.endsWith(".md")).sort();
+  if (JSON.stringify(actualFiles) !== JSON.stringify([...expectedFiles].sort())) {
+    throw new Error("Conjunto de Markdown diverge do manifesto de declaracoes unificadas.");
+  }
+  const compiled = [];
+  for (const unit of units) {
+    const safe = path.resolve(declarationsContentDir, unit.file);
+    if (path.dirname(safe) !== path.resolve(declarationsContentDir)) throw new Error(`Path Markdown inseguro: ${unit.file}`);
+    compiled.push(compileDeclarationMarkdown(await readFile(safe, "utf8"), unit));
+  }
+  declarationsFragmentCache = compiled.join("");
+  return declarationsFragmentCache;
+}
+
+async function withCompiledDeclarations(html, rel) {
+  if (normalizeRel(rel) !== declarationsIndex) return html;
+  const marker = '<template id="declaracoes-source"></template>';
+  if (!html.includes(marker)) throw new Error(`Marcador de conteudo compilado ausente em ${rel}.`);
+  return html.replace(marker, `<template id="declaracoes-source">${await officialDeclarationsFragment()}</template>`);
+}
+
 function bundleForIndex(rel) {
   const normalized = normalizeRel(rel);
   if (path.posix.basename(normalized).toLowerCase() !== "index.html") {
@@ -148,7 +260,8 @@ async function readStaticOutput(src, rel) {
   }
 
   const source = await readFile(src, "utf8");
-  const prepared = await withOfficialNoscript(source, rel);
+  const withDeclarations = await withCompiledDeclarations(source, rel);
+  const prepared = await withOfficialNoscript(withDeclarations, rel);
   return Buffer.from(await optimizeTextByPath(rel, prepared), "utf8");
 }
 

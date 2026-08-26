@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">DU — Declarações Unificadas</title>
+  <desc id="description">Monograma geométrico DU com detalhe de página dobrada</desc>
+  <rect width="256" height="256" rx="28" fill="#302a64"/>
+  <path d="M44 52h48c30 0 50 21 50 52v48c0 31-20 52-50 52H44V52Zm30 28v96h17c14 0 22-10 22-27v-42c0-17-8-27-22-27H74Z" fill="#fff"/>
+  <path d="M148 52h29v101c0 18 8 27 20 27s20-9 20-27V52h29v103c0 34-19 53-49 53s-49-19-49-53V52Z" fill="#fff"/>
+  <path d="M217 52h29v29l-29-29Z" fill="#63d6d1"/>
+</svg>

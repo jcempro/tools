@@ -14,7 +14,8 @@
   "applications": [
     { "id": "faturamento", "entry": "faturamento/index.html" },
     { "id": "admissional", "entry": "oficios/admissional/index.html" },
-    { "id": "csv-bd", "entry": "csv-bd/index.html" }
+    { "id": "csv-bd", "entry": "csv-bd/index.html" },
+    { "id": "declaracoes-unificada", "entry": "declaracoes/unificada/index.html" }
   ],
   "web": {
     "directory": "favicons",

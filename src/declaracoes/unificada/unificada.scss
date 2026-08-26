@@ -1,0 +1,62 @@
+.du-shell { min-width: 0; }
+
+.du-editor { display: grid; gap: 1rem; }
+.du-editor fieldset { min-width: 0; }
+.du-editor .field-row { display: grid; grid-template-columns: minmax(0, 1fr) 5rem; gap: .75rem; }
+.du-editor label { display: block; margin: .45rem 0 .2rem; font-weight: 700; }
+.du-editor input,
+.du-editor select { box-sizing: border-box; width: 100%; min-height: 2.75rem; padding: .55rem .65rem; border: 1px solid #9eacb7; border-radius: .45rem; }
+.du-editor button { min-height: 2.75rem; padding: .55rem .8rem; border: 1px solid #647887; border-radius: .45rem; cursor: pointer; font-weight: 700; }
+.du-declarants { display: grid; gap: .8rem; }
+.du-declarant { padding: .8rem; border: 1px solid #aab6bf; border-radius: .65rem; background: rgb(255 255 255 / .72); }
+.du-declarant-header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.du-declarant-header h3 { margin: 0; font-size: 1rem; }
+.du-declarant-actions { display: flex; flex-wrap: wrap; gap: .3rem; }
+.du-declarant-actions button { min-width: 2.75rem; padding: .35rem; }
+.du-representatives { margin-top: .65rem; padding: .55rem; border: 1px solid #c3ccd3; border-radius: .45rem; }
+.du-representatives legend { padding: 0 .25rem; font-size: .9rem; }
+.du-representatives label { display: flex; align-items: flex-start; gap: .45rem; font-weight: 500; }
+.du-representatives input { flex: 0 0 auto; width: 1.2rem; min-height: 1.2rem; margin-top: .15rem; }
+.du-field-error { min-height: 1.1rem; margin: .25rem 0 0; color: #9f1c13; font-size: .82rem; }
+
+.du-preview { min-width: 0; }
+.du-document { --du-block-bg: #d9d9d9; --du-block-padding: .35cm; display: grid; justify-content: center; gap: 1.25rem; min-width: 0; }
+.du-page { position: relative; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: .18cm; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 8.2pt; line-height: 1.25; box-shadow: 0 .45rem 1.4rem rgb(0 0 0 / .2); }
+.du-page-header { padding-bottom: .12cm; border-bottom: 1px solid #777; text-align: center; }
+.du-page-place { margin: 0 0 .08cm; text-align: right; }
+.du-page-titles { margin: 0; font-size: 7.4pt; font-weight: 700; line-height: 1.18; }
+.du-page-statement { margin: .08cm 0 0; font-size: 7.5pt; font-weight: 700; }
+.du-page-number { margin: .08cm 0 0; font-weight: 800; }
+.du-page-body { min-height: 0; overflow: visible; }
+.du-unit { padding: var(--du-block-padding); background: var(--du-block-bg); break-inside: auto; }
+.du-unit + .du-unit { margin-top: .16cm; }
+.du-unit h2 { margin: 0 0 .16cm; text-align: center; font-size: 9pt; line-height: 1.2; }
+.du-unit[data-continuation="true"] h2::after { content: " — CONTINUAÇÃO"; }
+.du-unit p { margin: 0 0 .11cm; text-align: justify; }
+.du-unit p:last-child { margin-bottom: 0; }
+.du-unit table { width: 100%; margin: .12cm 0; border-collapse: collapse; break-inside: avoid; }
+.du-unit td { padding: .07cm .1cm; border: 1px solid #555; vertical-align: top; }
+.du-unit td:first-child { width: 28%; }
+.du-page-footer { padding-top: .12cm; border-top: 1px solid #777; font-size: 7.5pt; line-height: 1.18; }
+.du-page-footer p { margin: 0; text-align: justify; }
+.du-signature { margin-top: .08cm !important; text-align: center !important; font-weight: 700; }
+.du-index { display: inline-block; padding-inline: var(--du-index-padding); margin-inline: var(--du-index-margin); font-weight: 800; }
+
+:root[data-theme="dark"] .du-declarant { background: #303236; border-color: #555a60; }
+:root[data-theme="dark"] .du-representatives { border-color: #555a60; }
+:root[data-theme="dark"] .du-field-error { color: #ffb6aa; }
+:root[data-theme="dark"] .du-page { background: #fff; color: #111; }
+
+@media (max-width: 42rem) {
+  .du-editor .field-row { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .du-document { display: block; }
+  .du-page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+  .du-page:last-child { break-after: auto; page-break-after: auto; }
+}
+
+body.imprimir .du-document { display: block; }
+body.imprimir .du-page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+body.imprimir .du-page:last-child { break-after: auto; page-break-after: auto; }

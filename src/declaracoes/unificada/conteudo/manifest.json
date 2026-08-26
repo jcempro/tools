@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "id": "declaracoes-unificada",
+  "source": {
+    "file": ".ia.rules/state/evidencias/UNIFICADA.odt",
+    "sha256": "02ED9A4E8D0B31654A12229DD8F86F3EAEA830717A03FE7D8E8563F28954A307",
+    "tables": ["Tabela1", "Tabela2", "Tabela4", "Tabela6", "Tabela8", "Tabela9"]
+  },
+  "units": [
+    { "id": "autorizacao-scr", "order": 1, "file": "01-autorizacao-scr.md", "title": "AUTORIZAÇÃO PARA CONSULTA AO SCR" },
+    { "id": "propositos-relacao", "order": 2, "file": "02-propositos-relacao.md", "title": "Declaração de Propósitos e Natureza da Relação de Negócio" },
+    { "id": "domicilio-fiscal", "order": 3, "file": "03-domicilio-fiscal.md", "title": "DECLARAÇÃO DE DOMICÍLIO FISCAL" },
+    { "id": "bb-rende-facil", "order": 4, "file": "04-bb-rende-facil.md", "title": "Termo Adesão e Ciência ao BB Rende Fácil" },
+    { "id": "agenda-duplicatas", "order": 5, "file": "05-agenda-duplicatas.md", "title": "AUTORIZAÇÃO PARA CONSULTA A INFORMAÇÕES RELATIVAS À AGENDA DE DUPLICATAS ESCRITURAIS" },
+    { "id": "agenda-recebiveis", "order": 6, "file": "06-agenda-recebiveis.md", "title": "AUTORIZAÇÃO PARA CONSULTA A INFORMAÇÕES RELATIVAS À AGENDA DE RECEBÍVEIS DE ARRANJO DE PAGAMENTO" }
+  ],
+  "syntaxCorrections": [
+    { "table": "Tabela1", "origin": "\\tAutorizo(amos)", "markdown": "Autorizo(amos)", "reason": "tabulação inicial sem efeito semântico" },
+    { "table": "Tabela2", "origin": "Declaração de Propósitos e\\nNatureza da Relação de Negócio", "markdown": "Declaração de Propósitos e Natureza da Relação de Negócio", "reason": "quebra de linha interna do título" },
+    { "table": "Tabela6", "origin": "\\nAutorizo o BB", "markdown": "Autorizo o BB", "reason": "quebra inicial sem efeito semântico" },
+    { "table": "Tabela6", "origin": "Resgate mínimo:    R$ 0,01", "markdown": "Resgate mínimo: R$ 0,01", "reason": "espaços técnicos duplicados" },
+    { "table": "Tabela8", "origin": "RELATIVAS\\nÀ AGENDA DE DUPLICATAS ESCRITURAIS", "markdown": "RELATIVAS À AGENDA DE DUPLICATAS ESCRITURAIS", "reason": "quebra de linha interna do título" },
+    { "table": "Tabela9", "origin": "INFORMAÇÕES\\nRELATIVAS À AGENDA DE RECEBÍVEIS\\nDE ARRANJO DE PAGAMENTO", "markdown": "INFORMAÇÕES RELATIVAS À AGENDA DE RECEBÍVEIS DE ARRANJO DE PAGAMENTO", "reason": "quebras de linha internas do título" },
+    { "table": "Tabela9", "origin": "Brasil(Bacen)", "markdown": "Brasil (Bacen)", "reason": "espaço ausente entre palavra e parêntese" },
+    { "table": "Tabela9", "origin": "pagamento(s )", "markdown": "pagamento(s)", "reason": "espaço inválido dentro do marcador" },
+    { "table": "Tabela9", "origin": "poderão se r obtidas", "markdown": "poderão ser obtidas", "reason": "palavra dividida por fronteira mecânica" }
+  ]
+}

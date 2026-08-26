@@ -447,22 +447,35 @@
 - Escopo: Tecnico.
 - Objetivo: materializar o modulo documental unificado, sua GUI, conteudos Markdown, declarantes e representantes, renderizacao multipagina, integracao Web/Bundle e validacoes automatizadas/visuais.
 - Prioridade: alta.
-- Status: pendente.
-- Dependencias: FT-011 concluida; FT-013 concluida e commitada; nova autorizacao humana explicita depois da alteracao normativa introduzida pela FT-013.
+- Status: concluido.
+- Dependencias: FT-011 concluida; FT-013 concluida e commitada; nova autorizacao humana explicita recebida em 2026-08-26 depois do commit normativo `bf93351`.
 - Aceite: aplicacao catalogada e autocontida; conteudo fiel ao ODT; Markdown individual compilado sem fonte normativa no artefato; declarantes e referencias deterministicas; cabecalho/rodape repetidos; Web, Bundle, Ctrl+P e PDF validados contra a evidencia, sem regressao global.
 
-### Plano preliminar
+### Plano vigente
 
-1. Etapa 1/4 - materializar conteudos Markdown, configuracao, compilacao e estrutura local do modulo. Status: pendente.
-2. Etapa 2/4 - implementar GUI, declarantes, representantes, numeracao, templates e integracoes compartilhadas. Status: pendente.
-3. Etapa 3/4 - implementar e ajustar a composicao multipagina, cabecalho, rodape e perfil central de impressao. Status: pendente.
-4. Etapa 4/4 - validar conteudo, runtime, Web, Bundle, Ctrl+P, PDF, acessibilidade e ausencia de regressao. Status: pendente.
+1. Etapa 1/4 - materializar conteudos Markdown, configuracao, compilacao e estrutura local do modulo. Status: concluido.
+2. Etapa 2/4 - implementar GUI, declarantes, representantes, numeracao, templates e integracoes compartilhadas. Status: concluido.
+3. Etapa 3/4 - implementar e ajustar a composicao multipagina, cabecalho, rodape e perfil central de impressao. Status: concluido.
+4. Etapa 4/4 - validar conteudo, runtime, Web, Bundle, Ctrl+P, PDF, acessibilidade e ausencia de regressao. Status: concluido.
 
 ### Alteracao de escopo de 2026-08-26
 
 - A autorizacao humana para iniciar a FT-012 foi recebida, mas o mesmo prompt introduziu nova norma global para logotipos e refinou a origem do Markdown; a implementacao permanece suspensa ate a conclusao da FT-013 e nova autorizacao posterior ao commit normativo.
 - O logo do modulo deve ser gerado conforme o novo padrao Adobe-like, eliminando o impedimento anterior de identidade visual sem autorizar refatoracao retroativa dos logos existentes.
 - O Markdown deve derivar exclusivamente do conteudo com fundo cinza do ODT claramente identificado como declaracao, com correcao apenas de sintaxe e preservacao integral de semantica e estrutura.
+
+### Resultado e verificacoes
+
+- O modulo `Declaracoes Unificadas` foi integrado ao catalogo Web e Bundle com identidade original `DU`, configuracao central, favicon, perfil A4 retrato, persistencia, importacao/exportacao, compartilhamento, impressao e PDF compartilhados.
+- Os seis blocos cinza autorizados do ODT foram individualizados em Markdown; o manifesto registra a origem e cada correcao mecanica, e o compilador valida o conjunto fechado, escapa a saida e nao publica os fontes `.md`.
+- A GUI implementa municipio, UF, data, declarantes PF/PJ, CPF/CNPJ, identidades estaveis, ordenacao PF antes de PJ no rodape, representantes exclusivamente anteriores e bloqueio de referencias futuras.
+- A composicao medida no Chromium produziu seis paginas A4 de 794 x 1123 px, numeradas de 1 a 6, sem transbordamento, com cabecalho e rodape uniformes; o fluxo nominal com duas PF e uma PJ representada pelas duas anteriores ficou pronto para saida.
+- A inspecao visual confirmou legibilidade, foco preservado durante edicao, formatacao de CPF/CNPJ e integracao ao chrome institucional; os fluxos de saida consomem a mesma arvore paginada validada e o perfil central de impressao/PDF.
+- `npm run validate:all` aprovou type-check, lint, 57 testes, build Web, quatro Bundles offline e publicacao de 5 paginas/76 arquivos.
+
+### Proximo ponto
+
+- Nenhuma implementacao permanece pendente na FT-012; falta somente a sincronizacao exclusiva da rastreabilidade com o SHA do commit material.
 
 ## FT-013 - Padrao global Adobe-like e refinamento da fonte documental
 
