@@ -399,6 +399,52 @@
 
 - FT concluida em 2026-07-31 e retida ate 2026-08-15 conforme politica operacional.
 
+## FT-011 - Contrato normativo do formulario de declaracoes unificadas
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-08-26T13:45:33-03:00.
+- Origem: item operacional de `TODO.ia.md`, SHA-256 `27567B8BFF089B91017D93CB7C8425B18B1F27F575F6C3914485CCF619F0DAE4`, equalizado com `.ia.rules/state/evidencias/UNIFICADA.odt`, SHA-256 `02ED9A4E8D0B31654A12229DD8F86F3EAEA830717A03FE7D8E8563F28954A307`, e `.ia.rules/state/evidencias/Evidencia-Marcas-Unificadas.pdf`, SHA-256 `F9E8DB78FA2B06973AC77E2A978DF7C033FFAA83B3BA3F4EA7E1B9AEE38262CE`.
+- Vinculos: FT-012; `TODO.ia.md`; `RCF.md`; novo RCF especifico; evidencias versionadas.
+- Escopo: Tecnico.
+- Objetivo: normatizar o novo modulo documental que unifica declaracoes, autorizacoes e adesoes, preserva conteudo imutavel em Markdown e especializa GUI, declarantes, representantes, cabecalho, rodape e paginacao sem duplicar a infraestrutura global.
+- Prioridade: alta.
+- Status: em_andamento.
+- Dependencias: nenhuma.
+- Aceite: RCF especifico cobre integralmente as duas evidencias, resolve caminhos e terminologia, delimita responsabilidades globais/locais, define conteudo, dados, composicao multipagina, Markdown, validacao e rastreabilidade material sem antecipar codigo.
+
+### Plano vigente
+
+1. Etapa 1/3 - auditar TODO, evidencias e arquitetura vigente; equalizar objetivo, requisitos, precedencias, dependencias, terminologia e lacunas. Status: concluido.
+2. Etapa 2/3 - criar o RCF especifico e sincronizar somente os contratos/documentos globais materialmente afetados. Status: pendente.
+3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: pendente.
+
+### Equalizacao inicial
+
+- Os nomes reais e autoritativos das evidencias sao `UNIFICADA.odt` e `Evidencia-Marcas-Unificadas.pdf`; os paths divergentes do TODO foram corrigidos sem alterar os arquivos de evidencia.
+- O ODT preserva seis unidades documentais: consulta ao SCR; propositos e natureza da relacao; domicilio fiscal; BB Rende Facil; agenda de duplicatas escriturais; agenda de recebiveis de arranjo de pagamento.
+- A composicao do rodape segue a evidencia: pessoas fisicas primeiro e pessoas juridicas depois, cada PJ acompanhada das referencias automaticas aos seus representantes previamente cadastrados.
+- O formulario e uma especializacao local multipagina; folha, chrome, autosave, importacao/exportacao, compartilhamento, impressao e PDF continuam responsabilidades da infraestrutura compartilhada.
+
+## FT-012 - Implementacao do formulario de declaracoes unificadas
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-08-26T13:45:34-03:00.
+- Origem: mesmo item operacional de `TODO.ia.md` e evidencias vinculadas pela FT-011.
+- Vinculos: FT-011; `RCF.md`; RCF especifico do modulo; `src/assets/`; pipeline Web e de bundles.
+- Escopo: Tecnico.
+- Objetivo: materializar o modulo documental unificado, sua GUI, conteudos Markdown, declarantes e representantes, renderizacao multipagina, integracao Web/Bundle e validacoes automatizadas/visuais.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: conclusao, validacao e commit da FT-011; nova autorizacao humana explicita apos a normatizacao.
+- Aceite: aplicacao catalogada e autocontida; conteudo fiel ao ODT; Markdown individual compilado sem fonte normativa no artefato; declarantes e referencias deterministicas; cabecalho/rodape repetidos; Web, Bundle, Ctrl+P e PDF validados contra a evidencia, sem regressao global.
+
+### Plano preliminar
+
+1. Etapa 1/4 - materializar conteudos Markdown, configuracao, compilacao e estrutura local do modulo. Status: pendente.
+2. Etapa 2/4 - implementar GUI, declarantes, representantes, numeracao, templates e integracoes compartilhadas. Status: pendente.
+3. Etapa 3/4 - implementar e ajustar a composicao multipagina, cabecalho, rodape e perfil central de impressao. Status: pendente.
+4. Etapa 4/4 - validar conteudo, runtime, Web, Bundle, Ctrl+P, PDF, acessibilidade e ausencia de regressao. Status: pendente.
+
 ## FT-009 - Contrato de publicacao integral no GitHub Pages
 
 - Tipo: implementacao_normativa.
