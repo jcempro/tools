@@ -36,4 +36,11 @@
 
 - Auditoria e equalizacao: concluidas.
 - FT-011: concluida e validada.
-- FT-012: pendente e bloqueada por fase/autorizacao.
+- FT-013: em andamento para incorporar o padrao global Adobe-like e a selecao dos blocos cinza do ODT.
+- FT-012: autorizacao recebida, mas execucao suspensa ate a FT-013 ser commitada e receber nova autorizacao posterior.
+
+## Mudanca de escopo de 2026-08-26
+
+- Fonte: `.ia.rules/state/requests/FT-013/request.md`.
+- Logo futuro: composicao Adobe-like, preferencialmente por duas letras estrategicas, sem alterar logos existentes.
+- Markdown futuro: somente blocos cinza do ODT inequivocamente identificados como declaracoes; sintaxe pode ser reparada, sem mudanca semantica ou estrutural.
