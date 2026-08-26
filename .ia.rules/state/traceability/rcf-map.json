@@ -983,13 +983,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "83769c2f2d595276441065ee",
       "line": 250,
       "rcf": "RCF.md",
       "sentenceSha256": "8a3496be91edc378584872aec0d7ebb3a240ca795a58dd7543579c531a5dc129",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1011,13 +1011,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "23ff84de8d4d6ba43473ec62",
       "line": 252,
       "rcf": "RCF.md",
       "sentenceSha256": "e9af7488c490df8d029418bc16696e2faea3c7f6225b7719b972c47b6bc3b3ca",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1039,13 +1039,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "b73dab2b7e28d8d93f1fac40",
       "line": 254,
       "rcf": "RCF.md",
       "sentenceSha256": "d3f6789a3b94afbd64e8c399e81aad3bd78c7d3407a7e8ef0ad4fcf183139bc7",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1067,13 +1067,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "8951cc6b42319febf7f09ac8",
       "line": 256,
       "rcf": "RCF.md",
       "sentenceSha256": "12d5251f5b1ee551a4346ac1a1ce797376778bcab96246f5f95870265b7a6c92",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1164,13 +1164,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "a0d0cba2a15ab40b68819385",
       "line": 5,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "0b6ede5f33dd907b2a77171d4bca3237caa1bfc69804492b6802fd6f2c3ac02b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1196,13 +1196,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "0845d98e0ddad51a3d8c026c",
       "line": 7,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "362ef4deee6a786ae684d64b5742921c479d4294465ff66fdbf27b9ca1f9d220",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1228,13 +1228,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "a03fddaf18cef58af77bfc0e",
       "line": 9,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "9f007a7d9bf58d5c289e97d68f76082efd7cbd823ed023696da9efbb089cf308",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1260,13 +1260,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "29df9804a02cb3f57999281b",
       "line": 13,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "320098fb59eb61acca40396be262b3842a104b2a75ef53ee6909cd9765935884",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1292,13 +1292,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "ffc5669520266e3d4847b025",
       "line": 15,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "7b51673b672e526ebee9e5378c9a95d1ffad5b2ae8a66bebc9b458db7c799510",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1324,13 +1324,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "97686f83fff6421c0d41f3f5",
       "line": 17,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "0720c8449c4f25e2d211988e4012a74ba2609c39f04e57ccc5c2b972f5b26f93",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1345,13 +1345,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "7abb80bb72e07fd1f71a3549",
       "line": 19,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "02c0f12c3b379cb187e3797eda5b63b6e4bdb3da1fea58253ae84d0071b915da",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1377,13 +1377,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "b8d3450b575e5ee220158c93",
       "line": 21,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "5c59b20d29df503f3f142103410d2ac60b8ca1bcae9feff4bf72c9f73e333cb2",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1398,13 +1398,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "7d88fcc0d7bed3bc8c2dd5fe",
       "line": 21,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "7d91c9064b91f05a5c3bb51775d843fb48f96fc466a22bc1a10a7e080936589a",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1430,13 +1430,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "0f696abe159bb20ddd48c79c",
       "line": 30,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "2c769f79490212c7fa9b30345ac18ae75bb4f03a3594aa49f3d091d0121ebd85",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1462,13 +1462,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "47cf070c7ef815f43bc9b78e",
       "line": 32,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "51d38e0fc0bfb1a4e35183c3633d567747d58a7029b6d1d55ce487d5b35e9b3a",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1494,13 +1494,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "18b1ebf9850d7a2734e7ca1f",
       "line": 34,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "620d85d0c88a5919c6df04a8f8fdfb56592cd620dd42d67d088a9778a4c9f514",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1526,13 +1526,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "9bd553666d90a99908b50d3b",
       "line": 38,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "69c73e11f03dc7ff6bba04cd95b67fb7a5e99ab4b9b7b64fb8349f6170699ae0",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1558,13 +1558,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "8a79d5ab2ba431debaa1bf61",
       "line": 40,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "7e87311549423a63cad93817e0f7519b0d52958963b4c6cb760c4a295daf886f",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1579,13 +1579,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "e38d71e1e1ee0d2bee4879e6",
       "line": 40,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "a5eddce234fec344902280df01ff3626d91e096683422c3ab5e0d39970f6b82d",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1611,13 +1611,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "47be95120aa9ebe7a3a9628e",
       "line": 42,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "fd6a967968001b1ba4246f77c750aed479b24b33013b7557982bc658d8f1729e",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1632,13 +1632,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "ada043f38f742627affd8a09",
       "line": 42,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "9a2394b372598fe7bc03b4bc15e726b9829ec09e391f0a51247def99298f86d9",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1664,13 +1664,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "1f704c6da9642003f7101e95",
       "line": 44,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "5a9c70b4eb4d7872b36530d654a947f26657a383988a07ca1adaabaa5b2e4a54",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1696,13 +1696,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "51647ee03fcad1423cc2c5c2",
       "line": 46,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "512be2bbe083d479ad428d4bfeb797473545b76e10b509d275b71d9c8d8f5ad8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1728,13 +1728,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "5c4eac0f359b0bab399ff5fa",
       "line": 50,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "1d04368c05d27686ddaf417807ff913eea7adf86f7bac1691f2c1c4378755c02",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1760,13 +1760,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "02cec233f274622624e52d90",
       "line": 52,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f70460118b537db983b8ae8f727da48d6d0a21ab55836e458a5d9edf77eeefcd",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1792,13 +1792,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "26bce593526daaa807b9a869",
       "line": 54,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "9bf054f80173131c0f1738e4f0954b543e069449d2d55d02105ad232432f1785",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1824,13 +1824,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "5c4c130868e1750b7a52e6da",
       "line": 56,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "2c67eeff680021b1b2a33c63eda9ed35f1c53e712028ae90111dd66073b48c4b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1856,13 +1856,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "cba6fbc1e7998b55daf613bb",
       "line": 58,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "cea51e0838d4440fc0d759ac66a4afd4e75e0b4c06cb885c6182c91de98a66c5",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1888,13 +1888,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "19e896e4db37182baae3a079",
       "line": 60,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "494d7ec47f8000646cb66e0bddf1c48c8ec63b00a162827f1d446f59b024784b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1920,13 +1920,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "bed29bcd3c98b64df3d9f1c1",
       "line": 64,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "37e869d0f48de38bf66f963a06fcebebf582291cda50c797e1f3afcda5f9af75",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1952,13 +1952,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "adaf0b71f5c3dc11c987626c",
       "line": 66,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "185cb1ceff5d673ac18e0c661dad356e341d8b4be4f9307d04d2987be1a7b7e2",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1984,13 +1984,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "3ac6e79584b0e2a139e17253",
       "line": 68,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "2fa8c7028fb81fd0adda90784220470514e974b2d539edc04798b3b0e6bfcda9",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2016,13 +2016,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "952f0b1d0685ad22d45e7945",
       "line": 70,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "6422f519f37b51b2b66537e53a8723121ccf19f8d836058a8aee57c8a25cd21c",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2048,13 +2048,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "143b3ef2afa3a1314fe2dd0a",
       "line": 72,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "bdf6bf40fc8c6a202543fb87c0d61d84403e19c0a0514cdce21735a68cb703a1",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2080,13 +2080,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "122a58a9ddd59b7f062d51be",
       "line": 74,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "9eb5dd30acd1355c59434573548ae6bdc3af18f584d29e87d46a64e32d4c2ac8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2112,13 +2112,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "73be8c3d37a23cd79b485708",
       "line": 78,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "734e834610aa7306eca5a8f101560543f34d9f2f57236cbf67ed26e8673072cc",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2144,13 +2144,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "5c7e0a91a023b174422268f3",
       "line": 80,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "1657e2f3857814c24572c5d84893eb80357ec619f92c08f337aee71e4bd10be4",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2176,13 +2176,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "a035de71ce7e56d410314737",
       "line": 82,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "3ed8a16f95fd57c5033939142bc703856b7d461a2e114de252cb0f69fa8957ff",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2208,13 +2208,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "05e2ad46f4c505f7587e67e5",
       "line": 84,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "72e402f5e49ed5656931f909ba94a2c274a6467d62a472f8d75b478fb345bc3b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2240,13 +2240,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "c649c889cc753e0db67d4c1e",
       "line": 86,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "38a5b45b0b86162da509b28b9b4c23a408bf098ba1a1d5619ee78880467cfb13",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2272,13 +2272,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "36d51841d8f4033cfbed9247",
       "line": 90,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "702d343984ae7d1cc335afb694085f9b30a63d370e540687d7a6988a0907ebcc",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2304,13 +2304,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "39103b15813b2ffee0d86d83",
       "line": 92,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "de7d5cf7b1e5f640fea99c0d81a8c867b64d82153a3c03f16c26318263f6c806",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2336,13 +2336,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "ca05fd447acac0b3dd00f714",
       "line": 94,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "4a430dd84ce612c535da8c9559bf56416c5deda5eeac52fc51ec9b0c48a136e3",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2368,13 +2368,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "f0e363630257f6f6d16c0bc4",
       "line": 96,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f45def5fbb3454b9e390bdc5c0c1654356d17ed99849163f86c48bc5dcffb8dd",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2400,13 +2400,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "fc490e5e5157222f1a368ce2",
       "line": 98,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "53e0f792ac306db8e8a7f83ff738aa248d43f339b4f42a16c4e85245408f51a8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2432,13 +2432,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "347175a435d43d997575d585",
       "line": 102,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "0e184df5ba6c8f06444fe7e2313cf45c56aacb00fac6db0a370d71ee69bdc03d",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2464,13 +2464,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "7328003ae4bb9bfa1bf656ef",
       "line": 104,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "53416589eea488dfa853dd072a01647b316ee6e6d6d8cd7696aff56fca0f1c2a",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2496,13 +2496,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "e9cd37331c7af6b85c90e50b",
       "line": 106,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "b3b304225f0afd76b82e5f64714edaa68da14422def70bb6b95dfb3465a435c7",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2528,13 +2528,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "f597dab26b1ce4612903f576",
       "line": 108,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "4ef87059911235b29ce84b23e194cbc82b1f4fa1f9475db4b7973e5fadb6df54",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2560,13 +2560,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "5d5e77f5596576d4ccb31cf9",
       "line": 110,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f6f22833c847d08549cae756a7ec2c35bfe54c375a4df37712622829b3ff1954",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2592,13 +2592,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "ff321ad6ca44b3cd32ac9a0b",
       "line": 112,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f9dc05c512bc0d0084e7c28f40aefc45293eab36359c3a73f8e68702ed9d450e",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2624,13 +2624,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "89606554de77ca65f514a492",
       "line": 116,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "7ee9652ac1accf5db392efca7cedf1318831c129fba8adcbc43e88fe27a40f70",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2656,13 +2656,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "15656ff2dee0a6652add1ca8",
       "line": 118,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "61c88e246a0e783d1e50048b1bd46e0dcf27343e356217848f5b335b17049bf3",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2688,13 +2688,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "97aa2a51a4174c7c3b2c8b31",
       "line": 120,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "f365a4b0766af5c072d4b5713f6d454f622c7e8382a1c1a159653c3b52e56433",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2720,13 +2720,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "ea547fb9fd6992fbd4fa079f",
       "line": 122,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "3328cf30414dd9ebe770f8f85ac62c542c141dae014aa7a4c1864c23c56d9130",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2752,13 +2752,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "f1815df939837c45fec6136d",
       "line": 126,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "23a4ec2580c3e28082fd69e4c49572dca99e3576644524ede90bbbb016761c9c",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2784,13 +2784,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "aeb956a68abb3a911dccb5db",
       "line": 128,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "345ae31a023e91ada4c6faf0814118725948d11204531a53a2d9971a0d440815",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2816,13 +2816,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "cc8a9272859805594c175b2e",
       "line": 130,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "edcca6fadd69fafad9224317ea5ac90cfaefcc361e25d766137355d80e883ef2",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2848,13 +2848,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "1bef8ad6630bafca15f4bc7c",
       "line": 132,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "e5df5a6e78e4c9c6947a90bc7e7aa772ab17c6e20d819f4abcad110695733bf6",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2880,13 +2880,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "8a0d181f4333c56dec251df7",
       "line": 134,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "46b1b58f07cca0b8219a7e8956f8426e4367e855c66eb88cf11bad83688ec25b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2912,13 +2912,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "a86ab7bc278dcb6d54185f84",
       "line": 142,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "737ba37b4553a76e5def628eb6185c3ba94190dd53fa79138b448b70958222ef",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2944,13 +2944,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "576a1c3a825d8e07b6a0cfa8",
       "line": 144,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "aeff3f9b8e5343e886d048cd7d80b8d8830adcd017fc01a4222584bc1bbd93bf",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -2976,13 +2976,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "db293fc8f41b068661376d75",
       "line": 165,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "5d19f7f3d36fdbf275335195ad48eeb8db9981c78dc5c951fcc4c1cf105a055b",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3008,13 +3008,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "45215048112ecc6489c20381",
       "line": 167,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "21f4df6cbd9ddeae8b3f3e14bd5fce90081749b6e70324c235709f930156bc2e",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3040,13 +3040,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "24a423283a46a4a7b72357c0",
       "line": 171,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "d8031bbcdd91106b5884e1e6aea1b011325407569529641aaaa1b6e2ea0a60cd",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3072,13 +3072,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "78a3e83972798d514cb2c8f9",
       "line": 173,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "316cb366e4ac06ae65b16f0a9ab65a61df9c983d103ccef57f5fef599df954c4",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3104,13 +3104,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "3ea99a834ec59f4d0bd60d54",
       "line": 175,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "5156400f34ef1ad215115b8f8fa1080658c70642598b3df164b72f98be86d9e4",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3136,13 +3136,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "56080d4b009a6d2724c5536c",
       "line": 177,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "bc3c468fac4a299e0ecace3cad573cb90f25efe3488ab2e824248c848f4294ce",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3168,13 +3168,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "bb1bbb17f034010f5f6439d3",
       "line": 179,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "a4f375654f144cc2401a1864d7612107d2d9f7ef3afd03afdca3448516779446",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3200,13 +3200,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "4f697bb8637b9010b6c0ea3a",
       "line": 183,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "2314406b0cab08faeed31cc5def71096f516b4db2948b41938cb3c48114fbf49",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3232,13 +3232,13 @@
         "tests/declaracoes-unificada.test.ts",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "3f597fa19ef4cedd07228ba6",
       "line": 185,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "6adb3885ba5f62826b4f9e3fe8b4c3108d02bc5ce887e84701b8f05a810381ad",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -3253,13 +3253,13 @@
         "src/declaracoes/unificada/logo.svg",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
       "id": "9b40ced58bfdeb767da7acce",
       "line": 193,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "c0c93270ee6c491b48c989acbb6786f2d327a8b7cf47311ae1838f215fcf98b8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     }
   ]

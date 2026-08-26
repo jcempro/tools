@@ -247,13 +247,13 @@ SCSS é a única fonte canônica de estilos. O build transpila todo `.scss` não
 
 ### 13.1 Padrão prospectivo de logotipos Adobe-like
 
-Todo módulo e todo logotipo criado após a adoção desta regra DEVE possuir identificador visual próprio no padrão Adobe-like, preferencialmente composto por duas letras estrategicamente derivadas do nome público do módulo; escolha diferente exige justificativa local por legibilidade, distinção ou impossibilidade semântica comprovada. [PENDENTE-CODIGO]
+Todo módulo e todo logotipo criado após a adoção desta regra DEVE possuir identificador visual próprio no padrão Adobe-like, preferencialmente composto por duas letras estrategicamente derivadas do nome público do módulo; escolha diferente exige justificativa local por legibilidade, distinção ou impossibilidade semântica comprovada. [ecefbee]
 
-As letras DEVEM ser personalizadas, estilizadas e distintivas, mas permanecer imediatamente legíveis e reconhecíveis isoladamente, no cabeçalho, no catálogo e nos tamanhos de favicon efetivamente suportados. [PENDENTE-CODIGO]
+As letras DEVEM ser personalizadas, estilizadas e distintivas, mas permanecer imediatamente legíveis e reconhecíveis isoladamente, no cabeçalho, no catálogo e nos tamanhos de favicon efetivamente suportados. [ecefbee]
 
-O logotipo PODE integrar às letras um detalhe gráfico sutil e pertinente ao domínio do módulo, desde que o detalhe agregue identidade sem poluição, ambiguidade, imitação de marca de terceiro ou perda de legibilidade. [PENDENTE-CODIGO]
+O logotipo PODE integrar às letras um detalhe gráfico sutil e pertinente ao domínio do módulo, desde que o detalhe agregue identidade sem poluição, ambiguidade, imitação de marca de terceiro ou perda de legibilidade. [ecefbee]
 
-Esta diretriz é prospectiva: logotipos existentes antes de sua adoção NÃO DEVEM ser refatorados apenas para convergência visual; novo módulo ou substituição de logo posterior DEVE obedecê-la e continuar preservando SVG fonte isolado, tema, catálogo, Web, Bundle e geração de favicon previstos neste RCF. [PENDENTE-CODIGO]
+Esta diretriz é prospectiva: logotipos existentes antes de sua adoção NÃO DEVEM ser refatorados apenas para convergência visual; novo módulo ou substituição de logo posterior DEVE obedecê-la e continuar preservando SVG fonte isolado, tema, catálogo, Web, Bundle e geração de favicon previstos neste RCF. [ecefbee]
 
 ### 10.1 Favicons, manifests e identidade por alvo
 
