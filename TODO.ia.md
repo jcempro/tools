@@ -66,7 +66,7 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
 
 ---
 
-* [ ] Implementar o formulário unificado definido por `.ia.rules\state\evidencias\UNIFICADO.odt` e `.ia.rules\state\evidencias\Evidencias-MARCAS-Unificadas.PDF`, após inspeção do estado real do projeto, obedecendo integralmente `RCF.md`, `AGENTS.md` e demais normas vigentes quanto a arquitetura, layout, estilo, interação, exibição, impressão e modus operandi; NÃO presumir, inventar ou preencher lacunas quando isso puder causar incompatibilidade, perda funcional ou regressão.
+* [ ] Implementar novo submódulo: o formulário unificado definido por `.ia.rules\state\evidencias\UNIFICADO.odt` e `.ia.rules\state\evidencias\Evidencias-MARCAS-Unificadas.PDF`, após inspeção do estado real do projeto, obedecendo integralmente `RCF.md`, `AGENTS.md` e demais normas vigentes quanto a arquitetura, layout, estilo, interação, exibição, impressão e modus operandi; NÃO presumir, inventar ou preencher lacunas quando isso puder causar incompatibilidade, perda funcional ou regressão.
 
   * Integrá-lo como ferramenta nativa do modelo **multitools**, reutilizando bibliotecas globais, scripts, estilos, componentes visuais e mecanismos de interação existentes; É PROIBIDO criar implementação paralela/incompatível sem necessidade comprovada.
   * Preservar fielmente conteúdo, estrutura e semântica das declarações/autorizações/adesões de `UNIFICADO.odt`; conteúdo normativo NÃO DEVE ser editável pela GUI: DEVE permanecer individualizado em arquivos `.md`, organizados na estrutura vigente e incorporados ao bundle conforme o mecanismo existente/especificado.
