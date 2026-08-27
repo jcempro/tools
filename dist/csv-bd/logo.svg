@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#28705c"/><g fill="#fff"><rect x="42" y="52" width="172" height="152" rx="12"/><path stroke="#28705c" stroke-width="12" d="M42 101h172M42 151h172M98 52v152M157 52v152"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">CS — Conversor CSV</title>
+  <desc id="description">Monograma geométrico CS com detalhe tabular</desc>
+  <rect width="256" height="256" rx="52" fill="#28705c"/>
+  <path fill="#fff" d="M132 78c-10-8-21-12-34-12-25 0-40 22-40 62s15 62 41 62c14 0 25-5 35-14l16 21c-14 13-32 20-53 20-44 0-71-34-71-89s27-89 71-89c21 0 38 6 52 19l-17 20Zm89 4c-12-9-24-14-37-14-15 0-24 7-24 18 0 10 7 16 30 25 31 12 46 27 46 53 0 33-25 53-62 53-23 0-45-8-61-24l18-22c13 12 27 18 43 18 18 0 29-9 29-23 0-12-7-19-29-27-31-11-46-26-46-51 0-29 23-49 57-49 21 0 39 6 54 18l-18 25Z"/>
+  <path fill="#7fd0b8" d="M31 105h16v10H31zm0 28h16v10H31zm0 28h16v10H31z"/>
+</svg>

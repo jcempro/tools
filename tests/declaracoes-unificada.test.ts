@@ -40,7 +40,7 @@ test("Markdown set is closed, structurally valid and preserves material source w
   const actual = (await readdir(contentRoot)).filter((file) => file.endsWith(".md")).sort();
   assert.deepEqual(actual, manifest.units.map(({ file }) => file).sort());
   for (const unit of manifest.units) {
-    const markdown = await readFile(`${contentRoot}/${unit.file}`, "utf8");
+    const markdown = (await readFile(`${contentRoot}/${unit.file}`, "utf8")).replaceAll("\r\n", "\n");
     assert.equal(markdown.match(/^# /gm)?.length, 1);
     assert.ok(markdown.startsWith(`# ${unit.title}\n`));
     assert.doesNotMatch(markdown, /<\/?[a-z][^>]*>|(?:javascript|data|vbscript)\s*:/i);
@@ -96,7 +96,8 @@ test("module integrates compiled content, DU identity, central config and multip
     readFile("scripts/validate-publication.mjs", "utf8"),
     readFile("src/assets/config/declaracoes-unificada.json", "utf8")
   ]);
-  const runtimeConfig = JSON.parse(appConfig) as { document: { background: string }; footer: Record<string, unknown> };
+  const runtimeConfig = JSON.parse(appConfig) as { document: { background: string }; footer: Record<string, unknown> & { signatureReserveCm: number } };
+  const printing = JSON.parse(await readFile("src/assets/config/printing.json", "utf8")) as { profiles: Record<string, { margins: Record<string, number> }> };
   assert.match(html, /<template id="declaracoes-source"><\/template>/);
   assert.doesNotMatch(html, /AUTORIZAÇÃO PARA CONSULTA AO SCR/);
   assert.match(compile, /withCompiledDeclarations/);
@@ -113,6 +114,11 @@ test("module integrates compiled content, DU identity, central config and multip
   assert.match(logo, /#302a64/i);
   assert.match(logo, /#63d6d1/i);
   assert.equal(runtimeConfig.document.background, "#d9d9d9");
+  assert.equal(runtimeConfig.footer.signatureReserveCm, 0.7);
+  assert.deepEqual(printing.profiles["declaracoes-unificada"]?.margins, { bottom: 1, left: 1, right: 1, top: 1 });
+  assert.match(css, /\.du-signature\s*{[^}]*margin-top:\s*\.24cm !important;[^}]*padding-bottom:\s*var\(--du-signature-reserve\)/s);
+  assert.match(css, /\.du-page-footer p\s*{[^}]*border-bottom:\s*0;[^}]*text-decoration:\s*none/s);
+  assert.match(source, /--du-signature-reserve/);
   assert.match(JSON.stringify(runtimeConfig.footer), /\$\{numero\}/);
   assert.match(bundles, /fonte Markdown proibida/);
   assert.match(validator, /Fontes Markdown nao podem integrar dist/);

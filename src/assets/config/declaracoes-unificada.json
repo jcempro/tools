@@ -13,6 +13,7 @@
     "representationTemplate": ", representada por ${representantes}",
     "representativeJoin": " e ",
     "signature": "(assinaturas e visto/s)",
+    "signatureReserveCm": 0.7,
     "indexPaddingCm": 0.3,
     "indexMarginCm": 0.3
   },

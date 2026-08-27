@@ -46,7 +46,14 @@
     "legacyBundlePattern": ".bundle.html"
   },
   "build": {
+    "webOnlyIndexes": [
+      "atribuicoes/index.html"
+    ],
     "browserScripts": [
+      {
+        "source": "src/assets/js/icons.ts",
+        "output": "assets/js/icons.js"
+      },
       {
         "source": "src/assets/js/consent.ts",
         "output": "assets/js/consent.js"

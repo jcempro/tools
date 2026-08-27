@@ -20,14 +20,28 @@ function render(catalog: AppCatalog): void {
 function applyTheme(theme: "dark" | "light"): void {
   document.documentElement.dataset.theme = theme;
   try { localStorage.setItem("jcem-theme", theme); } catch { /* PROTECAO: tema continua funcional sem persistencia. */ }
+  const button = document.querySelector<HTMLButtonElement>("[data-dashboard-theme]");
+  if (button && window.JCEMIcons) {
+    const target = theme === "dark" ? "light" : "dark";
+    const label = target === "dark" ? "Ativar tema escuro" : "Ativar tema claro";
+    button.innerHTML = window.JCEMIcons.render({ name: target === "dark" ? "moon" : "sun", provider: "lucide" });
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  }
 }
 
 function initTheme(): void {
   const button = document.querySelector<HTMLButtonElement>("[data-dashboard-theme]");
   let stored: string | null = null;
   try { stored = localStorage.getItem("jcem-theme"); } catch { /* PROTECAO: usa preferencia do sistema. */ }
-  applyTheme(stored === "dark" || stored === "light" ? stored : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  const media = matchMedia("(prefers-color-scheme: dark)");
+  applyTheme(stored === "dark" || stored === "light" ? stored : (media.matches ? "dark" : "light"));
   button?.addEventListener("click", () => applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+  media.addEventListener("change", (event) => {
+    let preference: string | null = null;
+    try { preference = localStorage.getItem("jcem-theme"); } catch { /* PROTECAO: acompanha o sistema sem armazenamento. */ }
+    if (preference !== "dark" && preference !== "light") applyTheme(event.matches ? "dark" : "light");
+  });
 }
 
 initTheme();

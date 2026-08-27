@@ -441,6 +441,7 @@ function bootstrapDeclarations(w: Window, d: Document): void {
     root.style.setProperty("--du-block-padding", `${config.document.paddingCm}cm`);
     root.style.setProperty("--du-index-padding", `${config.footer.indexPaddingCm}cm`);
     root.style.setProperty("--du-index-margin", `${config.footer.indexMarginCm}cm`);
+    root.style.setProperty("--du-signature-reserve", `${config.footer.signatureReserveCm}cm`);
   }
 
   api.ready(() => {

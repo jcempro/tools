@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#704b86"/><path fill="#fff" d="M55 36h146v184H55z"/><path fill="#dbcbe5" d="M78 72h100v15H78zm0 34h100v12H78zm0 28h74v12H78z"/><path fill="#704b86" d="m151 178 32-32 17 17-32 32-24 5z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">OA — Ofício admissional</title>
+  <desc id="description">Monograma geométrico OA com detalhe de documento</desc>
+  <rect width="256" height="256" rx="52" fill="#704b86"/>
+  <path fill="#fff" fill-rule="evenodd" d="M35 128c0-48 25-79 65-79s65 31 65 79-25 79-65 79-65-31-65-79Zm31 0c0 32 12 52 34 52s34-20 34-52-12-52-34-52-34 20-34 52Zm90 79 47-158h33l47 158h-31l-10-37h-46l-10 37h-30Zm47-63h32l-16-61-16 61Z"/>
+  <path fill="#dbcbe5" d="M174 44h62v15h-62zm0 119h62v11h-62z"/>
+</svg>

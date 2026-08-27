@@ -49,6 +49,7 @@ const compiledOutputs = new Map([
   ...buildConfig.bookmarklets
 ].map(({ output, source }) => [output, source.replace(/^src\//, "")]));
 const noscriptSource = "NOSCRIPT.html";
+const webOnlyIndexes = new Set(buildConfig.webOnlyIndexes);
 
 function normalizeRel(file) {
   return file.split(path.sep).join("/");
@@ -288,6 +289,44 @@ async function validatePublicText(files) {
   }
 }
 
+async function assertAttributions(distSet) {
+  const source = JSON.parse(await readFile(path.join(srcDir, "assets/config/attributions.json"), "utf8"));
+  const lock = JSON.parse(await readFile(path.join(root, "package-lock.json"), "utf8"));
+  const html = await readFile(path.join(distDir, "atribuicoes/index.html"), "utf8");
+  const dashboard = await readFile(path.join(distDir, "index.html"), "utf8");
+  const chrome = await readFile(path.join(distDir, "assets/js/documentos.js"), "utf8");
+  const icons = await readFile(path.join(distDir, "assets/js/icons.js"), "utf8");
+  const packageVersions = new Map([
+    ["floating-ui", lock.packages?.["node_modules/@floating-ui/dom"]?.version],
+    ["fontawesome-free-icons", lock.packages?.["node_modules/@fortawesome/free-solid-svg-icons"]?.version],
+    ["game-icons-upgrade", lock.packages?.["node_modules/@iconify-icons/game-icons"]?.version],
+    ["html2pdf-bundle", lock.packages?.["node_modules/html2pdf.js"]?.version],
+    ["lucide-icons", lock.packages?.["node_modules/@lucide/icons"]?.version],
+    ["streamline-sharp-download-box", lock.packages?.["node_modules/@iconify-icons/streamline-sharp"]?.version],
+    ["zepto", lock.packages?.["node_modules/zepto"]?.version]
+  ]);
+  if (source.schema !== 1 || !Array.isArray(source.entries) || source.entries.length !== packageVersions.size) {
+    throw new Error("Inventario publico de atribuicoes incompleto.");
+  }
+  const names = source.entries.map(({ name }) => name);
+  if (JSON.stringify(names) !== JSON.stringify([...names].sort((left, right) => left.localeCompare(right, "pt-BR", { sensitivity: "base" })))) {
+    throw new Error("Inventario publico de atribuicoes fora de ordem.");
+  }
+  for (const entry of source.entries) {
+    const expectedVersion = packageVersions.get(entry.id);
+    if (!expectedVersion || !entry.version.includes(expectedVersion) || !html.includes(entry.id) || !html.includes(entry.notice.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;"))) {
+      throw new Error(`Atribuicao ausente, divergente ou sem evidencia de versao: ${entry.id}.`);
+    }
+  }
+  if (!distSet.has("atribuicoes/index.html") || distSet.has("atribuicoes/atribuicoes.bundle.zip") || !dashboard.includes('href="/atribuicoes/"') || !chrome.includes("/atribuicoes/")) {
+    throw new Error("Rota de atribuicoes ausente, sem link permanente ou indevidamente empacotada como Bundle.");
+  }
+  for (const identity of ["game-icons", "upgrade", "streamline-sharp", "download-box-1-solid", "lucide", "fontawesome"]) {
+    if (!icons.includes(identity)) throw new Error(`Bundle de icones nao comprova identidade selecionada: ${identity}.`);
+  }
+  if (/api\.iconify|api\.simplesvg|https?:\/\/api\./i.test(icons)) throw new Error("Bundle de icones contem fallback de rede proibido.");
+}
+
 function assertExactFiles(files, expectedFiles) {
   const unexpected = files.filter((rel) => !expectedFiles.has(rel));
   if (unexpected.length > 0) {
@@ -372,6 +411,11 @@ async function main() {
     if (rel === "index.html") {
       continue;
     }
+    if (webOnlyIndexes.has(rel)) {
+      const forbiddenBundle = bundleForIndex(rel);
+      if (distSet.has(forbiddenBundle)) throw new Error(`Pagina exclusivamente Web possui Bundle indevido: ${forbiddenBundle}`);
+      continue;
+    }
     const bundle = bundleForIndex(rel);
     expectedFiles.add(bundle);
     if (!distSet.has(bundle)) {
@@ -391,6 +435,7 @@ async function main() {
   assertNoEmptyDirectories(distDirectories, distFiles);
   await assertWebFavicons(faviconPlan);
   await validatePublicText(distFiles);
+  await assertAttributions(distSet);
 
   console.log(`Publicacao validada: ${sourceIndexFiles.length} paginas, ${distFiles.length} arquivos em dist/.`);
 }

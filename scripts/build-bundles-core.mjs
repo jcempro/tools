@@ -13,6 +13,7 @@ const config = await loadProjectConfig();
 const distDir = path.join(root, config.paths.distribution);
 const cacheDir = path.join(root, config.paths.cache);
 const lockPath = path.join(cacheDir, "bundle.lock");
+const webOnlyIndexes = new Set(Array.isArray(config.build.webOnlyIndexes) ? config.build.webOnlyIndexes.map((value) => String(value).replace(/\\/g, "/")) : []);
 
 const externalResources = new Map(config.development.vendor.map(({ url, file }) => [url, path.join(root, file)]));
 
@@ -377,7 +378,8 @@ try {
   const bundles = [];
 
   for (const rel of indexes) {
-    if (rel.replace(/\\/g, "/") === "index.html") continue;
+    const normalized = rel.replace(/\\/g, "/");
+    if (normalized === "index.html" || webOnlyIndexes.has(normalized)) continue;
     bundles.push(await buildBundle(rel));
   }
 

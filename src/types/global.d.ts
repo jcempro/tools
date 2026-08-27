@@ -17,10 +17,17 @@ declare global {
 
   interface Window {
     JCEMDocumentos?: JCEMDocumentosApi;
+    JCEMIcons?: JCEMIconsApi;
     $?: ZeptoStatic;
     html2pdf?: Html2PdfFactory | { default?: Html2PdfFactory };
     Zepto?: ZeptoStatic;
     isNum?: (value: unknown) => boolean;
+  }
+
+  interface JCEMIconsApi {
+    catalog: ReadonlyArray<Readonly<{ identity: string; licenseId: string }>>;
+    render: (ref: ToolbarIconRef | string) => string;
+    resolve: (ref: ToolbarIconRef | string) => Readonly<{ collection?: string; identity: string; name: string; provider: "fontawesome" | "iconify" | "lucide"; viewBox: string }>;
   }
 
   interface JCEMDocumentosApi {
@@ -298,8 +305,11 @@ declare global {
   }
 
   interface ToolbarIconRef {
+    collection?: string;
     iconName?: string;
     identifier?: string;
+    name?: string;
+    provider?: "fontawesome" | "iconify" | "lucide";
     unicode?: string;
   }
 

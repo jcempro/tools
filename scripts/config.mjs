@@ -141,6 +141,7 @@ export async function loadBuildConfig() {
   return {
     browserScripts: normalizeScriptEntries(build.browserScripts, "build.browserScripts"),
     bookmarklets: normalizeScriptEntries(build.bookmarklets, "build.bookmarklets"),
+    webOnlyIndexes: normalizeRootFiles(build.webOnlyIndexes ?? [], "build.webOnlyIndexes"),
     rootPassthroughFiles: normalizeRootFiles(build.rootPassthroughFiles, "build.rootPassthroughFiles"),
     generatedRootFiles: normalizeGeneratedRootFiles(build.generatedRootFiles, "build.generatedRootFiles")
   };

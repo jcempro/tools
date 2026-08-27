@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "licenses": {
+    "fontawesome-free": {
+      "author": "Fonticons, Inc.",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "notice": "Font Awesome Free icons by Fonticons, Inc., licensed under CC BY 4.0.",
+      "source": "https://fontawesome.com/"
+    },
+    "game-icons": {
+      "author": "Delapouite",
+      "license": "CC-BY-3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "notice": "Upgrade icon by Delapouite, available from Game-icons.net under CC BY 3.0.",
+      "source": "https://game-icons.net/1x1/delapouite/upgrade.html"
+    },
+    "lucide": {
+      "author": "Lucide Contributors",
+      "license": "ISC",
+      "licenseUrl": "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+      "notice": "Lucide icons are licensed under the ISC License.",
+      "source": "https://lucide.dev/"
+    },
+    "streamline-sharp": {
+      "author": "Streamline",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "notice": "Download Box 1 Solid icon from Streamline Sharp free icons, licensed under CC BY 4.0.",
+      "source": "https://icon-sets.iconify.design/streamline-sharp/download-box-1-solid/"
+    }
+  },
+  "icons": [
+    { "identity": "fontawesome:bars", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:box-open", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:chevron-down", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:chevron-left", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:chevron-right", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:chevron-up", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:circle-down", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:ellipsis-vertical", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:eraser", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:file-arrow-down", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:file-arrow-up", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:file-pdf", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:floppy-disk", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:folder-open", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:paper-plane", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:pen-to-square", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:print", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:stamp", "licenseId": "fontawesome-free" },
+    { "identity": "iconify:game-icons:upgrade", "licenseId": "game-icons" },
+    { "identity": "iconify:streamline-sharp:download-box-1-solid", "licenseId": "streamline-sharp" },
+    { "identity": "lucide:moon", "licenseId": "lucide" },
+    { "identity": "lucide:sun", "licenseId": "lucide" }
+  ]
+}

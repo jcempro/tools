@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#165b82"/><path fill="#fff" d="M48 44h160v168H48z"/><path fill="#2c82b7" d="M70 164h24v28H70zm36-38h24v66h-24zm36-34h24v100h-24zm36-22h12v122h-12z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title description">
+  <title id="title">Fa — Faturamento</title>
+  <desc id="description">Monograma geométrico Fa com barras de projeção</desc>
+  <rect width="256" height="256" rx="52" fill="#165b82"/>
+  <path fill="#fff" d="M44 48h86v25H73v37h49v25H73v73H44V48Zm101 67c12-10 29-15 50-15 31 0 48 15 48 43v65h-25l-3-12c-9 10-21 15-36 15-25 0-41-14-41-36 0-24 19-38 53-38h23c-1-10-8-15-23-15-12 0-23 4-34 11l-12-18Zm69 41h-19c-18 0-27 5-27 15 0 9 7 14 18 14 16 0 27-9 28-24v-5Z"/>
+  <path fill="#70b9df" d="M153 86h15v18h-15zm25-15h15v33h-15zm25-23h15v56h-15z"/>
+</svg>

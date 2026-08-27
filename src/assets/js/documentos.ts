@@ -1,25 +1,4 @@
 import { computePosition, flip, offset, shift } from "@floating-ui/dom";
-import {
-  faBoxOpen,
-  faBars,
-  faChevronDown,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faCircleDown,
-  faCircleHalfStroke,
-  faEllipsisVertical,
-  faFolderOpen,
-  faDownload,
-  faEraser,
-  faFilePdf,
-  faFileArrowDown,
-  faFileArrowUp,
-  faFloppyDisk,
-  faPaperPlane,
-  faPrint,
-  faStamp
-} from "@fortawesome/free-solid-svg-icons";
 import printingConfig from "../config/printing.json";
 import { g as guard } from "./guard";
 
@@ -27,12 +6,6 @@ declare const __JCEM_BUILD_VERSION__: string;
 
 (function bootstrapDocumentos(w: Window, d: Document): void {
   "use strict";
-
-  type FaIconDefinition = {
-    icon: [number, number, Array<number | string>, string, string | string[]];
-    iconName: string;
-    prefix: string;
-  };
 
   type ToolbarHook = (element: HTMLElement, item: ToolbarItemConfig) => void;
   type ToolbarLabelSource = "" | "text" | `fixed:${string}` | `text:${string}`;
@@ -1056,29 +1029,6 @@ declare const __JCEM_BUILD_VERSION__: string;
     return value && typeof value === "object" && !Array.isArray(value) ? value : {};
   }
 
-  const iconDefinitions: FaIconDefinition[] = [
-    faBoxOpen,
-    faBars,
-    faChevronDown,
-    faChevronLeft,
-    faChevronRight,
-    faChevronUp,
-    faCircleDown,
-    faCircleHalfStroke,
-    faDownload,
-    faEllipsisVertical,
-    faFolderOpen,
-    faEraser,
-    faFileArrowDown,
-    faFileArrowUp,
-    faFilePdf,
-    faFloppyDisk,
-    faPaperPlane,
-    faPrint,
-    faStamp
-  ];
-
-  const iconsByKey = new Map<string, FaIconDefinition>();
   const toolbarRuntime: ToolbarRuntimeConfig = {};
   const toolbarActionHooks: Record<string, ToolbarHook> = {
     "document.export": () => {
@@ -1106,7 +1056,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     // FIX-BUG: preserva ações utilitárias do CSV na normalização da toolbar global.
     { hint: "Abrir CSV", icon: { unicode: "f574" }, id: "csv-open", label: "", order: 20, selector: ".csv-open" },
     { hint: "Baixar CSV convertido", icon: { unicode: "f56d" }, id: "csv-download", label: "", order: 40, selector: ".csv-download" },
-    { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icons: [{ unicode: "f49e" }, { unicode: "f358" }], id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
+    { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icons: [{ name: "box-open", provider: "fontawesome" }, { collection: "streamline-sharp", name: "download-box-1-solid", provider: "iconify" }], id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
     { hint: "Imprimir PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
     { hint: "Imprimir em branco", icon: { unicode: "f1c1" }, id: "blank-pdf", label: "fixed:em branco", order: 45, selector: ".pdf.formulario" },
     { hint: "Imprimir", hook: "window.print", icon: { unicode: "f02f" }, id: "print", label: "", order: 50, selector: ".browser-print,.print:not(.pdf):not(.formulario)" },
@@ -1116,53 +1066,10 @@ declare const __JCEM_BUILD_VERSION__: string;
     { fallbackId: "acao", hint: "", icon: { unicode: "f02f" }, id: "", label: "text", order: 100, selector: ".pdf,.print" }
   ];
 
-  for (const definition of iconDefinitions) {
-    const aliases = definition.icon[2];
-    iconsByKey.set(definition.iconName.toLowerCase(), definition);
-    iconsByKey.set(`${definition.prefix}:${definition.iconName}`.toLowerCase(), definition);
-    iconsByKey.set(definition.icon[3].toLowerCase(), definition);
-    for (const alias of aliases) {
-      iconsByKey.set(`${alias}`.toLowerCase(), definition);
-    }
-  }
-
-  function resolveIconDefinition(iconRef: ToolbarIconRef | string | undefined): FaIconDefinition | null {
-    if (!iconRef) {
-      return null;
-    }
-
-    if (typeof iconRef === "string") {
-      return iconsByKey.get(iconRef.toLowerCase()) ?? null;
-    }
-
-    const keys = [
-      iconRef.identifier,
-      iconRef.iconName,
-      iconRef.unicode
-    ].filter((value): value is string => Boolean(value));
-
-    for (const key of keys) {
-      const definition = iconsByKey.get(key.toLowerCase());
-      if (definition) {
-        return definition;
-      }
-    }
-
-    return null;
-  }
-
   function renderIcon(iconRef: ToolbarIconRef | string | undefined): string {
-    const definition = resolveIconDefinition(iconRef);
-    if (!definition) {
-      return "";
-    }
-
-    const width = definition.icon[0];
-    const height = definition.icon[1];
-    const paths = definition.icon[4];
-    const pathList = Array.isArray(paths) ? paths : [paths];
-    const renderedPaths = pathList.map((path) => `<path fill="currentColor" d="${path}"></path>`).join("");
-    return `<svg class="jcem-fa-icon" aria-hidden="true" focusable="false" role="img" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${renderedPaths}</svg>`;
+    if (!iconRef) return "";
+    if (!w.JCEMIcons) throw new Error("Catalogo global de icones indisponivel.");
+    return w.JCEMIcons.render(iconRef);
   }
 
   function moduleIdFromPath(): string {
@@ -1740,22 +1647,38 @@ declare const __JCEM_BUILD_VERSION__: string;
     d.body.classList.remove("jcem-has-app-nav", "jcem-has-app-nav-right");
   }
 
+  function updateThemeButton(button: HTMLButtonElement, theme: "dark" | "light"): void {
+    const target = theme === "dark" ? "light" : "dark";
+    const label = target === "dark" ? "Ativar tema escuro" : "Ativar tema claro";
+    button.innerHTML = renderIcon({ name: target === "dark" ? "moon" : "sun", provider: "lucide" });
+    button.setAttribute("aria-label", label);
+    button.dataset.jcemTooltip = label;
+    button.title = label;
+  }
+
   function applyTheme(theme: "dark" | "light"): void {
     d.documentElement.dataset.theme = theme;
     try { storage.setItem("jcem-theme", theme); } catch { /* PROTECAO: tema continua funcional sem persistencia. */ }
+    for (const button of $<HTMLButtonElement>("[data-jcem-theme-control]")) updateThemeButton(button, theme);
   }
 
   function initTheme(): HTMLButtonElement {
     let stored: string | null = null;
     try { stored = storage.getItem("jcem-theme"); } catch { /* PROTECAO: usa preferencia do sistema. */ }
-    const initial = stored === "dark" || stored === "light" ? stored : (w.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    applyTheme(initial);
+    const media = w.matchMedia?.("(prefers-color-scheme: dark)");
+    const initial = stored === "dark" || stored === "light" ? stored : (media?.matches ? "dark" : "light");
     const button = d.createElement("button");
     button.className = "jcem-theme-toggle";
     button.type = "button";
-    button.setAttribute("aria-label", "Alternar tema claro e escuro");
-    button.innerHTML = renderIcon({ unicode: "f042" });
+    button.dataset.jcemThemeControl = "true";
     on(button, "click", () => applyTheme(d.documentElement.dataset.theme === "dark" ? "light" : "dark"));
+    media?.addEventListener("change", (event) => {
+      let preference: string | null = null;
+      try { preference = storage.getItem("jcem-theme"); } catch { /* PROTECAO: acompanha o sistema sem armazenamento. */ }
+      if (preference !== "dark" && preference !== "light") applyTheme(event.matches ? "dark" : "light");
+    });
+    applyTheme(initial);
+    updateThemeButton(button, initial);
     return button;
   }
 
@@ -1900,7 +1823,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     const licenseLink = externalLink(licenseUrl, licenseName, "license noopener noreferrer");
     const autosave = options.autosave === false ? "" : `<span class="ico autosave jcem-autosave" title="${escapeHtml(seal.__p11)}"><span class="jcem-autosave-copy"><span>Local e </span><strong>automático</strong></span><span class="jcem-autosave-icon">${renderIcon({ unicode: "f0c7" })}</span></span>`;
     const updateHint = "há atualização disponível, baixe e substitua";
-    const updateIndicator = `<a class="jcem-update-indicator" href="${escapeHtml(publicPageUrl(domain))}" aria-label="${updateHint}" data-jcem-tooltip="${updateHint}">${renderIcon({ unicode: "f019" })}</a>`;
+    const updateIndicator = `<a class="jcem-update-indicator" href="${escapeHtml(publicPageUrl(domain))}" aria-label="${updateHint}" data-jcem-tooltip="${updateHint}">${renderIcon({ collection: "game-icons", name: "upgrade", provider: "iconify" })}</a>`;
     const mount = typeof options.mountBefore === "string"
       ? one(options.mountBefore)
       : options.mountBefore ?? d.body.firstElementChild;
@@ -1958,6 +1881,7 @@ declare const __JCEM_BUILD_VERSION__: string;
         <p>${seal.__p22}</p>
         <p>${seal.__p23}</p>
         <p>Este site utiliza cookies essenciais e armazenamento local para preferências e dados preenchidos.</p>
+        <p><a class="jcem-attributions-link" href="/atribuicoes/">Atribuições</a></p>
       </section>
     `;
 

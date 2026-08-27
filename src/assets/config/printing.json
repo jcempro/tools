@@ -17,7 +17,7 @@
       "orientation": "portrait",
       "size": [21, 29.7],
       "unit": "cm",
-      "margins": { "top": 0.6, "right": 0.6, "bottom": 0.6, "left": 0.6 }
+      "margins": { "top": 1, "right": 1, "bottom": 1, "left": 1 }
     }
   }
 }

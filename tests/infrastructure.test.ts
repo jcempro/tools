@@ -190,8 +190,8 @@ test("shared chrome checks updates once and delegates presentation to CSS", asyn
   assert.match(sharedTs, /container\.classList\.toggle\("has-update"/);
   assert.doesNotMatch(sharedTs, /setInterval\(/);
   assert.match(sharedTs, /há atualização disponível, baixe e substitua/);
-  assert.match(sharedTs, /unicode: "f019"/);
-  assert.match(sharedTs, /faDownload/);
+  assert.match(sharedTs, /collection: "game-icons", name: "upgrade", provider: "iconify"/);
+  assert.doesNotMatch(sharedTs, /unicode: "f019"|faDownload/);
   assert.match(sharedCss, /\.jcem-chrome-meta\.has-update \.jcem-update-indicator\s*{\s*display:\s*inline-grid/);
   assert.match(sharedCss, /@keyframes jcem-update-pulse/);
   assert.match(sharedCss, /@keyframes jcem-update-button-pulse/);
@@ -379,6 +379,7 @@ test("print profiles centralize A4 geometry and asynchronous PDF completion", as
     assert.equal(profile.unit, "cm");
     assert.deepEqual(Object.keys(profile.margins).sort(), ["bottom", "left", "right", "top"]);
   }
+  assert.deepEqual(config.profiles["declaracoes-unificada"]?.margins, { bottom: 1, left: 1, right: 1, top: 1 });
   assert.match(sharedTs, /@media print\{body \.jcem-print-sheet/);
   assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 1px\)/);
   assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 4px\)/);
@@ -434,16 +435,21 @@ test("favicon build uses official tooling with target isolation and pinned svgdo
   assert.match(validate, /exatamente um favicon autocontido/);
 });
 
-test("shared toolbar uses declarative Font Awesome icons and portable data actions", async () => {
+test("shared toolbar uses a declarative multi-provider icon catalog and portable data actions", async () => {
   const pkg = JSON.parse(await readFile("package.json", "utf8")) as {
     devDependencies: Record<string, string>;
   };
   const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
+  const iconsTs = await readFile("src/assets/js/icons.ts", "utf8");
+  const iconConfig = JSON.parse(await readFile("src/assets/config/icons.json", "utf8")) as { icons: Array<{ identity: string }>; licenses: Record<string, unknown> };
   const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
   const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
   const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
 
   assert.ok(pkg.devDependencies["@fortawesome/free-solid-svg-icons"]);
+  assert.ok(pkg.devDependencies["@lucide/icons"]);
+  assert.ok(pkg.devDependencies["@iconify-icons/game-icons"]);
+  assert.ok(pkg.devDependencies["@iconify-icons/streamline-sharp"]);
   assert.ok(pkg.devDependencies["@floating-ui/dom"]);
   assert.equal(pkg.devDependencies["@fortawesome/fontawesome-free"], undefined);
   assert.equal(pkg.devDependencies["@fortawesome/fontawesome-svg-core"], undefined);
@@ -464,12 +470,22 @@ test("shared toolbar uses declarative Font Awesome icons and portable data actio
   assert.match(sharedCss, /\.jcem-chrome-actions\.menu \.jcem-fa-icon,[\s\S]*\.jcem-chrome-toolbar-overflow\.menu \.jcem-fa-icon\s*{[^}]*var\(--jcem-toolbar-icon-color\)/s);
   assert.match(sharedTs, /unicode:\s*"f0c7"[^\n]*id:\s*"export-fill"/);
   assert.match(sharedTs, /unicode:\s*"f07c"[^\n]*id:\s*"import-fill"/);
-  assert.match(sharedTs, /icons:\s*\[\{ unicode:\s*"f49e" \},\s*\{ unicode:\s*"f358" \}\]/);
+  assert.match(sharedTs, /name: "box-open", provider: "fontawesome"/);
+  assert.match(sharedTs, /collection: "streamline-sharp", name: "download-box-1-solid", provider: "iconify"/);
   assert.match(sharedTs, /separator-print-clear/);
   assert.match(sharedTs, /item\.icons/);
-  assert.match(sharedTs, /renderIcon\(\{ unicode: "f042" \}\)/);
+  assert.match(sharedTs, /name: target === "dark" \? "moon" : "sun", provider: "lucide"/);
   assert.match(sharedTs, /renderIcon\(\{ unicode: "f142" \}\)/);
-  assert.match(sharedTs, /faEllipsisVertical/);
+  assert.match(iconsTs, /faEllipsisVertical/);
+  assert.match(iconsTs, /@iconify-icons\/game-icons\/upgrade/);
+  assert.match(iconsTs, /@iconify-icons\/streamline-sharp\/download-box-1-solid/);
+  assert.match(iconsTs, /Moon as moonIcon, Sun as sunIcon/);
+  assert.match(iconsTs, /const fontAwesomeAliases = new Map/);
+  assert.match(iconsTs, /throw new Error\(`Icone nao cadastrado:/);
+  assert.match(iconsTs, /jcem-icon--\$\{definition\.provider\}/);
+  assert.ok(iconConfig.icons.some(({ identity }) => identity === "iconify:game-icons:upgrade"));
+  assert.ok(iconConfig.icons.some(({ identity }) => identity === "iconify:streamline-sharp:download-box-1-solid"));
+  assert.ok(Object.keys(iconConfig.licenses).includes("lucide"));
   assert.match(sharedTs, /class="jcem-header-menu-state"/);
   assert.match(sharedTs, /class="jcem-toolbar-menu-state"/);
   assert.match(sharedTs, /initOverflowGroup\(header, headerActions, headerOverflow, "\.jcem-header-menu-state", \{ compactAutosave: true, compactBrand: true \}\)/);
@@ -590,11 +606,12 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /\.jcem-app-shell\s*{[^}]*grid-template-columns:\s*3\.5rem minmax\(0, 1fr\)/s);
   assert.match(sharedCss, /\.jcem-app-shell::before\s*{[^}]*inset:\s*0 auto 0 0[^}]*background:\s*#d6e0e7/s);
   assert.match(sharedCss, /\.jcem-app-nav\s*{[^}]*position:\s*sticky[^}]*height:\s*max-content/s);
-  assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*height:\s*100vh[^}]*background:\s*transparent/s);
+  assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*content:\s*none/s);
+  assert.doesNotMatch(sharedCss, /\.jcem-app-nav::before\s*{[^}]*100vh/s);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-app-shell::before\s*{[^}]*background:\s*#25272a/s);
   assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav/);
   assert.match(shared, /renderIcon\(\{ unicode: "f0c9" \}\)/);
-  assert.match(sharedCss, /\.jcem-app-nav::before\s*{[^}]*transition:\s*width \.18s ease/s);
+  assert.match(sharedCss, /\.jcem-app-shell::before\s*{[^}]*transition:\s*width \.18s ease/s);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-header\s*{[^}]*animation-timeline:\s*scroll\(root block\)[^}]*animation-range:\s*0 7rem/s);
   assert.match(sharedCss, /@keyframes jcem-header-nav-clearance\s*{[^}]*padding-left:\s*1rem[\s\S]*padding-left:\s*4\.5rem/s);
   assert.doesNotMatch(sharedCss, /@keyframes jcem-toolbar-nav-clearance/);
@@ -602,7 +619,7 @@ test("dashboard catalog, themes and consent remain centralized", async () => {
   assert.match(sharedCss, /:root\[data-theme="light"\] \.jcem-theme-toggle\s*{[^}]*color:\s*#526a7a/s);
   assert.match(sharedCss, /\.jcem-dashboard-footer p\s*{[^}]*color:\s*inherit/s);
   assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-dashboard-footer p\s*{[^}]*color:\s*#b6bac0/s);
-  assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell \.jcem-app-nav::before\s*{[^}]*width:\s*min\(18rem/s);
+  assert.match(sharedCss, /\.jcem-nav-state:checked\s*~\s*\.jcem-app-shell::before\s*{[^}]*width:\s*min\(18rem/s);
   assert.doesNotMatch(shared, /addEventListener\("scroll"/);
   assert.match(shared, /initOverflowGroup/);
   assert.match(shared, /ResizeObserver/);
@@ -638,12 +655,45 @@ test("CSV module preserves readable local surfaces in both themes", async () => 
 });
 
 test("all published applications have SVG identity and SCSS sources", async () => {
-  for (const directory of ["csv-bd", "declaracoes/unificada", "faturamento", "oficios/admissional"]) {
-    assert.match(await readFile(`src/${directory}/logo.svg`, "utf8"), /<svg/);
+  const monograms = new Map([["csv-bd", "CS"], ["declaracoes/unificada", "DU"], ["faturamento", "Fa"], ["oficios/admissional", "OA"]]);
+  for (const [directory, monogram] of monograms) {
+    const logo = await readFile(`src/${directory}/logo.svg`, "utf8");
+    assert.match(logo, /<svg/);
+    assert.match(logo, new RegExp(`<title[^>]*>${monogram} —`));
+    assert.doesNotMatch(logo, /<text\b|data:image\//i);
   }
   const files = await collectAllFiles("src");
   assert.equal(files.some((file) => file.endsWith(".css")), false);
   assert.equal(files.filter((file) => file.endsWith(".scss")).length, 5);
+});
+
+test("public attributions are inventory-driven, linked and Web-only", async () => {
+  const config = JSON.parse(await readFile("src/assets/config/attributions.json", "utf8")) as {
+    entries: Array<Record<string, unknown> & { id: string; name: string }>;
+    schema: number;
+  };
+  const html = await readFile("src/atribuicoes/index.html", "utf8");
+  const dashboard = await readFile("src/index.html", "utf8");
+  const shared = await readFile("src/assets/js/documentos.ts", "utf8");
+  const compile = await readFile("scripts/compile.mjs", "utf8");
+  const validate = await readFile("scripts/validate-publication.mjs", "utf8");
+  const catalog = JSON.parse(await readFile("src/assets/config/apps.json", "utf8")) as { apps: Array<{ id: string }> };
+
+  assert.equal(config.schema, 1);
+  assert.equal(config.entries.length, 7);
+  assert.deepEqual(config.entries.map(({ name }) => name), [...config.entries.map(({ name }) => name)].sort((left, right) => left.localeCompare(right, "pt-BR", { sensitivity: "base" })));
+  assert.ok(config.entries.every((entry) => ["id", "name", "class", "version", "source", "authors", "licenseTitle", "spdx", "licenseUrl", "notice", "transformations", "consumers", "evidence"].every((key) => key in entry)));
+  assert.equal((html.match(/class="jcem-attributions-intro"/g) ?? []).length, 1);
+  assert.match(html, /data-attributions/);
+  assert.match(html, /assets\/js\/icons\.js[\s\S]*assets\/js\/documentos\.js/);
+  assert.doesNotMatch(JSON.stringify(catalog), /atribuicoes/i);
+  assert.match(dashboard, /href="\/atribuicoes\/">Atribuições/);
+  assert.match(shared, /class="jcem-attributions-link" href="\/atribuicoes\/"/);
+  assert.match(compile, /withCompiledAttributions/);
+  assert.match(compile, /assertAttributionsConfig/);
+  assert.match(validate, /webOnlyIndexes = new Set\(buildConfig\.webOnlyIndexes\)/);
+  assert.match(compile, /buildConfig\.webOnlyIndexes\.includes\(normalized\)/);
+  assert.match(validate, /assertAttributions/);
 });
 
 test("dev-live builds before serving and keeps Web plus bundles synchronized", async () => {

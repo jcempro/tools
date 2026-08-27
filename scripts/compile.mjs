@@ -40,9 +40,12 @@ const declarationsIndex = "declaracoes/unificada/index.html";
 const declarationsContentDir = path.join(srcRoot, "declaracoes", "unificada", "conteudo");
 const declarationsManifestFile = path.join(declarationsContentDir, "manifest.json");
 const declarationsConfigFile = path.join(srcRoot, "assets", "config", "declaracoes-unificada.json");
+const attributionsIndex = "atribuicoes/index.html";
+const attributionsConfigFile = path.join(srcRoot, "assets", "config", "attributions.json");
 const buildVersion = process.env.JCEM_BUILD_VERSION?.trim() || "development";
 let noscriptFragmentCache;
 let declarationsFragmentCache;
+let attributionsFragmentCache;
 
 async function ensureParent(file) {
   await mkdir(path.dirname(path.join(root, file)), { recursive: true });
@@ -210,8 +213,64 @@ async function withCompiledDeclarations(html, rel) {
   return html.replace(marker, `<template id="declaracoes-source">${await officialDeclarationsFragment()}</template>`);
 }
 
+function assertAttributionsConfig(config) {
+  if (config.schema !== 1 || !Array.isArray(config.entries) || config.entries.length === 0) {
+    throw new Error("Inventario de atribuicoes invalido ou vazio.");
+  }
+  const ids = new Set();
+  const names = [];
+  for (const entry of config.entries) {
+    const required = ["id", "name", "class", "version", "source", "licenseTitle", "spdx", "licenseUrl", "notice", "transformations"];
+    if (required.some((key) => typeof entry[key] !== "string" || !entry[key].trim()) || !/^[a-z0-9-]+$/.test(entry.id) || ids.has(entry.id)) {
+      throw new Error(`Entrada de atribuicao invalida ou duplicada: ${entry.id ?? "sem-id"}.`);
+    }
+    if (!/^https:\/\//.test(entry.source) || !/^https:\/\//.test(entry.licenseUrl) || !Array.isArray(entry.authors) || entry.authors.length === 0 || entry.authors.some((value) => typeof value !== "string" || !value.trim())) {
+      throw new Error(`Origem, licenca ou autoria invalida: ${entry.id}.`);
+    }
+    if (!Array.isArray(entry.consumers) || entry.consumers.length === 0 || !Array.isArray(entry.evidence) || entry.evidence.length === 0 || entry.evidence.some((value) => typeof value !== "string" || !value.trim() || value.includes(".."))) {
+      throw new Error(`Consumidor ou evidencia ausente: ${entry.id}.`);
+    }
+    ids.add(entry.id);
+    names.push(entry.name);
+  }
+  const ordered = [...names].sort((left, right) => left.localeCompare(right, "pt-BR", { sensitivity: "base" }));
+  if (JSON.stringify(names) !== JSON.stringify(ordered)) throw new Error("Atribuicoes devem estar ordenadas por nome.");
+}
+
+async function officialAttributionsFragment() {
+  if (attributionsFragmentCache) return attributionsFragmentCache;
+  const config = JSON.parse(await readFile(attributionsConfigFile, "utf8"));
+  assertAttributionsConfig(config);
+  attributionsFragmentCache = config.entries.map((entry) => `
+        <article class="jcem-attribution" id="${escapeHtml(entry.id)}">
+          <h2>${escapeHtml(entry.name)}</h2>
+          <dl>
+            <div><dt>Classe</dt><dd>${escapeHtml(entry.class)}</dd></div>
+            <div><dt>Versão/revisão</dt><dd>${escapeHtml(entry.version)}</dd></div>
+            <div><dt>Autoria</dt><dd>${entry.authors.map(escapeHtml).join("; ")}</dd></div>
+            <div><dt>Origem oficial</dt><dd><a href="${escapeHtml(entry.source)}" target="_blank" rel="noopener noreferrer">${escapeHtml(entry.source)}</a></dd></div>
+            <div><dt>Licença</dt><dd><a href="${escapeHtml(entry.licenseUrl)}" target="_blank" rel="license noopener noreferrer">${escapeHtml(entry.licenseTitle)} (${escapeHtml(entry.spdx)})</a></dd></div>
+            <div><dt>Transformações</dt><dd>${escapeHtml(entry.transformations)}</dd></div>
+            <div><dt>Consumidores</dt><dd>${entry.consumers.map(escapeHtml).join("; ")}</dd></div>
+          </dl>
+          <h3>Aviso obrigatório</h3>
+          <pre>${escapeHtml(entry.notice)}</pre>
+        </article>`).join("");
+  return attributionsFragmentCache;
+}
+
+async function withCompiledAttributions(html, rel) {
+  if (normalizeRel(rel) !== attributionsIndex) return html;
+  const marker = '<section class="jcem-attributions-list" aria-label="Recursos de terceiros" data-attributions></section>';
+  if (!html.includes(marker)) throw new Error(`Marcador de atribuicoes ausente em ${rel}.`);
+  return html.replace(marker, `<section class="jcem-attributions-list" aria-label="Recursos de terceiros" data-attributions>${await officialAttributionsFragment()}</section>`);
+}
+
 function bundleForIndex(rel) {
   const normalized = normalizeRel(rel);
+  if (buildConfig.webOnlyIndexes.includes(normalized)) {
+    return undefined;
+  }
   if (path.posix.basename(normalized).toLowerCase() !== "index.html") {
     return undefined;
   }
@@ -261,7 +320,8 @@ async function readStaticOutput(src, rel) {
 
   const source = await readFile(src, "utf8");
   const withDeclarations = await withCompiledDeclarations(source, rel);
-  const prepared = await withOfficialNoscript(withDeclarations, rel);
+  const withAttributions = await withCompiledAttributions(withDeclarations, rel);
+  const prepared = await withOfficialNoscript(withAttributions, rel);
   return Buffer.from(await optimizeTextByPath(rel, prepared), "utf8");
 }
 
