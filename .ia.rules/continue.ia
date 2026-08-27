@@ -32,20 +32,20 @@
 - Escopo: Tecnico.
 - Objetivo: implementar o resolvedor multiprovedor, integrar somente icones usados de Lucide e Iconify sem remover Font Awesome, substituir os indicadores de atualizacao e Bundle solicitados e validar todas as distribuicoes.
 - Prioridade: alta.
-- Status: pendente.
-- Dependencias: FT-016 concluida, validada e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Status: concluido.
+- Dependencias: FT-016 concluida pelo commit normativo `471f568`; autorizacao humana explicita posterior recebida em 2026-08-27.
 - Aceite: tres provedores coexistem simultaneamente sem colisao ou fallback cruzado; `game-icons:upgrade` representa atualizacao; `streamline-sharp:download-box-1-solid` representa Bundle; Web, Bundle, impressao e licencas aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/4 - integrar dependencias/fontes oficiais e tipos de identidade de icone. Status: pendente.
-2. Etapa 2/4 - generalizar resolucao/renderizacao e migrar os dois consumidores obrigatorios. Status: pendente.
-3. Etapa 3/4 - integrar selecao minima ao build Web/Bundle e inventario de atribuicoes. Status: pendente.
-4. Etapa 4/4 - validar coexistencia, isolamento, acessibilidade, visualizacao, impressao e artefatos. Status: pendente.
+1. Etapa 1/4 - integrar dependencias/fontes oficiais e tipos de identidade de icone. Status: concluido.
+2. Etapa 2/4 - generalizar resolucao/renderizacao e migrar os dois consumidores obrigatorios. Status: concluido.
+3. Etapa 3/4 - integrar selecao minima ao build Web/Bundle e inventario de atribuicoes. Status: concluido.
+4. Etapa 4/4 - validar coexistencia, isolamento, acessibilidade, visualizacao, impressao e artefatos. Status: concluido.
 
 ### Proximo ponto
 
-- Aguardar conclusao normativa conjunta e nova autorizacao humana explicita.
+- Implementacao material registrada no commit `21351fd`; rastreabilidade sincronizada com o mesmo SHA.
 
 ## FT-018 - Contrato da pagina publica de atribuicoes
 
@@ -79,20 +79,20 @@
 - Escopo: Tecnico e de conteudo publico.
 - Objetivo: materializar `/atribuicoes`, gerar sua relacao exata a partir do inventario elegivel, integra-la ao build existente e publica-la pelo lifecycle oficial com comprovacao no GitHub Pages.
 - Prioridade: alta.
-- Status: pendente.
-- Dependencias: FT-018 concluida, validada e commitada; inventario distribuido final apos FT-017; nova autorizacao humana explicita posterior ao commit normativo.
+- Status: concluido.
+- Dependencias: FT-018 concluida pelo commit normativo `471f568`; inventario distribuido final auditado; autorizacao humana explicita posterior recebida em 2026-08-27.
 - Aceite: pagina acessivel em `/atribuicoes`, sem Jekyll desnecessario, com apenas obrigacoes reais e textos integrais exigidos; build/Pages, navegacao, responsividade, impressao e disponibilidade publica aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/4 - materializar fonte da pagina e inventario verificavel de atribuicoes. Status: pendente.
-2. Etapa 2/4 - integrar template compartilhado, rota e build sem Bundle ou pipeline paralelo. Status: pendente.
-3. Etapa 3/4 - validar conteudo, licencas, acessibilidade, responsividade, impressao e artefato Pages. Status: pendente.
-4. Etapa 4/4 - publicar pelo lifecycle oficial e confirmar a rota no GitHub Pages. Status: pendente.
+1. Etapa 1/4 - materializar fonte da pagina e inventario verificavel de atribuicoes. Status: concluido.
+2. Etapa 2/4 - integrar template compartilhado, rota e build sem Bundle ou pipeline paralelo. Status: concluido.
+3. Etapa 3/4 - validar conteudo, licencas, acessibilidade, responsividade, impressao e artefato Pages. Status: concluido.
+4. Etapa 4/4 - publicar pelo lifecycle oficial e confirmar a rota no GitHub Pages. Status: em execucao.
 
 ### Proximo ponto
 
-- Aguardar conclusao normativa conjunta e nova autorizacao humana explicita.
+- Implementacao material registrada no commit `21351fd`; falta apenas concluir e registrar o lifecycle oficial de publicacao.
 
 ## FT-014 - Equalizacao normativa das inconsistencias visuais e de impressao
 
@@ -135,20 +135,20 @@
 - Escopo: Tecnico.
 - Objetivo: implementar e validar as correcoes equalizadas de tema, navegacao, logos, assinaturas e margens sem excecao paralela nem regressao funcional, visual, responsiva ou de saida.
 - Prioridade: alta.
-- Status: pendente.
-- Dependencias: FT-014 concluida, validada e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Status: concluido.
+- Dependencias: FT-014 concluida pelo commit normativo `471f568`; autorizacao humana explicita posterior recebida em 2026-08-27.
 - Aceite: todas as evidencias corrigidas por mecanismos conformes; quatro logos de modulos aderentes; visualizacao, Web, Bundle, Ctrl+P e PDF coerentes; testes automatizados e inspecao visual sem regressao.
 
 ### Plano vigente
 
-1. Etapa 1/4 - corrigir estado visual do tema e geometria da navegacao global com testes de estados e viewports. Status: pendente.
-2. Etapa 2/4 - substituir os logos dos modulos e validar catalogo, tema, favicons, Web e Bundle. Status: pendente.
-3. Etapa 3/4 - corrigir rodape, assinaturas e perfil de margens do documento unificado nos tres fluxos de saida. Status: pendente.
-4. Etapa 4/4 - executar validacoes automatizadas, visuais, responsivas e de impressao, sincronizar rastreabilidade e concluir a TO-DO. Status: pendente.
+1. Etapa 1/4 - corrigir estado visual do tema e geometria da navegacao global com testes de estados e viewports. Status: concluido.
+2. Etapa 2/4 - substituir os logos dos modulos e validar catalogo, tema, favicons, Web e Bundle. Status: concluido.
+3. Etapa 3/4 - corrigir rodape, assinaturas e perfil de margens do documento unificado nos tres fluxos de saida. Status: concluido.
+4. Etapa 4/4 - executar validacoes automatizadas, visuais, responsivas e de impressao, sincronizar rastreabilidade e concluir a TO-DO. Status: concluido.
 
 ### Proximo ponto
 
-- Aguardar conclusao normativa da FT-014 e nova autorizacao humana explicita.
+- Implementacao material registrada no commit `21351fd`; rastreabilidade sincronizada com o mesmo SHA.
 
 ## FT-001 - Manutencao, contexto e continuidade
 

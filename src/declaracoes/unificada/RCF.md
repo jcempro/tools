@@ -111,13 +111,13 @@ Todas as páginas DEVEM repetir o mesmo rodapé documental, composto pela declar
 
 O texto do rodapé DEVE iniciar pelo valor configurável `Esta(s) autorização(s)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por` e continuar com a lista calculada de declarantes. [ecefbee]
 
-Nome, CPF, razao social e CNPJ no rodape DEVEM ser apresentados como texto calculado sem linha de preenchimento, `underline`, `text-decoration`, borda inferior ou pseudo-elemento equivalente; dado ausente ou invalido DEVE bloquear a saida pelo contrato de validacao, nunca ser representado por tracos ou sublinhados. [PENDENTE-CODIGO]
+Nome, CPF, razao social e CNPJ no rodape DEVEM ser apresentados como texto calculado sem linha de preenchimento, `underline`, `text-decoration`, borda inferior ou pseudo-elemento equivalente; dado ausente ou invalido DEVE bloquear a saida pelo contrato de validacao, nunca ser representado por tracos ou sublinhados. [d67613d]
 
 Templates de PF, PJ, representação e assinatura DEVEM usar somente o conjunto fechado `${numero}`, `${nome}`, `${documento}` e `${representantes}` conforme aplicabilidade; token ausente, desconhecido, duplicado ou não resolvido DEVE bloquear a saída. [ecefbee]
 
 Os templates DEVEM separar conteúdo institucional versionado de dados calculados, usar inicialmente a indicação `(assinaturas e visto/s)` e NÃO DEVEM permitir HTML, script ou interpolação arbitrária fornecida pelo usuário. [ecefbee]
 
-A indicacao `(assinaturas e visto/s)` DEVE possuir separacao vertical perceptivel do texto precedente e reservar abaixo dela uma area fisica pequena, continua e efetivamente utilizavel para vistos e assinaturas, configurada em unidade fisica local e repetida sem sobreposicao em todas as paginas; essa reserva NAO DEVE alterar tipografia, alinhamento ou conteudo do rodape nem ser obtida por margem assimetrica da folha. [PENDENTE-CODIGO]
+A indicacao `(assinaturas e visto/s)` DEVE possuir separacao vertical perceptivel do texto precedente e reservar abaixo dela uma area fisica pequena, continua e efetivamente utilizavel para vistos e assinaturas, configurada em unidade fisica local e repetida sem sobreposicao em todas as paginas; essa reserva NAO DEVE alterar tipografia, alinhamento ou conteudo do rodape nem ser obtida por margem assimetrica da folha. [d67613d]
 
 Cada índice de declarante DEVE ser exibido entre colchetes, com padding e margem horizontais iniciais de `0,3 cm`, configuráveis por tokens locais sem alterar identidade ou ordem. [ecefbee]
 
@@ -129,7 +129,7 @@ O módulo DEVE selecionar um perfil A4 retrato multipágina na configuração ce
 
 Formato, orientação, margens, área útil, cabeçalho, rodapé e regras de quebra DEVEM possuir uma única materialização configurada; geometria concorrente em HTML, TypeScript, SCSS ou adaptador local é PROIBIDA. [ecefbee]
 
-Na ausencia de valor global uniforme mais especifico, o perfil central `declaracoes-unificada` DEVE usar margens internas gerais de `1 cm` em `top`, `right`, `bottom` e `left`, com a area de assinatura reservada dentro do rodape; visualizacao paginada, Ctrl+P Chromium e PDF dedicado DEVEM consumir esses mesmos quatro valores, sem margem externa adicional, escala, deslocamento lateral ou compensacao exclusiva de motor. [PENDENTE-CODIGO]
+Na ausencia de valor global uniforme mais especifico, o perfil central `declaracoes-unificada` DEVE usar margens internas gerais de `1 cm` em `top`, `right`, `bottom` e `left`, com a area de assinatura reservada dentro do rodape; visualizacao paginada, Ctrl+P Chromium e PDF dedicado DEVEM consumir esses mesmos quatro valores, sem margem externa adicional, escala, deslocamento lateral ou compensacao exclusiva de motor. [d67613d]
 
 Ctrl+P e PDF dedicado DEVEM aguardar conteúdo compilado, fontes, medição, paginação e numeração final; estado incompleto, overflow ou referência inválida DEVE falhar com diagnóstico e sem arquivo parcial. [ecefbee]
 
@@ -190,7 +190,7 @@ Validação visual DEVE cobrir conteúdo mínimo, nominal e limite; primeira, in
 
 Ctrl+P Chromium e PDF dedicado DEVEM ser renderizados e inspecionados contra a evidência, sem GUI, corte, sobreposição, escala inesperada, página vazia ou divergência entre Web e Bundle. [ecefbee]
 
-A validacao da FT-015 DEVE comparar diretamente os estados claro/escuro de `evidencia-1a.png` e `evidencia-1b.png`, os limites da navegacao em `evidencia-2a.png` e `evidencia-2b.png`, o rodape de `evidencia-3.png` e a composicao impressa de `evidencia-4.png`, cobrindo ao menos viewport normal e estreita, navegacao retraida/expandida, Web, Bundle, primeira/intermediaria/ultima pagina, Ctrl+P Chromium e PDF dedicado. [PENDENTE-CODIGO]
+A validacao da FT-015 DEVE comparar diretamente os estados claro/escuro de `evidencia-1a.png` e `evidencia-1b.png`, os limites da navegacao em `evidencia-2a.png` e `evidencia-2b.png`, o rodape de `evidencia-3.png` e a composicao impressa de `evidencia-4.png`, cobrindo ao menos viewport normal e estreita, navegacao retraida/expandida, Web, Bundle, primeira/intermediaria/ultima pagina, Ctrl+P Chromium e PDF dedicado. [d67613d]
 
 A FT-012 somente PODE ser concluída após `npm run validate:all`, testes específicos, inspeção visual integral e auditoria TODO -> FT -> RCF -> fontes -> artefatos aprovarem sem hipótese não autorizada. [ecefbee]
 
