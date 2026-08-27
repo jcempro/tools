@@ -79,7 +79,7 @@
 - Escopo: Tecnico e de conteudo publico.
 - Objetivo: materializar `/atribuicoes`, gerar sua relacao exata a partir do inventario elegivel, integra-la ao build existente e publica-la pelo lifecycle oficial com comprovacao no GitHub Pages.
 - Prioridade: alta.
-- Status: concluido.
+- Status: em andamento.
 - Dependencias: FT-018 concluida pelo commit normativo `471f568`; inventario distribuido final auditado; autorizacao humana explicita posterior recebida em 2026-08-27.
 - Aceite: pagina acessivel em `/atribuicoes`, sem Jekyll desnecessario, com apenas obrigacoes reais e textos integrais exigidos; build/Pages, navegacao, responsividade, impressao e disponibilidade publica aprovados.
 
@@ -90,9 +90,15 @@
 3. Etapa 3/4 - validar conteudo, licencas, acessibilidade, responsividade, impressao e artefato Pages. Status: concluido.
 4. Etapa 4/4 - publicar pelo lifecycle oficial e confirmar a rota no GitHub Pages. Status: em execucao.
 
+### Resultado parcial de 2026-08-27
+
+- `npm install` sincronizou o ambiente local com o lock e materializou as dependencias Iconify/Lucide ja versionadas; manifesto e lock permaneceram inalterados.
+- `npm run validate:all` aprovou type-check, lint, 58 testes, build Web, quatro Bundles offline e validacao de 6 paginas/80 arquivos; a primeira tentativa de build foi bloqueada somente por `EPERM` do sandbox ao regravar `dist/404.html`, e a repeticao autorizada concluiu sem falha.
+- O lifecycle `npm run publish` nao foi executado porque envio de `dev`/`master` e implantacao no GitHub Pages exigem autorizacao humana explicita para o efeito externo; nenhuma ref remota ou pagina publica foi alterada nesta retomada.
+
 ### Proximo ponto
 
-- Implementacao material registrada no commit `21351fd`; falta apenas concluir e registrar o lifecycle oficial de publicacao.
+- Implementacao material registrada no commit `21351fd`; falta autorizacao humana explicita para executar e registrar o lifecycle oficial de publicacao.
 
 ## FT-014 - Equalizacao normativa das inconsistencias visuais e de impressao
 
