@@ -5,7 +5,7 @@
 - Ordem: registro das FTs -> RCF global e locais -> validação normativa -> autorização humana posterior -> código por subcontexto -> validação integrada -> rastreabilidade.
 - Arquitetura: catálogo/resolvedor global de ícones; configuração e renderização locais de Declarações Unificadas; núcleo tabular compartilhado e adaptador do Conversor CSV; build Web/Bundle compartilhado.
 - Integração: o ícone usa definição já selecionada; os dois refinamentos documentais compartilham configuração e paginação; a mesclagem CSV ocorre somente após a transformação vigente.
-- Estado: equalização normativa concluída na FT-020; implementação FT-021 autorizada pelo humano e em andamento.
+- Estado: FT-020 e FT-021 concluídas; implementação em `47d91a7`, rastreabilidade em `0d5669b` e validação integral aprovadas.
 - Aceite global: cobertura bidirecional TODO -> RCF -> fonte -> testes; nenhuma dependência excedente; nenhum comportamento vigente removido; `npm run validate:all` aprovado.
 
 ## Mapa de subcontextos
@@ -22,3 +22,9 @@
 - RCF CSV: mesclagem posterior à conversão, chave única normalizada, conflitos bloqueantes e três políticas de preservação de linhas.
 - Rastreabilidade: 226 sentenças materiais validadas, das quais 22 novas permanecem pendentes para a FT-021.
 - Validação: type-check, lint e 58 testes aprovados.
+
+## Encerramento FT-021
+
+- Resultado: quatro refinamentos materializados e removidos do TODO operacional após aceite.
+- Validação: `npm run validate:all` aprovado com 64 testes, Web, quatro Bundles, 6 páginas e 80 arquivos; rastreabilidade `226/226` sem pendências.
+- Limitação ambiental: navegador integrado não alcançou o servidor local isolado; DOM/CSS compilados e mecanismos oficiais de build/publicação foram inspecionados e aprovados.

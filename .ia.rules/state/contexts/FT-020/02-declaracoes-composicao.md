@@ -1,11 +1,11 @@
 # Subcontexto 02 - Composição das Declarações Unificadas
 
-- Fase: implementação FT-021; validação integrada em andamento.
+- Fase: concluída na FT-021.
 - Objetivo: tornar centralmente configuráveis a reserva de assinatura de `1 cm` e o parágrafo de cabeçalho, preservando uma linha própria somente para local/data.
 - Entradas: RCF local, configuração `declaracoes-unificada.json`, renderizador, paginação, SCSS e testes.
 - Restrições: reutilizar a sintaxe fechada de tokens; não permitir HTML/interpolação arbitrária; manter paginação e frase institucional no mesmo parágrafo contínuo e justificado.
 - Entregáveis: contratos de configuração, tokens, validação, composição, impressão e PDF.
-- Estado: implementado; template integral fechado, parágrafo contínuo e reserva central de assinatura em `1 cm` materializados.
+- Estado: implementado e validado; template integral fechado, parágrafo contínuo e reserva central de assinatura em `1 cm` materializados.
 - Aceite: espaçamento efetivo, nenhum parágrafo voluntário indevido, template único configurável e igualdade entre Web, Ctrl+P e PDF.
 
 ## Handoff

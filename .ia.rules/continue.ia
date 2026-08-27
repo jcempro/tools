@@ -48,7 +48,7 @@
 - Escopo: Tecnico.
 - Objetivo: materializar os quatro refinamentos normatizados sem regressao de icones, documentos, paginacao, tabelas, conversao, importacao, exportacao, Web ou Bundle.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: FT-020 concluida no commit `e6834a1`; implementacao autorizada explicitamente pelo humano em 2026-08-27T12:18:00-03:00, depois do commit normativo.
 - Aceite: Bundle usa um unico icone Iconify sem dependencia Font Awesome local; Declaracoes Unificadas obedecem configuracao e composicao solicitadas; tabelas ajustam colunas pela semantica real; CSV mescla deterministicamente nos tres modos; validacao integral e testes especificos aprovados.
 
@@ -58,11 +58,19 @@
 2. Etapa 2/5 - centralizar templates e medidas, recompor cabecalho/assinaturas e ajustar paginacao das Declaracoes Unificadas. Status: concluido.
 3. Etapa 3/5 - implementar classificacao estrutural e dimensionamento semantico das tabelas equivalentes. Status: concluido.
 4. Etapa 4/5 - implementar entrada, validacao, associacao e politicas de linhas da mesclagem CSV opcional. Status: concluido.
-5. Etapa 5/5 - executar testes unitarios, integrados, visuais, responsivos, impressao, Web e Bundles; sincronizar rastreabilidade e concluir. Status: em andamento.
+5. Etapa 5/5 - executar testes unitarios, integrados, visuais, responsivos, impressao, Web e Bundles; sincronizar rastreabilidade e concluir. Status: concluido.
+
+### Resultado e verificacoes
+
+- O commit material `47d91a7` implementou os quatro subcontextos e atualizou os artefatos rastreados de Web/Bundle; o commit exclusivo `0d5669b` vinculou as 22 sentencas materiais ao código real.
+- `npm run validate:all` aprovou type-check, lint, 64 testes, build Web, quatro Bundles offline e validacao de publicacao de 6 paginas e 80 arquivos.
+- A rastreabilidade oficial foi aprovada em `226/226`, sem ocorrencia remanescente de `[PENDENTE-CODIGO]` nos tres RCFs afetados.
+- A inspeção visual automatizada no navegador integrado foi tentada, mas o navegador isolado nao alcancou o servidor local; os artefatos compilados, contratos de DOM/CSS e breakpoints foram inspecionados, sem falha funcional ou de publicacao nos mecanismos oficiais.
+- Os quatro itens operacionais concluidos foram removidos de `TODO.ia.md`, preservando integralmente a governanca perene e as frentes anteriores.
 
 ### Proximo ponto
 
-- Implementacao funcional concluida nos quatro subcontextos; executar validacao integral, revisar artefatos e criar o commit material antes de finalizar a rastreabilidade.
+- FT-021 concluida em 2026-08-27T12:33:38-03:00; nenhuma implementacao ou marcador de rastreabilidade permanece pendente nesta frente.
 
 ## FT-016 - Contrato multiprovedor de icones
 
