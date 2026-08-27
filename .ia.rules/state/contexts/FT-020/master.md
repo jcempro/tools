@@ -5,7 +5,7 @@
 - Ordem: registro das FTs -> RCF global e locais -> validação normativa -> autorização humana posterior -> código por subcontexto -> validação integrada -> rastreabilidade.
 - Arquitetura: catálogo/resolvedor global de ícones; configuração e renderização locais de Declarações Unificadas; núcleo tabular compartilhado e adaptador do Conversor CSV; build Web/Bundle compartilhado.
 - Integração: o ícone usa definição já selecionada; os dois refinamentos documentais compartilham configuração e paginação; a mesclagem CSV ocorre somente após a transformação vigente.
-- Estado: equalização normativa concluída na FT-020; implementação FT-021 bloqueada até autorização humana posterior ao commit normativo.
+- Estado: equalização normativa concluída na FT-020; implementação FT-021 autorizada pelo humano e em andamento.
 - Aceite global: cobertura bidirecional TODO -> RCF -> fonte -> testes; nenhuma dependência excedente; nenhum comportamento vigente removido; `npm run validate:all` aprovado.
 
 ## Mapa de subcontextos

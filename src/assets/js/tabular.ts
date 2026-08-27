@@ -36,6 +36,19 @@ export interface ConverterOptions {
   nameDecisions?: Record<string, string>;
 }
 
+export type DatasetMergeMode = "previous" | "merge-only" | "summed";
+
+export interface DatasetMergeOptions {
+  identifierColumns?: string[];
+  mode?: DatasetMergeMode;
+}
+
+export interface DatasetMergeResult {
+  dataset: TabularDataset;
+  indexColumn?: string;
+  issues: ConversionIssue[];
+}
+
 interface CustomerOccurrence {
   attributes: Map<string, string>;
   index: number;
@@ -144,6 +157,69 @@ export function convertDataset(dataset: TabularDataset, from: TabularModelKind, 
   }
 
   return from === "modelo1" ? convertModel1ToModel2(dataset, options) : convertModel2ToModel1(dataset, options);
+}
+
+export function mergeDatasets(previous: TabularDataset, complement: TabularDataset, options: DatasetMergeOptions = {}): DatasetMergeResult {
+  const issues: ConversionIssue[] = [];
+  const identities = mergeIndexerIdentities(options.identifierColumns ?? defaultIdentifierColumns);
+  const candidates = identities.map((identity) => ({
+    complement: columnsForMergeIdentity(complement.columns, identity),
+    identity,
+    previous: columnsForMergeIdentity(previous.columns, identity)
+  })).filter(({ complement: right, previous: left }) => right.length > 0 && left.length > 0);
+
+  if (candidates.some(({ complement: right, previous: left }) => right.length !== 1 || left.length !== 1)) {
+    return mergeFailure(previous, "ambiguous-index-columns", "O indexador elegível aparece mais de uma vez em ao menos um dos CSVs.");
+  }
+  if (candidates.length !== 1) {
+    return mergeFailure(previous, "invalid-common-index", candidates.length === 0
+      ? "Nenhum indexador comum elegível foi encontrado nos dois CSVs."
+      : "Mais de um indexador comum elegível foi encontrado; mantenha exatamente um.");
+  }
+
+  const candidate = candidates[0];
+  if (!candidate) return mergeFailure(previous, "invalid-common-index", "Nenhum indexador comum elegível foi encontrado nos dois CSVs.");
+  const previousIndexColumn = candidate.previous[0] ?? "";
+  const complementIndexColumn = candidate.complement[0] ?? "";
+  const previousRows = indexMergeRows(previous, previousIndexColumn, candidate.identity, "resultado prévio", issues);
+  const complementRows = indexMergeRows(complement, complementIndexColumn, candidate.identity, "mesclar", issues);
+  if (!previousRows || !complementRows || issues.some(({ severity }) => severity === "error")) {
+    return { dataset: cloneDataset(previous), indexColumn: previousIndexColumn, issues };
+  }
+
+  const previousSchema = mergeSchema(previous.columns);
+  const complementSchema = mergeSchema(complement.columns);
+  if (!previousSchema || !complementSchema) {
+    return mergeFailure(previous, "duplicate-canonical-column", "Há cabeçalhos canônicos duplicados em ao menos um dos CSVs.", previousIndexColumn);
+  }
+  const outputColumns = [...previous.columns];
+  for (const column of complement.columns) {
+    if (!previousSchema.has(canonicalMergeColumn(column))) outputColumns.push(column);
+  }
+  const previousByKey = new Map(previousRows.map((item) => [item.key, item]));
+  const complementByKey = new Map(complementRows.map((item) => [item.key, item]));
+  const mode = options.mode ?? "previous";
+  const orderedPairs: Array<{ key: string; left?: IndexedMergeRow; right?: IndexedMergeRow }> = [];
+  if (mode === "merge-only") {
+    complementRows.forEach((right) => orderedPairs.push({ key: right.key, left: previousByKey.get(right.key), right }));
+  } else {
+    previousRows.forEach((left) => orderedPairs.push({ key: left.key, left, right: complementByKey.get(left.key) }));
+    if (mode === "summed") complementRows.filter(({ key }) => !previousByKey.has(key)).forEach((right) => orderedPairs.push({ key: right.key, right }));
+  }
+
+  const rows: string[][] = [];
+  for (const pair of orderedPairs) {
+    const merged = mergeRowValues(outputColumns, previous, complement, pair, candidate.identity, issues);
+    if (merged) rows.push(merged);
+  }
+  if (issues.some(({ severity }) => severity === "error")) {
+    return { dataset: cloneDataset(previous), indexColumn: previousIndexColumn, issues };
+  }
+  return {
+    dataset: { columns: outputColumns, dialect: { ...previous.dialect }, rows },
+    indexColumn: previousIndexColumn,
+    issues
+  };
 }
 
 function detectDelimiter(text: string): string {
@@ -559,6 +635,106 @@ function rowToRecord(columns: string[], row: string[]): Map<string, string> {
 
 function emptyRecord(columns: string[]): Map<string, string> {
   return new Map(columns.map((column) => [column, ""]));
+}
+
+type MergeIndexerIdentity = Readonly<{ key: string; kind: "identifier" | "phone" }>;
+type IndexedMergeRow = Readonly<{ key: string; row: string[] }>;
+
+function mergeFailure(source: TabularDataset, code: string, message: string, indexColumn?: string): DatasetMergeResult {
+  return { dataset: cloneDataset(source), indexColumn, issues: [{ code, message, severity: "error" }] };
+}
+
+function mergeIndexerIdentities(identifiers: string[]): MergeIndexerIdentity[] {
+  const values = new Map<string, MergeIndexerIdentity>();
+  identifiers.forEach((identifier) => {
+    const key = normalizeKey(identifier);
+    if (key === "fone" || key === "telefone") values.set("phone", { key: "phone", kind: "phone" });
+    else if (key) values.set(`identifier:${key}`, { key, kind: "identifier" });
+  });
+  values.set("phone", { key: "phone", kind: "phone" });
+  return [...values.values()];
+}
+
+function columnsForMergeIdentity(columns: string[], identity: MergeIndexerIdentity): string[] {
+  return columns.filter((column) => {
+    const key = normalizeKey(column);
+    return identity.kind === "phone" ? key === "fone" || key === "telefone" : key === identity.key;
+  });
+}
+
+function normalizeMergeIndex(value: string, identity: MergeIndexerIdentity): string {
+  return identity.kind === "phone" ? normalizePhone(value) : value.trim();
+}
+
+function rowsEqual(left: string[], right: string[]): boolean {
+  return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: MergeIndexerIdentity, label: string, issues: ConversionIssue[]): IndexedMergeRow[] | null {
+  const columnIndex = dataset.columns.indexOf(indexColumn);
+  const indexed = new Map<string, IndexedMergeRow>();
+  const ordered: IndexedMergeRow[] = [];
+  for (let rowIndex = 0; rowIndex < dataset.rows.length; rowIndex += 1) {
+    const row = dataset.rows[rowIndex] ?? [];
+    const key = normalizeMergeIndex(row[columnIndex] ?? "", identity);
+    if (!key) {
+      issues.push({ code: "invalid-merge-key", message: `Linha ${rowIndex + 2} de ${label} possui chave vazia ou inválida.`, severity: "error" });
+      continue;
+    }
+    const prior = indexed.get(key);
+    if (!prior) {
+      const item = { key, row };
+      indexed.set(key, item);
+      ordered.push(item);
+    } else if (rowsEqual(prior.row, row)) {
+      issues.push({ code: "duplicate-merge-row", message: `Linha duplicada equivalente consolidada em ${label} para a chave ${key}.`, severity: "warning" });
+    } else {
+      issues.push({ code: "ambiguous-merge-key", message: `A chave ${key} identifica linhas materialmente distintas em ${label}.`, severity: "error" });
+    }
+  }
+  return issues.some(({ severity }) => severity === "error") ? null : ordered;
+}
+
+function canonicalMergeColumn(column: string): string {
+  const key = normalizeKey(column);
+  return key === "fone" || key === "telefone" ? "phone" : key;
+}
+
+function mergeSchema(columns: string[]): Map<string, number> | null {
+  const schema = new Map<string, number>();
+  for (let index = 0; index < columns.length; index += 1) {
+    const key = canonicalMergeColumn(columns[index] ?? "");
+    if (!key || schema.has(key)) return null;
+    schema.set(key, index);
+  }
+  return schema;
+}
+
+function mergeRowValues(
+  outputColumns: string[],
+  previous: TabularDataset,
+  complement: TabularDataset,
+  pair: { key: string; left?: IndexedMergeRow; right?: IndexedMergeRow },
+  indexIdentity: MergeIndexerIdentity,
+  issues: ConversionIssue[]
+): string[] | null {
+  const previousSchema = mergeSchema(previous.columns);
+  const complementSchema = mergeSchema(complement.columns);
+  if (!previousSchema || !complementSchema) return null;
+  const indexCanonical = indexIdentity.kind === "phone" ? "phone" : indexIdentity.key;
+  return outputColumns.map((column) => {
+    const canonical = canonicalMergeColumn(column);
+    if (canonical === indexCanonical) return pair.key;
+    const leftIndex = previousSchema.get(canonical);
+    const rightIndex = complementSchema.get(canonical);
+    const left = leftIndex === undefined || !pair.left ? "" : pair.left.row[leftIndex]?.trim() ?? "";
+    const right = rightIndex === undefined || !pair.right ? "" : pair.right.row[rightIndex]?.trim() ?? "";
+    if (left && right && left !== right) {
+      issues.push({ code: "merge-value-conflict", message: `Conflito na coluna ${column} para a chave ${pair.key}.`, severity: "error" });
+      return left;
+    }
+    return left || right;
+  });
 }
 
 function normalizeKey(value: string): string {

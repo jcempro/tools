@@ -9,6 +9,7 @@ import {
   parseDeclarationsState,
   removeDeclarantAndReferences,
   representativesArePrior,
+  semanticMarkerColumnIndexes,
   type Declarant,
   type DeclarationsState
 } from "../src/declaracoes/unificada/unificada";
@@ -85,6 +86,19 @@ test("portable schema rejects incompatible version, duplicate IDs and future ref
   assert.equal(parseDeclarationsState({ ...valid, declarants: [declarant("d-1", "PJ", ["d-2"]), declarant("d-2", "PF")] }), null);
 });
 
+test("semantic table sizing classifies only unambiguous all-X body columns", () => {
+  const cell = (text: string, colspan = 1, rowspan = 1) => ({ colspan, rowspan, text });
+  assert.deepEqual(semanticMarkerColumnIndexes([
+    [cell("X"), cell("Primeira opção")],
+    [cell(" x "), cell("Segunda opção")]
+  ]), [0]);
+  assert.deepEqual(semanticMarkerColumnIndexes([
+    [cell("X"), cell("Primeira opção")],
+    [cell("talvez"), cell("Segunda opção")]
+  ]), []);
+  assert.deepEqual(semanticMarkerColumnIndexes([[cell("X", 2), cell("Texto")]]), []);
+});
+
 test("module integrates compiled content, DU identity, central config and multipage output", async () => {
   const [html, source, css, logo, compile, bundles, validator, appConfig] = await Promise.all([
     readFile("src/declaracoes/unificada/index.html", "utf8"),
@@ -96,7 +110,7 @@ test("module integrates compiled content, DU identity, central config and multip
     readFile("scripts/validate-publication.mjs", "utf8"),
     readFile("src/assets/config/declaracoes-unificada.json", "utf8")
   ]);
-  const runtimeConfig = JSON.parse(appConfig) as { document: { background: string }; footer: Record<string, unknown> & { signatureReserveCm: number } };
+  const runtimeConfig = JSON.parse(appConfig) as { document: { background: string; headerTemplate: string }; footer: Record<string, unknown> & { signatureReserveCm: number } };
   const printing = JSON.parse(await readFile("src/assets/config/printing.json", "utf8")) as { profiles: Record<string, { margins: Record<string, number> }> };
   assert.match(html, /<template id="declaracoes-source"><\/template>/);
   assert.doesNotMatch(html, /AUTORIZAÇÃO PARA CONSULTA AO SCR/);
@@ -106,7 +120,8 @@ test("module integrates compiled content, DU identity, central config and multip
   assert.match(source, /representativesArePrior/);
   assert.match(source, /declarant\.document\.length !== expectedLength/);
   assert.match(source, /\^\(\\d\)\\1\+\$/);
-  assert.match(source, /Página <span data-page-current>/);
+  assert.match(source, /du-page-context/);
+  assert.match(source, /semanticMarkerColumnIndexes/);
   assert.match(source, /Ctrl|event\.key\.toLowerCase\(\) === "p"/);
   assert.match(css, /grid-template-rows:\s*auto minmax\(0, 1fr\) auto/);
   assert.match(css, /\.du-page:last-child/);
@@ -114,10 +129,14 @@ test("module integrates compiled content, DU identity, central config and multip
   assert.match(logo, /#302a64/i);
   assert.match(logo, /#63d6d1/i);
   assert.equal(runtimeConfig.document.background, "#d9d9d9");
-  assert.equal(runtimeConfig.footer.signatureReserveCm, 0.7);
+  assert.equal(runtimeConfig.footer.signatureReserveCm, 1);
+  assert.equal(runtimeConfig.document.headerTemplate, "${documentos} APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S). Página ${paginaAtual} de ${totalPaginas}");
   assert.deepEqual(printing.profiles["declaracoes-unificada"]?.margins, { bottom: 1, left: 1, right: 1, top: 1 });
   assert.match(css, /\.du-signature\s*{[^}]*margin-top:\s*\.24cm !important;[^}]*padding-bottom:\s*var\(--du-signature-reserve\)/s);
   assert.match(css, /\.du-page-footer p\s*{[^}]*border-bottom:\s*0;[^}]*text-decoration:\s*none/s);
+  assert.match(css, /\.du-page-context\s*{[^}]*text-align:\s*justify/s);
+  assert.match(css, /\.du-unit td\.du-marker-cell\s*{[^}]*width:\s*1%;[^}]*text-align:\s*center/s);
+  assert.doesNotMatch(css, /\.du-unit td:first-child/);
   assert.match(source, /--du-signature-reserve/);
   assert.match(JSON.stringify(runtimeConfig.footer), /\$\{numero\}/);
   assert.match(bundles, /fonte Markdown proibida/);

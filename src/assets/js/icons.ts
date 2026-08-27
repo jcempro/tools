@@ -2,7 +2,6 @@ import upgradeIcon from "@iconify-icons/game-icons/upgrade";
 import downloadBoxIcon from "@iconify-icons/streamline-sharp/download-box-1-solid";
 import {
   faBars,
-  faBoxOpen,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
@@ -127,7 +126,7 @@ function registerIconify(collection: string, name: string, data: IconifyData): v
 }
 
 [
-  faBars, faBoxOpen, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleDown, faEllipsisVertical,
+  faBars, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleDown, faEllipsisVertical,
   faEraser, faFileArrowDown, faFileArrowUp, faFilePdf, faFloppyDisk, faFolderOpen, faPaperPlane, faPenToSquare, faPrint, faStamp
 ].forEach(registerFontAwesome);
 registerLucide(moonIcon);

@@ -48,21 +48,21 @@
 - Escopo: Tecnico.
 - Objetivo: materializar os quatro refinamentos normatizados sem regressao de icones, documentos, paginacao, tabelas, conversao, importacao, exportacao, Web ou Bundle.
 - Prioridade: alta.
-- Status: pendente.
-- Dependencias: FT-020 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Status: em andamento.
+- Dependencias: FT-020 concluida no commit `e6834a1`; implementacao autorizada explicitamente pelo humano em 2026-08-27T12:18:00-03:00, depois do commit normativo.
 - Aceite: Bundle usa um unico icone Iconify sem dependencia Font Awesome local; Declaracoes Unificadas obedecem configuracao e composicao solicitadas; tabelas ajustam colunas pela semantica real; CSV mescla deterministicamente nos tres modos; validacao integral e testes especificos aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/5 - simplificar o consumidor global de download do Bundle e limpar somente a dependencia Font Awesome comprovadamente exclusiva. Status: bloqueado pela FT-020.
-2. Etapa 2/5 - centralizar templates e medidas, recompor cabecalho/assinaturas e ajustar paginacao das Declaracoes Unificadas. Status: bloqueado pela FT-020.
-3. Etapa 3/5 - implementar classificacao estrutural e dimensionamento semantico das tabelas equivalentes. Status: bloqueado pela FT-020.
-4. Etapa 4/5 - implementar entrada, validacao, associacao e politicas de linhas da mesclagem CSV opcional. Status: bloqueado pela FT-020.
-5. Etapa 5/5 - executar testes unitarios, integrados, visuais, responsivos, impressao, Web e Bundles; sincronizar rastreabilidade e concluir. Status: bloqueado pela FT-020.
+1. Etapa 1/5 - simplificar o consumidor global de download do Bundle e limpar somente a dependencia Font Awesome comprovadamente exclusiva. Status: concluido.
+2. Etapa 2/5 - centralizar templates e medidas, recompor cabecalho/assinaturas e ajustar paginacao das Declaracoes Unificadas. Status: concluido.
+3. Etapa 3/5 - implementar classificacao estrutural e dimensionamento semantico das tabelas equivalentes. Status: concluido.
+4. Etapa 4/5 - implementar entrada, validacao, associacao e politicas de linhas da mesclagem CSV opcional. Status: concluido.
+5. Etapa 5/5 - executar testes unitarios, integrados, visuais, responsivos, impressao, Web e Bundles; sincronizar rastreabilidade e concluir. Status: em andamento.
 
 ### Proximo ponto
 
-- Nao iniciar codigo antes da conclusao commitada da FT-020 e de autorizacao humana posterior.
+- Implementacao funcional concluida nos quatro subcontextos; executar validacao integral, revisar artefatos e criar o commit material antes de finalizar a rastreabilidade.
 
 ## FT-016 - Contrato multiprovedor de icones
 

@@ -2,11 +2,13 @@ import {
   convertDataset,
   decodeTextBuffer,
   inferModelKind,
+  mergeDatasets,
   oppositeModel,
   parseCsv,
   serializeCsv,
   type ConversionIssue,
   type ConversionResult,
+  type DatasetMergeMode,
   type NameDecision,
   type TabularDataset,
   type TabularModelKind
@@ -100,6 +102,16 @@ import {
     return textarea("#csv-text").value.trim();
   }
 
+  function mergeMode(): DatasetMergeMode {
+    return one<HTMLInputElement>('input[name="merge-mode"]:checked').value as DatasetMergeMode;
+  }
+
+  function invalidateResult(): void {
+    currentResult = null;
+    setOutput("");
+    hideDecisions();
+  }
+
   function parseSource(): TabularDataset | null {
     const text = readSourceText();
     if (!text) {
@@ -163,6 +175,36 @@ import {
       return;
     }
 
+    const mergeText = textarea("#csv-merge").value.trim();
+    if (mergeText) {
+      let complement: TabularDataset;
+      try {
+        complement = parseCsv(mergeText);
+      } catch (error) {
+        log(error instanceof Error ? error.message : "Falha ao interpretar o CSV complementar.", "error");
+        setOutput("");
+        updateSummary(from, to, null);
+        return;
+      }
+      if (complement.columns.length === 0) {
+        log("CSV complementar sem cabecalho identificavel.", "error");
+        setOutput("");
+        updateSummary(from, to, null);
+        return;
+      }
+      log(`Mesclagem iniciada no modo ${mergeModeLabel(mergeMode())}: ${complement.rows.length} linhas complementares.`);
+      const merged = mergeDatasets(currentResult.dataset, complement, { identifierColumns: identifiers(), mode: mergeMode() });
+      merged.issues.forEach((issue) => log(issue.message, issue.severity));
+      if (merged.issues.some(({ severity }) => severity === "error")) {
+        setOutput("");
+        updateSummary(from, to, null);
+        log("Mesclagem bloqueada; o resultado prévio permaneceu inalterado.", "error");
+        return;
+      }
+      currentResult = { ...currentResult, dataset: merged.dataset, issues: [...currentResult.issues, ...merged.issues] };
+      log(`Mesclagem concluída pelo indexador ${merged.indexColumn ?? "comum"}.`);
+    }
+
     const csv = serializeCsv(currentResult.dataset);
     setOutput(csv);
     updateSummary(from, to, currentResult.dataset);
@@ -178,6 +220,12 @@ import {
 
   function modelLabel(value: TabularModelKind): string {
     return value === "modelo1" ? "Modelo 1" : "Modelo 2";
+  }
+
+  function mergeModeLabel(value: DatasetMergeMode): string {
+    if (value === "merge-only") return "Somente mesclar";
+    if (value === "summed") return "Somadas";
+    return "Resultado prévio";
   }
 
   function cancelPendingInference(): void {
@@ -324,6 +372,14 @@ import {
     scheduleInference("arquivo");
   }
 
+  async function loadMergeFile(file: File): Promise<void> {
+    invalidateResult();
+    log(`Lendo arquivo complementar ${file.name}.`);
+    const decoded = decodeTextBuffer(await file.arrayBuffer());
+    textarea("#csv-merge").value = decoded.text;
+    log(`Codificacao complementar detectada: ${decoded.dialect.encoding}.`);
+  }
+
   function clearAll(): void {
     sourceDataset = null;
     currentResult = null;
@@ -331,6 +387,8 @@ import {
       delete nameDecisions[key];
     }
     textarea("#csv-text").value = "";
+    textarea("#csv-merge").value = "";
+    one<HTMLInputElement>('input[name="merge-mode"][value="previous"]').checked = true;
     setOutput("");
     select("#source-model").value = "modelo1";
     select("#target-model").value = "modelo2";
@@ -388,13 +446,20 @@ import {
       }
       void loadFile(target.files[0]);
     });
+    input("#csv-merge-file").addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement) || !target.files?.[0]) return;
+      void loadMergeFile(target.files[0]);
+    });
+    button("#merge-file-button").addEventListener("click", () => input("#csv-merge-file").click());
     textarea("#csv-text").addEventListener("input", () => {
       sourceDataset = null;
-      currentResult = null;
-      setOutput("");
-      hideDecisions();
+      invalidateResult();
       scheduleInference("texto");
     });
+    textarea("#csv-merge").addEventListener("input", invalidateResult);
+    input("#identifier-columns").addEventListener("input", invalidateResult);
+    d.querySelectorAll<HTMLInputElement>('input[name="merge-mode"]').forEach((radio) => radio.addEventListener("change", invalidateResult));
     button("#convert").addEventListener("click", convert);
     button("#clear").addEventListener("click", clearAll);
     button("#download").addEventListener("click", downloadCsv);

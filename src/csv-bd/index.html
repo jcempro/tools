@@ -75,6 +75,24 @@
             <input id="identifier-columns" type="text" value="MCI, CID, MGI" />
           </fieldset>
 
+          <fieldset>
+            <legend>Mesclagem complementar opcional</legend>
+            <label for="csv-merge">CSV para mesclar</label>
+            <textarea
+              id="csv-merge"
+              spellcheck="false"
+              placeholder="Cole um segundo CSV ou abra um arquivo. Deixe vazio para apenas converter."
+            ></textarea>
+            <input id="csv-merge-file" type="file" accept=".csv,text/csv,text/plain" hidden />
+            <button type="button" id="merge-file-button" class="secondary">Abrir CSV para mesclar</button>
+            <fieldset class="merge-options">
+              <legend>Linhas do resultado</legend>
+              <label><input type="radio" name="merge-mode" value="previous" checked /> Resultado prévio</label>
+              <label><input type="radio" name="merge-mode" value="merge-only" /> Somente mesclar</label>
+              <label><input type="radio" name="merge-mode" value="summed" /> Somadas</label>
+            </fieldset>
+          </fieldset>
+
           <div class="actions">
             <button type="button" id="convert">Converter</button>
             <button type="button" id="clear">Limpar</button>

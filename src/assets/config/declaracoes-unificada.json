@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "declaracoes-unificada",
   "document": {
-    "headerStatement": "APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S).",
+    "headerTemplate": "${documentos} APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S). Página ${paginaAtual} de ${totalPaginas}",
     "background": "#d9d9d9",
     "paddingCm": 0.35
   },
@@ -13,7 +13,7 @@
     "representationTemplate": ", representada por ${representantes}",
     "representativeJoin": " e ",
     "signature": "(assinaturas e visto/s)",
-    "signatureReserveCm": 0.7,
+    "signatureReserveCm": 1,
     "indexPaddingCm": 0.3,
     "indexMarginCm": 0.3
   },

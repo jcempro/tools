@@ -166,8 +166,13 @@ function compileDeclarationMarkdown(source, unit) {
 function assertDeclarationConfig(config) {
   const allowed = new Set(["numero", "nome", "documento", "representantes"]);
   const templates = [config.footer?.personTemplate, config.footer?.companyTemplate, config.footer?.representationTemplate];
-  if (config.schema !== 1 || config.id !== "declaracoes-unificada" || !/^#[0-9a-f]{6}$/i.test(config.document?.background ?? "") || !(config.document?.paddingCm > 0)) {
+  const headerTokens = [...(config.document?.headerTemplate?.matchAll(/\$\{([^}]+)\}/g) ?? [])].map((token) => token[1]);
+  const requiredHeaderTokens = ["documentos", "paginaAtual", "totalPaginas"];
+  if (config.schema !== 1 || config.id !== "declaracoes-unificada" || !/^#[0-9a-f]{6}$/i.test(config.document?.background ?? "") || !(config.document?.paddingCm > 0) || config.footer?.signatureReserveCm !== 1) {
     throw new Error("Configuracao de declaracoes unificadas invalida.");
+  }
+  if (headerTokens.length !== requiredHeaderTokens.length || new Set(headerTokens).size !== headerTokens.length || requiredHeaderTokens.some((token) => !headerTokens.includes(token))) {
+    throw new Error("Template de cabecalho das declaracoes invalido.");
   }
   for (const template of templates) {
     if (typeof template !== "string") throw new Error("Template de declaracoes unificadas ausente.");

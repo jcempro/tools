@@ -23,6 +23,22 @@ export interface DeclarationsState {
   version: 1;
 }
 
+export interface SemanticTableCell {
+  colspan: number;
+  rowspan: number;
+  text: string;
+}
+
+export function semanticMarkerColumnIndexes(rows: SemanticTableCell[][]): number[] {
+  if (rows.length === 0 || rows.some((row) => row.length === 0 || row.some((cell) => cell.colspan !== 1 || cell.rowspan !== 1))) return [];
+  const width = rows[0]?.length ?? 0;
+  if (width === 0 || rows.some((row) => row.length !== width)) return [];
+  return Array.from({ length: width }, (_unused, columnIndex) => columnIndex).filter((columnIndex) => {
+    const values = rows.map((row) => row[columnIndex]?.text.trim() ?? "").filter(Boolean);
+    return values.length > 0 && values.every((value) => value.toLocaleUpperCase("pt-BR") === "X");
+  });
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
@@ -264,9 +280,9 @@ function bootstrapDeclarations(w: Window, d: Document): void {
     schedulePagination();
   }
 
-  function resolveTemplate(template: string, values: Record<string, string>): string {
+  function resolveTemplate(template: string, values: Record<string, string>, requiredTokens: string[] = []): string {
     const tokens = [...template.matchAll(/\$\{([^}]+)\}/g)].map((match) => match[1] ?? "");
-    if (new Set(tokens).size !== tokens.length || tokens.some((token) => !(token in values))) throw new Error("Template institucional possui token ausente, desconhecido ou duplicado.");
+    if (new Set(tokens).size !== tokens.length || tokens.some((token) => !(token in values)) || requiredTokens.some((token) => !tokens.includes(token))) throw new Error("Template institucional possui token ausente, desconhecido ou duplicado.");
     const result = template.replace(/\$\{([^}]+)\}/g, (_whole, token: string) => values[token] ?? "");
     if (/\$\{[^}]+\}/.test(result)) throw new Error("Template institucional possui token não resolvido.");
     return result;
@@ -291,13 +307,34 @@ function bootstrapDeclarations(w: Window, d: Document): void {
 
   function sourceUnits(): HTMLElement[] {
     const template = required<HTMLTemplateElement>("#declaracoes-source");
+    applySemanticTableSizing(template.content);
     const units = Array.from(template.content.querySelectorAll<HTMLElement>(".du-unit"));
     if (units.length !== 6) throw new Error("Conteúdo compilado das seis declarações está incompleto.");
     return units;
   }
 
+  function applySemanticTableSizing(root: ParentNode): void {
+    root.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
+      const rows = Array.from(table.rows).map((row) => Array.from(row.cells).map((cell) => ({
+        colspan: cell.colSpan,
+        rowspan: cell.rowSpan,
+        text: cell.textContent ?? ""
+      })));
+      const markerColumns = semanticMarkerColumnIndexes(rows);
+      table.classList.toggle("du-semantic-table", markerColumns.length > 0);
+      Array.from(table.rows).forEach((row) => Array.from(row.cells).forEach((cell, columnIndex) => {
+        cell.classList.toggle("du-marker-cell", markerColumns.includes(columnIndex));
+      }));
+    });
+  }
+
   function pageHeader(titles: string[]): string {
-    return `<header class="du-page-header"><p class="du-page-place">${escapeMarkup(`${state.city.trim()}-${state.uf.trim().toUpperCase()}, ${longDate(state.date)}`)}</p><p class="du-page-titles">${escapeMarkup(titles.map((title) => title.toLocaleUpperCase("pt-BR")).join("; "))}</p><p class="du-page-statement">${escapeMarkup(config.document.headerStatement)}</p><p class="du-page-number">Página <span data-page-current></span> de <span data-page-total></span></p></header>`;
+    const header = resolveTemplate(escapeMarkup(config.document.headerTemplate), {
+      documentos: `<strong class="du-page-titles">${escapeMarkup(titles.map((title) => title.toLocaleUpperCase("pt-BR")).join("; "))}</strong>`,
+      paginaAtual: "<span data-page-current></span>",
+      totalPaginas: "<span data-page-total></span>"
+    }, ["documentos", "paginaAtual", "totalPaginas"]);
+    return `<header class="du-page-header"><p class="du-page-place">${escapeMarkup(`${state.city.trim()}-${state.uf.trim().toUpperCase()}, ${longDate(state.date)}`)}</p><p class="du-page-context">${header}</p></header>`;
   }
 
   function createPage(root: HTMLElement, titles: string[]): HTMLElement {

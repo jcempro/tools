@@ -32,7 +32,6 @@
   },
   "icons": [
     { "identity": "fontawesome:bars", "licenseId": "fontawesome-free" },
-    { "identity": "fontawesome:box-open", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:chevron-down", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:chevron-left", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:chevron-right", "licenseId": "fontawesome-free" },

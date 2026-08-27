@@ -1046,13 +1046,6 @@ body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-toolbar-row::before {
   outline-offset: 2px;
 }
 
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"]:hover .jcem-fa-icon:nth-child(2),
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"]:focus-visible .jcem-fa-icon:nth-child(2),
-.jcem-chrome-header-overflow.menu > [data-jcem-toolbar-id="bundle"]:hover .jcem-fa-icon:nth-child(2),
-.jcem-chrome-header-overflow.menu > [data-jcem-toolbar-id="bundle"]:focus-visible .jcem-fa-icon:nth-child(2),
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"]:hover .jcem-fa-icon:nth-child(2),
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"]:focus-visible .jcem-fa-icon:nth-child(2) { opacity: 0.82; }
-
 .jcem-fa-icon {
   width: 2rem;
   height: 2rem;
@@ -1457,29 +1450,6 @@ body.imprimir input::placeholder {
 
 .jcem-footer-block p + p { margin-top: 0.55rem; }
 
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"],
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"] {
-  width: 4.15rem;
-  gap: 0.1rem;
-}
-
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon,
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon {
-  width: 1.35rem;
-  height: 2rem;
-}
-
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon:first-child,
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon:first-child {
-  width: 1.8rem;
-  opacity: 1;
-}
-
-.jcem-chrome-actions.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon:nth-child(2),
-.jcem-chrome-toolbar-overflow.menu > [data-jcem-toolbar-id="bundle"] .jcem-fa-icon:nth-child(2) {
-  opacity: 0.68;
-  transform: scale(0.82);
-}
 
 /* Dashboard e páginas especiais compartilham a mesma identidade do workspace. */
 .jcem-dashboard {

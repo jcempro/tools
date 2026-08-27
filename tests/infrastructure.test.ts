@@ -470,8 +470,8 @@ test("shared toolbar uses a declarative multi-provider icon catalog and portable
   assert.match(sharedCss, /\.jcem-chrome-actions\.menu \.jcem-fa-icon,[\s\S]*\.jcem-chrome-toolbar-overflow\.menu \.jcem-fa-icon\s*{[^}]*var\(--jcem-toolbar-icon-color\)/s);
   assert.match(sharedTs, /unicode:\s*"f0c7"[^\n]*id:\s*"export-fill"/);
   assert.match(sharedTs, /unicode:\s*"f07c"[^\n]*id:\s*"import-fill"/);
-  assert.match(sharedTs, /name: "box-open", provider: "fontawesome"/);
   assert.match(sharedTs, /collection: "streamline-sharp", name: "download-box-1-solid", provider: "iconify"/);
+  assert.doesNotMatch(sharedTs, /box-open/);
   assert.match(sharedTs, /separator-print-clear/);
   assert.match(sharedTs, /item\.icons/);
   assert.match(sharedTs, /name: target === "dark" \? "moon" : "sun", provider: "lucide"/);
@@ -479,12 +479,14 @@ test("shared toolbar uses a declarative multi-provider icon catalog and portable
   assert.match(iconsTs, /faEllipsisVertical/);
   assert.match(iconsTs, /@iconify-icons\/game-icons\/upgrade/);
   assert.match(iconsTs, /@iconify-icons\/streamline-sharp\/download-box-1-solid/);
+  assert.doesNotMatch(iconsTs, /faBoxOpen/);
   assert.match(iconsTs, /Moon as moonIcon, Sun as sunIcon/);
   assert.match(iconsTs, /const fontAwesomeAliases = new Map/);
   assert.match(iconsTs, /throw new Error\(`Icone nao cadastrado:/);
   assert.match(iconsTs, /jcem-icon--\$\{definition\.provider\}/);
   assert.ok(iconConfig.icons.some(({ identity }) => identity === "iconify:game-icons:upgrade"));
   assert.ok(iconConfig.icons.some(({ identity }) => identity === "iconify:streamline-sharp:download-box-1-solid"));
+  assert.equal(iconConfig.icons.some(({ identity }) => identity === "fontawesome:box-open"), false);
   assert.ok(Object.keys(iconConfig.licenses).includes("lucide"));
   assert.match(sharedTs, /class="jcem-header-menu-state"/);
   assert.match(sharedTs, /class="jcem-toolbar-menu-state"/);
@@ -501,8 +503,7 @@ test("shared toolbar uses a declarative multi-provider icon catalog and portable
   assert.match(sharedCss, /\.jcem-theme-toggle \.jcem-fa-icon\s*{[^}]*width:\s*1\.8rem[^}]*height:\s*1\.8rem/s);
   assert.match(sharedCss, /\.jcem-author-badge:hover[\s\S]*transform:\s*translateY\(-0\.08rem\)/);
   assert.match(sharedCss, /\.jcem-theme-toggle\s*{[^}]*place-items:\s*center[^}]*padding:\s*0/s);
-  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon:first-child\s*{[^}]*width:\s*1\.8rem[^}]*opacity:\s*1/s);
-  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon:nth-child\(2\)\s*{[^}]*opacity:\s*0\.68[^}]*scale\(0\.82\)/s);
+  assert.doesNotMatch(sharedCss, /\[data-jcem-toolbar-id="bundle"\][^{]*\.jcem-fa-icon:nth-child/);
   assert.match(sharedCss, /@keyframes jcem-autosave-breathe/);
   assert.match(sharedCss, /@keyframes jcem-autosave-glow/);
   assert.match(sharedCss, /\.jcem-autosave \.jcem-autosave-icon,[\s\S]*\.jcem-autosave\[data-jcem-autosave-indicator="true"\] \.jcem-autosave-icon\s*{[^}]*animation:\s*jcem-autosave-glow/s);
@@ -518,7 +519,6 @@ test("shared toolbar uses a declarative multi-provider icon catalog and portable
   assert.doesNotMatch(sharedTs, /licenseBadge\.innerHTML = `\$\{mpl2BadgeSvg\}<span>MPL 2\.0<\/span>`;/);
   assert.doesNotMatch(sharedTs, /MPL2\.svg/);
   assert.doesNotMatch(sharedTs, /setTimeout\(\(\) => tick/);
-  assert.match(sharedCss, /\[data-jcem-toolbar-id="bundle"\] \.jcem-fa-icon\s*{[^}]*height:\s*2rem/s);
   assert.match(faturamentoTs, /actions:\s*{/);
   assert.match(admissionalTs, /actions:\s*{/);
   assert.doesNotMatch(faturamentoTs, /api\.toolbar\.bind|api\.share\.bindToolbar/);

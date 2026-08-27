@@ -1,9 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
 import {
   convertDataset,
   inferModelKind,
+  mergeDatasets,
   oppositeModel,
   parseCsv,
   serializeCsv
@@ -164,4 +166,64 @@ test("bd serializer emits UTF-8 BOM and deterministic semicolon CSV", () => {
 
   assert.equal(csv.charCodeAt(0), 0xfeff);
   assert.equal(csv.slice(1), "MCI;Fone;Nome\r\n100;1111;Ana\r\n");
+});
+
+test("bd merges deterministically in the three row policies", () => {
+  const previous = parseCsv("MCI;Nome;Cidade\n1;Ana;\n2;Bia;Recife\n");
+  const complement = parseCsv("MCI;Nome;Cidade;Segmento\n1;Ana;Santos;A\n3;Caio;Manaus;B\n");
+
+  const left = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "previous" });
+  assert.deepEqual(left.dataset.columns, ["MCI", "Nome", "Cidade", "Segmento"]);
+  assert.deepEqual(left.dataset.rows, [["1", "Ana", "Santos", "A"], ["2", "Bia", "Recife", ""]]);
+
+  const mergeOnly = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "merge-only" });
+  assert.deepEqual(mergeOnly.dataset.rows, [["1", "Ana", "Santos", "A"], ["3", "Caio", "Manaus", "B"]]);
+
+  const summed = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "summed" });
+  assert.deepEqual(summed.dataset.rows, [["1", "Ana", "Santos", "A"], ["2", "Bia", "Recife", ""], ["3", "Caio", "Manaus", "B"]]);
+});
+
+test("bd merge normalizes phone aliases and keeps one index column", () => {
+  const previous = parseCsv("Fone;Nome\n(11) 9999-0000;Ana\n");
+  const complement = parseCsv("Telefone;Cidade\n+55 11 9999-0000;Santos\n");
+  const result = mergeDatasets(previous, complement, { mode: "summed" });
+
+  assert.equal(result.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(result.dataset.columns, ["Fone", "Nome", "Cidade"]);
+  assert.deepEqual(result.dataset.rows, [["1199990000", "Ana", ""], ["551199990000", "", "Santos"]]);
+});
+
+test("bd merge blocks missing, multiple and conflicting index associations", () => {
+  const noIndex = mergeDatasets(parseCsv("MCI;Nome\n1;Ana\n"), parseCsv("CID;Cidade\n1;Santos\n"), { identifierColumns: ["MCI", "CID"] });
+  assert.equal(noIndex.issues.some(({ code }) => code === "invalid-common-index"), true);
+
+  const multiple = mergeDatasets(parseCsv("MCI;Fone;Nome\n1;1111;Ana\n"), parseCsv("MCI;Telefone;Cidade\n1;1111;Santos\n"), { identifierColumns: ["MCI"] });
+  assert.equal(multiple.issues.some(({ code }) => code === "invalid-common-index"), true);
+
+  const conflict = mergeDatasets(parseCsv("MCI;Nome\n1;Ana\n"), parseCsv("MCI;Nome\n1;Bia\n"), { identifierColumns: ["MCI"] });
+  assert.equal(conflict.issues.some(({ code }) => code === "merge-value-conflict"), true);
+  assert.deepEqual(conflict.dataset.rows, [["1", "Ana"]]);
+});
+
+test("bd merge consolidates only exact duplicate rows and blocks distinct duplicate keys", () => {
+  const previous = parseCsv("MCI;Nome\n1;Ana\n");
+  const exact = mergeDatasets(previous, parseCsv("MCI;Cidade\n1;Santos\n1;Santos\n"), { identifierColumns: ["MCI"] });
+  assert.equal(exact.issues.some(({ code, severity }) => code === "duplicate-merge-row" && severity === "warning"), true);
+  assert.deepEqual(exact.dataset.rows, [["1", "Ana", "Santos"]]);
+
+  const distinct = mergeDatasets(previous, parseCsv("MCI;Cidade\n1;Santos\n1;Recife\n"), { identifierColumns: ["MCI"] });
+  assert.equal(distinct.issues.some(({ code, severity }) => code === "ambiguous-merge-key" && severity === "error"), true);
+  assert.deepEqual(distinct.dataset, previous);
+});
+
+test("bd UI exposes optional file-backed merge and accessible exclusive policies", async () => {
+  const [html, source] = await Promise.all([
+    readFile("src/csv-bd/index.html", "utf8"),
+    readFile("src/csv-bd/bd.ts", "utf8")
+  ]);
+  assert.match(html, /id="csv-merge"/);
+  assert.match(html, /id="csv-merge-file"[^>]*type="file"/);
+  assert.equal((html.match(/name="merge-mode"/g) ?? []).length, 3);
+  assert.match(source, /mergeDatasets\(currentResult\.dataset, complement/);
+  assert.match(source, /resultado prévio permaneceu inalterado/);
 });
