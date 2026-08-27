@@ -105,13 +105,13 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
   * A apresentação PODE adotar composição elegante e legível, inclusive inspiração **ABNT** ou formato tabular, desde que compatível com os padrões existentes; estética alternativa NÃO justifica alterar o design global.
   * Validar `/atribuicoes` no fluxo real do GitHub Pages, inclusive navegação/roteamento, responsividade e impressão quando aplicável, sem alterar indevidamente páginas, posts, módulos ou recursos preexistentes.
 
-* [ ] Ajustar ícone de baixa bundle sem regressão
+- [x] Ajustar ícone de baixa bundle sem regressão
 
   * Substituir a representação dupla atual por **um único ícone**, utilizando o novo ícone já adicionado anteriormente.
   * Remover o uso/dependência correspondente do Awesome quando restrita a esse caso.
   * NÃO alterar ícones, comportamentos ou recursos não relacionados.
 
-* [ ] Corrigir espaçamentos e parametrização das Declarações Unificadas
+- [x] Corrigir espaçamentos e parametrização das Declarações Unificadas
 
   * No submódulo **Declarações Unificadas**, ajustar para **1 cm** o espaçamento reservado às assinaturas.
   * Esse valor DEVE ser configurável em configuração centralizada apropriada do repositório; NÃO duplicar parâmetro equivalente.
@@ -124,7 +124,7 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
   * NÃO criar segunda sintaxe. Se a parametrização da assinatura anteriormente solicitada ainda não estiver implementada corretamente, corrigir ambas de forma convergente.
   * Preservar integralmente features, normas e comportamentos válidos existentes.
 
-* [ ] Corrigir dimensionamento semântico das tabelas nas Declarações Unificadas
+- [x] Corrigir dimensionamento semântico das tabelas nas Declarações Unificadas
 
   * Na `DECLARAÇÃO DE PROPÓSITOS E NATUREZA DA RELAÇÃO DE NEGÓCIO`, corrigir a tabela cuja primeira coluna contém apenas `X`, mas ocupa largura excessiva e comprime indevidamente a coluna textual, causando quebras verticais desnecessárias.
   * A correção DEVE ser estrutural e refletir-se nas tabelas equivalentes do submódulo, NÃO apenas nesse caso específico.
@@ -138,7 +138,7 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
   * Quando uma coluna representar inequivocamente marcador textual de seleção, como `X` simulando checkbox, seu conteúdo DEVE ser centralizado automaticamente.
   * A inferência DEVE decorrer da estrutura/conteúdo real, sem heurística arbitrária que possa prejudicar outras tabelas.
 
-* [ ] Adicionar mesclagem opcional ao Conversor de modelos CSV
+- [x] Adicionar mesclagem opcional ao Conversor de modelos CSV
 
   * No submódulo **Conversor de modelos CSV**, adicionar `textarea` opcional para **mesclar**, acompanhado de controle para abertura/carregamento de CSV.
   * Interface, validação, carregamento e comportamento DEVEM seguir os padrões visuais, funcionais e modus operandi já definidos no projeto.

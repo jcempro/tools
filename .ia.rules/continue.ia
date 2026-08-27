@@ -1,5 +1,61 @@
 # Memoria operacional canonica
 
+## FT-020 - Equalizacao normativa dos refinamentos de Bundle, declaracoes e CSV
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-08-27T12:06:40-03:00.
+- Origem: quatro itens operacionais adicionados a `TODO.ia.md` pelo commit `5be7415`, no arquivo de origem com SHA-256 `E4C39BFCB3AA31D4E4BF568921EF0C2328E04807F5C7BECCB764FC95E6195D27`.
+- Vinculos: FT-017; FT-020; FT-021; `TODO.ia.md`; `RCF.md`; `src/declaracoes/unificada/RCF.md`; `src/csv-bd/RCF.md`; infraestrutura global de icones, configuracao, tabelas, CSV e Bundle.
+- Escopo: Tecnico.
+- Objetivo: equalizar e normatizar a simplificacao do icone de download do Bundle, a composicao parametrizavel de cabecalho e assinaturas das Declaracoes Unificadas, o dimensionamento semantico de suas tabelas e a mesclagem opcional deterministica do Conversor CSV.
+- Prioridade: alta.
+- Status: em andamento.
+- Dependencias: estado real e contratos vigentes auditados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF global e RCFs especificos cobrem integralmente fonte, precedencias, configuracao, inferencias estruturais, modos de mesclagem, ambiguidades, regressao e validacao, sem antecipar codigo.
+
+### Plano vigente
+
+1. Etapa 1/4 - auditar fonte, implementacao, configuracoes, testes e contratos; equalizar objetivo, escopo, terminologia, dependencias e riscos cruzados. Status: em andamento.
+2. Etapa 2/4 - sincronizar o contrato global do icone de Bundle e o RCF das Declaracoes Unificadas. Status: pendente.
+3. Etapa 3/4 - sincronizar o RCF do Conversor CSV e a rastreabilidade material pendente. Status: pendente.
+4. Etapa 4/4 - validar a norma, concluir a FT e interromper antes da implementacao. Status: pendente.
+
+### Equalizacao inicial
+
+- As quatro demandas compartilham configuracao central, componentes globais e validacao de artefatos, mas permanecem separadas por subcontexto para impedir alteracao cruzada indevida.
+- O novo icone de Bundle ja existe no catalogo multiprovedor da FT-017; a nova regra remove somente a composicao dupla e o alias Font Awesome exclusivo desse caso.
+- Nas Declaracoes Unificadas, `1 cm` designa a reserva vertical de assinatura dentro da folha e nao altera as margens uniformes de `1 cm` ja vigentes; cabecalho parametrizado e tabelas semanticas especializam somente o modulo.
+- No Conversor CSV, `mesclar` e um estagio posterior a conversao existente; o unico indexador elegivel e resolvido contra os identificadores efetivamente configurados ou os aliases suportados de telefone, e multiplicidade bloqueia antes de associar.
+
+### Proximo ponto
+
+- Concluir a normatizacao e aguardar nova autorizacao humana explicita para a FT-021.
+
+## FT-021 - Implementacao dos refinamentos de Bundle, declaracoes e CSV
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-08-27T12:06:41-03:00.
+- Origem: mesmos quatro itens operacionais de `TODO.ia.md` vinculados pela FT-020.
+- Vinculos: FT-017; FT-020; `RCF.md`; `src/declaracoes/unificada/RCF.md`; `src/csv-bd/RCF.md`; fontes, configuracoes, build e testes dos mecanismos afetados.
+- Escopo: Tecnico.
+- Objetivo: materializar os quatro refinamentos normatizados sem regressao de icones, documentos, paginacao, tabelas, conversao, importacao, exportacao, Web ou Bundle.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-020 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: Bundle usa um unico icone Iconify sem dependencia Font Awesome local; Declaracoes Unificadas obedecem configuracao e composicao solicitadas; tabelas ajustam colunas pela semantica real; CSV mescla deterministicamente nos tres modos; validacao integral e testes especificos aprovados.
+
+### Plano vigente
+
+1. Etapa 1/5 - simplificar o consumidor global de download do Bundle e limpar somente a dependencia Font Awesome comprovadamente exclusiva. Status: bloqueado pela FT-020.
+2. Etapa 2/5 - centralizar templates e medidas, recompor cabecalho/assinaturas e ajustar paginacao das Declaracoes Unificadas. Status: bloqueado pela FT-020.
+3. Etapa 3/5 - implementar classificacao estrutural e dimensionamento semantico das tabelas equivalentes. Status: bloqueado pela FT-020.
+4. Etapa 4/5 - implementar entrada, validacao, associacao e politicas de linhas da mesclagem CSV opcional. Status: bloqueado pela FT-020.
+5. Etapa 5/5 - executar testes unitarios, integrados, visuais, responsivos, impressao, Web e Bundles; sincronizar rastreabilidade e concluir. Status: bloqueado pela FT-020.
+
+### Proximo ponto
+
+- Nao iniciar codigo antes da conclusao commitada da FT-020 e de autorizacao humana posterior.
+
 ## FT-016 - Contrato multiprovedor de icones
 
 - Tipo: implementacao_normativa.
