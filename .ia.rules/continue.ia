@@ -1,5 +1,51 @@
 # Memoria operacional canonica
 
+## FT-022 - Contrato dos marcadores contextuais no rodape unificado
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-08-27T12:50:45-03:00.
+- Origem: `.ia.rules/state/requests/FT-022/request.md`, acompanhada de evidência visual com SHA-256 `0E83ADFD479DEFF8C8495A643566C3675A573C5234FBBFAB364C48260F460265`.
+- Vinculos: FT-011; FT-012; FT-015; FT-020; FT-021; FT-023; `src/declaracoes/unificada/RCF.md`; configuração, composição, estilos e testes locais do módulo.
+- Escopo: Tecnico.
+- Objetivo: normatizar a distinção semântica e visual entre o marcador que qualifica/lista declarantes e sua referência no texto, além de eliminar a causa estrutural do recuo em quebras do parágrafo justificado.
+- Prioridade: alta.
+- Status: em andamento.
+- Dependencias: estado real e evidência auditados; nenhuma decisão recusada local elegível registrada.
+- Aceite: RCF define marcação, peso, fundo configurável, espaços, indivisibilidade, diferenciação contextual, alinhamento contínuo e validação sem antecipar código.
+
+### Plano vigente
+
+1. Etapa 1/3 - capturar fonte/evidência, triar recusas e diagnosticar a causa estrutural. Status: concluído.
+2. Etapa 2/3 - atualizar o RCF específico e a rastreabilidade pendente. Status: pendente.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementação. Status: pendente.
+
+### Próximo ponto
+
+- Criar o commit inicial exclusivo da frente; depois normatizar o RCF sem alterar código, configuração runtime ou estilos.
+
+## FT-023 - Implementacao dos marcadores contextuais no rodape unificado
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-08-27T12:50:46-03:00.
+- Origem: mesma solicitação canônica e evidência vinculadas pela FT-022.
+- Vinculos: FT-022; `src/declaracoes/unificada/RCF.md`; `src/assets/config/declaracoes-unificada.json`; `src/declaracoes/unificada/unificada.ts`; `src/declaracoes/unificada/unificada.scss`; testes e artefatos derivados.
+- Escopo: Tecnico.
+- Objetivo: materializar a distinção contextual dos marcadores e remover o recuo estrutural sem regressão dos demais contratos do formulário.
+- Prioridade: alta.
+- Status: aguardando normatizacao.
+- Dependencias: FT-022 concluída e autorização humana explícita posterior ao commit normativo.
+- Aceite: os dois contextos e diferentes quebras de linha são testados; validação integral, visual, responsiva, Web, Bundle e impressão aprovada.
+
+### Plano vigente
+
+1. Etapa 1/3 - compor markup seguro e contextual a partir dos tokens institucionais. Status: pendente.
+2. Etapa 2/3 - aplicar configuração/estilos locais e testes de estrutura, conteúdo e quebra. Status: pendente.
+3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: pendente.
+
+### Próximo ponto
+
+- Aguardar conclusão e commit da FT-022; não implementar antes de nova autorização humana explícita.
+
 ## FT-020 - Equalizacao normativa dos refinamentos de Bundle, declaracoes e CSV
 
 - Tipo: implementacao_normativa.
