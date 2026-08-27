@@ -3599,38 +3599,6 @@
       ],
       "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
       "ft": "FT-012",
-      "id": "5d5e77f5596576d4ccb31cf9",
-      "line": 110,
-      "rcf": "src/declaracoes/unificada/RCF.md",
-      "sentenceSha256": "f6f22833c847d08549cae756a7ec2c35bfe54c375a4df37712622829b3ff1954",
-      "state": "synchronized",
-      "syncCommit": ""
-    },
-    {
-      "artifacts": [
-        "scripts/build-bundles-core.mjs",
-        "scripts/compile.mjs",
-        "scripts/config.json",
-        "scripts/validate-publication.mjs",
-        "src/assets/config/apps.json",
-        "src/assets/config/declaracoes-unificada.json",
-        "src/assets/config/printing.json",
-        "src/declaracoes/unificada/conteudo/01-autorizacao-scr.md",
-        "src/declaracoes/unificada/conteudo/02-propositos-relacao.md",
-        "src/declaracoes/unificada/conteudo/03-domicilio-fiscal.md",
-        "src/declaracoes/unificada/conteudo/04-bb-rende-facil.md",
-        "src/declaracoes/unificada/conteudo/05-agenda-duplicatas.md",
-        "src/declaracoes/unificada/conteudo/06-agenda-recebiveis.md",
-        "src/declaracoes/unificada/conteudo/manifest.json",
-        "src/declaracoes/unificada/index.html",
-        "src/declaracoes/unificada/logo.svg",
-        "src/declaracoes/unificada/unificada.scss",
-        "src/declaracoes/unificada/unificada.ts",
-        "tests/declaracoes-unificada.test.ts",
-        "tests/infrastructure.test.ts"
-      ],
-      "commit": "b8c1034af616ecfb0c17e0c82d7156a5decefbee",
-      "ft": "FT-012",
       "id": "ff321ad6ca44b3cd32ac9a0b",
       "line": 112,
       "rcf": "src/declaracoes/unificada/RCF.md",
@@ -4091,6 +4059,23 @@
     },
     {
       "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "57d6da613c34c0541a5fa866",
+      "line": 142,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "9b003406f95e2edc810a97835a7edc7c8d0debcc52a6e6b8c4e1b761095de7ed",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
         "scripts/build-bundles-core.mjs",
         "scripts/compile.mjs",
         "scripts/config.json",
@@ -4119,6 +4104,108 @@
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "aeff3f9b8e5343e886d048cd7d80b8d8830adcd017fc01a4222584bc1bbd93bf",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "4063564f5069e93592f14410",
+      "line": 144,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "fad4d2cdbbbacbc8a741f819f3ea818aa42e2177522f901d2a3d52d03361dd35",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "eeec0ea78404e226df2c8333",
+      "line": 146,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "805e51c981b5afd4de6b6c7ae4885712b33973cdf31a7a716252acbad05b8846",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "e5d19e30a5aa480783a4b7cb",
+      "line": 148,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "fc8e4b54fabb57fc2c6308c7a99cf2db15ea9990d0f00ddec130eb2ee50d8907",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "a8d1f2e134cee5f6ce008159",
+      "line": 150,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "b26f59f6196055b951c15ac0471530d8fb8a9d1b8ffc0fd03ab84e2c3d679947",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "8a654fb0b73771bf81f4fab1",
+      "line": 152,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "b2d7e83b07438b098e81934750e443a86066d1f3742164a755f45dc855978e7d",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-023",
+      "id": "1c539e06ddf1f41db8098f16",
+      "line": 154,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "0ce7a866aaea3aac6fe179be76cbe2401713f2767f705b7de3076aaee9955c06",
+      "state": "pending",
       "syncCommit": ""
     },
     {

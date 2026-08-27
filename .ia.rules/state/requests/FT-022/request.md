@@ -6,7 +6,7 @@
 - SHA-256 da evidência visual: `0E83ADFD479DEFF8C8495A643566C3675A573C5234FBBFAB364C48260F460265`.
 - FTs vinculadas: FT-022 (normatização) e FT-023 (implementação posterior).
 - RCF de destino: `src/declaracoes/unificada/RCF.md`.
-- Estado de incorporação: fonte capturada; triagem e normatização em andamento; implementação não iniciada.
+- Estado de incorporação: incorporado integralmente no RCF específico e no contexto da FT-023; implementação não iniciada.
 
 <!-- source:start -->
 Conforme o anexo, corrija **cirurgicamente** o formulário de **Declarações Unificadas**, preservando integralmente os demais recursos, estilos, normas e comportamentos válidos existentes.

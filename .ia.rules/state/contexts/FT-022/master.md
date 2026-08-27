@@ -10,7 +10,7 @@
 - Restrições: preservar templates, numeração, vínculos, paginação, tipografia, folha, impressão, responsividade, conteúdo e demais estilos; não usar regra dependente da frase exibida na evidência.
 - Fora de escopo: mudanças no corpo das declarações, GUI, identidade visual, regras globais de impressão ou outros módulos.
 - Entregáveis: RCF preciso; marcadores contextuais; configuração do cinza; testes de DOM/CSS, quebras e regressão; validação integral.
-- Estado: captura e triagem concluídas; FT inicial em preparação.
+- Estado: captura, triagem e normatização concluídas; FT-023 bloqueada até autorização humana explícita posterior ao commit normativo.
 - Aceite global: qualificação em `sup`, negrito, fundo cinza 20% configurável e `[ N ]` indivisível; referência em negrito sem `sup`/fundo; linhas justificadas sem recuo artificial; Web, Bundle, impressão e responsividade preservados.
 
 ## Diagnóstico inicial
@@ -19,3 +19,9 @@
 - `.du-index` usa `inline-block` com `padding-inline` e `margin-inline`; quando o primeiro marcador migra para a linha seguinte, a margem externa continua ocupando o início da linha e produz o recuo demonstrado.
 - A correção generalizável deve compor markup por token/contexto antes da junção do parágrafo e concentrar o espaçamento visual dentro do marcador, sem margem externa inicial.
 
+## Handoff normativo
+
+- O RCF diferencia o `sup` de qualificação da referência textual em negrito comum e centraliza o novo fundo inicial `#cccccc` em `footer.indexBackground`.
+- O alinhamento é protegido pela proibição de margem inicial, indentação e blocos intermediários; a separação configurável permanece somente após o marcador de qualificação.
+- Sete sentenças materiais estão registradas para a FT-023 como `[PENDENTE-CODIGO]`, vinculadas à configuração, compilador, TypeScript, SCSS e testes locais.
+- Type-check, lint, 64 testes e rastreabilidade `232/232` foram aprovados na fase normativa.
