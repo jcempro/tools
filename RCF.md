@@ -141,9 +141,9 @@ O build DEVE selecionar positivamente apenas definicoes referenciadas, eliminar 
 
 O indicador global de atualizacao DEVE usar exatamente `iconify:game-icons:upgrade`, de autoria de Delapouite sob CC BY 3.0, e a acao de download do Bundle DEVE usar exatamente `iconify:streamline-sharp:download-box-1-solid`, da colecao Sharp free icons da Streamline sob CC BY 4.0; cada identidade substitui o glifo Font Awesome anteriormente usado nessa funcao sem alterar acao, URL, tooltip, acessibilidade, estado, animacao ou ordem do controle. [d67613d]
 
-A ação de download do Bundle DEVE renderizar exatamente uma instância SVG da identidade `iconify:streamline-sharp:download-box-1-solid`; composição simultânea, sobreposição ou encadeamento com glifo Font Awesome é PROIBIDO, e a referência Font Awesome exclusiva dessa ação DEVE ser removida do metadado e da seleção positiva sem afetar qualquer outro consumidor legítimo do provedor. [PENDENTE-CODIGO]
+A ação de download do Bundle DEVE renderizar exatamente uma instância SVG da identidade `iconify:streamline-sharp:download-box-1-solid`; composição simultânea, sobreposição ou encadeamento com glifo Font Awesome é PROIBIDO, e a referência Font Awesome exclusiva dessa ação DEVE ser removida do metadado e da seleção positiva sem afetar qualquer outro consumidor legítimo do provedor. [8db3e5a]
 
-A validação do catálogo, do chrome, da Web e de cada Bundle DEVE comprovar um único glifo no controle de download, a permanência do nome acessível e do tooltip e a ausência de definição Font Awesome tornada órfã por essa substituição. [PENDENTE-CODIGO]
+A validação do catálogo, do chrome, da Web e de cada Bundle DEVE comprovar um único glifo no controle de download, a permanência do nome acessível e do tooltip e a ausência de definição Font Awesome tornada órfã por essa substituição. [8db3e5a]
 
 Licenca do pacote agregador NAO substitui a licenca do icone ou da colecao: o catalogo DEVE registrar, para cada definicao distribuida, provedor, colecao, autor, origem oficial, titulo/SPDX e URL da licenca, aviso/atribuicao exigido e eventual transformacao visual; esses metadados DEVEM alimentar a fonte verificavel de `/atribuicoes` e bloquear publicacao quando obrigacao aplicavel estiver ausente ou divergente. [d67613d]
 
