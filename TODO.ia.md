@@ -106,3 +106,11 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
   * Incluir antes da relação apenas um **texto introdutório sucinto**, explicando a finalidade da página.
   * A apresentação PODE adotar composição elegante e legível, inclusive inspiração **ABNT** ou formato tabular, desde que compatível com os padrões existentes; estética alternativa NÃO justifica alterar o design global.
   * Validar `/atribuicoes` no fluxo real do GitHub Pages, inclusive navegação/roteamento, responsividade e impressão quando aplicável, sem alterar indevidamente páginas, posts, módulos ou recursos preexistentes.
+
+* [ ] Corrigir fundo e transição da barra de ferramentas vertical
+
+  * Conforme `\.ia.rules\state\evidencias\evidencia5.png`, a barra vertical mantém transparência/opacidade que permite visualizar o conteúdo ao fundo durante o scroll, inclusive a barra horizontal, cuja borda acaba visualmente cortada apesar do padding existente.
+  * A barra vertical DEVE possuir fundo opaco/adequado ao tema quando em estado de sobreposição, impedindo interferência visual do conteúdo subjacente sem descaracterizar o design.
+  * A mudança entre os estados DEVE ocorrer em um **ponto de scroll claramente definido e adequado**, de forma súbita quanto à troca de estado, porém acompanhada de transição/animação curta e sutil; NÃO realizar mudança progressiva proporcional ao scroll.
+  * Preservar posição, dimensões, padding, bordas, responsividade, comportamento sticky/fixed existente e relação com a barra horizontal, alterando somente o necessário para eliminar a sobreposição visual indevida.
+  * A solução DEVE respeitar os temas/estados visuais já existentes e NÃO introduzir regressão em navegação, interação, contraste ou demais componentes adjacentes.
