@@ -185,12 +185,12 @@ test("bd merges deterministically in the three row policies", () => {
 
 test("bd merge normalizes phone aliases and keeps one index column", () => {
   const previous = parseCsv("Fone;Nome\n(11) 9999-0000;Ana\n");
-  const complement = parseCsv("Telefone;Cidade\n+55 11 9999-0000;Santos\n");
+  const complement = parseCsv("Telefone;Cidade\n11 9999 0000;Santos\n+55 11 9999-0000;Brasilia\n");
   const result = mergeDatasets(previous, complement, { mode: "summed" });
 
   assert.equal(result.issues.some(({ severity }) => severity === "error"), false);
   assert.deepEqual(result.dataset.columns, ["Fone", "Nome", "Cidade"]);
-  assert.deepEqual(result.dataset.rows, [["1199990000", "Ana", ""], ["551199990000", "", "Santos"]]);
+  assert.deepEqual(result.dataset.rows, [["1199990000", "Ana", "Santos"], ["551199990000", "", "Brasilia"]]);
 });
 
 test("bd merge blocks missing, multiple and conflicting index associations", () => {
@@ -205,15 +205,89 @@ test("bd merge blocks missing, multiple and conflicting index associations", () 
   assert.deepEqual(conflict.dataset.rows, [["1", "Ana"]]);
 });
 
-test("bd merge consolidates only exact duplicate rows and blocks distinct duplicate keys", () => {
+test("bd merge consolidates only exact canonical rows and preserves distinct rows with the same key", () => {
   const previous = parseCsv("MCI;Nome\n1;Ana\n");
-  const exact = mergeDatasets(previous, parseCsv("MCI;Cidade\n1;Santos\n1;Santos\n"), { identifierColumns: ["MCI"] });
+  const exact = mergeDatasets(previous, parseCsv("MCI;Cidade\n1;Santos\n(1);Santos\n"), { identifierColumns: ["MCI"] });
   assert.equal(exact.issues.some(({ code, severity }) => code === "duplicate-merge-row" && severity === "warning"), true);
   assert.deepEqual(exact.dataset.rows, [["1", "Ana", "Santos"]]);
 
   const distinct = mergeDatasets(previous, parseCsv("MCI;Cidade\n1;Santos\n1;Recife\n"), { identifierColumns: ["MCI"] });
-  assert.equal(distinct.issues.some(({ code, severity }) => code === "ambiguous-merge-key" && severity === "error"), true);
-  assert.deepEqual(distinct.dataset, previous);
+  assert.equal(distinct.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(distinct.dataset.rows, [["1", "Ana", "Santos"], ["1", "Ana", "Recife"]]);
+});
+
+test("bd merge preserves 1:N, N:1 and N:N relations in all row policies", () => {
+  const previous = parseCsv([
+    "MCI;Pessoa",
+    "1;Ana",
+    "2;Bia",
+    "2;Bruna",
+    "3;Caio",
+    "3;Cris"
+  ].join("\n"));
+  const complement = parseCsv([
+    "MCI;Cidade",
+    "1;Santos",
+    "1;Recife",
+    "2;Manaus",
+    "3;Salvador",
+    "3;Belem",
+    "4;Natal"
+  ].join("\n"));
+
+  const left = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "previous" });
+  assert.equal(left.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(left.dataset.rows, [
+    ["1", "Ana", "Santos"],
+    ["1", "Ana", "Recife"],
+    ["2", "Bia", "Manaus"],
+    ["2", "Bruna", "Manaus"],
+    ["3", "Caio", "Salvador"],
+    ["3", "Caio", "Belem"],
+    ["3", "Cris", "Salvador"],
+    ["3", "Cris", "Belem"]
+  ]);
+
+  const mergeOnly = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "merge-only" });
+  assert.equal(mergeOnly.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(mergeOnly.dataset.rows, [
+    ["1", "Ana", "Santos"],
+    ["1", "Ana", "Recife"],
+    ["2", "Bia", "Manaus"],
+    ["2", "Bruna", "Manaus"],
+    ["3", "Caio", "Salvador"],
+    ["3", "Cris", "Salvador"],
+    ["3", "Caio", "Belem"],
+    ["3", "Cris", "Belem"],
+    ["4", "", "Natal"]
+  ]);
+
+  const summed = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "summed" });
+  assert.equal(summed.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(summed.dataset.rows, [...left.dataset.rows, ["4", "", "Natal"]]);
+});
+
+test("bd merge normalizes generic indexers bilaterally without crossing distinct keys", () => {
+  const previous = parseCsv("MCI;Nome\n12.345-6;Ana\nAB (12);Bia\nA-1;Caio\n");
+  const complement = parseCsv("MCI;Cidade\n12 345 6;Santos\nab-12;Recife\nA 11;Manaus\n");
+  const result = mergeDatasets(previous, complement, { identifierColumns: ["MCI"], mode: "summed" });
+
+  assert.equal(result.issues.some(({ severity }) => severity === "error"), false);
+  assert.deepEqual(result.dataset.rows, [
+    ["123456", "Ana", "Santos"],
+    ["ab12", "Bia", "Recife"],
+    ["a1", "Caio", ""],
+    ["a11", "", "Manaus"]
+  ]);
+});
+
+test("bd merge retains unrelated blockers and has no partial similarity heuristic", async () => {
+  const source = await readFile("src/assets/js/tabular.ts", "utf8");
+  assert.doesNotMatch(source, /ambiguous-merge-key|materialmente distintas em/);
+  assert.doesNotMatch(source, /similarity|similaridade|limiar/i);
+
+  const invalid = mergeDatasets(parseCsv("MCI;Nome\n();Ana\n"), parseCsv("MCI;Cidade\n1;Santos\n"), { identifierColumns: ["MCI"] });
+  assert.equal(invalid.issues.some(({ code, severity }) => code === "invalid-merge-key" && severity === "error"), true);
 });
 
 test("bd UI exposes optional file-backed merge and accessible exclusive policies", async () => {

@@ -159,6 +159,10 @@ export function convertDataset(dataset: TabularDataset, from: TabularModelKind, 
   return from === "modelo1" ? convertModel1ToModel2(dataset, options) : convertModel2ToModel1(dataset, options);
 }
 
+/**
+ * Mescla dois conjuntos por um indexador canônico, preservando todas as relações da mesma chave.
+ * Retorna cópia do resultado prévio quando qualquer validação contratual bloqueia a operação.
+ */
 export function mergeDatasets(previous: TabularDataset, complement: TabularDataset, options: DatasetMergeOptions = {}): DatasetMergeResult {
   const issues: ConversionIssue[] = [];
   const identities = mergeIndexerIdentities(options.identifierColumns ?? defaultIdentifierColumns);
@@ -196,16 +200,8 @@ export function mergeDatasets(previous: TabularDataset, complement: TabularDatas
   for (const column of complement.columns) {
     if (!previousSchema.has(canonicalMergeColumn(column))) outputColumns.push(column);
   }
-  const previousByKey = new Map(previousRows.map((item) => [item.key, item]));
-  const complementByKey = new Map(complementRows.map((item) => [item.key, item]));
   const mode = options.mode ?? "previous";
-  const orderedPairs: Array<{ key: string; left?: IndexedMergeRow; right?: IndexedMergeRow }> = [];
-  if (mode === "merge-only") {
-    complementRows.forEach((right) => orderedPairs.push({ key: right.key, left: previousByKey.get(right.key), right }));
-  } else {
-    previousRows.forEach((left) => orderedPairs.push({ key: left.key, left, right: complementByKey.get(left.key) }));
-    if (mode === "summed") complementRows.filter(({ key }) => !previousByKey.has(key)).forEach((right) => orderedPairs.push({ key: right.key, right }));
-  }
+  const orderedPairs = buildMergePairs(previousRows, complementRows, mode);
 
   const rows: string[][] = [];
   for (const pair of orderedPairs) {
@@ -637,8 +633,17 @@ function emptyRecord(columns: string[]): Map<string, string> {
   return new Map(columns.map((column) => [column, ""]));
 }
 
+/** Identidade canônica e estratégia de normalização da coluna usada como indexador. */
 type MergeIndexerIdentity = Readonly<{ key: string; kind: "identifier" | "phone" }>;
+
+/** Linha distinta vinculada à chave já normalizada, mantendo os valores originais para composição. */
 type IndexedMergeRow = Readonly<{ key: string; row: string[] }>;
+
+/** Projeções ordenada e agrupada das linhas distintas de um dos lados da mesclagem. */
+type IndexedMergeRows = Readonly<{ byKey: ReadonlyMap<string, IndexedMergeRow[]>; ordered: IndexedMergeRow[] }>;
+
+/** Correspondência unitária restrita a uma única chave canônica. */
+type MergePair = Readonly<{ key: string; left?: IndexedMergeRow; right?: IndexedMergeRow }>;
 
 function mergeFailure(source: TabularDataset, code: string, message: string, indexColumn?: string): DatasetMergeResult {
   return { dataset: cloneDataset(source), indexColumn, issues: [{ code, message, severity: "error" }] };
@@ -662,17 +667,22 @@ function columnsForMergeIdentity(columns: string[], identity: MergeIndexerIdenti
   });
 }
 
+/** Normaliza bilateralmente uma chave sem remover letras ou dígitos semanticamente relevantes. */
 function normalizeMergeIndex(value: string, identity: MergeIndexerIdentity): string {
-  return identity.kind === "phone" ? normalizePhone(value) : value.trim();
+  if (identity.kind === "phone") return normalizePhone(value);
+  return value.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 }
 
-function rowsEqual(left: string[], right: string[]): boolean {
-  return left.length === right.length && left.every((value, index) => value === right[index]);
+/** Produz o vetor usado para igualdade exata, substituindo somente o indexador por sua forma canônica. */
+function canonicalMergeRow(row: string[], columnIndex: number, key: string): string[] {
+  return row.map((value, index) => index === columnIndex ? key : value);
 }
 
-function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: MergeIndexerIdentity, label: string, issues: ConversionIssue[]): IndexedMergeRow[] | null {
+/** Agrupa linhas distintas por chave, consolida apenas vetores canônicos exatos e preserva a ordem de entrada. */
+function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: MergeIndexerIdentity, label: string, issues: ConversionIssue[]): IndexedMergeRows | null {
   const columnIndex = dataset.columns.indexOf(indexColumn);
-  const indexed = new Map<string, IndexedMergeRow>();
+  const indexed = new Map<string, IndexedMergeRow[]>();
+  const fingerprints = new Map<string, Set<string>>();
   const ordered: IndexedMergeRow[] = [];
   for (let rowIndex = 0; rowIndex < dataset.rows.length; rowIndex += 1) {
     const row = dataset.rows[rowIndex] ?? [];
@@ -681,18 +691,44 @@ function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: 
       issues.push({ code: "invalid-merge-key", message: `Linha ${rowIndex + 2} de ${label} possui chave vazia ou inválida.`, severity: "error" });
       continue;
     }
-    const prior = indexed.get(key);
-    if (!prior) {
-      const item = { key, row };
-      indexed.set(key, item);
-      ordered.push(item);
-    } else if (rowsEqual(prior.row, row)) {
-      issues.push({ code: "duplicate-merge-row", message: `Linha duplicada equivalente consolidada em ${label} para a chave ${key}.`, severity: "warning" });
-    } else {
-      issues.push({ code: "ambiguous-merge-key", message: `A chave ${key} identifica linhas materialmente distintas em ${label}.`, severity: "error" });
+    const fingerprint = JSON.stringify(canonicalMergeRow(row, columnIndex, key));
+    const seen = fingerprints.get(key) ?? new Set<string>();
+    if (seen.has(fingerprint)) {
+      issues.push({ code: "duplicate-merge-row", message: `Linha duplicada exata consolidada em ${label} para a chave ${key}.`, severity: "warning" });
+      continue;
     }
+    const item = { key, row };
+    seen.add(fingerprint);
+    fingerprints.set(key, seen);
+    const group = indexed.get(key);
+    if (group) group.push(item);
+    else indexed.set(key, [item]);
+    ordered.push(item);
   }
-  return issues.some(({ severity }) => severity === "error") ? null : ordered;
+  return issues.some(({ severity }) => severity === "error") ? null : { byKey: indexed, ordered };
+}
+
+/** Materializa todas as correspondências da mesma chave e aplica ao final somente a política de linhas sem par. */
+function buildMergePairs(previous: IndexedMergeRows, complement: IndexedMergeRows, mode: DatasetMergeMode): MergePair[] {
+  const pairs: MergePair[] = [];
+  if (mode === "merge-only") {
+    for (const right of complement.ordered) {
+      const leftRows = previous.byKey.get(right.key) ?? [];
+      if (leftRows.length === 0) pairs.push({ key: right.key, right });
+      else leftRows.forEach((left) => pairs.push({ key: right.key, left, right }));
+    }
+    return pairs;
+  }
+
+  for (const left of previous.ordered) {
+    const rightRows = complement.byKey.get(left.key) ?? [];
+    if (rightRows.length === 0) pairs.push({ key: left.key, left });
+    else rightRows.forEach((right) => pairs.push({ key: left.key, left, right }));
+  }
+  if (mode === "summed") {
+    complement.ordered.filter(({ key }) => !previous.byKey.has(key)).forEach((right) => pairs.push({ key: right.key, right }));
+  }
+  return pairs;
 }
 
 function canonicalMergeColumn(column: string): string {
@@ -710,11 +746,12 @@ function mergeSchema(columns: string[]): Map<string, number> | null {
   return schema;
 }
 
+/** Compõe uma correspondência já validada e registra conflito sem escolher valores divergentes silenciosamente. */
 function mergeRowValues(
   outputColumns: string[],
   previous: TabularDataset,
   complement: TabularDataset,
-  pair: { key: string; left?: IndexedMergeRow; right?: IndexedMergeRow },
+  pair: MergePair,
   indexIdentity: MergeIndexerIdentity,
   issues: ConversionIssue[]
 ): string[] | null {
