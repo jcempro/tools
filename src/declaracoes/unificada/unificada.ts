@@ -29,6 +29,37 @@ export interface SemanticTableCell {
   text: string;
 }
 
+export type FooterMarkerContext = "qualification" | "reference";
+
+/** Escapa texto institucional ou calculado antes de inseri-lo em HTML documental. */
+function escapeMarkup(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+}
+
+/**
+ * Materializa o marcador numérico conforme seu contexto sem compartilhar estilo entre qualificação e referência.
+ * @param value Número calculado ou sentinela de vínculo inválido já identificado pela validação.
+ * @param context Posição semântica ocupada pelo marcador no template institucional.
+ * @returns HTML seguro com elemento e espaçamento próprios do contexto.
+ */
+export function footerMarkerMarkup(value: string, context: FooterMarkerContext): string {
+  const escaped = escapeMarkup(value);
+  return context === "qualification"
+    ? `<sup><strong>&nbsp;[&nbsp;${escaped}&nbsp;]&nbsp;</strong></sup>`
+    : `<strong class="du-index-reference">[${escaped}]</strong>`;
+}
+
+/**
+ * Valida a cor centralizada do fundo do qualificador antes de expô-la como custom property.
+ * @param value Cor hexadecimal de seis dígitos fornecida pela configuração do módulo.
+ * @returns A própria cor validada, sem fallback concorrente.
+ * @throws Quando a configuração não representa uma cor hexadecimal completa.
+ */
+export function validatedFooterIndexBackground(value: string): string {
+  if (!/^#[0-9a-f]{6}$/i.test(value)) throw new Error("footer.indexBackground deve ser uma cor hexadecimal de seis dígitos.");
+  return value;
+}
+
 export function semanticMarkerColumnIndexes(rows: SemanticTableCell[][]): number[] {
   if (rows.length === 0 || rows.some((row) => row.length === 0 || row.some((cell) => cell.colspan !== 1 || cell.rowspan !== 1))) return [];
   const width = rows[0]?.length ?? 0;
@@ -122,10 +153,6 @@ function bootstrapDeclarations(w: Window, d: Document): void {
 
   function save(): void {
     api.storage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-
-  function escapeMarkup(value: string): string {
-    return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
   }
 
   function validCivilDate(value: string): boolean {
@@ -288,19 +315,44 @@ function bootstrapDeclarations(w: Window, d: Document): void {
     return result;
   }
 
+  /**
+   * Resolve tokens institucionais escapando texto comum e aceitando HTML somente nos tokens contextuais calculados.
+   * @param template Template central sem HTML fornecido pelo usuário.
+   * @param values Valores textuais ou marcações seguras produzidas localmente.
+   * @param markupTokens Tokens cujos valores já são HTML seguro e semanticamente tipado.
+   * @returns HTML documental escapado, com os marcadores preservados nos respectivos contextos.
+   */
+  function resolveMarkupTemplate(template: string, values: Record<string, string>, markupTokens: ReadonlySet<string>): string {
+    const tokens = [...template.matchAll(/\$\{([^}]+)\}/g)].map((match) => match[1] ?? "");
+    if (new Set(tokens).size !== tokens.length || tokens.some((token) => !(token in values))) throw new Error("Template institucional possui token ausente, desconhecido ou duplicado.");
+    let cursor = 0;
+    let result = "";
+    for (const match of template.matchAll(/\$\{([^}]+)\}/g)) {
+      const start = match.index ?? cursor;
+      const token = match[1] ?? "";
+      result += escapeMarkup(template.slice(cursor, start));
+      result += markupTokens.has(token) ? values[token] ?? "" : escapeMarkup(values[token] ?? "");
+      cursor = start + match[0].length;
+    }
+    result += escapeMarkup(template.slice(cursor));
+    if (/\$\{[^}]+\}/.test(result)) throw new Error("Template institucional possui token não resolvido.");
+    return result;
+  }
+
   function footerMarkup(): string {
     const ordered = orderedDeclarants(state.declarants);
     const numbers = new Map(ordered.map(({ id }, index) => [id, index + 1]));
     const lines = ordered.map((declarant) => {
-      const representatives = declarant.representativeIds.map((id) => `[${numbers.get(id) ?? "?"}]`).join(config.footer.representativeJoin);
-      const representation = representatives ? resolveTemplate(config.footer.representationTemplate, { documento: "", nome: "", numero: "", representantes: representatives }) : "";
-      const line = resolveTemplate(declarant.type === "PF" ? config.footer.personTemplate : config.footer.companyTemplate, {
+      const representatives = declarant.representativeIds
+        .map((id) => footerMarkerMarkup(`${numbers.get(id) ?? "?"}`, "reference"))
+        .join(escapeMarkup(config.footer.representativeJoin));
+      const representation = representatives ? resolveMarkupTemplate(config.footer.representationTemplate, { documento: "", nome: "", numero: "", representantes: representatives }, new Set(["representantes"])) : "";
+      return resolveMarkupTemplate(declarant.type === "PF" ? config.footer.personTemplate : config.footer.companyTemplate, {
         documento: formattedDocument(declarant) ?? (declarant.document || "________________"),
         nome: declarant.name.trim() || "________________",
-        numero: `${numbers.get(declarant.id) ?? "?"}`,
+        numero: footerMarkerMarkup(`${numbers.get(declarant.id) ?? "?"}`, "qualification"),
         representantes: representation
-      });
-      return escapeMarkup(line).replace(/\[(\d+|\?)\]/g, '<span class="du-index">[$1]</span>');
+      }, new Set(["numero", "representantes"]));
     });
     return `<p>${escapeMarkup(config.footer.intro)}${lines.length ? ` ${lines.join("; ")}` : ""}.</p><p class="du-signature">${escapeMarkup(config.footer.signature)}</p>`;
   }
@@ -476,6 +528,7 @@ function bootstrapDeclarations(w: Window, d: Document): void {
     const root = required<HTMLElement>("#documento-unificado");
     root.style.setProperty("--du-block-bg", config.document.background);
     root.style.setProperty("--du-block-padding", `${config.document.paddingCm}cm`);
+    root.style.setProperty("--du-index-background", validatedFooterIndexBackground(config.footer.indexBackground));
     root.style.setProperty("--du-index-padding", `${config.footer.indexPaddingCm}cm`);
     root.style.setProperty("--du-index-margin", `${config.footer.indexMarginCm}cm`);
     root.style.setProperty("--du-signature-reserve", `${config.footer.signatureReserveCm}cm`);

@@ -168,7 +168,7 @@ function assertDeclarationConfig(config) {
   const templates = [config.footer?.personTemplate, config.footer?.companyTemplate, config.footer?.representationTemplate];
   const headerTokens = [...(config.document?.headerTemplate?.matchAll(/\$\{([^}]+)\}/g) ?? [])].map((token) => token[1]);
   const requiredHeaderTokens = ["documentos", "paginaAtual", "totalPaginas"];
-  if (config.schema !== 1 || config.id !== "declaracoes-unificada" || !/^#[0-9a-f]{6}$/i.test(config.document?.background ?? "") || !(config.document?.paddingCm > 0) || config.footer?.signatureReserveCm !== 1) {
+  if (config.schema !== 1 || config.id !== "declaracoes-unificada" || !/^#[0-9a-f]{6}$/i.test(config.document?.background ?? "") || !/^#[0-9a-f]{6}$/i.test(config.footer?.indexBackground ?? "") || !(config.document?.paddingCm > 0) || config.footer?.signatureReserveCm !== 1) {
     throw new Error("Configuracao de declaracoes unificadas invalida.");
   }
   if (headerTokens.length !== requiredHeaderTokens.length || new Set(headerTokens).size !== headerTokens.length || requiredHeaderTokens.some((token) => !headerTokens.includes(token))) {

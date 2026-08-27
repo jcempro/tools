@@ -127,19 +127,28 @@
 - Escopo: Tecnico.
 - Objetivo: materializar a distinção contextual dos marcadores e remover o recuo estrutural sem regressão dos demais contratos do formulário.
 - Prioridade: alta.
-- Status: aguardando normatizacao.
-- Dependencias: FT-022 concluída e autorização humana explícita posterior ao commit normativo.
+- Status: em andamento.
+- Dependencias: FT-022 concluída pelo commit normativo `b90ccfc`; implementação autorizada explicitamente pelo humano em 2026-08-27T13:55:23-03:00.
 - Aceite: os dois contextos e diferentes quebras de linha são testados; validação integral, visual, responsiva, Web, Bundle e impressão aprovada.
 
 ### Plano vigente
 
-1. Etapa 1/3 - compor markup seguro e contextual a partir dos tokens institucionais. Status: pendente.
-2. Etapa 2/3 - aplicar configuração/estilos locais e testes de estrutura, conteúdo e quebra. Status: pendente.
-3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: pendente.
+1. Etapa 1/3 - compor markup seguro e contextual a partir dos tokens institucionais. Status: concluído.
+2. Etapa 2/3 - aplicar configuração/estilos locais e testes de estrutura, conteúdo e quebra. Status: concluído.
+3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: em andamento.
 
 ### Próximo ponto
 
-- Aguardar conclusão e commit da FT-022; não implementar antes de nova autorização humana explícita.
+- Validar Web, Bundle, impressão/PDF e rastreabilidade; então criar os commits material, de sincronização e de encerramento.
+
+### Implementação e validação
+
+- A composição contextual produz literalmente `<sup><strong>&nbsp;[&nbsp;N&nbsp;]&nbsp;</strong></sup>` no qualificador e `<strong class="du-index-reference">[N]</strong>` na referência, sem substituição global por padrão textual.
+- `footer.indexBackground` usa `#cccccc`, validado no build e no runtime; o qualificador possui margem inicial computada `0px`, `nowrap` e largura invariável nas quebras exercitadas.
+- Web e Bundle confirmaram qualificação com fundo `rgb(204, 204, 204)` e referência em negrito com fundo transparente, sem padding ou margem; o parágrafo permanece justificado com `text-indent: 0`.
+- O PDF dedicado real foi inspecionado integralmente nas seis páginas e preservou cabeçalho, corpo, rodapé, paginação, quebras e reserva de assinatura sem corte ou sobreposição.
+- `npm run validate:all` aprovou type-check, lint, 68 testes, Web, quatro Bundles offline e publicação de 6 páginas/80 arquivos.
+- A tentativa adicional de impressão por Chrome headless não materializou PDF e foi encerrada/limpa; não repetir sem evidência nova, pois a impressão permanece coberta pela árvore comum, `@media print`, testes globais e PDF dedicado.
 
 ## FT-020 - Equalizacao normativa dos refinamentos de Bundle, declaracoes e CSV
 

@@ -10,7 +10,7 @@
 - Restrições: preservar templates, numeração, vínculos, paginação, tipografia, folha, impressão, responsividade, conteúdo e demais estilos; não usar regra dependente da frase exibida na evidência.
 - Fora de escopo: mudanças no corpo das declarações, GUI, identidade visual, regras globais de impressão ou outros módulos.
 - Entregáveis: RCF preciso; marcadores contextuais; configuração do cinza; testes de DOM/CSS, quebras e regressão; validação integral.
-- Estado: captura, triagem e normatização concluídas; FT-023 bloqueada até autorização humana explícita posterior ao commit normativo.
+- Estado: captura, triagem, normatização e implementação concluídas; FT-023 validada e aguardando commit material e sincronização da rastreabilidade.
 - Aceite global: qualificação em `sup`, negrito, fundo cinza 20% configurável e `[ N ]` indivisível; referência em negrito sem `sup`/fundo; linhas justificadas sem recuo artificial; Web, Bundle, impressão e responsividade preservados.
 
 ## Diagnóstico inicial
@@ -25,3 +25,13 @@
 - O alinhamento é protegido pela proibição de margem inicial, indentação e blocos intermediários; a separação configurável permanece somente após o marcador de qualificação.
 - Sete sentenças materiais estão registradas para a FT-023 como `[PENDENTE-CODIGO]`, vinculadas à configuração, compilador, TypeScript, SCSS e testes locais.
 - Type-check, lint, 64 testes e rastreabilidade `232/232` foram aprovados na fase normativa.
+
+## Implementação e validação da FT-023
+
+- A autorização humana posterior ao commit normativo `b90ccfc` foi recebida em 2026-08-27T13:55:23-03:00.
+- `${numero}` materializa literalmente `<sup><strong>&nbsp;[&nbsp;N&nbsp;]&nbsp;</strong></sup>`; `${representantes}` produz `<strong class="du-index-reference">[N]</strong>` sem substituição textual global.
+- Os templates centrais não duplicam colchetes; `footer.indexBackground` usa `#cccccc`, validado no compilador e no runtime, e a margem configurável incide somente após o qualificador.
+- Web e Bundle exibiram DOM, estilos computados e largura indivisível equivalentes; quebras com nomes nominal e longo moveram o marcador completo e mantiveram o limite esquerdo do parágrafo.
+- O PDF dedicado real foi renderizado e inspecionado nas seis páginas, sem corte, sobreposição, página residual ou divergência de qualificação/referência; o contrato Ctrl+P permaneceu coberto pela mesma árvore, pelo `@media print` e pelos testes globais.
+- A tentativa adicional por Chrome headless não produziu PDF e não encerrou autonomamente; os processos e perfis temporários foram removidos, sem erro do produto ou evidência nova que justifique repetir essa rota.
+- `npm run validate:all` aprovou type-check, lint, 68 testes, Web, quatro Bundles offline e publicação de 6 páginas/80 arquivos.

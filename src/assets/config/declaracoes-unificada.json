@@ -8,12 +8,13 @@
   },
   "footer": {
     "intro": "Esta(s) autorização(s)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por",
-    "personTemplate": "[${numero}] ${nome}, CPF ${documento}",
-    "companyTemplate": "[${numero}] ${nome}, CNPJ ${documento}${representantes}",
+    "personTemplate": "${numero} ${nome}, CPF ${documento}",
+    "companyTemplate": "${numero} ${nome}, CNPJ ${documento}${representantes}",
     "representationTemplate": ", representada por ${representantes}",
     "representativeJoin": " e ",
     "signature": "(assinaturas e visto/s)",
     "signatureReserveCm": 1,
+    "indexBackground": "#cccccc",
     "indexPaddingCm": 0.3,
     "indexMarginCm": 0.3
   },
