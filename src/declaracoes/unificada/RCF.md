@@ -139,19 +139,19 @@ A indicacao `(assinaturas e visto/s)` DEVE possuir separacao vertical perceptive
 
 A reserva vertical de assinatura DEVE ser exatamente `1 cm`, definida uma única vez por `footer.signatureReserveCm` na configuração central do módulo e consumida pela visualização paginada, Ctrl+P, PDF dedicado e Bundle, sem constante, fallback ou compensação equivalente duplicada em TypeScript, SCSS, HTML ou adaptador. [8db3e5a]
 
-O marcador que qualifica/lista cada pessoa física ou jurídica no rodapé DEVE ser renderizado semanticamente como `<sup>`, permanecer em negrito, exibir literalmente `[ N ]` com os espaços internos preservados e formar uma única caixa textual indivisível que somente PODE quebrar antes ou depois do conjunto completo. [PENDENTE-CODIGO]
+O marcador que qualifica/lista cada pessoa física ou jurídica no rodapé DEVE ser renderizado semanticamente como `<sup>`, permanecer em negrito, exibir literalmente `[ N ]` com os espaços internos preservados e formar uma única caixa textual indivisível que somente PODE quebrar antes ou depois do conjunto completo. [d13fbfb]
 
-O fundo exclusivo desse marcador de qualificação DEVE provir de `footer.indexBackground` na configuração central do módulo, aceitar cor hexadecimal validada e usar inicialmente `#cccccc`, equivalente a cinza de 20%, sem constante ou fallback concorrente no TypeScript, SCSS, HTML, build ou adaptador. [PENDENTE-CODIGO]
+O fundo exclusivo desse marcador de qualificação DEVE provir de `footer.indexBackground` na configuração central do módulo, aceitar cor hexadecimal validada e usar inicialmente `#cccccc`, equivalente a cinza de 20%, sem constante ou fallback concorrente no TypeScript, SCSS, HTML, build ou adaptador. [d13fbfb]
 
-Padding e separação horizontal configuráveis do marcador de qualificação PODEM conservar os valores locais vigentes, mas margem externa inicial, indentação ou qualquer espaço estrutural anterior à caixa são PROIBIDOS; a separação posterior NÃO DEVE deslocar o início visual das linhas automáticas do parágrafo. [PENDENTE-CODIGO]
+Padding e separação horizontal configuráveis do marcador de qualificação PODEM conservar os valores locais vigentes, mas margem externa inicial, indentação ou qualquer espaço estrutural anterior à caixa são PROIBIDOS; a separação posterior NÃO DEVE deslocar o início visual das linhas automáticas do parágrafo. [d13fbfb]
 
-Quando o número for referenciado no texto corrido de representação, inclusive no mesmo rodapé, o marcador DEVE permanecer em negrito e conservar numeração, ordem, identidade e vínculo existentes, mas NÃO DEVE usar `<sup>`, fundo cinza, padding ou margem próprios do marcador de qualificação. [PENDENTE-CODIGO]
+Quando o número for referenciado no texto corrido de representação, inclusive no mesmo rodapé, o marcador DEVE permanecer em negrito e conservar numeração, ordem, identidade e vínculo existentes, mas NÃO DEVE usar `<sup>`, fundo cinza, padding ou margem próprios do marcador de qualificação. [d13fbfb]
 
-A composição do rodapé DEVE distinguir os contextos de qualificação e referência a partir dos respectivos tokens institucionais antes de produzir o HTML escapado, sem substituição textual global que trate toda ocorrência `[n]` como a mesma estrutura visual. [PENDENTE-CODIGO]
+A composição do rodapé DEVE distinguir os contextos de qualificação e referência a partir dos respectivos tokens institucionais antes de produzir o HTML escapado, sem substituição textual global que trate toda ocorrência `[n]` como a mesma estrutura visual. [d13fbfb]
 
-O parágrafo introdutório e a lista calculada de declarantes DEVEM permanecer em um único fluxo inline contínuo e justificado, sem `text-indent`, margem inicial de fragmento, bloco intermediário ou quebra voluntária; em qualquer quebra automática, a nova linha DEVE começar no mesmo limite de conteúdo do parágrafo, ressalvado somente o espaço interno visual do marcador de qualificação. [PENDENTE-CODIGO]
+O parágrafo introdutório e a lista calculada de declarantes DEVEM permanecer em um único fluxo inline contínuo e justificado, sem `text-indent`, margem inicial de fragmento, bloco intermediário ou quebra voluntária; em qualquer quebra automática, a nova linha DEVE começar no mesmo limite de conteúdo do parágrafo, ressalvado somente o espaço interno visual do marcador de qualificação. [d13fbfb]
 
-A validação específica DEVE cobrir PF, PJ e referências, comprovar os elementos e estilos computados dos dois contextos e exercitar larguras que mantenham o marcador no fim da linha, o movam integralmente para a linha seguinte e quebrem antes/depois dele, preservando Web, Bundle, viewport estreita, Ctrl+P e PDF. [PENDENTE-CODIGO]
+A validação específica DEVE cobrir PF, PJ e referências, comprovar os elementos e estilos computados dos dois contextos e exercitar larguras que mantenham o marcador no fim da linha, o movam integralmente para a linha seguinte e quebrem antes/depois dele, preservando Web, Bundle, viewport estreita, Ctrl+P e PDF. [d13fbfb]
 
 O rodapé PODE crescer conforme a quantidade de declarantes, mas a paginação DEVE reservar sua altura efetiva em todas as páginas e bloquear configuração que elimine área útil suficiente para o corpo. [ecefbee]
 
