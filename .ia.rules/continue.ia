@@ -1,5 +1,53 @@
 # Memoria operacional canonica
 
+## FT-024 - Contrato de cardinalidade multipla na mesclagem CSV
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-08-27T13:20:14-03:00.
+- Origem: `.ia.rules/state/requests/FT-024/request.md`.
+- Vinculos: FT-020; FT-021; FT-025; `src/csv-bd/RCF.md`; núcleo tabular compartilhado e testes do Conversor CSV.
+- Escopo: Tecnico.
+- Objetivo: normatizar relações 1:N/N:N, deduplicação exclusivamente exata, normalização bilateral do indexador e registro da similaridade como feature futura.
+- Prioridade: alta.
+- Status: em andamento.
+- Dependencias: estado real e contrato anterior auditados; nenhuma decisão recusada local elegível registrada.
+- Aceite: RCF elimina a premissa 1:1, define preservação determinística das correspondências e delimita a feature futura sem antecipar heurística ou código.
+
+### Plano vigente
+
+1. Etapa 1/3 - capturar fonte, triar recusas e diagnosticar a premissa de cardinalidade. Status: concluído.
+2. Etapa 2/3 - atualizar o RCF específico, registrar a feature futura e preparar rastreabilidade. Status: pendente.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementação. Status: pendente.
+
+### Diagnóstico inicial
+
+- `indexMergeRows` usa `Map<chave, linha>` e emite `ambiguous-merge-key` quando uma segunda linha distinta compartilha a chave.
+- A montagem posterior também reduz cada chave a um único par, materializando a premissa 1:1 no núcleo.
+- O RCF vigente ordena esse bloqueio e deve ser corrigido antes do código.
+
+## FT-025 - Implementacao da cardinalidade multipla na mesclagem CSV
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-08-27T13:20:15-03:00.
+- Origem: mesma solicitação canônica vinculada pela FT-024.
+- Vinculos: FT-024; `src/csv-bd/RCF.md`; `src/assets/js/tabular.ts`; `tests/tools-bd.test.ts`; artefatos Web e Bundle.
+- Escopo: Tecnico.
+- Objetivo: materializar agrupamento multivalorado e associações 1:N/N:N sem perda, colapso ou vínculo entre chaves distintas.
+- Prioridade: alta.
+- Status: aguardando normatizacao.
+- Dependencias: FT-024 concluída e nova autorização humana explícita posterior ao commit normativo.
+- Aceite: duplicatas exatas são as únicas consolidadas; multiplicidade legítima não bloqueia; indexadores são normalizados bilateralmente; três políticas e validação integral aprovam.
+
+### Plano vigente
+
+1. Etapa 1/3 - implementar normalização tipada e agrupamento multivalorado preservando ordem. Status: pendente.
+2. Etapa 2/3 - compor correspondências 1:N/N:N nos três modos e ampliar testes. Status: pendente.
+3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: pendente.
+
+### Próximo ponto
+
+- Aguardar conclusão e commit da FT-024; não implementar antes de nova autorização humana explícita.
+
 ## FT-022 - Contrato dos marcadores contextuais no rodape unificado
 
 - Tipo: implementacao_normativa.
