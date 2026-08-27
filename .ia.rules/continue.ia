@@ -9,16 +9,16 @@
 - Escopo: Tecnico.
 - Objetivo: equalizar e normatizar a simplificacao do icone de download do Bundle, a composicao parametrizavel de cabecalho e assinaturas das Declaracoes Unificadas, o dimensionamento semantico de suas tabelas e a mesclagem opcional deterministica do Conversor CSV.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: estado real e contratos vigentes auditados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF global e RCFs especificos cobrem integralmente fonte, precedencias, configuracao, inferencias estruturais, modos de mesclagem, ambiguidades, regressao e validacao, sem antecipar codigo.
 
 ### Plano vigente
 
-1. Etapa 1/4 - auditar fonte, implementacao, configuracoes, testes e contratos; equalizar objetivo, escopo, terminologia, dependencias e riscos cruzados. Status: em andamento.
-2. Etapa 2/4 - sincronizar o contrato global do icone de Bundle e o RCF das Declaracoes Unificadas. Status: pendente.
-3. Etapa 3/4 - sincronizar o RCF do Conversor CSV e a rastreabilidade material pendente. Status: pendente.
-4. Etapa 4/4 - validar a norma, concluir a FT e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/4 - auditar fonte, implementacao, configuracoes, testes e contratos; equalizar objetivo, escopo, terminologia, dependencias e riscos cruzados. Status: concluido.
+2. Etapa 2/4 - sincronizar o contrato global do icone de Bundle e o RCF das Declaracoes Unificadas. Status: concluido.
+3. Etapa 3/4 - sincronizar o RCF do Conversor CSV e a rastreabilidade material pendente. Status: concluido.
+4. Etapa 4/4 - validar a norma, concluir a FT e interromper antes da implementacao. Status: concluido.
 
 ### Equalizacao inicial
 
@@ -27,9 +27,17 @@
 - Nas Declaracoes Unificadas, `1 cm` designa a reserva vertical de assinatura dentro da folha e nao altera as margens uniformes de `1 cm` ja vigentes; cabecalho parametrizado e tabelas semanticas especializam somente o modulo.
 - No Conversor CSV, `mesclar` e um estagio posterior a conversao existente; o unico indexador elegivel e resolvido contra os identificadores efetivamente configurados ou os aliases suportados de telefone, e multiplicidade bloqueia antes de associar.
 
+### Resultado e verificacoes
+
+- O RCF global exige um unico SVG Iconify no download de Bundle e remocao somente da referencia Font Awesome exclusiva da composicao anterior.
+- O RCF das Declaracoes Unificadas centraliza reserva de assinatura em `1 cm`, template integral do cabecalho com a sintaxe de tokens vigente, paragrafo unico justificado e classificador estrutural de colunas de marcador.
+- O RCF do Conversor CSV define entrada opcional, indexador unico, normalizacao, conflitos, composicao de colunas, cardinalidade e as tres politicas de linhas sem alterar o fluxo vazio.
+- A migracao normativa incorporou ao mapa as 26 sentencas materiais historicas do RCF do CSV sem alterar seu conteudo; 22 novas sentencas permanecem em `[PENDENTE-CODIGO]` para a FT-021.
+- Type-check, lint, 58 testes e a validacao integral de rastreabilidade `226/226` foram aprovados sem gerar ou alterar `dist/`.
+
 ### Proximo ponto
 
-- Concluir a normatizacao e aguardar nova autorizacao humana explicita para a FT-021.
+- FT-020 concluida; aguardar nova autorizacao humana explicita posterior ao commit normativo para iniciar a FT-021.
 
 ## FT-021 - Implementacao dos refinamentos de Bundle, declaracoes e CSV
 

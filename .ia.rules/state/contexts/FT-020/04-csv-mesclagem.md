@@ -5,5 +5,9 @@
 - Entradas: RCF local, GUI CSV, núcleo tabular, configuração de identificadores, normalização de telefone, importação/exportação e testes.
 - Restrições: ambiguidades e conflitos bloqueiam; indexador não duplica; correspondência é determinística; estágio permanece opcional; seleção altera somente preservação de linhas.
 - Entregáveis: contrato de indexador, cardinalidade, colisões de coluna, chaves duplicadas, três políticas de linha, avisos e resultado definitivo.
-- Estado: pendente.
+- Estado: normatizado; implementação bloqueada até autorização da FT-021.
 - Aceite: sem transbordamento entre chaves, sem linhas indevidas, sem perda do fluxo atual e exportação baseada no resultado mesclado.
+
+## Handoff
+
+- Implementar o núcleo reutilizável em `tabular.ts` e deixar `bd.ts` responsável apenas por interface/orquestração; usar parser e normalizadores vigentes, bloquear chave ambígua ou conflito de valores e tornar o dataset mesclado a única fonte de resumo/serialização/download.

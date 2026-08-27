@@ -91,6 +91,14 @@ O cabeçalho DEVE incluir, após os títulos, a frase configurável com valor in
 
 A paginação DEVE integrar o cabeçalho, usar negrito, refletir a contagem final efetiva e ser resolvida antes de Ctrl+P ou PDF. [ecefbee]
 
+Exceto pela linha própria de município, UF e data, todo o cabeçalho DEVE ser materializado como um único parágrafo contínuo e justificado, sem `br`, bloco ou quebra voluntária entre títulos, frase institucional e `Página n de total`; quebra automática exigida pela largura disponível permanece permitida e NÃO DEVE separar semanticamente esses trechos em parágrafos distintos. [PENDENTE-CODIGO]
+
+A linha de município, UF e data DEVE manter espaçamento vertical perceptível e configurado em relação ao parágrafo contínuo subsequente, sem margem duplicada por elementos intermediários. [PENDENTE-CODIGO]
+
+O parágrafo integral do cabeçalho DEVE provir de um único template central `document.headerTemplate`, com valor inicial `${documentos} APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S). Página ${paginaAtual} de ${totalPaginas}`, usando o mesmo resolvedor e a mesma sintaxe `${token}` dos templates de assinatura; `${documentos}`, `${paginaAtual}` e `${totalPaginas}` formam o conjunto fechado aplicável, e token ausente, desconhecido, duplicado ou não resolvido DEVE bloquear a saída. [PENDENTE-CODIGO]
+
+Texto configurado e valores calculados do cabeçalho DEVEM ser escapados, e a atualização da paginação dinâmica DEVE preservar a árvore semântica do parágrafo sem admitir HTML, script ou interpolação arbitrária. [PENDENTE-CODIGO]
+
 Cabeçalho, linha de data/localidade e rodapé NÃO DEVEM colidir, ser cortados, desaparecer, variar de posição entre páginas equivalentes nem ser tratados como chrome não imprimível. [ecefbee]
 
 ## 8. Corpo, fundo e quebras
@@ -105,6 +113,16 @@ Unidade maior que uma área útil DEVE quebrar internamente apenas entre blocos 
 
 O algoritmo de paginação DEVE reservar previamente as alturas reais do cabeçalho e do rodapé repetidos e recalcular a composição quando conteúdo, declarantes, tokens, fonte ou viewport de medição materialmente afetarem o resultado. [ecefbee]
 
+### 8.1 Dimensionamento semântico de tabelas
+
+As tabelas Markdown compiladas do módulo DEVEM usar dimensionamento de colunas guiado pela estrutura e pelo conteúdo efetivo, preservando pequeno padding interno configurado e destinando o espaço remanescente às colunas textuais, sem largura fixa uniforme que amplie coluna simples, comprima texto ou produza crescimento vertical evitável. [PENDENTE-CODIGO]
+
+Uma coluna DEVE ser classificada como marcador textual de seleção somente quando possuir ao menos uma célula de corpo significativa, todas as suas células de corpo não vazias contiverem exclusivamente o marcador canônico `X` após normalização de espaços e caixa, e sua estrutura não usar mesclagem que torne a função ambígua; a classificação NÃO PODE depender do título de uma declaração, da posição absoluta da coluna nem de texto externo à própria tabela. [PENDENTE-CODIGO]
+
+Coluna inequivocamente classificada como marcador DEVE ajustar-se ao conteúdo mínimo acrescido do padding, manter seus `X` centralizados nos dois eixos e ceder largura à coluna textual adjacente; coluna que não satisfaça integralmente os critérios DEVE conservar o fluxo tabular comum, sem inferência parcial. [PENDENTE-CODIGO]
+
+O mesmo classificador estrutural DEVE ser aplicado a todas as tabelas equivalentes do submódulo após a sanitização do Markdown e antes da medição paginada, preservando ordem, conteúdo, cabeçalhos, `colspan`, `rowspan`, legibilidade, impressão e PDF. [PENDENTE-CODIGO]
+
 ## 9. Rodapé e templates
 
 Todas as páginas DEVEM repetir o mesmo rodapé documental, composto pela declaração de realização/assinatura, lista ordenada de declarantes, referências de representantes e indicação explícita `(assinaturas e visto/s)`. [ecefbee]
@@ -118,6 +136,8 @@ Templates de PF, PJ, representação e assinatura DEVEM usar somente o conjunto 
 Os templates DEVEM separar conteúdo institucional versionado de dados calculados, usar inicialmente a indicação `(assinaturas e visto/s)` e NÃO DEVEM permitir HTML, script ou interpolação arbitrária fornecida pelo usuário. [ecefbee]
 
 A indicacao `(assinaturas e visto/s)` DEVE possuir separacao vertical perceptivel do texto precedente e reservar abaixo dela uma area fisica pequena, continua e efetivamente utilizavel para vistos e assinaturas, configurada em unidade fisica local e repetida sem sobreposicao em todas as paginas; essa reserva NAO DEVE alterar tipografia, alinhamento ou conteudo do rodape nem ser obtida por margem assimetrica da folha. [d67613d]
+
+A reserva vertical de assinatura DEVE ser exatamente `1 cm`, definida uma única vez por `footer.signatureReserveCm` na configuração central do módulo e consumida pela visualização paginada, Ctrl+P, PDF dedicado e Bundle, sem constante, fallback ou compensação equivalente duplicada em TypeScript, SCSS, HTML ou adaptador. [PENDENTE-CODIGO]
 
 Cada índice de declarante DEVE ser exibido entre colchetes, com padding e margem horizontais iniciais de `0,3 cm`, configuráveis por tokens locais sem alterar identidade ou ordem. [ecefbee]
 

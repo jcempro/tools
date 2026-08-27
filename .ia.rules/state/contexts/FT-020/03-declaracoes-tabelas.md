@@ -5,5 +5,9 @@
 - Entradas: Markdown compilado, HTML sanitizado, SCSS local, paginação e testes documentais.
 - Restrições: inferência determinística; nenhuma heurística por texto de uma declaração específica; preservar padding mínimo e conteúdo textual legível.
 - Entregáveis: classificação estrutural reutilizável no módulo e regras CSS semânticas.
-- Estado: pendente.
+- Estado: normatizado; implementação bloqueada até autorização da FT-021.
 - Aceite: colunas de marcador compactas, colunas textuais não comprimidas e ausência de regressão nas demais tabelas.
+
+## Handoff
+
+- Classificar após sanitização e antes da medição somente colunas cujo corpo não vazio seja integralmente `X`, sem estrutura mesclada ambígua; aplicar classe semântica e CSS de largura mínima/centralização, preservando o fluxo comum das demais colunas.

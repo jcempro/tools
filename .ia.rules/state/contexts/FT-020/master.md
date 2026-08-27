@@ -5,7 +5,7 @@
 - Ordem: registro das FTs -> RCF global e locais -> validação normativa -> autorização humana posterior -> código por subcontexto -> validação integrada -> rastreabilidade.
 - Arquitetura: catálogo/resolvedor global de ícones; configuração e renderização locais de Declarações Unificadas; núcleo tabular compartilhado e adaptador do Conversor CSV; build Web/Bundle compartilhado.
 - Integração: o ícone usa definição já selecionada; os dois refinamentos documentais compartilham configuração e paginação; a mesclagem CSV ocorre somente após a transformação vigente.
-- Estado: equalização normativa em andamento na FT-020; implementação FT-021 bloqueada.
+- Estado: equalização normativa concluída na FT-020; implementação FT-021 bloqueada até autorização humana posterior ao commit normativo.
 - Aceite global: cobertura bidirecional TODO -> RCF -> fonte -> testes; nenhuma dependência excedente; nenhum comportamento vigente removido; `npm run validate:all` aprovado.
 
 ## Mapa de subcontextos
@@ -14,3 +14,11 @@
 2. `02-declaracoes-composicao.md`: assinatura, cabeçalho e templates.
 3. `03-declaracoes-tabelas.md`: dimensionamento semântico de tabelas.
 4. `04-csv-mesclagem.md`: estágio opcional de mesclagem.
+
+## Handoff normativo
+
+- RCF global: unicidade visual do ícone de Bundle e limpeza restrita da referência Font Awesome anterior.
+- RCF Declarações: configuração única para reserva de `1 cm`, template integral de cabeçalho, composição semântica contínua e classificação estrutural de tabelas.
+- RCF CSV: mesclagem posterior à conversão, chave única normalizada, conflitos bloqueantes e três políticas de preservação de linhas.
+- Rastreabilidade: 226 sentenças materiais validadas, das quais 22 novas permanecem pendentes para a FT-021.
+- Validação: type-check, lint e 58 testes aprovados.
