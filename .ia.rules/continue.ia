@@ -9,21 +9,38 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar relações 1:N/N:N, deduplicação exclusivamente exata, normalização bilateral do indexador e registro da similaridade como feature futura.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: estado real e contrato anterior auditados; nenhuma decisão recusada local elegível registrada.
 - Aceite: RCF elimina a premissa 1:1, define preservação determinística das correspondências e delimita a feature futura sem antecipar heurística ou código.
 
 ### Plano vigente
 
 1. Etapa 1/3 - capturar fonte, triar recusas e diagnosticar a premissa de cardinalidade. Status: concluído.
-2. Etapa 2/3 - atualizar o RCF específico, registrar a feature futura e preparar rastreabilidade. Status: pendente.
-3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementação. Status: pendente.
+2. Etapa 2/3 - atualizar o RCF específico, registrar a feature futura e preparar rastreabilidade. Status: concluído.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementação. Status: concluído.
 
 ### Diagnóstico inicial
 
 - `indexMergeRows` usa `Map<chave, linha>` e emite `ambiguous-merge-key` quando uma segunda linha distinta compartilha a chave.
 - A montagem posterior também reduz cada chave a um único par, materializando a premissa 1:1 no núcleo.
 - O RCF vigente ordena esse bloqueio e deve ser corrigido antes do código.
+
+### Equalização normativa
+
+- Cada chave canônica passa a possuir uma lista ordenada de linhas distintas em cada lado; multiplicidade legítima não é ambiguidade nem duplicação.
+- Correspondências da mesma chave formam produto ordenado 1:1, 1:N, N:1 ou N:N; os três modos diferem apenas na preservação e ordem de linhas sem par.
+- Igualdade exata considera a chave normalizada e as demais células do parse vigente; somente esse vetor idêntico é consolidado agora.
+- Telefone conserva apenas dígitos; indexador alfanumérico genérico normaliza Unicode/caixa e remove apenas formatação, simetricamente nos dois lados.
+- Similaridade foi registrada no RCF e em `TODO.ia.md` como feature futura, sem limiar ativo ou heurística incompleta.
+
+### Resultado e verificações
+
+- Onze sentenças materiais foram preparadas para a FT-025, substituindo somente os seis contratos incompatíveis da FT-021 e preservando os demais hashes causais.
+- `npm run type-check`, `npm run lint`, os 64 testes vigentes e a rastreabilidade `237/237` foram aprovados sem alteração de fonte funcional ou artefato distribuído.
+
+### Próximo ponto
+
+- FT-024 concluída em 2026-08-27T13:26:30-03:00; interromper antes do código e aguardar nova autorização humana explícita para iniciar a FT-025.
 
 ## FT-025 - Implementacao da cardinalidade multipla na mesclagem CSV
 

@@ -1973,37 +1973,29 @@
     {
       "artifacts": [
         "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
         "tests/tools-bd.test.ts"
       ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "41639a55d33fd2bc3313743b",
+      "commit": "",
+      "ft": "FT-025",
+      "id": "8f80cfd37ec0040b3770d870",
       "line": 140,
       "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "cd944f99dbde39d075a64d5e05ab04dc9e92d9c894d92dab05cb2d56f55091fc",
-      "state": "synchronized",
+      "sentenceSha256": "20c61815d98413411428b356b685cc12a05f1edea84c8a6d25500431e1d49526",
+      "state": "pending",
       "syncCommit": ""
     },
     {
       "artifacts": [
         "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
         "tests/tools-bd.test.ts"
       ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "d64f7157087c24ae96f1de91",
+      "commit": "",
+      "ft": "FT-025",
+      "id": "66bddc2885dc8b675e9fd7d6",
       "line": 142,
       "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "8514758d2a138607822174480482d0b326a4aaa6d81e3916125968fa3e629f97",
-      "state": "synchronized",
+      "sentenceSha256": "6e9ea32d6d447be5a18a66fa81fce680dfed76c9be52270fa1b0622e1e6f164e",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -2027,73 +2019,57 @@
     {
       "artifacts": [
         "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
         "tests/tools-bd.test.ts"
       ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "bb5a742c1ae9e4dfcbc1c7c3",
+      "commit": "",
+      "ft": "FT-025",
+      "id": "fb264f66f234701dc158f0c7",
+      "line": 144,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "704d69c4bca7f312c12b468a44f60849eae06110b3c188cd961ea66a8c7b2588",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "d710ba4f3f00f662d5652169",
       "line": 146,
       "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "c7fe71687d873b40e2d7eac20bed59b0411f1a5a68476d3b974a156ae5a19a28",
-      "state": "synchronized",
+      "sentenceSha256": "d8118e08278d908f3a258b134b88445027ab3533ed2061856931c671d04db38d",
+      "state": "pending",
       "syncCommit": ""
     },
     {
       "artifacts": [
         "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
         "tests/tools-bd.test.ts"
       ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "fc2d6b96e3f35c88ad9fa72e",
+      "commit": "",
+      "ft": "FT-025",
+      "id": "667ac45cfa072b2607d259d1",
       "line": 148,
       "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "5cb2aa955adfd0101cbee5e619967debd3d3eb24af1acf31f88827440a7999b8",
-      "state": "synchronized",
+      "sentenceSha256": "7ffcc0d6c02552f6a3ffbb4a5bb954776680fa6b0d74830c23d519f285fd3ed9",
+      "state": "pending",
       "syncCommit": ""
     },
     {
       "artifacts": [
         "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
         "tests/tools-bd.test.ts"
       ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "a64d72a971c2a2ac3abb1872",
-      "line": 150,
-      "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "85213c9aa98733ce821dfbf59b394822cb9819eb9ff43c4bf54d5eab058f434b",
-      "state": "synchronized",
-      "syncCommit": ""
-    },
-    {
-      "artifacts": [
-        "src/assets/js/tabular.ts",
-        "src/csv-bd/bd.scss",
-        "src/csv-bd/bd.ts",
-        "src/csv-bd/index.html",
-        "tests/infrastructure.test.ts",
-        "tests/tools-bd.test.ts"
-      ],
-      "commit": "47d91a7ac6d845e813b1acc2d9fca14888db3e5a",
-      "ft": "FT-021",
-      "id": "bd9b739e859c058609b1cd7b",
+      "commit": "",
+      "ft": "FT-025",
+      "id": "b39c6bb0be1ddafd45a668e8",
       "line": 152,
       "rcf": "src/csv-bd/RCF.md",
-      "sentenceSha256": "ee8dfbaa7db42a5e11a4abce18d5abc2a8dc7233b6b4a1e4b05ceec7004e26be",
-      "state": "synchronized",
+      "sentenceSha256": "23303afa8ef63ba3d5e20331f28b8623000fb511502744cfa74e210725a1994d",
+      "state": "pending",
       "syncCommit": ""
     },
     {
@@ -2112,6 +2088,76 @@
       "rcf": "src/csv-bd/RCF.md",
       "sentenceSha256": "d2ec7c257c3f6b5ccd7bbc0f4f95e609b7694127ec1ed234859ba84d1f59de29",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "d6ec4f78386da3d51f0510ac",
+      "line": 154,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "72d1446902ec510d93f502c6503b306a5a3307cabb62ba612d21be1b6920821f",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "e0eb94a9fac1e0d4a0bc3170",
+      "line": 156,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "a7f4c8bd745584429746e3b2ad9e38a7010a8d044db9ae9dc534e5f665de9873",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "1c82049062f12505df9e2fa6",
+      "line": 158,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "b43e6bf8cabd5f834e55285c86612278bc460b07824ad7feb2b9da78d7545f54",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "46f324b3b743dd77117496de",
+      "line": 160,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "2d5172340ec1709b889ff8addd3238a9111c94bfd39b0227d773a16eb3d00f57",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/js/tabular.ts",
+        "tests/tools-bd.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-025",
+      "id": "eaf5afc8524ba92097cc5175",
+      "line": 162,
+      "rcf": "src/csv-bd/RCF.md",
+      "sentenceSha256": "3950ab24abc91586cce64ad0392c06344efcafff0b3dc128e1543ad8b416bc61",
+      "state": "pending",
       "syncCommit": ""
     },
     {
