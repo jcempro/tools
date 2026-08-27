@@ -2,7 +2,7 @@
 
 - Identidade: FT-024 normativa e FT-025 de código.
 - Ordem: captura -> RCF -> validação normativa -> autorização humana posterior -> código -> validação integral -> rastreabilidade.
-- Estado: implementação e validação integral concluídas; commit material, rastreabilidade e fechamento da FT-025 em andamento.
+- Estado: FT-024 e FT-025 concluídas, validadas e rastreadas; similaridade permanece como feature futura independente.
 - Objetivo: substituir a premissa 1:1 da mesclagem por associações legítimas 1:N e N:N, com deduplicação somente exata e normalização bilateral do indexador.
 - Entradas: solicitação canônica; `src/csv-bd/RCF.md`; `src/assets/js/tabular.ts`; `tests/tools-bd.test.ts`; FT-020/FT-021.
 - Dependências: FT-024 deve concluir e ser commitada antes de autorização e início da FT-025.
@@ -19,3 +19,10 @@
 - Normalizar telefone para dígitos e identificador genérico para a sequência canônica de letras/dígitos após Unicode/caixa e remoção de formatação.
 - Manter conflitos de coluna, schema/indexador inválido, resultado prévio em falha, serialização e interface sem alteração extrínseca.
 - Não criar limiar, opção, heurística ou dependência de similaridade nesta implementação.
+
+## Fechamento
+
+- Commit material: `1dd1892`.
+- Commit de rastreabilidade: `44a2088`.
+- Validação: type-check, lint, 67 testes, Web, quatro Bundles, publicação 6/80 e rastreabilidade 237/237.
+- Auditoria origem -> RCF -> fonte -> testes -> derivados concluída sem lacuna material remanescente na FT-025.

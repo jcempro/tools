@@ -5,7 +5,7 @@
 - Corpo canônico SHA-256: `0314903BC654F1836C565780FD3348CF615421AE4CE6CCAE742DC9BFE2513C1D`.
 - FTs vinculadas: FT-024; FT-025.
 - RCF de destino: `src/csv-bd/RCF.md`.
-- Estado de incorporacao: integralmente normatizada pela FT-024; implementação e auditoria final permanecem na FT-025.
+- Estado de incorporacao: integralmente normatizada pela FT-024 e implementada, validada e auditada pela FT-025.
 
 ## Corpo integral
 

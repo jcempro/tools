@@ -51,7 +51,7 @@
 - Escopo: Tecnico.
 - Objetivo: materializar agrupamento multivalorado e associações 1:N/N:N sem perda, colapso ou vínculo entre chaves distintas.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: FT-024 concluída no commit `fc2595d`; implementação autorizada explicitamente pelo humano em 2026-08-27T13:35:24-03:00, depois do commit normativo.
 - Aceite: duplicatas exatas são as únicas consolidadas; multiplicidade legítima não bloqueia; indexadores são normalizados bilateralmente; três políticas e validação integral aprovam.
 
@@ -59,7 +59,7 @@
 
 1. Etapa 1/3 - implementar normalização tipada e agrupamento multivalorado preservando ordem. Status: concluído.
 2. Etapa 2/3 - compor correspondências 1:N/N:N nos três modos e ampliar testes. Status: concluído.
-3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: em andamento.
+3. Etapa 3/3 - validar artefatos, sincronizar rastreabilidade e concluir. Status: concluído.
 
 ### Autorização
 
@@ -77,6 +77,16 @@
 - `npm run validate:all` aprovou type-check, lint, 67 testes, build Web, quatro Bundles offline e publicação de 6 páginas/80 arquivos.
 - O JavaScript Web e o HTML autocontido do Bundle CSV contêm a implementação nova e não contêm `ambiguous-merge-key` nem a mensagem `materialmente distintas em`.
 - Somente fonte tabular, testes, JavaScript compilado e Bundle do Conversor CSV foram materialmente alterados; demais artefatos permaneceram idênticos.
+
+### Resultado e rastreabilidade
+
+- O commit material `1dd1892` implementou a cardinalidade múltipla e atualizou exclusivamente os derivados oficiais do Conversor CSV.
+- O commit exclusivo `44a2088` vinculou as 11 sentenças da FT-025 ao SHA material; `rcf-trace validate` aprovou `237/237`.
+- Como a CLI oficial tenta finalizar simultaneamente toda pendência, a API exportada do mesmo mecanismo foi executada com mapa segregado da FT-025 após `update:agents --check` confirmar a governança atual; as sete pendências da FT-023 foram preservadas integralmente.
+
+### Próximo ponto
+
+- FT-025 concluída em 2026-08-27T13:45:20-03:00; a similaridade permanece somente como feature futura em `TODO.ia.md`.
 
 ## FT-022 - Contrato dos marcadores contextuais no rodape unificado
 
