@@ -10,7 +10,7 @@
 - Restrições: preservar templates, numeração, vínculos, paginação, tipografia, folha, impressão, responsividade, conteúdo e demais estilos; não usar regra dependente da frase exibida na evidência.
 - Fora de escopo: mudanças no corpo das declarações, GUI, identidade visual, regras globais de impressão ou outros módulos.
 - Entregáveis: RCF preciso; marcadores contextuais; configuração do cinza; testes de DOM/CSS, quebras e regressão; validação integral.
-- Estado: captura, triagem, normatização e implementação concluídas; FT-023 validada e aguardando commit material e sincronização da rastreabilidade.
+- Estado: FT-022 e FT-023 concluídas, validadas e rastreadas; nenhuma pendência funcional permanece neste contexto.
 - Aceite global: qualificação em `sup`, negrito, fundo cinza 20% configurável e `[ N ]` indivisível; referência em negrito sem `sup`/fundo; linhas justificadas sem recuo artificial; Web, Bundle, impressão e responsividade preservados.
 
 ## Diagnóstico inicial
@@ -35,3 +35,10 @@
 - O PDF dedicado real foi renderizado e inspecionado nas seis páginas, sem corte, sobreposição, página residual ou divergência de qualificação/referência; o contrato Ctrl+P permaneceu coberto pela mesma árvore, pelo `@media print` e pelos testes globais.
 - A tentativa adicional por Chrome headless não produziu PDF e não encerrou autonomamente; os processos e perfis temporários foram removidos, sem erro do produto ou evidência nova que justifique repetir essa rota.
 - `npm run validate:all` aprovou type-check, lint, 68 testes, Web, quatro Bundles offline e publicação de 6 páginas/80 arquivos.
+
+## Fechamento
+
+- Commit material: `4bd8d3c`.
+- Commit de rastreabilidade: `01ea8f5`.
+- As sete sentenças materiais usam o marcador causal `[d13fbfb]`; rastreabilidade validada em `237/237`.
+- Auditoria solicitação -> FT-022 -> RCF -> FT-023 -> fonte -> testes -> Web/Bundle/PDF concluída sem lacuna material remanescente.
