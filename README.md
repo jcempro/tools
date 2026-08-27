@@ -33,7 +33,11 @@ npm run publish
 
 `scripts/config.json` é a fonte central da toolchain: caminhos, URL pública, servidor local, dependências offline, entradas de build e contrato GitHub Pages. `build:web`, `build:offline-bundles`, `validate:publication` e `validate:all` explicitam a especialização. Com commits consolidados e árvore limpa em `dev`, `publish`/`agent:publish` valida, sincroniza o remoto, integra a branch primária, aciona o Pages e confirma o SHA público; `publish:pages` somente prepara o artefato dentro do CI, sem mutar Git.
 
-Toolbar, ícones, tooltips, exportação/importação local e o contrato único de folha/Ctrl+P/PDF são infraestrutura global em `src/assets/`; módulos declaram apenas perfil e conteúdo interno. Ícones usam pacotes Font Awesome modulares e apenas as definições gratuitas efetivamente importadas entram no bundle.
+Toolbar, ícones, tooltips, exportação/importação local e o contrato único de folha/Ctrl+P/PDF são infraestrutura global em `src/assets/`; módulos declaram apenas perfil e conteúdo interno. O catálogo de ícones admite simultaneamente Font Awesome, Lucide e coleções Iconify, sempre com provedor explícito, seleção apenas das definições usadas e isolamento entre namespaces; aliases legados sem provedor continuam exclusivos de Font Awesome.
+
+Para pesquisar identidades oficiais, use [Font Awesome](https://fontawesome.com/search?ic=free), [Lucide](https://lucide.dev/icons/) e [Iconify](https://icon-sets.iconify.design/). A licença do pacote e a licença de cada ícone/coleção são verificadas separadamente; avisos obrigatórios alimentam a página pública `/atribuicoes`.
+
+`/atribuicoes` é uma página estática independente, gerada no pipeline Web vigente e vinculada pelo rodapé jurídico global. Sua fonte lista somente recursos efetivamente distribuídos cuja licença imponha aviso ou atribuição, com origem, autoria, licença e texto obrigatório verificáveis; ferramentas apenas de desenvolvimento não entram por mera presença no lockfile.
 
 Favicons e manifests devem ser gerados por alvo durante o build a partir do logo global ou do logo próprio do módulo, conforme configuração central. A publicação Web recebe o perfil completo compatível com sua base path; cada Bundle incorpora somente o favicon offline útil de sua própria identidade.
 

@@ -9,19 +9,19 @@
 - Escopo: Tecnico.
 - Objetivo: equalizar e normatizar a coexistencia de Font Awesome, Lucide e Iconify pelo mecanismo global unico, com selecao positiva, isolamento de provedor/colecao, deduplicacao, acessibilidade, licencas e saidas Web/Bundle deterministicas.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: estado real e contratos vigentes auditados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF e README definem identidade de icone sem ambiguidade, fontes oficiais, selecao minima, isolamento, falhas, licencas, dois mapeamentos Iconify obrigatorios e validacao sem antecipar codigo.
 
 ### Plano vigente
 
-1. Etapa 1/3 - inventariar o resolvedor Font Awesome, consumidores, build, Bundle, testes e licencas; equalizar a frente com FT-014/FT-015. Status: em andamento.
-2. Etapa 2/3 - generalizar o contrato no RCF e sincronizar a documentacao de uso. Status: pendente.
-3. Etapa 3/3 - registrar rastreabilidade pendente, validar, concluir a FT e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/3 - inventariar o resolvedor Font Awesome, consumidores, build, Bundle, testes e licencas; equalizar a frente com FT-014/FT-015. Status: concluido.
+2. Etapa 2/3 - generalizar o contrato no RCF e sincronizar a documentacao de uso. Status: concluido.
+3. Etapa 3/3 - registrar rastreabilidade pendente, validar, concluir a FT e interromper antes da implementacao. Status: concluido.
 
 ### Proximo ponto
 
-- Concluir a normatizacao conjunta das TO-DOs antes de liberar qualquer implementacao.
+- FT-016 concluida; a implementacao correspondente permanece isolada na FT-017.
 
 ## FT-017 - Implementacao multiprovedor de icones
 
@@ -56,19 +56,19 @@
 - Escopo: Tecnico e de conteudo publico.
 - Objetivo: equalizar e normatizar `/atribuicoes` como pagina estatica independente do produto, derivada de inventario verificavel das dependencias e recursos efetivamente distribuidos cuja licenca imponha aviso ou atribuicao.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: arquitetura estatica, artefato Pages e inventario inicial auditados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF define fonte, elegibilidade, campos, licencas, layout, rota, build, publicacao, acessibilidade, responsividade, impressao e validacao sem introduzir Jekyll ou mecanismo paralelo desnecessario.
 
 ### Plano vigente
 
-1. Etapa 1/3 - auditar pipeline Pages, estrutura publica, dependencias/recursos e obrigacoes aplicaveis. Status: em andamento.
-2. Etapa 2/3 - normatizar pagina, inventario, apresentacao, build, roteamento e publicacao. Status: pendente.
-3. Etapa 3/3 - registrar rastreabilidade pendente, validar, concluir a FT e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/3 - auditar pipeline Pages, estrutura publica, dependencias/recursos e obrigacoes aplicaveis. Status: concluido.
+2. Etapa 2/3 - normatizar pagina, inventario, apresentacao, build, roteamento e publicacao. Status: concluido.
+3. Etapa 3/3 - registrar rastreabilidade pendente, validar, concluir a FT e interromper antes da implementacao. Status: concluido.
 
 ### Proximo ponto
 
-- Concluir a normatizacao conjunta das TO-DOs antes de liberar qualquer implementacao.
+- FT-018 concluida; a implementacao correspondente permanece isolada na FT-019.
 
 ## FT-019 - Implementacao e publicacao da pagina de atribuicoes
 
@@ -103,15 +103,15 @@
 - Escopo: Tecnico.
 - Objetivo: equalizar e normatizar as correcoes cirurgicas de tema, navegacao lateral, identidade dos modulos, composicao de assinaturas e margens de impressao/PDF, preservando mecanismos globais e ausencia de regressao cruzada.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: FT-012 e FT-013 concluidas; estado real e seis evidencias visuais auditados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF global e especifico cobrem integralmente as evidencias, resolvem precedencia, alcance, geometria, estados, especializacoes e validacao sem antecipar codigo nem reduzir contratos vigentes.
 
 ### Plano vigente
 
-1. Etapa 1/3 - auditar TODO, evidencias, estado real e contratos vigentes; equalizar objetivo, escopo, precedencias, dependencias, terminologia, lacunas e regressões. Status: em andamento.
-2. Etapa 2/3 - sincronizar o RCF global, o RCF do modulo unificado e a rastreabilidade material aplicavel. Status: pendente.
-3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/3 - auditar TODO, evidencias, estado real e contratos vigentes; equalizar objetivo, escopo, precedencias, dependencias, terminologia, lacunas e regressões. Status: concluido.
+2. Etapa 2/3 - sincronizar o RCF global, o RCF do modulo unificado e a rastreabilidade material aplicavel. Status: concluido.
+3. Etapa 3/3 - validar a norma, registrar resultado, concluir a FT e interromper antes da implementacao. Status: concluido.
 
 ### Decomposicao inicial
 
@@ -124,7 +124,7 @@
 
 ### Proximo ponto
 
-- Concluir a auditoria bidirecional e materializar exclusivamente a norma da FT-014.
+- FT-014 concluida; a implementacao correspondente permanece isolada na FT-015.
 
 ## FT-015 - Implementacao das correcoes visuais e de impressao
 
