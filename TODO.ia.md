@@ -114,3 +114,71 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
   * A mudança entre os estados DEVE ocorrer em um **ponto de scroll claramente definido e adequado**, de forma súbita quanto à troca de estado, porém acompanhada de transição/animação curta e sutil; NÃO realizar mudança progressiva proporcional ao scroll.
   * Preservar posição, dimensões, padding, bordas, responsividade, comportamento sticky/fixed existente e relação com a barra horizontal, alterando somente o necessário para eliminar a sobreposição visual indevida.
   * A solução DEVE respeitar os temas/estados visuais já existentes e NÃO introduzir regressão em navegação, interação, contraste ou demais componentes adjacentes.
+
+- [ ] Otimizar e normatizar a geração/baixamento de PDF para produzir arquivo de alta qualidade, visualmente equivalente à impressão nativa e com tamanho comparável ao PDF gerado pelo navegador.
+  - **Problema observado**
+    - Para a mesma página:
+      - impressão nativa do navegador em PDF: ~`114 KB`;
+      - PDF gerado pela ação/script do projeto: ~`24 MB`.
+    - A diferença de aproximadamente duas ordens de grandeza evidencia grave ineficiência no pipeline atual.
+    - Como o conteúdo é predominantemente, quando não integralmente, textual, tamanhos dessa magnitude NÃO são aceitáveis sem justificativa técnica objetiva.
+  - **Precedência**
+    - Preservar integralmente as diretrizes vigentes do RCF referentes à geração/impressão em PDF.
+    - O PDF gerado pelo projeto DEVE continuar visualmente equivalente ao resultado da impressão nativa do navegador.
+    - É PROIBIDO reduzir tamanho mediante degradação perceptível, perda da qualidade necessária à impressão, alteração de layout, tipografia, paginação, cores, margens, posicionamento, escala ou demais características visuais normatizadas.
+  - **Inspeção obrigatória**
+    - Identificar o botão/ação, pipeline, código, dependências e configurações efetivamente responsáveis pela geração e download do PDF.
+    - Comparar tecnicamente o PDF atual com o produzido pela impressão nativa, verificando principalmente:
+      - rasterização desnecessária de páginas ou conteúdo textual;
+      - resolução/DPI excessivos ou inadequadamente aplicados;
+      - imagens ou canvases incorporados em dimensões/resoluções superiores às efetivamente necessárias;
+      - ausência ou insuficiência de compressão;
+      - fontes integralmente embutidas quando subconjuntos seriam suficientes;
+      - duplicação de fonts, imagens, recursos ou objetos;
+      - recursos idênticos incorporados repetidamente;
+      - metadados, estruturas intermediárias ou conteúdo redundante;
+      - qualquer outra causa comprovada de crescimento anormal.
+    - NÃO presumir a causa: determiná-la a partir do estado real e, quando útil, da estrutura interna dos PDFs comparados.
+  - **Norma**
+    - Atualizar o RCF aplicável para estabelecer explicitamente que:
+      - PDF destinado à impressão DEVE preservar a qualidade necessária à reprodução impressa;
+      - alta qualidade NÃO significa rasterização indiscriminada, resolução arbitrariamente elevada ou ausência de otimização;
+      - conteúdo textual e vetorial DEVE permanecer textual/vetorial sempre que tecnicamente possível e compatível com a equivalência visual exigida;
+      - imagens DEVERÃO utilizar somente a resolução efetivamente necessária à qualidade de impressão prevista, evitando supersampling ou dimensões inúteis;
+      - fontes, imagens e demais recursos DEVEM ser incorporados, reutilizados, subsetados e/ou comprimidos de forma eficiente quando isso não alterar o resultado visual;
+      - o pipeline DEVE evitar duplicação de recursos e qualquer expansão de tamanho sem benefício visual ou funcional mensurável;
+      - o tamanho final DEVE ser tão próximo quanto tecnicamente possível daquele obtido pela impressão nativa do navegador para o mesmo conteúdo, formato e condições equivalentes;
+      - diferenças materiais de tamanho DEVEM possuir causa tecnicamente justificável; não existindo justificativa, constituem falha de implementação.
+  - **Implementação**
+    - Corrigir o pipeline real de geração sem substituir ou contornar requisitos vigentes apenas para reduzir o arquivo.
+    - Priorizar representação PDF nativa de texto, vetores, fontes e imagens sobre conversão da página inteira em bitmap.
+    - Aplicar somente otimizações compatíveis com equivalência visual e qualidade de impressão.
+    - NÃO introduzir tecnologia, biblioteca ou arquitetura nova sem necessidade demonstrada pelo estado real.
+    - Preservar API, fluxo de uso, botão/ação, comportamento esperado e compatibilidade existentes, salvo alteração estritamente necessária à correção.
+  - **Validação**
+    - Usar a mesma página/conteúdo como caso comparativo entre:
+      1. impressão nativa do navegador para PDF;
+      2. geração pelo mecanismo do projeto após a correção.
+    - Verificar:
+      - equivalência visual entre ambos;
+      - preservação da qualidade em visualização ampliada e impressão;
+      - texto selecionável/pesquisável quando originalmente textual e tecnicamente possível;
+      - ausência de regressões de layout ou paginação;
+      - redução substancial do tamanho frente aos ~`24 MB` atuais;
+      - tamanho final comparável ao PDF nativo de ~`114 KB`, admitindo diferença apenas quando tecnicamente necessária e demonstrável.
+    - NÃO considerar a tarefa concluída apenas porque o arquivo ficou menor: redução, qualidade e equivalência visual são requisitos simultâneos.
+  - **Critérios de aceite**
+    - RCF atualizado com a regra de eficiência/tamanho sem enfraquecer as normas atuais de fidelidade e impressão.
+    - Causa do tamanho excessivo identificada e corrigida.
+    - PDF gerado continua adequado à impressão e visualmente equivalente à impressão nativa.
+    - Não há rasterização, duplicação, resolução ou incorporação de recursos desnecessária.
+    - O tamanho deixa de apresentar discrepância extrema como `24 MB` versus `114 KB` e passa a ficar tão próximo quanto tecnicamente possível do resultado nativo.
+    - Qualquer diferença residual material é documentada e sustentada por necessidade técnica objetiva.
+    - Testes/regressões aplicáveis executados e aprovados.
+  - **Relatório final**
+    - Registrar sucintamente:
+      - causa raiz encontrada;
+      - alterações realizadas no RCF e na implementação;
+      - tamanhos antes/depois e referência nativa;
+      - validações executadas;
+      - eventual diferença residual e sua justificativa técnica.
