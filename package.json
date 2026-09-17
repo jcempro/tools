@@ -136,7 +136,13 @@
     "prepare": "npm run agent:setup",
     "release": "npm run shared:lifecycle:release --",
     "release:publish": "npm run agent:release:publish --",
-    "release:trigger": "npm run agent:release:trigger"
+    "release:trigger": "npm run agent:release:trigger",
+    "agent:units": "node .ia.rules/core/runtime/scripts/unit-manager.js",
+    "agent:long-run": "node .ia.rules/core/runtime/scripts/long-running.js",
+    "agent:visual": "node .ia.rules/core/runtime/scripts/visual-evidence.js",
+    "agent:state": "node .ia.rules/core/runtime/scripts/state-manager.js",
+    "agent:editorial": "node .ia.rules/core/runtime/scripts/editorial-authoring.js",
+    "agent:spoken": "node .ia.rules/core/runtime/scripts/spoken-normalization.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

@@ -4,7 +4,9 @@ Identidade normativa: `role.constructor`; papel: Construtor; tipo: derivação. 
 
 ## 1. Autoridades segregadas
 
-`src/` contém somente fonte canônica elegível ao produto distribuído; artefato construído é derivado; o `AGENTS.md` ativo rege a execução atual. Conteúdo exclusivo ao desenvolvimento deste Construtor ocupa namespace interno fora de `src/` e não integra manifesto de publicação. Norma, cenário e runtime reutilizáveis pelo papel Construtor continuam fonte distribuível e são roteados condicionalmente. Editar fonte NÃO altera a norma ativa, e editar artefato NÃO altera fonte. Exceção cíclica do núcleo ativo exige solicitação humana explícita, registro técnico, correção autoritativa simultânea em `src/`, regeneração, validação e encerramento da exceção.
+Em construtor do próprio produto, a instância instalada `./AGENTS.md` e associados é CURRENT/CONSUMED e rege exclusivamente a execução; `src/AGENTS.md` e associados são SOURCE/DEVELOPED, produto versionado futuro sem autoridade corrente. Antes de aplicar regra, determinar arquivo, versão, papel, escopo e autoridade. Nome/caminho análogo, compatibilidade ou coexistência NÃO criam identidade, herança, shadowing, retroatividade nem transferência de autoridade: divergência entre versões PODE ser legítima; a fonte NÃO rege antes de adoção formal e a consumida NÃO limita, remove, enfraquece nem regride evolução da fonte.
+
+`src/` contém somente fonte canônica elegível ao produto distribuído; artefato construído é derivado. Conteúdo exclusivo ao desenvolvimento deste Construtor ocupa namespace interno fora de `src/` e não integra manifesto de publicação. Norma, cenário e runtime reutilizáveis pelo papel Construtor continuam fonte distribuível e são roteados condicionalmente. Editar fonte NÃO altera norma ativa, e editar artefato NÃO altera fonte. Exceção cíclica do núcleo ativo exige solicitação humana explícita, registro técnico, correção autoritativa simultânea em `src/`, regeneração, validação e encerramento da exceção.
 
 Núcleo contém somente autoridade, precedência, domínios, invariantes, contratos transversais, roteamento e referências indispensáveis. Papel, cenário e recurso coesos ficam em módulos quando sua dispensa reduz Custo Líquido; divisão sem fronteira semântica ou ganho verificável é proibida.
 
@@ -24,6 +26,8 @@ Criação/conciliação de FTs forma commit anterior à norma. Conclusão de uma
 Regra exclusiva de geração, compilação, validação, empacotamento, versão, release, atualização, distribuição ou estrutura-fonte pertence a este papel. Scripts Node.js têm TypeScript como fonte canônica e JavaScript como artefato transpilado conforme `../resources/scripts.md`; demais linguagens permanecem permitidas por contexto real. Workflows distribuíveis seguem `../resources/workflows.md`; atualização segue `../core/update/scenario.md`.
 
 Release DEVE ser reproduzível, declarar matriz de runtimes/toolchain, manter equivalência fonte→artefato, distinguir conteúdo interno/distribuível, publicar somente seleção positiva perfilada e bloquear divergência, parcial ou derivado obsoleto. Classificação, movimentos e pipeline aplicam integralmente `../scenarios/governance/constructor-operation.md`. Nenhum contrato normativo autoriza implementar recurso antes da FT e autorização correspondentes.
+
+Skill/Subagent distribuível exige inventário comparativo, contrato/schema, rota direta, seleção positiva em manifesto e evidência de ganho líquido; produto específico permanece em extensão/adaptador local. Cliente não comprovado, capacidade não implementada ou recurso opcional ausente DEVE permanecer explicitamente indisponível. A fase normativa PODE criar somente contratos, schemas e rotas; runtime, migração, instalador, automação, adaptador e distribuição publicada exigem FT e autorização posteriores.
 
 ## 4. Aceite
 
