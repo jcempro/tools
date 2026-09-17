@@ -39,6 +39,31 @@
       }
     },
     {
+      "path": ".ia.rules/core/runtime/scripts/legacy-update-entry.ts",
+      "profile": "consumer-bootstrap",
+      "destination": "scripts/.agents/update-agents.ts",
+      "purpose": "compatibilidade com dispatchers históricos que carregam diretamente update-agents.js",
+      "roles": [
+        "final"
+      ],
+      "condition": "legacy-update-bridge",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build",
+        "legacy-bootstrap-functional"
+      ],
+      "language": "typescript",
+      "artifact": {
+        "destination": "scripts/.agents/update-agents.js",
+        "format": "commonjs",
+        "target": "node24",
+        "builder": "typescript@7.0.2+esbuild@0.28.1",
+        "bundle": true
+      }
+    },
+    {
       "path": "legacy-update-bridge/.agents/core/contracts.md",
       "profile": "consumer-bootstrap",
       "destination": "scripts/.agents/bootstrap/core/contracts.md",
@@ -116,6 +141,24 @@
         "source-exists",
         "destination-unique",
         "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/package.json",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/package.json",
+      "purpose": "fronteira CommonJS comum a runtimes, migrações e cenários distribuídos",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "managed-command-or-scenario-runtime",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build",
+        "commonjs-boundary"
       ]
     },
     {
@@ -255,6 +298,24 @@
       ]
     },
     {
+      "path": ".ia.rules/core/formats/skill-descriptor.v1.schema.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/core/formats/skill-descriptor.v1.schema.json",
+      "purpose": "schema público do descritor extraído de Skill",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "skill-contract-or-validation",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build",
+        "json-schema-draft-2020-12"
+      ]
+    },
+    {
       "path": ".ia.rules/core/formats/source-distribution-manifest.v1.schema.json",
       "profile": "consumer-core",
       "destination": ".ia.rules/core/formats/source-distribution-manifest.v1.schema.json",
@@ -269,6 +330,24 @@
         "source-exists",
         "destination-unique",
         "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/core/formats/subagent-descriptor.v1.schema.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/core/formats/subagent-descriptor.v1.schema.json",
+      "purpose": "schema público do descritor de Subagent",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "subagent-contract-or-validation",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build",
+        "json-schema-draft-2020-12"
       ]
     },
     {
@@ -613,6 +692,31 @@
       "language": "typescript",
       "artifact": {
         "destination": ".ia.rules/core/runtime/scripts/repository-boundary.js",
+        "format": "commonjs",
+        "target": "node24",
+        "builder": "typescript@7.0.2+esbuild@0.28.1"
+      }
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/context-session-cache.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/context-session-cache.ts",
+      "purpose": "cache contextual intrassessão validado por identidade e hash",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "managed-context-routing",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build",
+        "session-cache-fail-closed"
+      ],
+      "language": "typescript",
+      "artifact": {
+        "destination": ".ia.rules/core/runtime/scripts/context-session-cache.js",
         "format": "commonjs",
         "target": "node24",
         "builder": "typescript@7.0.2+esbuild@0.28.1"
@@ -1132,6 +1236,70 @@
       ]
     },
     {
+      "path": ".ia.rules/resources/external-tools.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/external-tools.md",
+      "purpose": "contrato condicional de terceiros MCP e ferramentas",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "third-party-or-external-tool",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/resources/editorial-authoring.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/editorial-authoring.md",
+      "purpose": "contrato condicional de edição autoral e inteligibilidade",
+      "roles": ["final", "constructor"],
+      "condition": "editorial-authoring-or-revision",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build"]
+    },
+    {
+      "path": ".ia.rules/resources/spoken-normalization.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/spoken-normalization.md",
+      "purpose": "contrato condicional de normalização semântico-fonética",
+      "roles": ["final", "constructor"],
+      "condition": "spoken-representation-or-tts-normalization",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build"]
+    },
+    {
+      "path": ".ia.rules/resources/context-cost-audit.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/context-cost-audit.md",
+      "purpose": "contrato e rota da Skill futura de auditoria de custo contextual",
+      "roles": ["final", "constructor"],
+      "condition": "context-token-route-memory-state-recovery-audit",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build"]
+    },
+    {
+      "path": ".ia.rules/resources/long-running.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/long-running.md",
+      "purpose": "contrato condicional de execução longa e retomada",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "long-running-operation",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
       "path": ".ia.rules/resources/scripts.md",
       "profile": "consumer-scenario",
       "destination": ".ia.rules/resources/scripts.md",
@@ -1141,6 +1309,40 @@
         "constructor"
       ],
       "condition": "applicable-role-or-scenario",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/resources/skills.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/skills.md",
+      "purpose": "contrato condicional de Skills",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "skill-lifecycle",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/resources/subagents.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/resources/subagents.md",
+      "purpose": "contrato condicional de Subagents",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "subagent-lifecycle",
       "ownership": "managed",
       "validation": [
         "source-exists",
@@ -1370,6 +1572,23 @@
         "constructor"
       ],
       "condition": "applicable-role-or-scenario",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
+      "path": ".ia.rules/scenarios/governance/state-and-todo.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/scenarios/governance/state-and-todo.md",
+      "purpose": "cenário condicional de estado memória correção migração e TODO",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "state-memory-fix-migration-or-todo",
       "ownership": "managed",
       "validation": [
         "source-exists",
@@ -1618,6 +1837,23 @@
       ]
     },
     {
+      "path": ".ia.rules/scenarios/visual/precision.md",
+      "profile": "consumer-scenario",
+      "destination": ".ia.rules/scenarios/visual/precision.md",
+      "purpose": "cenário condicional de precisão visual para imagem PDF e Web",
+      "roles": [
+        "final",
+        "constructor"
+      ],
+      "condition": "visual-image-pdf-or-web-validation",
+      "ownership": "managed",
+      "validation": [
+        "source-exists",
+        "destination-unique",
+        "integrity-at-build"
+      ]
+    },
+    {
       "path": ".ia.rules/scenarios/web/page-like/capabilities/static-hosting.md",
       "profile": "consumer-scenario",
       "destination": ".ia.rules/scenarios/web/page-like/capabilities/static-hosting.md",
@@ -1701,6 +1937,210 @@
         "destination-unique",
         "integrity-at-build"
       ]
+    },
+    {
+      "path": ".ia.rules/clients/codex/validation-audit.toml",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/clients/codex/validation-audit.toml",
+      "purpose": "modelo neutro oficial do adaptador Codex",
+      "roles": ["final", "constructor"],
+      "condition": "unit-install-requested",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "official-client-schema"],
+      "unit": {"id":"validation-audit","kind":"adapter","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex"]}
+    },
+    {
+      "path": ".ia.rules/clients/github-copilot/validation-audit.agent.md",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/clients/github-copilot/validation-audit.agent.md",
+      "purpose": "modelo neutro oficial do adaptador GitHub Copilot",
+      "roles": ["final", "constructor"],
+      "condition": "unit-install-requested",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "official-client-schema"],
+      "unit": {"id":"validation-audit","kind":"adapter","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/governed-state/SKILL.md",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/governed-state/SKILL.md",
+      "purpose": "Skill generalista de estado e TODO governados",
+      "roles": ["final", "constructor"],
+      "condition": "state-todo-or-resume",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-frontmatter"],
+      "unit": {"id":"governed-state","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/governed-state/descriptor.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/governed-state/descriptor.json",
+      "purpose": "descriptor fechado da Skill governed-state",
+      "roles": ["final", "constructor"],
+      "condition": "state-todo-or-resume",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-schema"],
+      "unit": {"id":"governed-state","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/visual-evidence/SKILL.md",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/visual-evidence/SKILL.md",
+      "purpose": "Skill generalista de evidência visual",
+      "roles": ["final", "constructor"],
+      "condition": "visual-image-pdf-or-web-validation",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-frontmatter"],
+      "unit": {"id":"visual-evidence","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/visual-evidence/descriptor.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/visual-evidence/descriptor.json",
+      "purpose": "descriptor fechado da Skill visual-evidence",
+      "roles": ["final", "constructor"],
+      "condition": "visual-image-pdf-or-web-validation",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-schema"],
+      "unit": {"id":"visual-evidence","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/context-cost-audit/SKILL.md",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/context-cost-audit/SKILL.md",
+      "purpose": "Skill generalista de auditoria experimental de custo contextual",
+      "roles": ["final", "constructor"],
+      "condition": "context-cost-audit-requested",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-frontmatter"],
+      "unit": {"id":"context-cost-audit","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/context-cost-audit/descriptor.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/context-cost-audit/descriptor.json",
+      "purpose": "descriptor fechado da Skill context-cost-audit",
+      "roles": ["final", "constructor"],
+      "condition": "context-cost-audit-requested",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-schema"],
+      "unit": {"id":"context-cost-audit","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/context-cost-audit/references/experiment-contract.md",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/skills/context-cost-audit/references/experiment-contract.md",
+      "purpose": "contrato sob demanda do experimento contextual",
+      "roles": ["final", "constructor"],
+      "condition": "context-cost-audit-experiment-preparation",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "skill-resource-declared"],
+      "unit": {"id":"context-cost-audit","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/skills/context-cost-audit/scripts/context_cost_audit.py",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/skills/context-cost-audit/scripts/context_cost_audit.py",
+      "purpose": "medição determinística, combinações e relatório de custo contextual",
+      "roles": ["final", "constructor"],
+      "condition": "context-cost-audit-experiment-execution",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "python-native-documentation", "context-cost-fixtures"],
+      "unit": {"id":"context-cost-audit","kind":"skill","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/subagents/validation-audit/descriptor.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/subagents/validation-audit/descriptor.json",
+      "purpose": "descriptor least-privilege do Subagent de auditoria",
+      "roles": ["final", "constructor"],
+      "condition": "independent-long-validation",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "subagent-schema"],
+      "unit": {"id":"validation-audit","kind":"subagent","version":"1.0.0","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/units/catalog.json",
+      "profile": "consumer-core",
+      "destination": ".ia.rules/units/catalog.json",
+      "purpose": "catálogo positivo de unidades e clientes suportados",
+      "roles": ["final", "constructor"],
+      "condition": "always",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "catalog-schema"],
+      "unit": {"id":"catalog","kind":"catalog","version":"1","license":"MPL-2.0","trust":"first-party-reviewed","clients":["codex","github-copilot"]}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/unit-manager.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/unit-manager.ts",
+      "purpose": "validação descoberta e instalação transacional de unidades",
+      "roles": ["final", "constructor"],
+      "condition": "managed-command-or-unit-install",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "transactional-install"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/unit-manager.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/long-running.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/long-running.ts",
+      "purpose": "execução longa orientada a eventos com estado e timeout observado",
+      "roles": ["final", "constructor"],
+      "condition": "long-running-command",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "event-driven-wait"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/long-running.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/editorial-authoring.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/editorial-authoring.ts",
+      "purpose": "aplicação rastreável de planos editoriais com preservação autoral e hooks opcionais",
+      "roles": ["final", "constructor"],
+      "condition": "editorial-authoring-runtime",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "editorial-authoring-fixtures"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/editorial-authoring.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/spoken-normalization.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/spoken-normalization.ts",
+      "purpose": "normalização semântico-fonética pt-BR desacoplada de sintetizador",
+      "roles": ["final", "constructor"],
+      "condition": "spoken-normalization-runtime",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "spoken-normalization-fixtures"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/spoken-normalization.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/visual-evidence.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/visual-evidence.ts",
+      "purpose": "operações visuais mecânicas sem dependência oculta",
+      "roles": ["final", "constructor"],
+      "condition": "visual-image-pdf-or-web-validation",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "visual-fixtures"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/visual-evidence.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
+    },
+    {
+      "path": ".ia.rules/core/runtime/scripts/state-manager.ts",
+      "profile": "consumer-runtime",
+      "destination": ".ia.rules/core/runtime/scripts/state-manager.ts",
+      "purpose": "migração inspeção e projeção do estado canônico",
+      "roles": ["final", "constructor"],
+      "condition": "governed-state-transition",
+      "ownership": "managed",
+      "validation": ["source-exists", "destination-unique", "integrity-at-build", "canonical-state"],
+      "language": "typescript",
+      "artifact": {"destination":".ia.rules/core/runtime/scripts/state-manager.js","format":"commonjs","target":"node24","builder":"typescript@7.0.2+esbuild@0.28.1"}
     },
     {
       "path": "AGENTS.md",

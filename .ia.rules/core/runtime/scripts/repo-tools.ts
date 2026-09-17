@@ -13,6 +13,7 @@ const path = require("path");
 
 const { createZipFromDirectory } = require("./archive");
 const { loadConfiguration } = require("./configuration");
+const { deliverSessionContext } = require("./context-session-cache");
 const { buildDistributionMap, distributionMapFileName, distributionMapRelativePath, validateDistributionMap } = require("./distribution-map");
 const { validateRefusedDecisions } = require("./refused-decisions");
 const { resolveExistingReleaseTrigger } = require("./release-trigger-policy");
@@ -20,6 +21,7 @@ const { filterOutput } = require("./to-ia");
 const { runPackageRegistryLifecycle } = require("../../../scenarios/release/scripts/package-registry");
 const { runReleaseHook } = require("../../../scenarios/release/scripts/release-hooks");
 const { assertRepositoryGit, assertRepositoryTarget, resolveRepositoryBoundary } = require("./repository-boundary");
+const { loadCatalog, sha256, validateDescriptor } = require("./unit-manager");
 
 const RUNTIME_ROOT = path.resolve(__dirname, "..", "..", "..", "..");
 // FIX-BUG: o mesmo runtime executa na fonte src/.ia.rules e no pacote .ia.rules.
@@ -49,6 +51,7 @@ const SOURCE_DISTRIBUTION_PROFILES = new Set([
   "generated-release",
 ]);
 const LEGACY_UPDATE_BRIDGE_CONDITION = "legacy-update-bridge";
+const LEGACY_UPDATE_ENTRY = "scripts/.agents/update-agents.js";
 const LEGACY_UPDATE_EXTENSIONS = new Set([".js", ".json", ".md"]);
 const LEGACY_UPDATE_TARGETS = new Map([
   ["scripts/.agents/bootstrap/core/contracts.md", ".agents/core/contracts.md"],
@@ -270,7 +273,7 @@ Object.assign(COMMANDS, {
   },
   "agent:context": {
     description: "gera contexto executivo compacto",
-    run: context,
+    run: (args) => context(args),
     status: "available",
   },
   "agent:workspace": {
@@ -468,6 +471,7 @@ function buildIndex() {
       path: toPosix(path.join("src", entry.path)),
       profile: entry.profile,
       ...(entry.language ? { language: entry.language } : {}),
+      ...(entry.unit ? { unit: entry.unit } : {}),
     };
     if (!entry.artifact) return [source];
     return [source, {
@@ -501,6 +505,7 @@ function buildIndex() {
       path: toPosix(path.relative(ROOT_DIR, SOURCE_DISTRIBUTION_MANIFEST_PATH)),
       version: sourceManifest.version,
     },
+    units: buildUnitIndex(SRC_DIR),
   };
   index.update = createGovernanceManifest(buildDistributionFiles(index), distributionContent);
   index.update.files.push({
@@ -543,6 +548,10 @@ function validateSourceDistributionManifest(manifest, sourceRoot) {
       !Array.isArray(entry.roles) || entry.roles.length === 0 ||
       !Array.isArray(entry.validation) || entry.validation.length === 0) {
       throw new Error(`MANIFESTO_FONTE_ENTRADA_INVALIDA:${JSON.stringify(entry)}`);
+    }
+    if (entry.unit && (!entry.unit.id || !["skill", "subagent", "adapter", "catalog"].includes(entry.unit.kind) ||
+      !entry.unit.version || !entry.unit.license || !entry.unit.trust || !Array.isArray(entry.unit.clients))) {
+      throw new Error(`MANIFESTO_FONTE_UNIDADE_INVALIDA:${entry.path}`);
     }
     entry.path = normalizeSourceDistributionPath(entry.path, "origem");
     entry.destination = normalizeSourceDistributionPath(entry.destination, "destino");
@@ -588,7 +597,33 @@ function validateSourceDistributionManifest(manifest, sourceRoot) {
   if (physical.length !== sources.size) {
     throw new Error(`MANIFESTO_FONTE_NAO_EXAUSTIVO:physical=${physical.length}:declared=${sources.size}`);
   }
+  validateCommonJsArtifactBoundaries(manifest.entries, sourceRoot);
   return manifest;
+}
+
+/** Garante que todo JavaScript CommonJS gerado permaneça sob pacote explicitamente CommonJS. */
+function validateCommonJsArtifactBoundaries(entries, sourceRoot) {
+  const byDestination = new Map(entries.map((entry) => [entry.destination, entry]));
+  const boundaries = new Map([
+    [".ia.rules/", ".ia.rules/package.json"],
+    ["scripts/.agents/", "scripts/.agents/package.json"],
+  ]);
+  for (const entry of entries.filter((candidate) => candidate.artifact && candidate.artifact.format === "commonjs")) {
+    const artifactPath = entry.artifact.destination;
+    const matched = [...boundaries.entries()].find(([prefix]) => artifactPath.startsWith(prefix));
+    if (!matched) throw new Error(`MANIFESTO_FONTE_FRONTEIRA_COMMONJS_AUSENTE:${artifactPath}`);
+    const boundaryEntry = byDestination.get(matched[1]);
+    if (!boundaryEntry) throw new Error(`MANIFESTO_FONTE_FRONTEIRA_COMMONJS_AUSENTE:${artifactPath}:${matched[1]}`);
+    let boundary;
+    try {
+      boundary = JSON.parse(fs.readFileSync(path.join(sourceRoot, boundaryEntry.path), "utf8"));
+    } catch (error) {
+      throw new Error(`MANIFESTO_FONTE_FRONTEIRA_COMMONJS_INVALIDA:${matched[1]}:${error.message}`);
+    }
+    if (!boundary || boundary.type !== "commonjs") {
+      throw new Error(`MANIFESTO_FONTE_FRONTEIRA_COMMONJS_INVALIDA:${matched[1]}`);
+    }
+  }
 }
 
 /** Executa normalizeSourceDistributionPath no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
@@ -652,6 +687,7 @@ function buildDist(options = {}) {
     },
     root: ".",
     schema: 1,
+    units: index.units,
   };
   if (releaseNotes) {
     guardTarget(RELEASE_NOTE_PATH, { allowHardlink: true });
@@ -697,6 +733,7 @@ function buildDist(options = {}) {
     })),
     rootDir: DIST_DIR,
     selfPath: distributionMapPath,
+    units: releaseIndex.units,
     version: effectiveVersion,
   });
   fs.mkdirSync(path.dirname(path.join(DIST_DIR, distributionMapPath)), { recursive: true });
@@ -727,7 +764,29 @@ function buildDistributionFiles(index) {
     profile: file.profile,
     runtime: file.runtime || null,
     sourcePath: file.path,
+    unit: file.unit || null,
   })).sort((a, b) => a.path.localeCompare(b.path, "en"));
+}
+
+/** Gera índice de unidades com hashes efetivos, origem e suporte declarado. */
+function buildUnitIndex(rootDir) {
+  const catalog = loadCatalog(rootDir);
+  return catalog.units.map((unit) => {
+    const descriptorPath = path.join(rootDir, unit.descriptor);
+    const descriptor = validateDescriptor(JSON.parse(fs.readFileSync(descriptorPath, "utf8")), unit.kind);
+    const sourcePath = path.join(rootDir, unit.source);
+    const sources = [...new Set([descriptorPath, ...(fs.statSync(sourcePath).isDirectory() ? listFiles(sourcePath) : [sourcePath])])];
+    const hash = crypto.createHash("sha256");
+    for (const filePath of sources.sort((a, b) => a.localeCompare(b, "en"))) {
+      hash.update(toPosix(path.relative(rootDir, filePath))); hash.update("\0"); hash.update(fs.readFileSync(filePath)); hash.update("\0");
+    }
+    return {
+      id: unit.id, kind: unit.kind, schema: descriptor.schema, version: descriptor.version,
+      origin: descriptor.origin, license: descriptor.license, trust: descriptor.trust,
+      clients: descriptor.clients, destinations: unit.destinations, precedence: descriptor.precedence,
+      sha256: hash.digest("hex"),
+    };
+  }).sort((a, b) => a.id.localeCompare(b.id, "en"));
 }
 
 /** Executa copyDistributionFile no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
@@ -785,6 +844,14 @@ function syncActiveRuntime() {
       minify: true,
       sourceLabel: toPosix(path.join("src", entry.path)),
     }), "utf8");
+    generated += 1;
+  }
+  for (const entry of manifest.entries.filter((item) => item.unit && !item.artifact)) {
+    const sourcePath = path.join(SRC_DIR, entry.path);
+    const targetPath = path.join(ROOT_DIR, entry.destination);
+    guardTarget(targetPath, { allowHardlink: true });
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    fs.copyFileSync(sourcePath, targetPath);
     generated += 1;
   }
   return generated;
@@ -1096,7 +1163,15 @@ function testAll() {
   runProcess(process.execPath, [path.join(ROOT_DIR, "test", "consumer-verify.test.js")]);
   runProcess(process.execPath, [path.join(ROOT_DIR, "test", "updater-git-state.test.js")]);
   runProcess(process.execPath, [path.join(ROOT_DIR, "test", "handoff-fallback.test.js")]);
-  return ok("TEST_OK", { suites: 23 });
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "governance-evolution.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "editorial-authoring.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "spoken-normalization.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "editorial-tts-integration.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "context-cost-audit.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "context-cost-report.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "context-session-cache.test.js")]);
+  runProcess(process.execPath, [path.join(ROOT_DIR, "test", "context-command-cache.test.js")]);
+  return ok("TEST_OK", { suites: 31 });
 }
 
 /** Executa validateIndex no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
@@ -1170,6 +1245,10 @@ function hasExactPathCase(root, relativePath) {
 /** Executa validateDist no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
 function validateDist() {
   assertFile(path.join(DIST_DIR, "AGENTS.md"), "dist/AGENTS.md ausente.");
+  assertFile(path.join(DIST_DIR, ".ia.rules", "package.json"), "dist/.ia.rules/package.json ausente.");
+  if (JSON.parse(fs.readFileSync(path.join(DIST_DIR, ".ia.rules", "package.json"), "utf8")).type !== "commonjs") {
+    throw new Error("dist/.ia.rules/package.json nao declara fronteira CommonJS.");
+  }
   assertFile(path.join(DIST_DIR, ".ia.rules", "core", "contracts.md"), "dist/.ia.rules/core/contracts.md ausente.");
   assertFile(path.join(DIST_DIR, ".ia.rules", "core", "update", "scenario.md"), "dist/.ia.rules/core/update/scenario.md ausente.");
   assertFile(path.join(DIST_DIR, ".ia.rules", "core", "concepts", "microconceitos.md"), "dist/.ia.rules/core/concepts/microconceitos.md ausente.");
@@ -1232,6 +1311,9 @@ function validateDist() {
   }
   if (!release.update.files.some((entry) => entry.path === "scripts/.agents/autoupdate.js")) {
     throw new Error("dist/release.json:update omite bridge versionavel pelo coletor fisico.");
+  }
+  if (!release.update.files.some((entry) => entry.path === LEGACY_UPDATE_ENTRY)) {
+    throw new Error("dist/release.json:update omite entrypoint carregado por dispatchers historicos.");
   }
 }
 
@@ -1434,13 +1516,84 @@ function doctor() {
 }
 
 /** Executa context no fluxo deste módulo; centraliza contrato reutilizável e preserva validações do chamador. */
-function context() {
+function context(args = []) {
   const index = buildIndex();
   const log = runProcess("git", ["log", "--oneline", "-5"], { optional: true }).stdout.trim().split(/\r?\n/u).filter(Boolean);
-  return ok("CONTEXT_OK", {
+  const common = {
     branch: runProcess("git", ["branch", "--show-current"], { optional: true }).stdout.trim(),
     latestCommits: log,
-    normativeFiles: index.files,
+  };
+  const options = parseContextArguments(args);
+  if (!options.explicit && !options.sessionId) return ok("CONTEXT_OK", { ...common, normativeFiles: index.files });
+  const delivery = deliverSessionContext({
+    enabled: options.enabled,
+    reset: options.reset,
+    rootDir: ROOT_DIR,
+    sessionId: options.sessionId,
+    tokenizer: "utf8-json-bytes/4-ceil-estimate",
+    units: contextCacheUnits(index),
+  });
+  const misses = delivery.units.filter((unit) => unit.status === "miss");
+  const hits = delivery.units.filter((unit) => unit.status === "hit");
+  return ok("CONTEXT_OK", {
+    ...common,
+    contextCache: {
+      ...delivery.cache,
+      ...delivery.metrics,
+      invalidated: misses.filter((unit) => !["cold-context", "cache-disabled"].includes(unit.reason)).map((unit) => ({ id: unit.id, reason: unit.reason })),
+      removed: delivery.removed,
+      reusedFingerprint: hits.length ? crypto.createHash("sha256").update(hits.map((unit) => `${unit.id}:${unit.fingerprint}`).sort().join("\n"), "utf8").digest("hex") : "",
+    },
+    normativeFiles: misses.map((unit) => JSON.parse(unit.content).descriptor),
+  });
+}
+
+/** Interpreta apenas opções do cache oficial, preservando a saída legada quando nenhuma for usada. */
+function parseContextArguments(args) {
+  const options = {
+    enabled: true,
+    explicit: args.length > 0,
+    reset: false,
+    sessionId: String(process.env.AGENTS_CONTEXT_SESSION_ID || ""),
+  };
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index];
+    if (argument === "--session") options.sessionId = String(args[++index] || "");
+    else if (argument === "--no-cache") options.enabled = false;
+    else if (argument === "--reset-cache") options.reset = true;
+    else throw new Error(`CONTEXT_ARGUMENTO_INVALIDO:${argument}`);
+  }
+  if (options.sessionId.length > 256) throw new Error("CONTEXT_SESSION_MUITO_LONGA");
+  if (options.enabled && options.explicit && !options.sessionId) throw new Error("CONTEXT_SESSION_AUSENTE");
+  if (options.reset && (!options.enabled || !options.sessionId)) throw new Error("CONTEXT_RESET_SEM_SESSION");
+  return options;
+}
+
+/** Projeta cada destino do índice como unidade independente com integridade, papel, rota e dependência explícitos. */
+function contextCacheUnits(index) {
+  const sourceManifest = readSourceDistributionManifest();
+  const manifestByDestination = new Map();
+  for (const entry of sourceManifest.entries) {
+    manifestByDestination.set(entry.destination, entry);
+    if (entry.artifact) manifestByDestination.set(entry.artifact.destination, entry);
+  }
+  const integrityByDestination = new Map(index.update.files.map((entry) => [entry.path, entry.sha256 || ""]));
+  const sourceDestinationByPath = new Map(index.files.filter((entry) => !entry.artifact).map((entry) => [entry.path, entry.destination]));
+  return index.files.map((file) => {
+    const manifest = manifestByDestination.get(file.destination) || {};
+    const serialized = JSON.stringify({ descriptor: file, integrity: integrityByDestination.get(file.destination) || "" });
+    return {
+      authority: sourceManifest.authority,
+      content: serialized,
+      dependencies: file.artifact && sourceDestinationByPath.has(file.generatedFrom) ? [sourceDestinationByPath.get(file.generatedFrom)] : [],
+      id: file.destination,
+      path: file.path,
+      precedence: file.profile,
+      role: manifest.roles || ["final", "constructor"],
+      route: file.condition,
+      tokens: Math.ceil(Buffer.byteLength(JSON.stringify(file), "utf8") / 4),
+      version: manifest.unit ? manifest.unit.version : String(sourceManifest.version),
+    };
   });
 }
 
