@@ -257,3 +257,16 @@
     * a UI apresentar apenas controles pertinentes ao estado atual;
     * recursos futuros já identificados, mas ainda indefinidos, puderem ser adicionados pelos pontos de extensão previstos sem ruptura arquitetural;
     * nenhuma combinação válida permitir perda de integridade, associação incorreta, fuga/cruzamento de dados ou violação das normas existentes.
+
+- [ ] Adicionar reset individual ao campo `Mês inicial` no submódulo de Faturamento
+  - Ao lado do campo `Mês inicial`, DEVE existir um botão visualmente adequado ao layout existente, com ícone de **atualizar/restaurar**.
+  - Ao ser acionado, o botão DEVE resetar **exclusivamente** a configuração de `Mês inicial`, sem alterar qualquer outro campo ou preferência.
+  - O valor restaurado DEVE corresponder exatamente ao **mês/ano padrão que seria inicialmente gerado pelo sistema caso não existisse nenhum dado/configuração salva para esse campo**.
+  - O reset NÃO DEVE usar valor fixo, arbitrário ou duplicar lógica de cálculo; DEVE reutilizar ou derivar da mesma regra/fonte responsável pela inicialização original do campo.
+  - A implementação DEVE preservar as normas, padrões visuais, acessibilidade, comportamento e arquitetura existentes do submódulo.
+  - O botão DEVE permanecer claramente associado ao campo, sem poluir ou desorganizar o layout.
+  - Validar que:
+    - o reset afeta apenas `Mês inicial`;
+    - o valor restaurado é idêntico ao valor inicial calculado na ausência de dados salvos;
+    - demais configurações permanecem intactas;
+    - recarregar/reabrir o estado mantém o comportamento esperado conforme as regras de persistência existentes.
