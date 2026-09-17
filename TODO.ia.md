@@ -182,3 +182,26 @@ Este marcador encerra a seção de governança e inicia exclusivamente as TO-DOs
       - tamanhos antes/depois e referência nativa;
       - validações executadas;
       - eventual diferença residual e sua justificativa técnica.
+
+      - [ ] Desacoplar a mesclagem (`merge`) da conversão no submódulo Conversor CSV, tornando ambas funções nativas e independentes
+  - O Conversor CSV DEVE suportar, conforme solicitado:
+    - conversão entre modelos, sem mesclagem;
+    - conversão entre modelos, com mesclagem;
+    - mesclagem de dois ou mais CSVs SEM conversão de modelo.
+  - A mesclagem NÃO DEVE exigir, direta ou indiretamente, mudança/conversão de modelo quando esta não tiver sido solicitada.
+  - Conversão e mesclagem DEVEM permanecer combináveis, mas NÃO dependentes entre si.
+  - Em todos os modos, a indexação, correspondência e associação dos registros DEVEM permanecer íntegras, determinísticas e compatíveis com os contratos existentes.
+  - É PROIBIDO produzir fuga, deslocamento, cruzamento ou associação de informações entre registros/linhas incorretos, inclusive por divergência de ordem, índice, chave, quantidade de registros ou processamento intermediário.
+  - A implementação DEVE inspecionar e preservar as regras existentes de indexação, identidade, correspondência, precedência e merge; qualquer adaptação necessária DEVE manter integralmente suas garantias.
+  - As normas, RCFs, contratos e demais diretrizes existentes DEVEM ser respeitados e, quando necessário, expandidos para normatizar explicitamente a dupla função:
+    - `converter` com ou sem `merge`;
+    - `merge` sem conversão.
+  - A norma NÃO DEVE ser alterada apenas para legitimar comportamento divergente ou regressivo; sua expansão DEVE formalizar o novo comportamento mantendo compatibilidade com os contratos válidos existentes.
+  - A implementação DEVE validar, no mínimo:
+    - conversão isolada;
+    - conversão + merge;
+    - merge isolado entre CSVs do mesmo modelo;
+    - preservação correta da indexação e associação dos registros em todos os modos;
+    - ausência de cruzamento/fuga de dados;
+    - ausência de regressão no comportamento já suportado.
+  - O resultado somente poderá ser considerado concluído quando `merge` e conversão puderem ser executados independentemente ou em conjunto, sem perda de integridade, associação incorreta de dados ou violação das normas existentes.
