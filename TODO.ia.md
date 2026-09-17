@@ -115,48 +115,145 @@
       - validações executadas;
       - eventual diferença residual e sua justificativa técnica.
 
-- [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV e adaptar sua UI para os dois modos nativos
-  - O Conversor CSV DEVE suportar, conforme selecionado:
-    - **Conversão** entre modelos, com ou sem `merge` — comportamento funcional já existente, preservado;
-    - **Mesclagem** de dois ou mais CSVs SEM conversão de modelo.
-  - `merge` NÃO DEVE exigir, direta ou indiretamente, conversão/mudança de modelo quando esta não tiver sido solicitada.
-  - Conversão e mesclagem DEVEM permanecer combináveis, porém funcionalmente independentes.
-  - A implementação DEVE inspecionar o estado real, contratos, RCFs, normas e UI existentes antes de modificar comportamento, estrutura ou regras.
+* [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
 
-  - A UI específica DEVE ser ajustada, estritamente no que for necessário e permitido pelas normas existentes, para permitir seleção explícita do modo de operação:
-    - `Conversão`;
-    - `Apenas mesclagem`.
-  - A seleção PODE usar `radio`, ou controle semanticamente mais adequado caso a arquitetura/UI existente justifique, sem introduzir complexidade desnecessária.
-  - Campos, grupos, conjuntos e layouts existentes DEVEM ser reaproveitados sempre que aplicáveis; PODEM ser reorganizados quando pertinente, mas NÃO duplicados ou recriados sem necessidade comprovada.
-  - As opções exibidas DEVEM acompanhar o modo selecionado:
-    - opções exclusivas de conversão, incluindo tipo/modo de conversão, DEVEM aparecer somente em `Conversão`;
-    - opções exclusivas de `merge` DEVEM aparecer somente quando aplicáveis;
-    - opções compartilhadas DEVEM permanecer disponíveis nos modos em que forem semanticamente válidas;
-    - parâmetros de precedência/resolução de `merge` PODEM diferir entre `Conversão + merge` e `Apenas mesclagem` quando seus contratos exigirem comportamentos distintos.
-  - É PROIBIDO exibir como aplicável uma configuração que não produza efeito válido no modo selecionado.
-  - A exibição/ocultação condicional dessas subopções DEVE ser implementada em **CSS puro**, aproveitando a estrutura existente sempre que possível, sem JavaScript apenas para controlar visibilidade/estado visual.
-  - A solução CSS DEVE preservar acessibilidade, semântica, navegabilidade e funcionamento dos controles conforme as normas/UI existentes.
+  * O Conversor CSV DEVE suportar, conforme selecionado:
 
-  - Em todos os modos, indexação, identidade, correspondência e associação dos registros DEVEM permanecer íntegras, determinísticas e compatíveis com os contratos existentes.
-  - É PROIBIDO produzir fuga, deslocamento, cruzamento ou associação de informações entre registros/linhas incorretos, inclusive por divergência de ordem, índice, chave, quantidade de registros, modelo ou processamento intermediário.
-  - As regras existentes de indexação, identidade, correspondência, precedência e `merge` DEVEM ser preservadas; adaptações necessárias DEVEM manter integralmente suas garantias.
-  - As normas, RCFs, contratos e demais diretrizes existentes DEVEM ser respeitados e, quando necessário, expandidos para normatizar explicitamente:
-    - conversão sem `merge`;
-    - conversão com `merge`;
-    - `merge` sem conversão;
-    - diferenças válidas de configuração/comportamento entre esses modos.
-  - A norma NÃO DEVE ser alterada apenas para legitimar implementação divergente ou regressiva; sua expansão DEVE formalizar a dupla função preservando contratos válidos e precedências existentes.
+    * **Conversão** entre modelos, com ou sem `merge` — preservando o comportamento funcional válido já existente;
+    * **Apenas mesclagem** de dois ou mais CSVs, SEM conversão de modelo.
 
-  - A validação DEVE cobrir, no mínimo:
-    - conversão isolada;
-    - conversão + `merge`;
-    - `merge` isolado entre CSVs compatíveis, sem conversão;
-    - seleção dos modos na UI;
-    - exibição somente das opções pertinentes a cada modo;
-    - funcionamento da visibilidade condicional em CSS puro;
-    - reaproveitamento correto dos campos/grupos existentes;
-    - regras distintas de precedência de `merge`, quando aplicáveis;
-    - preservação correta da indexação e associação dos registros em todos os modos;
-    - ausência de fuga/cruzamento de dados;
-    - ausência de regressão funcional, normativa ou visual.
-  - A tarefa somente estará concluída quando conversão e `merge` puderem operar isoladamente ou em conjunto, a UI representar corretamente cada modo e suas opções aplicáveis, e nenhuma combinação válida permitir perda de integridade, associação incorreta ou violação das normas existentes.
+  * `merge` NÃO DEVE exigir, direta ou indiretamente, conversão/mudança de modelo quando esta não tiver sido solicitada.
+
+  * Conversão e mesclagem DEVEM permanecer combináveis, porém funcionalmente independentes.
+
+  * A implementação DEVE inspecionar previamente o estado real, contratos, RCFs, normas e UI existentes, preservando compatibilidade e precedências aplicáveis.
+
+  * O conceito de mesclagem DEVE ser ampliado para oferecer resultados equivalentes, quando aplicáveis, a operações conhecidas de combinação tabular como `union`, `left join`, `right join`, `inner/full join` e similares, SEM expor ao usuário final a necessidade de conhecer SQL, programação ou terminologia técnica.
+
+  * A UI DEVE ser orientada ao **resultado desejado pelo usuário**, usando nomes, descrições e escolhas compreensíveis inclusive por pessoas com baixa escolaridade e apenas familiaridade básica com planilhas.
+
+  * Termos técnicos PODEM existir internamente ou como informação secundária, mas NÃO DEVEM ser requisito para compreender ou utilizar a função.
+
+  * Exemplos conceituais de apresentação ao usuário, sujeitos à adequação ao comportamento real, incluem ideias como:
+
+    * manter todas as linhas de ambas as tabelas;
+    * manter todas as linhas da primeira e completar com dados da segunda quando houver correspondência;
+    * manter todas as linhas da segunda e completar com dados da primeira;
+    * manter somente linhas encontradas nas duas;
+    * combinar/adicionar linhas sem cruzar colunas indevidamente.
+
+  * Os nomes definitivos DEVEM descrever claramente o efeito sobre as planilhas, não o mecanismo técnico subjacente.
+
+  * Recursos adicionais de conversão e `merge` coerentes com esse modelo PODEM e DEVEM:
+
+    * ser implementados quando seu comportamento puder ser derivado com segurança dos requisitos e normas existentes; ou
+    * permanecer explicitamente preparados para rápida implementação quando dependerem de definição funcional ainda insuficiente.
+
+  * Quando um recurso conhecido depender de definição material ainda ausente, É PROIBIDO inventar seu contrato ou comportamento.
+
+  * Nesses casos, a arquitetura DEVE, dentro das normas e da estrutura já existente, prever pontos de extensão claros e mínimos — como hooks, gatilhos, registros/estratégias ou mecanismo equivalente já compatível com a arquitetura — para permitir sua futura inclusão sem refatoração estrutural ampla.
+
+  * Esses pontos de extensão NÃO DEVEM constituir arquitetura especulativa, framework paralelo ou abstração sem uso concreto; DEVEM existir apenas onde houver recurso previsível identificado e justificativa arquitetural real.
+
+  * A UI específica DEVE permitir seleção explícita do modo principal:
+
+    * `Conversão`;
+    * `Apenas mesclagem`.
+
+  * A seleção PODE usar `radio` ou controle semanticamente mais adequado à UI existente, sem complexidade desnecessária.
+
+  * Campos, grupos, conjuntos e layouts existentes DEVEM ser reaproveitados sempre que aplicáveis; PODEM ser reorganizados quando pertinente, mas NÃO duplicados ou recriados sem necessidade comprovada.
+
+  * As opções apresentadas DEVEM ser contextuais:
+
+    * opções exclusivas de conversão, incluindo tipo/modo de conversão, somente em `Conversão`;
+    * opções exclusivas de mesclagem somente quando `merge` estiver ativo/aplicável;
+    * opções compartilhadas somente nos modos em que produzam efeito semanticamente válido;
+    * regras de precedência/resolução de conflitos PODEM diferir entre `Conversão + merge` e `Apenas mesclagem` quando os respectivos contratos exigirem isso;
+    * opções avançadas DEVEM aparecer apenas quando necessárias à operação escolhida.
+
+  * É PROIBIDO exibir configuração inaplicável, inócua ou sem efeito válido no estado selecionado.
+
+  * A exibição/ocultação condicional dessas subopções DEVE ser realizada em **CSS puro**, aproveitando a estrutura existente sempre que possível, sem JavaScript utilizado apenas para visibilidade/estado visual.
+
+  * A solução CSS DEVE preservar semântica, acessibilidade, navegação por teclado e funcionamento dos controles conforme as normas existentes.
+
+  * A UI DEVE permanecer limpa, profissional, acessível e com baixa carga cognitiva.
+
+  * Recursos avançados DEVEM usar iconização quando isso melhorar reconhecimento/compreensão, sem substituir informação textual indispensável nem depender exclusivamente do ícone.
+
+  * `checkbox`, `radio` e controles equivalentes DEVEM apresentar:
+
+    * um texto principal curto, orientado à ação/resultado;
+    * quando necessário, um texto secundário imediatamente associado, muito sucinto e compreensível por usuário com baixo conhecimento técnico.
+
+  * Textos explicativos NÃO DEVEM conter jargão desnecessário, descrições extensas ou conceitos de implementação.
+
+  * Somente recursos e opções necessários e aderentes ao contexto atual DEVEM permanecer visíveis; a UI NÃO DEVE ser poluída pela exposição simultânea de todas as possibilidades.
+
+  * Em todos os modos de conversão e mesclagem, indexação, identidade, correspondência e associação dos registros DEVEM permanecer íntegras, determinísticas e compatíveis com os contratos existentes.
+
+  * É PROIBIDO produzir fuga, deslocamento, cruzamento ou associação de informações entre registros/linhas incorretos, inclusive por divergência de:
+
+    * ordem;
+    * índice;
+    * chave;
+    * quantidade de registros;
+    * modelo;
+    * ausência/duplicidade de correspondência;
+    * estratégia de mesclagem;
+    * processamento intermediário.
+
+  * Cada estratégia de `merge` DEVE possuir semântica inequívoca quanto a:
+
+    * quais linhas são preservadas ou descartadas;
+    * como correspondências são determinadas;
+    * como ausências de correspondência são tratadas;
+    * como conflitos/colisões são resolvidos;
+    * qual fonte prevalece quando houver precedência;
+    * como duplicidades são tratadas;
+    * como a integridade entre colunas e registros é garantida.
+
+  * Nenhuma dessas regras PODE ser presumida quando não estiver definida pelo estado real ou pelas normas; lacunas materiais DEVEM ser condicionadas ou encaminhadas para definição normativa.
+
+  * As regras existentes de indexação, identidade, correspondência, precedência, conversão e `merge` DEVEM ser preservadas; adaptações necessárias DEVEM manter integralmente suas garantias.
+
+  * Normas, RCFs, contratos e demais diretrizes existentes DEVEM ser respeitados e, quando necessário, expandidos para normatizar explicitamente:
+
+    * conversão sem `merge`;
+    * conversão com `merge`;
+    * `merge` sem conversão;
+    * múltiplas estratégias de mesclagem;
+    * diferenças válidas de configuração e precedência entre os modos;
+    * critérios de integridade e associação;
+    * comportamento e extensibilidade da UI.
+
+  * A norma NÃO DEVE ser alterada apenas para legitimar implementação divergente ou regressiva; sua expansão DEVE formalizar as novas capacidades preservando contratos válidos e precedências existentes.
+
+  * A validação DEVE cobrir, no mínimo:
+
+    * conversão isolada;
+    * conversão + `merge`;
+    * `merge` isolado sem conversão;
+    * cada estratégia de mesclagem efetivamente disponibilizada;
+    * correspondência completa, parcial, inexistente e duplicada;
+    * preservação correta das linhas conforme a estratégia selecionada;
+    * precedência e resolução de conflitos quando aplicáveis;
+    * seleção dos modos na UI;
+    * exibição apenas das opções pertinentes ao contexto;
+    * visibilidade condicional em CSS puro;
+    * reaproveitamento correto dos campos/grupos existentes;
+    * clareza dos rótulos para usuários não técnicos;
+    * acessibilidade dos controles e iconização;
+    * preservação da indexação e associação correta dos registros;
+    * ausência de fuga/cruzamento de dados;
+    * ausência de regressão funcional, normativa, arquitetural ou visual.
+
+  * A tarefa somente estará concluída quando:
+
+    * conversão e `merge` puderem operar isoladamente ou em conjunto;
+    * as estratégias suportadas produzirem resultados tabulares inequivocamente definidos;
+    * usuários sem conhecimento técnico puderem escolher o resultado desejado sem compreender SQL/programação;
+    * a UI apresentar apenas controles pertinentes ao estado atual;
+    * recursos futuros já identificados, mas ainda indefinidos, puderem ser adicionados pelos pontos de extensão previstos sem ruptura arquitetural;
+    * nenhuma combinação válida permitir perda de integridade, associação incorreta, fuga/cruzamento de dados ou violação das normas existentes.
