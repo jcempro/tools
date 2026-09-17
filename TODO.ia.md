@@ -251,7 +251,7 @@
 
   * A tarefa somente estará concluída quando:
 
-    * conversão e `merge` puderem operar isoladamente ou em conjunto;
+    * conversão e `merge` puderem operar isoladamente e/ou em conjunto;
     * as estratégias suportadas produzirem resultados tabulares inequivocamente definidos;
     * usuários sem conhecimento técnico puderem escolher o resultado desejado sem compreender SQL/programação;
     * a UI apresentar apenas controles pertinentes ao estado atual;
