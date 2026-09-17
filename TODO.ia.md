@@ -115,25 +115,48 @@
       - validações executadas;
       - eventual diferença residual e sua justificativa técnica.
 
-      - [ ] Desacoplar a mesclagem (`merge`) da conversão no submódulo Conversor CSV, tornando ambas funções nativas e independentes
-  - O Conversor CSV DEVE suportar, conforme solicitado:
-    - conversão entre modelos, sem mesclagem;
-    - conversão entre modelos, com mesclagem;
-    - mesclagem de dois ou mais CSVs SEM conversão de modelo.
-  - A mesclagem NÃO DEVE exigir, direta ou indiretamente, mudança/conversão de modelo quando esta não tiver sido solicitada.
-  - Conversão e mesclagem DEVEM permanecer combináveis, mas NÃO dependentes entre si.
-  - Em todos os modos, a indexação, correspondência e associação dos registros DEVEM permanecer íntegras, determinísticas e compatíveis com os contratos existentes.
-  - É PROIBIDO produzir fuga, deslocamento, cruzamento ou associação de informações entre registros/linhas incorretos, inclusive por divergência de ordem, índice, chave, quantidade de registros ou processamento intermediário.
-  - A implementação DEVE inspecionar e preservar as regras existentes de indexação, identidade, correspondência, precedência e merge; qualquer adaptação necessária DEVE manter integralmente suas garantias.
-  - As normas, RCFs, contratos e demais diretrizes existentes DEVEM ser respeitados e, quando necessário, expandidos para normatizar explicitamente a dupla função:
-    - `converter` com ou sem `merge`;
-    - `merge` sem conversão.
-  - A norma NÃO DEVE ser alterada apenas para legitimar comportamento divergente ou regressivo; sua expansão DEVE formalizar o novo comportamento mantendo compatibilidade com os contratos válidos existentes.
-  - A implementação DEVE validar, no mínimo:
+- [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV e adaptar sua UI para os dois modos nativos
+  - O Conversor CSV DEVE suportar, conforme selecionado:
+    - **Conversão** entre modelos, com ou sem `merge` — comportamento funcional já existente, preservado;
+    - **Mesclagem** de dois ou mais CSVs SEM conversão de modelo.
+  - `merge` NÃO DEVE exigir, direta ou indiretamente, conversão/mudança de modelo quando esta não tiver sido solicitada.
+  - Conversão e mesclagem DEVEM permanecer combináveis, porém funcionalmente independentes.
+  - A implementação DEVE inspecionar o estado real, contratos, RCFs, normas e UI existentes antes de modificar comportamento, estrutura ou regras.
+
+  - A UI específica DEVE ser ajustada, estritamente no que for necessário e permitido pelas normas existentes, para permitir seleção explícita do modo de operação:
+    - `Conversão`;
+    - `Apenas mesclagem`.
+  - A seleção PODE usar `radio`, ou controle semanticamente mais adequado caso a arquitetura/UI existente justifique, sem introduzir complexidade desnecessária.
+  - Campos, grupos, conjuntos e layouts existentes DEVEM ser reaproveitados sempre que aplicáveis; PODEM ser reorganizados quando pertinente, mas NÃO duplicados ou recriados sem necessidade comprovada.
+  - As opções exibidas DEVEM acompanhar o modo selecionado:
+    - opções exclusivas de conversão, incluindo tipo/modo de conversão, DEVEM aparecer somente em `Conversão`;
+    - opções exclusivas de `merge` DEVEM aparecer somente quando aplicáveis;
+    - opções compartilhadas DEVEM permanecer disponíveis nos modos em que forem semanticamente válidas;
+    - parâmetros de precedência/resolução de `merge` PODEM diferir entre `Conversão + merge` e `Apenas mesclagem` quando seus contratos exigirem comportamentos distintos.
+  - É PROIBIDO exibir como aplicável uma configuração que não produza efeito válido no modo selecionado.
+  - A exibição/ocultação condicional dessas subopções DEVE ser implementada em **CSS puro**, aproveitando a estrutura existente sempre que possível, sem JavaScript apenas para controlar visibilidade/estado visual.
+  - A solução CSS DEVE preservar acessibilidade, semântica, navegabilidade e funcionamento dos controles conforme as normas/UI existentes.
+
+  - Em todos os modos, indexação, identidade, correspondência e associação dos registros DEVEM permanecer íntegras, determinísticas e compatíveis com os contratos existentes.
+  - É PROIBIDO produzir fuga, deslocamento, cruzamento ou associação de informações entre registros/linhas incorretos, inclusive por divergência de ordem, índice, chave, quantidade de registros, modelo ou processamento intermediário.
+  - As regras existentes de indexação, identidade, correspondência, precedência e `merge` DEVEM ser preservadas; adaptações necessárias DEVEM manter integralmente suas garantias.
+  - As normas, RCFs, contratos e demais diretrizes existentes DEVEM ser respeitados e, quando necessário, expandidos para normatizar explicitamente:
+    - conversão sem `merge`;
+    - conversão com `merge`;
+    - `merge` sem conversão;
+    - diferenças válidas de configuração/comportamento entre esses modos.
+  - A norma NÃO DEVE ser alterada apenas para legitimar implementação divergente ou regressiva; sua expansão DEVE formalizar a dupla função preservando contratos válidos e precedências existentes.
+
+  - A validação DEVE cobrir, no mínimo:
     - conversão isolada;
-    - conversão + merge;
-    - merge isolado entre CSVs do mesmo modelo;
+    - conversão + `merge`;
+    - `merge` isolado entre CSVs compatíveis, sem conversão;
+    - seleção dos modos na UI;
+    - exibição somente das opções pertinentes a cada modo;
+    - funcionamento da visibilidade condicional em CSS puro;
+    - reaproveitamento correto dos campos/grupos existentes;
+    - regras distintas de precedência de `merge`, quando aplicáveis;
     - preservação correta da indexação e associação dos registros em todos os modos;
-    - ausência de cruzamento/fuga de dados;
-    - ausência de regressão no comportamento já suportado.
-  - O resultado somente poderá ser considerado concluído quando `merge` e conversão puderem ser executados independentemente ou em conjunto, sem perda de integridade, associação incorreta de dados ou violação das normas existentes.
+    - ausência de fuga/cruzamento de dados;
+    - ausência de regressão funcional, normativa ou visual.
+  - A tarefa somente estará concluída quando conversão e `merge` puderem operar isoladamente ou em conjunto, a UI representar corretamente cada modo e suas opções aplicáveis, e nenhuma combinação válida permitir perda de integridade, associação incorreta ou violação das normas existentes.
