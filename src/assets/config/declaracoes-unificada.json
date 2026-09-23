@@ -11,7 +11,7 @@
     "personTemplate": "${numero} ${nome}, CPF ${documento}",
     "companyTemplate": "${numero} ${nome}, CNPJ ${documento}${representantes}",
     "representationTemplate": ", representada por ${representantes}",
-    "representativeJoin": " e ",
+    "representativeJoin": " e/ou ",
     "signature": "(assinaturas e visto/s)",
     "signatureReserveCm": 1,
     "indexBackground": "#cccccc",
