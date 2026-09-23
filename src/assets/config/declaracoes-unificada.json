@@ -6,10 +6,10 @@
     "background": "#d9d9d9",
     "paddingCm": 0.35
   },
-  "footer": {
-    "intro": "Esta(s) autorização(s)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por",
-    "personTemplate": "${numero} ${nome}, CPF ${documento}",
-    "companyTemplate": "${numero} ${nome}, CNPJ ${documento}${representantes}",
+  "footer": {        
+    "intro": "Esta(s) autorização(ões)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por",
+    "personTemplate": "${numero} ${nome}, inscrito sob CPF nº ${documento}",
+    "companyTemplate": "${numero} ${nome}, inscrito sob CNPJ nº ${documento}${representantes}",
     "representationTemplate": ", representada por ${representantes}",
     "representativeJoin": " e/ou ",
     "signature": "(assinaturas e visto/s)",
