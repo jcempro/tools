@@ -9,19 +9,26 @@
 - Escopo: Tecnico.
 - Objetivo: definir metricas, campos, limiar, explicabilidade, falsos positivos e validacao para detectar provaveis duplicidades sem antecipar heuristica arbitraria nem alterar a deduplicacao exata existente.
 - Prioridade: normal.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: cardinalidade multipla das FTs 024/025 concluida; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF especifico define um contrato deterministico, configuravel e explicavel para similaridade, com opt-in, revisao humana e testes de falso positivo/negativo, sem codigo nesta fase.
 
 ### Plano vigente
 
-1. Etapa 1/3 - inspecionar dados, normalizacao, deduplicacao exata e UI atuais. Status: em andamento.
-2. Etapa 2/3 - normatizar similaridade e preparar rastreabilidade da FT-029. Status: pendente.
-3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/3 - inspecionar dados, normalizacao, deduplicacao exata e UI atuais. Status: concluido.
+2. Etapa 2/3 - normatizar similaridade e preparar rastreabilidade da FT-029. Status: concluido.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: concluido.
+
+### Resultado e verificacoes
+
+- O contrato limita a análise a uma a três colunas textuais explicitamente escolhidas, exclui identidades e campos tipados e rejeita pares com valores selecionados vazios.
+- A métrica foi fixada como Levenshtein normalizada por campo, média aritmética simples e limiar central `0.90`, com explicação integral e ordem determinística.
+- Prováveis duplicidades permanecem apenas consultivas: nenhuma linha, chave, conversão, mesclagem ou saída pode ser alterada sem decisão humana explícita.
+- A rastreabilidade material da FT-029 foi preparada para configuração, núcleo tabular, interface e testes do Conversor CSV.
 
 ### Proximo ponto
 
-- Concluir o contrato e aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-029.
+- FT-028 concluida; aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-029.
 
 ## FT-029 - Implementacao da deteccao de duplicidade por similaridade no CSV
 
@@ -52,7 +59,7 @@
 - Objetivo: normatizar fundo opaco tematico e transicao discreta por limiar de scroll para impedir interferencia do conteudo sob a barra vertical sem alterar geometria ou interacao.
 - Prioridade: alta.
 - Status: pendente.
-- Dependencias: FT-028 concluida; evidencia e comportamento real inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Dependencias: FT-028 concluida e commitada; evidencia e comportamento real inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF global define estados, limiar, contraste, transicao, responsividade e ausencia de sobreposicao visual, cobrindo a evidencia sem codigo nesta fase.
 
 ### Plano vigente

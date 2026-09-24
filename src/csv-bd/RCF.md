@@ -157,7 +157,23 @@ Na política `Somadas`, cada chave correspondente DEVE produzir o mesmo produto 
 
 A política selecionada DEVE alterar exclusivamente a preservação e a ordem das linhas sem par; descoberta do indexador, normalização bilateral, deduplicação exata, agrupamento multivalorado, produto das correspondências, composição de colunas, detecção das ambiguidades ainda válidas e tratamento de conflitos DEVEM ser idênticos nos três modos. [737aece]
 
-Inferência de provável duplicidade por similaridade constitui feature futura e NÃO DEVE integrar esta implementação; versão posterior PODE introduzir limiar centralizado como `float` entre `0` e `1` ou percentual equivalente, mas somente junto de contrato completo, métrica, campos comparados, explicabilidade, validação e decisão humana aplicáveis, sem configuração ativa ou heurística parcial no runtime vigente. [737aece]
+### 15.1 Detecção consultiva de provável duplicidade por similaridade
+
+A detecção de provável duplicidade DEVE ser uma análise opcional, desativada por padrão e executada somente depois do parse, da normalização estrutural e da consolidação de duplicatas exatas vigentes; seu resultado é exclusivamente consultivo e NÃO PODE remover, mesclar, reordenar, vincular nem alterar linhas, chaves, conversão ou saída sem decisão humana explícita. [PENDENTE-CODIGO]
+
+O usuário DEVE selecionar de uma a três colunas textuais efetivamente presentes no conjunto analisado; coluna indexadora, telefone, documento, código, identificador técnico, valor monetário, percentual, data, booleano ou campo vazio NÃO PODE ser escolhido nem usado implicitamente, e um par somente é elegível quando todas as colunas selecionadas possuem valor não vazio nos dois registros. [PENDENTE-CODIGO]
+
+Cada valor comparável DEVE ser normalizado de modo determinístico por Unicode NFKD, remoção de marcas diacríticas, conversão para minúsculas, substituição de pontuação/separadores por espaço, colapso de espaços e `trim`, preservando letras e dígitos na ordem original; a similaridade de cada campo DEVE ser `1 - (distância de Levenshtein / maior comprimento normalizado)`, com igualdade vazia proibida pela elegibilidade e resultado limitado ao intervalo inclusivo de `0` a `1`. [PENDENTE-CODIGO]
+
+O escore do par DEVE ser a média aritmética simples dos escores das colunas selecionadas, sem peso oculto, bônus por prefixo, aproximação fonética, aprendizado, fallback ou campo adicional; a configuração compartilhada DEVE manter um único `similarity.defaultThreshold` igual a `0.90`, validado como `float` finito entre `0` e `1`, e qualquer futura alteração de métrica, limiar padrão ou elegibilidade exige atualização prévia deste contrato. [PENDENTE-CODIGO]
+
+Um par DEVE ser apresentado como provável duplicidade somente quando seu escore agregado for maior ou igual ao limiar e seus vetores canônicos não forem duplicatas exatas; cada ocorrência DEVE exibir identificadores posicionais inequívocos das duas linhas, escore agregado, limiar aplicado e, por campo, valores originais, valores normalizados, distância e escore, permitindo compreender e contestar o resultado sem conhecimento técnico. [PENDENTE-CODIGO]
+
+A interface DEVE exigir ativação consciente, seleção explícita dos campos e comando próprio para analisar, informar que o resultado pode conter falsos positivos e falsos negativos e oferecer revisão sem pré-selecionar ação destrutiva; desativação, nova entrada, nova conversão ou nova mesclagem DEVE invalidar o relatório anterior, sem persistir conclusões humanas como regra automática. [PENDENTE-CODIGO]
+
+A implementação DEVE comparar pares únicos em ordem estável, limitar trabalho e memória por processamento incremental ou equivalente sem amostragem silenciosa e diagnosticar antes da execução qualquer limite operacional excedido; a mesma entrada, seleção, configuração e versão DEVEM produzir exatamente os mesmos pares, ordem, escores e explicações em Web e Bundle. [PENDENTE-CODIGO]
+
+A validação DEVE cobrir igualdade exata já consolidada, variação apenas de caixa/acentuação/pontuação/espaço, edição curta próxima ao limiar, nomes distintos semelhantes, campos vazios, identificadores inelegíveis, múltiplos campos, limiar inclusivo, ordenação estável, invalidação do relatório, falso positivo e falso negativo conhecidos, além de provar que nenhuma linha ou saída é alterada sem decisão humana. [PENDENTE-CODIGO]
 
 A validação DEVE cobrir duplicata exata, multiplicidade distinta no resultado prévio e em `mesclar`, relações `1:N`, `N:1` e `N:N` nos três modos, chaves equivalentes com formatação diferente nos dois lados, isolamento entre chaves próximas e preservação dos bloqueios não relacionados de indexador, schema e conflito de valores. [737aece]
 
