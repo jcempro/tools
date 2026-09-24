@@ -6,4 +6,6 @@
 - Dependencias: FTs 014/015; geometria e interacao atuais preservadas.
 - Fora de escopo: mudanca progressiva proporcional ao scroll ou deslocamento compensatorio.
 - Validacao: temas, scroll antes/depois do limiar, viewports, navegacao, contraste e Web/Bundle.
-- Estado: aguardando FT-028.
+- Diagnostico: o trilho sticky possui fundo transparente e, depois de alcançar `top: 0`, deixa de coincidir com a superfície cromática presa ao shell, permitindo que toolbar e conteúdo apareçam através dele.
+- Decisao: estado binário no limiar sticky por sentinela e `IntersectionObserver` ou CSS nativo equivalente, superfície temática opaca e transição de `140ms`, sem listener de scroll ou alteração geométrica.
+- Estado: contrato concluído; FT-031 bloqueada até nova autorização humana posterior ao commit normativo.

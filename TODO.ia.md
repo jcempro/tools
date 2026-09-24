@@ -41,7 +41,7 @@
   * Validar `/atribuicoes` no fluxo real do GitHub Pages, inclusive navegação/roteamento, responsividade e impressão quando aplicável, sem alterar indevidamente páginas, posts, módulos ou recursos preexistentes.
 
 - [ ] Corrigir fundo e transição da barra de ferramentas vertical
-  - 📌 FTs FT-030 e FT-031 registradas para contrato e implementação.
+  - 📜 FT-030 normatizada; FT-031 aguarda autorização posterior ao commit normativo.
 
   * Conforme `\.ia.rules\state\evidencias\evidencia5.png`, a barra vertical mantém transparência/opacidade que permite visualizar o conteúdo ao fundo durante o scroll, inclusive a barra horizontal, cuja borda acaba visualmente cortada apesar do padding existente.
   * A barra vertical DEVE possuir fundo opaco/adequado ao tema quando em estado de sobreposição, impedindo interferência visual do conteúdo subjacente sem descaracterizar o design.

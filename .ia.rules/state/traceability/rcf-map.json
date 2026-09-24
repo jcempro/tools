@@ -1447,6 +1447,81 @@
     },
     {
       "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-031",
+      "id": "eab919ea255fd8f2b4c17ede",
+      "line": 270,
+      "rcf": "RCF.md",
+      "sentenceSha256": "f2836803d3868c53d465351945b00f01b1842612a0ea9c7536d9833c6d42579a",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-031",
+      "id": "53ffe05c2d0b576f959a370b",
+      "line": 272,
+      "rcf": "RCF.md",
+      "sentenceSha256": "d1f3b9a347a73eab3e3e50bae285e4c58d9b824807c8d4aced990ade005a6c9c",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-031",
+      "id": "2806616955b1e919a2143afd",
+      "line": 274,
+      "rcf": "RCF.md",
+      "sentenceSha256": "26a96705a73ec8a0eec38acf13a46a2cee42b729028ba420602c13ff463f2932",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-031",
+      "id": "f1b5cb1ba9102e5223dca569",
+      "line": 276,
+      "rcf": "RCF.md",
+      "sentenceSha256": "7c01128dd5a2e2010e16c38c394e845b30cc07cd74646fb4b01fcc77b12f48b3",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/css/documentos.scss",
+        "src/assets/js/documentos.ts",
+        "tests/infrastructure.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-031",
+      "id": "f9fb1e1170ef5b498184dce4",
+      "line": 278,
+      "rcf": "RCF.md",
+      "sentenceSha256": "13ff8aa631e15cd7c4c9229833b650aa75d433f2f5a7374239a8dbf31f5e3119",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
         "RCF.md"
       ],
       "commit": "30afc1e29369c1869e5639213131d0f81aba7bcf",
