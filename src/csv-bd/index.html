@@ -98,6 +98,18 @@
             <button type="button" id="clear">Limpar</button>
             <button type="button" id="download" disabled>Baixar CSV</button>
           </div>
+
+          <fieldset class="similarity-controls">
+            <legend>Prováveis duplicidades</legend>
+            <label class="check-option">
+              <input id="similarity-enabled" type="checkbox" />
+              Ativar análise consultiva
+            </label>
+            <p class="field-help">O relatório pode conter falsos positivos e falsos negativos e nunca altera o CSV.</p>
+            <label for="similarity-columns">Colunas textuais (selecione de uma a três)</label>
+            <select id="similarity-columns" multiple size="4" disabled></select>
+            <button type="button" id="analyze-similarity" class="secondary" disabled>Analisar similaridade</button>
+          </fieldset>
         </form>
 
         <section class="panel output" aria-label="Resultado">
@@ -109,6 +121,8 @@
           </div>
 
           <div id="decisions" class="decisions" hidden></div>
+
+          <section id="similarity-report" class="similarity-report" aria-live="polite" hidden></section>
 
           <label for="csv-output">CSV convertido</label>
           <textarea id="csv-output" spellcheck="false" readonly></textarea>

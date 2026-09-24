@@ -53,6 +53,18 @@ textarea {
 .merge-options label { display: flex; align-items: center; gap: 8px; margin: 0; padding: 5px 0; color: var(--ink); font-weight: 500; }
 .merge-options input { flex: 0 0 auto; width: 1.15rem; min-height: 1.15rem; }
 
+.similarity-controls { margin-top: 14px; }
+.check-option { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+.check-option input { flex: 0 0 auto; width: 1.15rem; min-height: 1.15rem; }
+.field-help { margin: 4px 0 10px; color: var(--muted); font-size: 13px; }
+#similarity-columns { min-height: 7rem; padding: 4px; }
+#analyze-similarity { width: 100%; margin-top: 8px; }
+.similarity-report { margin-bottom: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: #f7fafc; }
+.similarity-report h3 { margin: 0 0 6px; font-size: 16px; }
+.similarity-report p { margin: 4px 0; }
+.similarity-report ol, .similarity-report ul { padding-left: 22px; }
+.similarity-report li { margin: 5px 0; overflow-wrap: anywhere; }
+
 .bd-app {
   width: min(1280px, calc(100% - 28px));
   margin: 0 auto;
@@ -322,6 +334,8 @@ button:focus {
 :root[data-theme="dark"] .bd-app .summary-grid div {
   background: #32353a;
 }
+
+:root[data-theme="dark"] .bd-app .similarity-report { background: #32353a; }
 
 :root[data-theme="dark"] .bd-app .decisions {
   border-color: #756a3f;

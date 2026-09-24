@@ -1,3 +1,5 @@
+import tabularConfig from "../config/tabular.json";
+
 export type TabularModelKind = "modelo1" | "modelo2";
 
 export interface CsvDialect {
@@ -49,6 +51,36 @@ export interface DatasetMergeResult {
   issues: ConversionIssue[];
 }
 
+export interface SimilarityFieldExplanation {
+  column: string;
+  distance: number;
+  leftNormalized: string;
+  leftOriginal: string;
+  rightNormalized: string;
+  rightOriginal: string;
+  score: number;
+}
+
+export interface SimilarityPair {
+  fields: SimilarityFieldExplanation[];
+  leftRow: number;
+  rightRow: number;
+  score: number;
+  threshold: number;
+}
+
+export interface SimilarityAnalysis {
+  columns: string[];
+  pairs: SimilarityPair[];
+  threshold: number;
+  totalPairs: number;
+}
+
+export interface SimilarityOptions {
+  maxPairs?: number;
+  threshold?: number;
+}
+
 interface CustomerOccurrence {
   attributes: Map<string, string>;
   index: number;
@@ -74,6 +106,98 @@ const generatedDialect: CsvDialect = {
   quote: "\""
 };
 const localIdColumn = "id";
+const similarityDefaults = validateSimilarityConfig(tabularConfig.similarity);
+
+export const defaultSimilarityThreshold = similarityDefaults.defaultThreshold;
+
+export function eligibleSimilarityColumns(dataset: TabularDataset, identifierColumns: string[] = defaultIdentifierColumns): string[] {
+  const identifiers = new Set(identifierColumns.map(canonicalMergeColumn));
+  return dataset.columns.filter((column, index) => {
+    const canonical = canonicalMergeColumn(column);
+    if (identifiers.has(canonical) || isIneligibleSimilarityColumn(canonical)) return false;
+    const values = dataset.rows.map((row) => row[index]?.trim() ?? "").filter(Boolean);
+    return values.length > 0 && values.some((value) => /\p{L}/u.test(value));
+  });
+}
+
+export function normalizeSimilarityText(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/\p{M}+/gu, "")
+    .toLocaleLowerCase("pt-BR")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function levenshteinDistance(left: string, right: string): number {
+  if (left === right) return 0;
+  if (!left) return right.length;
+  if (!right) return left.length;
+  let previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    const current = [leftIndex];
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const substitution = previous[rightIndex - 1]! + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1);
+      current[rightIndex] = Math.min(previous[rightIndex]! + 1, current[rightIndex - 1]! + 1, substitution);
+    }
+    previous = current;
+  }
+  return previous[right.length] ?? 0;
+}
+
+export function analyzeSimilarRows(dataset: TabularDataset, columns: string[], options: SimilarityOptions = {}): SimilarityAnalysis {
+  const selected = [...new Set(columns.map((column) => column.trim()).filter(Boolean))];
+  if (selected.length < 1 || selected.length > 3) throw new Error("Selecione de uma a três colunas textuais para analisar.");
+  const eligible = new Set(eligibleSimilarityColumns(dataset));
+  if (selected.some((column) => !eligible.has(column))) throw new Error("A análise contém coluna ausente ou inelegível.");
+  const threshold = options.threshold ?? similarityDefaults.defaultThreshold;
+  if (!Number.isFinite(threshold) || threshold < 0 || threshold > 1) throw new Error("O limiar de similaridade deve estar entre 0 e 1.");
+  const maxPairs = options.maxPairs ?? similarityDefaults.maxPairs;
+  if (!Number.isSafeInteger(maxPairs) || maxPairs < 1) throw new Error("O limite operacional de pares é inválido.");
+  const totalPairs = dataset.rows.length * Math.max(0, dataset.rows.length - 1) / 2;
+  if (totalPairs > maxPairs) throw new Error(`A análise exigiria ${totalPairs} pares e excede o limite operacional de ${maxPairs}.`);
+  const indexes = selected.map((column) => dataset.columns.indexOf(column));
+  const pairs: SimilarityPair[] = [];
+  for (let leftIndex = 0; leftIndex < dataset.rows.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < dataset.rows.length; rightIndex += 1) {
+      const left = dataset.rows[leftIndex]!;
+      const right = dataset.rows[rightIndex]!;
+      const fields: SimilarityFieldExplanation[] = [];
+      let eligiblePair = true;
+      for (let fieldIndex = 0; fieldIndex < indexes.length; fieldIndex += 1) {
+        const columnIndex = indexes[fieldIndex]!;
+        const leftOriginal = left[columnIndex]?.trim() ?? "";
+        const rightOriginal = right[columnIndex]?.trim() ?? "";
+        const leftNormalized = normalizeSimilarityText(leftOriginal);
+        const rightNormalized = normalizeSimilarityText(rightOriginal);
+        if (!leftNormalized || !rightNormalized) {
+          eligiblePair = false;
+          break;
+        }
+        const distance = levenshteinDistance(leftNormalized, rightNormalized);
+        const score = Math.max(0, Math.min(1, 1 - distance / Math.max(leftNormalized.length, rightNormalized.length)));
+        fields.push({ column: selected[fieldIndex]!, distance, leftNormalized, leftOriginal, rightNormalized, rightOriginal, score });
+      }
+      if (!eligiblePair || fields.every((field) => field.leftNormalized === field.rightNormalized)) continue;
+      const score = fields.reduce((sum, field) => sum + field.score, 0) / fields.length;
+      if (score >= threshold) pairs.push({ fields, leftRow: leftIndex + 2, rightRow: rightIndex + 2, score, threshold });
+    }
+  }
+  return { columns: selected, pairs, threshold, totalPairs };
+}
+
+function validateSimilarityConfig(config: { defaultThreshold: number; maxPairs: number }): { defaultThreshold: number; maxPairs: number } {
+  if (!Number.isFinite(config.defaultThreshold) || config.defaultThreshold < 0 || config.defaultThreshold > 1) {
+    throw new Error("similarity.defaultThreshold inválido em tabular.json.");
+  }
+  if (!Number.isSafeInteger(config.maxPairs) || config.maxPairs < 1) throw new Error("similarity.maxPairs inválido em tabular.json.");
+  return config;
+}
+
+function isIneligibleSimilarityColumn(canonical: string): boolean {
+  return /^(?:id|mci|cid|mgi|fone|telefone|celular|cpf|cnpj|documento|codigo|cep|data|date|valor|preco|total|percentual|porcentagem|ativo|booleano)(?:\d+)?$/.test(canonical);
+}
 
 export function decodeTextBuffer(buffer: ArrayBuffer): { dialect: Pick<CsvDialect, "encoding" | "hasBom">; text: string } {
   const bytes = new Uint8Array(buffer);

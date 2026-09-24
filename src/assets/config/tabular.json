@@ -1,0 +1,6 @@
+{
+  "similarity": {
+    "defaultThreshold": 0.9,
+    "maxPairs": 250000
+  }
+}

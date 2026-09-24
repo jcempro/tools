@@ -1,6 +1,8 @@
 import {
+  analyzeSimilarRows,
   convertDataset,
   decodeTextBuffer,
+  eligibleSimilarityColumns,
   inferModelKind,
   mergeDatasets,
   oppositeModel,
@@ -110,6 +112,7 @@ import {
     currentResult = null;
     setOutput("");
     hideDecisions();
+    invalidateSimilarityReport();
   }
 
   function parseSource(): TabularDataset | null {
@@ -208,7 +211,76 @@ import {
     const csv = serializeCsv(currentResult.dataset);
     setOutput(csv);
     updateSummary(from, to, currentResult.dataset);
+    populateSimilarityColumns(currentResult.dataset);
     log(`Conclusao: ${currentResult.dataset.rows.length} linhas exportaveis em UTF-8 com BOM.`);
+  }
+
+  function invalidateSimilarityReport(): void {
+    const report = one<HTMLElement>("#similarity-report");
+    report.hidden = true;
+    report.replaceChildren();
+  }
+
+  function populateSimilarityColumns(dataset: TabularDataset | null): void {
+    const chooser = select("#similarity-columns");
+    const previous = new Set(Array.from(chooser.selectedOptions, (option) => option.value));
+    chooser.replaceChildren();
+    for (const column of dataset ? eligibleSimilarityColumns(dataset, identifiers()) : []) {
+      const option = d.createElement("option");
+      option.value = column;
+      option.textContent = column;
+      option.selected = previous.has(column);
+      chooser.appendChild(option);
+    }
+    syncSimilarityControls();
+  }
+
+  function syncSimilarityControls(): void {
+    const enabled = input("#similarity-enabled").checked;
+    const chooser = select("#similarity-columns");
+    chooser.disabled = !enabled || !currentResult || chooser.options.length === 0;
+    button("#analyze-similarity").disabled = chooser.disabled;
+    if (!enabled) invalidateSimilarityReport();
+  }
+
+  function analyzeSimilarity(): void {
+    invalidateSimilarityReport();
+    if (!currentResult || !input("#similarity-enabled").checked) return;
+    const columns = Array.from(select("#similarity-columns").selectedOptions, (option) => option.value);
+    try {
+      const analysis = analyzeSimilarRows(currentResult.dataset, columns);
+      const report = one<HTMLElement>("#similarity-report");
+      const heading = d.createElement("h3");
+      heading.textContent = `Prováveis duplicidades: ${analysis.pairs.length}`;
+      const summary = d.createElement("p");
+      summary.textContent = `${analysis.totalPairs} pares avaliados; limiar ${(analysis.threshold * 100).toFixed(0)}%. Revise cada ocorrência: nenhuma ação foi aplicada.`;
+      report.append(heading, summary);
+      const list = d.createElement("ol");
+      analysis.pairs.forEach((pair) => {
+        const item = d.createElement("li");
+        const title = d.createElement("strong");
+        title.textContent = `Linhas ${pair.leftRow} e ${pair.rightRow}: ${(pair.score * 100).toFixed(2)}%`;
+        const details = d.createElement("ul");
+        pair.fields.forEach((field) => {
+          const detail = d.createElement("li");
+          detail.textContent = `${field.column}: “${field.leftOriginal}” → “${field.leftNormalized}” × “${field.rightOriginal}” → “${field.rightNormalized}”; distância ${field.distance}; ${(field.score * 100).toFixed(2)}%.`;
+          details.appendChild(detail);
+        });
+        item.append(title, details);
+        list.appendChild(item);
+      });
+      if (analysis.pairs.length === 0) {
+        const empty = d.createElement("p");
+        empty.textContent = "Nenhum par atingiu o limiar com a seleção atual.";
+        report.appendChild(empty);
+      } else {
+        report.appendChild(list);
+      }
+      report.hidden = false;
+      log(`Análise consultiva concluída: ${analysis.pairs.length} provável(is) duplicidade(s), sem alterar a saída.`);
+    } catch (error) {
+      log(error instanceof Error ? error.message : "Falha na análise de similaridade.", "error");
+    }
   }
 
   function labelDelimiter(value: string): string {
@@ -394,6 +466,9 @@ import {
     select("#target-model").value = "modelo2";
     updateSummary("-", "-", null);
     hideDecisions();
+    input("#similarity-enabled").checked = false;
+    populateSimilarityColumns(null);
+    invalidateSimilarityReport();
     clearLogs();
     log("Estado limpo.");
   }
@@ -463,6 +538,17 @@ import {
     button("#convert").addEventListener("click", convert);
     button("#clear").addEventListener("click", clearAll);
     button("#download").addEventListener("click", downloadCsv);
+    input("#similarity-enabled").addEventListener("change", syncSimilarityControls);
+    select("#similarity-columns").addEventListener("change", () => {
+      const options = Array.from(select("#similarity-columns").selectedOptions);
+      if (options.length > 3) {
+        const last = options.at(-1);
+        if (last) last.selected = false;
+        log("Selecione no máximo três colunas para a análise.", "warning");
+      }
+      invalidateSimilarityReport();
+    });
+    button("#analyze-similarity").addEventListener("click", analyzeSimilarity);
     button("#copy-log").addEventListener("click", () => void copyLog());
     log("Ferramenta pronta para conversao local.");
   });

@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 import {
+  analyzeSimilarRows,
   convertDataset,
+  defaultSimilarityThreshold,
+  eligibleSimilarityColumns,
   inferModelKind,
   mergeDatasets,
   oppositeModel,
@@ -281,13 +284,40 @@ test("bd merge normalizes generic indexers bilaterally without crossing distinct
   ]);
 });
 
-test("bd merge retains unrelated blockers and has no partial similarity heuristic", async () => {
-  const source = await readFile("src/assets/js/tabular.ts", "utf8");
-  assert.doesNotMatch(source, /ambiguous-merge-key|materialmente distintas em/);
-  assert.doesNotMatch(source, /similarity|similaridade|limiar/i);
-
+test("bd merge retains unrelated blockers", () => {
   const invalid = mergeDatasets(parseCsv("MCI;Nome\n();Ana\n"), parseCsv("MCI;Cidade\n1;Santos\n"), { identifierColumns: ["MCI"] });
   assert.equal(invalid.issues.some(({ code, severity }) => code === "invalid-merge-key" && severity === "error"), true);
+});
+
+test("bd detects probable duplicates deterministically without mutating the dataset", () => {
+  const dataset = parseCsv([
+    "MCI;Nome;Cidade;Data",
+    "1;João da Silva;São Paulo;01/01/2026",
+    "2;Joao da Silv;Sao-Paulo;02/01/2026",
+    "3;Joana Silva;Recife;03/01/2026",
+    "4;;Sao Paulo;04/01/2026"
+  ].join("\n"));
+  const before = structuredClone(dataset);
+
+  assert.equal(defaultSimilarityThreshold, 0.9);
+  assert.deepEqual(eligibleSimilarityColumns(dataset, ["MCI"]), ["Nome", "Cidade"]);
+  const analysis = analyzeSimilarRows(dataset, ["Nome", "Cidade"]);
+
+  assert.deepEqual(dataset, before);
+  assert.equal(analysis.totalPairs, 6);
+  assert.deepEqual(analysis.pairs.map(({ leftRow, rightRow }) => [leftRow, rightRow]), [[2, 3]]);
+  assert.equal(analysis.pairs[0]?.fields[0]?.leftNormalized, "joao da silva");
+  assert.equal(analysis.pairs[0]?.fields[0]?.distance, 1);
+  assert.equal(analysis.pairs[0]?.score >= analysis.threshold, true);
+});
+
+test("bd similarity skips exact normalized vectors and validates eligibility and limits", () => {
+  const dataset = parseCsv("MCI;Nome;Cidade\n1;Ágata;São Paulo\n2;agata;Sao-Paulo\n3;Agatha;Sao Paulo\n");
+  const result = analyzeSimilarRows(dataset, ["Nome", "Cidade"], { threshold: 0.8 });
+  assert.deepEqual(result.pairs.map(({ leftRow, rightRow }) => [leftRow, rightRow]), [[2, 4], [3, 4]]);
+  assert.throws(() => analyzeSimilarRows(dataset, ["MCI"]), /inelegível/);
+  assert.throws(() => analyzeSimilarRows(dataset, ["Nome"], { maxPairs: 2 }), /excede o limite/);
+  assert.throws(() => analyzeSimilarRows(dataset, ["Nome", "Cidade", "Nome", "Outra"]), /inelegível/);
 });
 
 test("bd UI exposes optional file-backed merge and accessible exclusive policies", async () => {
@@ -300,4 +330,17 @@ test("bd UI exposes optional file-backed merge and accessible exclusive policies
   assert.equal((html.match(/name="merge-mode"/g) ?? []).length, 3);
   assert.match(source, /mergeDatasets\(currentResult\.dataset, complement/);
   assert.match(source, /resultado prévio permaneceu inalterado/);
+});
+
+test("bd UI requires opt-in and explicit textual columns for the advisory similarity report", async () => {
+  const [html, source, config] = await Promise.all([
+    readFile("src/csv-bd/index.html", "utf8"),
+    readFile("src/csv-bd/bd.ts", "utf8"),
+    readFile("src/assets/config/tabular.json", "utf8")
+  ]);
+  assert.match(html, /id="similarity-enabled"[^>]*type="checkbox"/);
+  assert.match(html, /id="similarity-columns"[^>]*multiple/);
+  assert.match(html, /falsos positivos e falsos negativos/);
+  assert.match(source, /analyzeSimilarRows\(currentResult\.dataset, columns\)/);
+  assert.equal(JSON.parse(config).similarity.defaultThreshold, 0.9);
 });
