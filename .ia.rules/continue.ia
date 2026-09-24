@@ -46,7 +46,7 @@
 - Escopo: Tecnico.
 - Objetivo: materializar a composicao normatizada do rodape, restaurando o qualificador visual, limitando negritos e removendo lacunas artificiais sem alterar conteudo, vinculos, ordenacao, paginacao ou demais estilos.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: FT-026 concluida e commitada em `7b40253`; autorizacao humana explicita recebida em 2026-09-24, posteriormente ao commit normativo.
 - Aceite: qualificadores usam fundo configurado e `sup`; referencias permanecem sem ambos; somente nomes e CPF/CNPJ ficam em negrito; justificacao e espacos permanecem regulares; testes focais, validacao integral e inspecao visual aprovados.
 
@@ -54,11 +54,21 @@
 
 1. Etapa 1/3 - ajustar a composicao segura por tokens e os estilos locais conforme o contrato. Status: concluido.
 2. Etapa 2/3 - ampliar testes de marcadores, negritos, espacos, quebras e regressao. Status: concluido.
-3. Etapa 3/3 - validar Web, Bundle, impressao/PDF, rastreabilidade e concluir. Status: em andamento.
+3. Etapa 3/3 - validar Web, Bundle, impressao/PDF, rastreabilidade e concluir. Status: concluido.
+
+### Resultado e verificacoes
+
+- O runtime passou a compor `${nome}` e `${documento}` como marcação segura própria, mantendo negrito somente nos valores escapados e preservando rótulos, preposições, pontuação e representação em peso normal.
+- O qualificador usa classe contextual, `vertical-align: super`, fundo `#cccccc` e `print-color-adjust: exact`; a referência permanece sem `sup`, fundo, padding ou margem próprios.
+- `footer.indexMarginCm` e sua custom property foram removidos porque duplicavam o espaço literal único do template; a inspeção Web mediu aproximadamente `4 px` entre o qualificador e o nome.
+- Os testes herdados dos commits `2cead39` e `55cf89b` foram reconciliados ao conteúdo autorizado, sem redução de cobertura.
+- `npm run validate:all` aprovou type-check, lint, 68 testes, build Web, quatro Bundles offline e publicação de 6 páginas/80 arquivos; a primeira tentativa falhou somente por `EPERM` do sandbox ao gravar `dist/404.html`, e a repetição autorizada concluiu sem falha.
+- A inspeção visual confirmou seis páginas, fundo e sobrescrito do qualificador, referência sem fundo, quatro valores nominais em peso `800`, distância regular e ausência de overflow no viewport estreito; o Bundle contém as mesmas classes e não contém `--du-index-margin`.
+- Commit material: `e0e64a24e5ceeeef72cb060341dc04d06e9a5c39`; quatro sentenças da FT-027 sincronizadas e `rcf-trace validate` aprovado em `241/241`.
 
 ### Proximo ponto
 
-- Concluir a implementacao, validar e sincronizar a rastreabilidade material.
+- FT-027 concluida, validada e rastreada; nenhuma pendencia funcional permanece nesta frente.
 
 ## FT-024 - Contrato de cardinalidade multipla na mesclagem CSV
 

@@ -4245,13 +4245,13 @@
         "src/declaracoes/unificada/unificada.ts",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "e0e64a24e5ceeeef72cb060341dc04d06e9a5c39",
       "ft": "FT-027",
       "id": "9db4b8dd24fbbcbbd3c78b75",
       "line": 152,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "33e22fc75fa6858496a7e495b5736e0bca57d2d7114589ab9bbea8fcfd8c6b03",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -4279,13 +4279,13 @@
         "src/declaracoes/unificada/unificada.ts",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "e0e64a24e5ceeeef72cb060341dc04d06e9a5c39",
       "ft": "FT-027",
       "id": "fcc9656c20d73519f873d06a",
       "line": 154,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "c702b7c63b99b66fb6061b7c051cb0dc1b298dae7025b4b51ff0bd0938377e4f",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -4296,13 +4296,13 @@
         "src/declaracoes/unificada/unificada.ts",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "e0e64a24e5ceeeef72cb060341dc04d06e9a5c39",
       "ft": "FT-027",
       "id": "649cf5ffb32344cf076c6d60",
       "line": 156,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "ebe94764a59a7b320b2536d6829a6369cf1a9c1e6a14fb0caf9921db4d16f182",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -4313,13 +4313,13 @@
         "src/declaracoes/unificada/unificada.ts",
         "tests/declaracoes-unificada.test.ts"
       ],
-      "commit": "",
+      "commit": "e0e64a24e5ceeeef72cb060341dc04d06e9a5c39",
       "ft": "FT-027",
       "id": "244d136d1503068b43da7c49",
       "line": 162,
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "2fbb61bc9e02828789a68d01ccdfad7e6d4b47c733caf28947963e098c4bd5c8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {

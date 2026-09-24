@@ -270,7 +270,7 @@
     - o valor restaurado é idêntico ao valor inicial calculado na ausência de dados salvos;
     - demais configurações permanecem intactas;
     - recarregar/reabrir o estado mantém o comportamento esperado conforme as regras de persistência existentes.
-- [ ] Corrigir inconsistências visuais evidenciadas em `evidencia6.png`, preservando os comportamentos já corretos
+- [x] Corrigir inconsistências visuais evidenciadas em `evidencia6.png`, preservando os comportamentos já corretos
   - Inspecionar o estado real e aplicar a correção no mecanismo responsável, sem hardcode específico para a evidência.
   - **Índice de definição:**
     - DEVE usar o `background` definido na configuração aplicável;

@@ -8,7 +8,7 @@
 - Dependencias: FT-022 e FT-023 concluidas e rastreadas; FT-027 bloqueada pela FT-026 e por nova autorizacao humana posterior.
 - Restricoes: nenhuma regra dependente do texto particular da evidencia; nenhum HTML vindo da configuracao; nenhum negrito propagado; nenhuma margem externa capaz de criar recuo em quebra de linha.
 - Fora de escopo: alterar frases institucionais, dados dos declarantes, regras de representantes, GUI, paginação global, reset de `Mes inicial` ou outros itens pendentes do TODO.
-- Estado: FT-026 concluida no commit `7b40253`; FT-027 autorizada posteriormente e em implementacao.
+- Estado: FT-026 e FT-027 concluidas, validadas e rastreadas; nenhuma pendencia funcional permanece neste contexto.
 - Aceite global: cobertura bidirecional TODO/evidencia -> RCF -> fonte -> testes; qualificacao, referencia, negritos e espacos validados separadamente; `npm run validate:all` aprovado.
 
 ## Diagnostico inicial
@@ -34,3 +34,13 @@
 - O qualificador dependia parcialmente do estilo padrão do navegador, não exigia preservação da cor de fundo na impressão e acumulava `footer.indexMarginCm` com o espaço literal do template.
 - Nome e documento eram escapados como texto comum; não existia fronteira semântica própria para aplicar negrito somente aos dois valores.
 - A correção usa marcação segura gerada pelo runtime, remove a margem externa duplicada e torna o `sup` e a cor de impressão explícitos, preservando referência, templates institucionais e escape.
+
+## Implementacao e validacao da FT-027
+
+- `${nome}` e `${documento}` são resolvidos por `footerValueMarkup`, que escapa o valor antes de produzir `<strong class="du-footer-value">`; somente esses valores e os marcadores previamente normatizados permanecem destacados.
+- O qualificador recebeu classe contextual, sobrescrito explícito e preservação exata do fundo em impressão; a referência manteve estrutura e estilos isolados.
+- A remoção de `footer.indexMarginCm` eliminou a separação CSS cumulativa; o único espaço externo restante pertence ao template central, e a medição Web observou cerca de `4 px` até o nome.
+- Testes focais aprovaram `7/7`; `npm run validate:all` aprovou `68/68`, Web, quatro Bundles e publicação de 6 páginas/80 arquivos.
+- A inspeção visual Web confirmou o resultado nominal e o viewport de `640 x 900` sem overflow; estilos computados comprovaram fundo `rgb(204, 204, 204)`, `vertical-align: super`, `print-color-adjust: exact`, referência transparente e nomes/documentos em peso `800`.
+- O Bundle contém `du-index-qualification`, `du-footer-value` e `print-color-adjust:exact`, sem a custom property removida.
+- Commit material: `e0e64a24e5ceeeef72cb060341dc04d06e9a5c39`; quatro sentenças sincronizadas; rastreabilidade aprovada em `241/241`.
