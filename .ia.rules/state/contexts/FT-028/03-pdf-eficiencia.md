@@ -6,4 +6,6 @@
 - Dependencias: FTs 005/006; mesma folha logica e geometria compartilhada.
 - Fora de escopo: degradacao perceptivel, troca de fluxo ou nova tecnologia sem diagnostico.
 - Validacao: estrutura, texto pesquisavel, tamanho antes/depois, render comparado, Web/Bundle e Ctrl+P.
-- Estado: aguardando FT-030.
+- Diagnostico: o adaptador compartilhado rasteriza a folha inteira via html2canvas em escala `6` e JPEG `0.98`, eliminando texto/vetor nativo e produzindo expansão sem benefício proporcional.
+- Decisao: preservar botão/hook/API, convergir a ação dedicada ao fluxo nativo `window.print()`, remover o gerador raster sem consumidor e aceitar no máximo `max(1,5 x nativo, nativo + 256 KiB)` sob comparação reproduzível.
+- Estado: contrato concluído; FT-033 bloqueada até nova autorização humana posterior ao commit normativo.

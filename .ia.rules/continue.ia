@@ -107,15 +107,26 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar eficiencia, preservacao textual/vetorial, reutilizacao de recursos e comparacao mensuravel com impressao nativa sem enfraquecer fidelidade ou qualidade de impressao.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: FT-030 concluida e commitada; pipeline e PDFs comparativos inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF global define qualidade e tamanho como requisitos simultaneos, causas justificaveis, limites de rasterizacao/recursos e validacao reprodutivel sem codigo nesta fase.
 
 ### Plano vigente
 
-1. Etapa 1/3 - medir pipeline, dependencias, estrutura e tamanhos comparativos. Status: pendente.
-2. Etapa 2/3 - normatizar eficiencia e preparar rastreabilidade da FT-033. Status: pendente.
-3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+1. Etapa 1/3 - medir pipeline, dependencias, estrutura e tamanhos comparativos. Status: concluido.
+2. Etapa 2/3 - normatizar eficiencia e preparar rastreabilidade da FT-033. Status: concluido.
+3. Etapa 3/3 - validar e commitar a norma. Status: concluido.
+
+### Resultado e verificacoes
+
+- A causa foi localizada no adaptador compartilhado: captura integral por `html2canvas` em escala `6` e JPEG `0.98`, com perda de texto/vetor e expansão aproximada de `114 KB` para `24 MB`.
+- O RCF preserva botão, hook e API, mas direciona a ação ao mesmo motor nativo de Ctrl+P e explicita ao usuário a escolha `Salvar como PDF` no diálogo do navegador.
+- Texto pesquisável, vetores, recursos únicos, limpeza coordenada da dependência raster e limite comparativo de tamanho passaram a ser requisitos mensuráveis.
+- A rastreabilidade material da FT-033 foi preparada para adaptador, tipos, páginas documentais, build, dependências, atribuições e testes.
+
+### Proximo ponto
+
+- FT-032 concluida; aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-033.
 
 ## FT-033 - Implementacao da eficiencia do PDF dedicado
 
@@ -146,7 +157,7 @@
 - Objetivo: definir conversao e mesclagem como capacidades independentes e combinaveis, com estrategias tabulares inequivocas e UI orientada a resultados para usuarios nao tecnicos.
 - Prioridade: alta.
 - Status: pendente.
-- Dependencias: FT-032 concluida; estado real e contratos de cardinalidade inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Dependencias: FT-032 concluida e commitada; estado real e contratos de cardinalidade inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF define modos, estrategias suportadas, correspondencia, preservacao de linhas, conflitos, duplicidades, visibilidade CSS e extensoes sem lacunas de negocio.
 
 ### Plano vigente

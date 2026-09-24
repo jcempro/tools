@@ -83,6 +83,22 @@ Quando um perfil documental exigir margens fisicas gerais uniformes, `top`, `rig
 
 Validacao DEVE medir a caixa da folha, area util, overflow e contagem de paginas em viewport normal, Ctrl+P Chromium e PDF dedicado, nos temas claro/escuro, Web e Bundle. Cada documento DEVE cobrir conteudo minimo, nominal e limite; primeira, intermediaria e ultima pagina quando multipagina; formato/orientacao declarados; ausencia de GUI, corte, deslocamento, escala inesperada, margem assimetrica e pagina residual. Chromium e o navegador normativo atual para evidencia automatizada; outro navegador somente integra aceite quando declarado como suportado. Testes DEVEM comparar configuracao central, CSS materializado, opcoes do gerador e geometria renderizada. [ef96ae2]
 
+### 4.2 Eficiência e representação do PDF dedicado
+
+O diagnóstico vigente identifica que o adaptador dedicado entrega a folha inteira ao `html2canvas` em escala padrão `6` e depois a incorpora como JPEG de qualidade `0.98` no `jsPDF`; essa rasterização integral transforma texto e vetores em uma imagem de alta resolução, impede pesquisa/seleção textual e explica a expansão observada de aproximadamente `114 KB` no PDF nativo para aproximadamente `24 MB` na ação integrada, sem benefício visual proporcional. [PENDENTE-CODIGO]
+
+A ação dedicada de PDF DEVE preservar o botão, o hook e a API pública existentes, executar a mesma preparação e validação da folha lógica e então abrir o fluxo de impressão nativo do navegador, com `window.print()` ou primitiva nativa equivalente, para que o usuário escolha `Salvar como PDF`; em aplicação Web estática, ausência de API padronizada para download silencioso de PDF nativo NÃO autoriza regressar à rasterização integral. [PENDENTE-CODIGO]
+
+Antes de abrir o diálogo, o adaptador DEVE aplicar o modo de impressão compartilhado e usar temporariamente a sugestão de nome normalizada como título do documento quando isso orientar o nome proposto pelo navegador; placeholders, classes e título anteriores DEVEM ser restaurados por evento `afterprint` e por caminho explícito de falha/cancelamento suportado, sem temporizador fixo como prova de conclusão e sem deixar estado residual. [PENDENTE-CODIGO]
+
+O PDF salvo pelo fluxo dedicado DEVE conservar texto como texto pesquisável/selecionável e SVG/formas como vetores sempre que a fonte DOM também os possuir; imagem raster legítima DEVE usar o recurso fonte uma única vez por ocorrência necessária e resolução suficiente à dimensão física impressa, mas a folha inteira, blocos textuais ou vetores NÃO PODEM ser convertidos em bitmap para contornar o contrato. [PENDENTE-CODIGO]
+
+Dependência, script CDN, tipo global, rota de desenvolvimento, regra de build, licença/atribuição ou payload de Bundle usado exclusivamente pelo gerador raster anterior DEVE ser removido de forma coordenada quando não restar consumidor autorizado; recurso residual, duplicado ou incorporado sem uso DEVE falhar na validação de publicação, preservadas atribuições ainda exigidas por bytes realmente distribuídos. [PENDENTE-CODIGO]
+
+Em comparação reproduzível no mesmo Chromium, perfil, conteúdo e configuração de página, o arquivo salvo a partir da ação dedicada DEVE ter geometria, paginação e renderização equivalentes ao obtido por Ctrl+P e tamanho não superior ao maior valor entre `1.5` vez o PDF nativo e o tamanho nativo acrescido de `256 KiB`; excesso dentro dessa tolerância ainda DEVE ser explicado por recursos efetivamente presentes, e excesso acima dela bloqueia a entrega. [PENDENTE-CODIGO]
+
+A validação DEVE comparar antes/depois e Ctrl+P/ação dedicada em documentos mínimo, nominal e limite, inspecionando bytes, páginas, dimensões, fontes, imagens, objetos reutilizados, texto extraível, vetores, metadados e renderização visual; Web e Bundle, temas claro/escuro, cancelamento do diálogo e repetição da ação DEVEM preservar qualidade de impressão, estado da interface e ausência de dependência remota. [PENDENTE-CODIGO]
+
 Diagnostico de referencia da FT-005: as evidencias de 2026-07-31 mostram `.jcem-app-shell` preservando coluna de navegacao de `3.5rem` no contexto impresso, folha de `21cm` combinada com margem direita adicional de `0.9cm` no `body` e geometria duplicada entre CSS global, CSS local e estilo dinamico. Essa composicao excede A4, desloca/corta ambos os documentos e gera segunda pagina residual no Admissional; correcao DEVE remover a composicao causal, NAO aplicar compensacao local. [ef96ae2]
 
 ## 5. Infraestrutura Compartilhada
