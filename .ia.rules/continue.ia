@@ -205,15 +205,26 @@
 - Escopo: Tecnico.
 - Objetivo: normatizar reset exclusivo de Mes inicial para o valor dinamico produzido pela inicializacao original, preservando demais campos, persistencia e calculos dependentes.
 - Prioridade: normal.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: FT-034 concluida e commitada; inicializacao, persistencia e eventos reais inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF especifico define origem unica do valor padrao, efeito isolado, persistencia, acessibilidade e recomputacao coerente sem codigo nesta fase.
 
 ### Plano vigente
 
-1. Etapa 1/3 - inspecionar inicializacao, persistencia, eventos e layout atuais. Status: pendente.
-2. Etapa 2/3 - normatizar reset e preparar rastreabilidade da FT-037. Status: pendente.
-3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+1. Etapa 1/3 - inspecionar inicializacao, persistencia, eventos e layout atuais. Status: concluido.
+2. Etapa 2/3 - normatizar reset e preparar rastreabilidade da FT-037. Status: concluido.
+3. Etapa 3/3 - validar e commitar a norma. Status: concluido.
+
+### Resultado e verificacoes
+
+- A regra canônica vigente foi localizada em `defaultInitialMonth()`: mês da data de assinatura menos doze meses; o reset deve chamá-la, sem fórmula duplicada nem fallback ao legado `mes-referencia`.
+- O controle ficará adjacente ao campo, acessível e não imprimível, reutilizando o ícone compartilhado de atualização/restauração.
+- Somente `mes-inicial` pode ser escrito diretamente; a data de assinatura e demais entradas permanecem intactas, enquanto período, situação, referência, previsões, totais e preview são recomputados como derivados.
+- A rastreabilidade material da FT-037 foi preparada para formulário, TypeScript, SCSS, catálogo de ícones e testes do Faturamento.
+
+### Proximo ponto
+
+- FT-036 concluida; aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-037.
 
 ## FT-037 - Implementacao do reset individual de Mes inicial no Faturamento
 

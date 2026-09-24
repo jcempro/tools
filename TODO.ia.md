@@ -263,7 +263,7 @@
     * nenhuma combinação válida permitir perda de integridade, associação incorreta, fuga/cruzamento de dados ou violação das normas existentes.
 
 - [ ] Adicionar reset individual ao campo `Mês inicial` no submódulo de Faturamento
-  - 📌 FTs FT-036 e FT-037 registradas para contrato e implementação.
+  - 📜 FT-036 normatizada; FT-037 aguarda autorização posterior ao commit normativo.
   - Ao lado do campo `Mês inicial`, DEVE existir um botão visualmente adequado ao layout existente, com ícone de **atualizar/restaurar**.
   - Ao ser acionado, o botão DEVE resetar **exclusivamente** a configuração de `Mês inicial`, sem alterar qualquer outro campo ou preferência.
   - O valor restaurado DEVE corresponder exatamente ao **mês/ano padrão que seria inicialmente gerado pelo sistema caso não existisse nenhum dado/configuração salva para esse campo**.

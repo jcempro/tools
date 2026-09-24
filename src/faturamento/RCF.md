@@ -4,25 +4,25 @@
 
 Modulo estatico para gerar a "RELACAO DE FATURAMENTO" oficial, editavel e imprimivel, com dados cadastrais da empresa, mes inicial do periodo, referencia derivada, faturamento mensal, totais, situacao dos meses, percentuais de recebimento, regime tributario e assinatura dos responsaveis.
 
-O modelo visual oficial rege layout, organizacao, hierarquia, fluxo e experiencia. A planilha legada e apenas fonte historica de regras validas ja formalizadas aqui; nao pode ser motor de calculo, referencia arquitetural ou fonte normativa concorrente.
+O modelo visual oficial rege layout, organizacao, hierarquia, fluxo e experiencia. A planilha legada e apenas fonte historica de regras validas ja formalizadas aqui; nao pode ser motor de calculo, referencia arquitetural ou fonte normativa concorrente. [9b47d80]
 
 Inclui edicao Web, autosave, preenchimento JSON Base64, validacao, revisao A4 e impressao/PDF. Exclui backend, banco, autenticacao obrigatoria e regras contabeis, fiscais ou tributarias nao descritas neste RCF.
 
 ## 2. Documento Oficial
 
-O impresso deve conter: titulo centralizado; Razao Social e CNPJ; destaques para Faturamento Bruto Anual e Mes/Ano de Referencia; secao "MERCADO INTERNO"; Percentual de Recebimento das Vendas a Prazo; Regime de Tributacao; local, data e area de assinatura; responsavel, cargo/papel e CPF; campo/titulo `COMITE`.
+O impresso deve conter: titulo centralizado; Razao Social e CNPJ; destaques para Faturamento Bruto Anual e Mes/Ano de Referencia; secao "MERCADO INTERNO"; Percentual de Recebimento das Vendas a Prazo; Regime de Tributacao; local, data e area de assinatura; responsavel, cargo/papel e CPF; campo/titulo `COMITE`. [9b47d80]
 
 `COMITE` e a qualificacao `PROPRIETARIO/SOCIO/MANDATARIO` sao textos impressos fixos, nao campos editaveis.
 
 ## 3. Dados Cadastrais e Assinatura
 
-A empresa deve ter Razao Social e CNPJ. Razao Social preserva o texto informado. CNPJ aceita entrada numerica ou formatada, armazena apenas digitos e apresenta mascara brasileira.
+A empresa deve ter Razao Social e CNPJ. Razao Social preserva o texto informado. CNPJ aceita entrada numerica ou formatada, armazena apenas digitos e apresenta mascara brasileira. [9b47d80]
 
 O documento aceita um ou mais assinantes, cada um com Nome e CPF. A interface inicia com um grupo obrigatorio Nome/CPF e permite adicionar/remover grupos extras. Nomes e CPFs consolidados usam `ou` como separador. CPF aceita entrada numerica ou formatada, armazena apenas digitos e apresenta mascara brasileira.
 
-Localidade deve conter cidade e UF brasileira, aceitar variantes usuais como `Cidade/UF` ou `Cidade-UF`, normalizar espacos e apresentar `Cidade-UF`. UF deve ter duas letras e pertencer as unidades federativas brasileiras.
+Localidade deve conter cidade e UF brasileira, aceitar variantes usuais como `Cidade/UF` ou `Cidade-UF`, normalizar espacos e apresentar `Cidade-UF`. UF deve ter duas letras e pertencer as unidades federativas brasileiras. [9b47d80]
 
-Data de assinatura inicia na data atual e pode ser ajustada automaticamente a partir do Mes inicial. Quando o Mes inicial for igual ou posterior ao mes corrente do sistema, a data de assinatura deve ser o primeiro dia util do mes imediatamente posterior ao Mes inicial. Quando o Mes inicial for anterior ao mes corrente do sistema, a data de assinatura deve ser a data atual da execucao. A apresentacao e:
+Data de assinatura inicia na data atual e pode ser ajustada automaticamente a partir do Mes inicial. Quando o Mes inicial for igual ou posterior ao mes corrente do sistema, a data de assinatura deve ser o primeiro dia util do mes imediatamente posterior ao Mes inicial. Quando o Mes inicial for anterior ao mes corrente do sistema, a data de assinatura deve ser a data atual da execucao. A apresentacao e: [723765b]
 
 ```text
 Cidade-UF, dd de Mes de aaaa,
@@ -32,11 +32,11 @@ Cidade-UF, dd de Mes de aaaa,
 
 A relacao sempre possui exatamente doze meses consecutivos, sem duplicidade, lacuna, excesso, falta ou desordem cronologica.
 
-O usuario informa apenas o Mes inicial exibido na tabela, apresentado no formato `mm/aaaa`. A edicao deve aceitar entradas materialmente compativeis, com ou sem separadores usuais, como `102025`, `10-2025`, `10.2025` ou `10/2025`, e normalizar para `mm/aaaa` apos a edicao. Meses fora de 1 a 12 ou anos fora da faixa valida sao invalidos. Por padrao, esse mes corresponde ao mes da data de assinatura menos doze meses. O usuario pode altera-lo para iniciar a tabela em outro periodo; a alteracao regenera os doze meses e preserva a classificacao automatica.
+O usuario informa apenas o Mes inicial exibido na tabela, apresentado no formato `mm/aaaa`. A edicao deve aceitar entradas materialmente compativeis, com ou sem separadores usuais, como `102025`, `10-2025`, `10.2025` ou `10/2025`, e normalizar para `mm/aaaa` apos a edicao. Meses fora de 1 a 12 ou anos fora da faixa valida sao invalidos. Por padrao, esse mes corresponde ao mes da data de assinatura menos doze meses. O usuario pode altera-lo para iniciar a tabela em outro periodo; a alteracao regenera os doze meses e preserva a classificacao automatica. [bda95a2]
 
 O Mes/Ano de Referencia nao e campo editavel. Ele e valor derivado da data de assinatura e do ultimo mes classificado como `REALIZADO` na tabela. Quando nenhum mes da tabela estiver realizado, usa-se o ultimo mes encerrado antes do mes da data de assinatura como referencia deterministica de compatibilidade.
 
-Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica, nao pode ser editada manualmente e nao deve ocupar coluna no formulario; a coluna equivalente permanece apenas no impresso. O gatilho de Mes inicial igual ou posterior ao mes corrente deve tornar o Mes inicial `REALIZADO` e todos os meses subsequentes `PREVISTO`.
+Cada mes tem situacao `REALIZADO` ou `PREVISTO`. Meses anteriores ao mes da data de assinatura sao `REALIZADO`; o mes da assinatura e meses posteriores sao `PREVISTO`. A classificacao e inteiramente automatica, nao pode ser editada manualmente e nao deve ocupar coluna no formulario; a coluna equivalente permanece apenas no impresso. O gatilho de Mes inicial igual ou posterior ao mes corrente deve tornar o Mes inicial `REALIZADO` e todos os meses subsequentes `PREVISTO`. [723765b]
 
 ## 5. Mercado Interno e Totais
 
@@ -50,51 +50,63 @@ O Faturamento Bruto Anual e:
 Total de Vendas a Vista + Total de Vendas a Prazo
 ```
 
-Totais exibidos devem corresponder exatamente a soma dos doze meses de cada coluna.
+Totais exibidos devem corresponder exatamente a soma dos doze meses de cada coluna. [9b47d80]
 
-Na impressao, a tabela deve usar largura proporcional para Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao, comportando valores ate R$ 99.999.999,99 nas colunas monetarias. Para preservar largura, as linhas mensais e totais podem omitir o prefixo `R$` quando o cabecalho das colunas indicar `(R$)`.
+Na impressao, a tabela deve usar largura proporcional para Mes/Ano, Vendas a Vista, Vendas a Prazo e Situacao, comportando valores ate R$ 99.999.999,99 nas colunas monetarias. Para preservar largura, as linhas mensais e totais podem omitir o prefixo `R$` quando o cabecalho das colunas indicar `(R$)`. [7225a97]
 
-A largura reduzida pela ausencia do prazo medio repetido deve liberar area lateral direita para Percentual de Recebimento, Regime de Tributacao e Prazo Medio, alinhados ao topo da tabela. Regime de Tributacao e Prazo Medio podem ser apresentados como blocos verticais chave/valor, em linhas, para evitar estouro horizontal. Valores de regime podem usar abreviacoes inequívocas, como `Simples Nac.` e `Lucro Pres.`. Todas as celulas impressas devem ter padding minimo de 1 mm nas laterais e 1,5 mm nas margens superior/inferior; cabecalhos e rodapes de tabelas devem usar negrito, com destaque claro para totais.
+A largura reduzida pela ausencia do prazo medio repetido deve liberar area lateral direita para Percentual de Recebimento, Regime de Tributacao e Prazo Medio, alinhados ao topo da tabela. Regime de Tributacao e Prazo Medio podem ser apresentados como blocos verticais chave/valor, em linhas, para evitar estouro horizontal. Valores de regime podem usar abreviacoes inequívocas, como `Simples Nac.` e `Lucro Pres.`. Todas as celulas impressas devem ter padding minimo de 1 mm nas laterais e 1,5 mm nas margens superior/inferior; cabecalhos e rodapes de tabelas devem usar negrito, com destaque claro para totais. [aa9551c]
 
 ## 6. Distribuicao, Edicao e Previsao
 
-Quando o usuario informar apenas Faturamento Bruto Anual, o sistema pode distribuir automaticamente valores pelos doze meses. A distribuicao deve permitir percentual para Vendas a Vista e Vendas a Prazo, complementares e totalizando 100%, com padrao 100% a vista e 0% a prazo.
+Quando o usuario informar apenas Faturamento Bruto Anual, o sistema pode distribuir automaticamente valores pelos doze meses. A distribuicao deve permitir percentual para Vendas a Vista e Vendas a Prazo, complementares e totalizando 100%, com padrao 100% a vista e 0% a prazo. [9b47d80]
 
-A distribuicao deve ser deterministica, reprodutivel, nao negativa, arredondada para centavos, reconciliada exatamente ao total anual e visualmente natural, sem aleatoriedade verdadeira nem crescimento perfeitamente linear quando houver variacao simulada. Cada parcela deve ter no maximo duas casas decimais, e a soma das parcelas exibidas deve corresponder exatamente ao valor total informado. A reconciliacao deve considerar simultaneamente Vendas a Vista e Vendas a Prazo para preservar o total anual, distribuindo residuos de centavos de forma deterministica e sem perdas acumuladas por arredondamento.
+A distribuicao deve ser deterministica, reprodutivel, nao negativa, arredondada para centavos, reconciliada exatamente ao total anual e visualmente natural, sem aleatoriedade verdadeira nem crescimento perfeitamente linear quando houver variacao simulada. Cada parcela deve ter no maximo duas casas decimais, e a soma das parcelas exibidas deve corresponder exatamente ao valor total informado. A reconciliacao deve considerar simultaneamente Vendas a Vista e Vendas a Prazo para preservar o total anual, distribuindo residuos de centavos de forma deterministica e sem perdas acumuladas por arredondamento. [bf7b01a]
 
-O usuario pode editar valores mensais. Havendo total anual de referencia, a edicao de um mes nao altera esse total; a diferenca e compensada nos meses elegiveis restantes. Meses alterados manualmente permanecem preservados ate desbloqueio ou redefinicao da distribuicao. Redistribuicao deve manter valores nao negativos e soma exata.
+O usuario pode editar valores mensais. Havendo total anual de referencia, a edicao de um mes nao altera esse total; a diferenca e compensada nos meses elegiveis restantes. Meses alterados manualmente permanecem preservados ate desbloqueio ou redefinicao da distribuicao. Redistribuicao deve manter valores nao negativos e soma exata. [9b47d80]
 
-Por padrao, a distribuicao entre a vista e a prazo nao fica fixada: alteracoes manuais nos meses devem ser tratadas como indicio da composicao real, fazendo o sistema inferir novos percentuais globais a partir dos valores preservados e redistribuir o restante do total anual.
+Por padrao, a distribuicao entre a vista e a prazo nao fica fixada: alteracoes manuais nos meses devem ser tratadas como indicio da composicao real, fazendo o sistema inferir novos percentuais globais a partir dos valores preservados e redistribuir o restante do total anual. [ef4557e]
 
-Quando o usuario marcar a opcao de fixar distribuicao, os percentuais globais informados passam a ser imposicao anual. Se uma coluna estiver com 0%, seus campos mensais devem ficar desabilitados e zerados. Se houver percentual limitado, a redistribuicao deve preservar o percentual anual imposto, sem exigir que cada mes siga a mesma proporcao; a divergencia mensal entre a vista e a prazo pode variar ate 40 pontos percentuais em relacao ao percentual global fixado.
+Quando o usuario marcar a opcao de fixar distribuicao, os percentuais globais informados passam a ser imposicao anual. Se uma coluna estiver com 0%, seus campos mensais devem ficar desabilitados e zerados. Se houver percentual limitado, a redistribuicao deve preservar o percentual anual imposto, sem exigir que cada mes siga a mesma proporcao; a divergencia mensal entre a vista e a prazo pode variar ate 40 pontos percentuais em relacao ao percentual global fixado. [ef4557e]
 
-Meses `PREVISTO` devem ter valores derivados automaticamente e ficar imunes a variacao sazonal ou edicao mensal direta. A previsao de Vendas a Vista usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Vista; Vendas a Prazo usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Prazo. O valor previsto de cada coluna deve ser constante e identico em todas as linhas `PREVISTO`, sem exigir igualdade entre as duas colunas.
+Meses `PREVISTO` devem ter valores derivados automaticamente e ficar imunes a variacao sazonal ou edicao mensal direta. A previsao de Vendas a Vista usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Vista; Vendas a Prazo usa exclusivamente a media aritmetica simples dos meses `REALIZADO` da coluna Vendas a Prazo. O valor previsto de cada coluna deve ser constante e identico em todas as linhas `PREVISTO`, sem exigir igualdade entre as duas colunas. [723765b]
 
 ## 7. Percentuais e Regime
 
-Percentual de Recebimento das Vendas a Prazo deve aceitar Cartoes, Cheques e Titulos, cada um entre 0% e 100%. Campos em branco usam padrao: Cartoes 40%, Cheques 30%, Titulos 30%. Soma obrigatoria, quando exigida por regra operacional, deve ser configuravel e validada explicitamente.
+Percentual de Recebimento das Vendas a Prazo deve aceitar Cartoes, Cheques e Titulos, cada um entre 0% e 100%. Campos em branco usam padrao: Cartoes 40%, Cheques 30%, Titulos 30%. Soma obrigatoria, quando exigida por regra operacional, deve ser configuravel e validada explicitamente. [9b47d80]
 
-Regime de Tributacao e lista fechada inicial: MEI, Simples Nacional, Lucro Presumido e Lucro Real. O sistema deve invalidar ou impedir regimes incompativeis com Faturamento Bruto Anual. Limites iniciais: MEI ate R$ 81.000,00 anuais; Simples Nacional ate R$ 4.800.000,00 anuais. Lucro Presumido e Lucro Real nao possuem bloqueio automatico por esses limites, salvo regra futura neste RCF.
+Regime de Tributacao e lista fechada inicial: MEI, Simples Nacional, Lucro Presumido e Lucro Real. O sistema deve invalidar ou impedir regimes incompativeis com Faturamento Bruto Anual. Limites iniciais: MEI ate R$ 81.000,00 anuais; Simples Nacional ate R$ 4.800.000,00 anuais. Lucro Presumido e Lucro Real nao possuem bloqueio automatico por esses limites, salvo regra futura neste RCF. [9b47d80]
 
 ## 8. Parametrizacao e Autosave
 
-O modulo deve aceitar preenchimento integral por JSON Base64 conforme RCF global. Chaves desconhecidas sao ignoradas sem interromper carregamento. Dados parametrizados passam pelas mesmas normalizacoes e validacoes da edicao manual.
+O modulo deve aceitar preenchimento integral por JSON Base64 conforme RCF global. Chaves desconhecidas sao ignoradas sem interromper carregamento. Dados parametrizados passam pelas mesmas normalizacoes e validacoes da edicao manual. [9b47d80]
 
-No compartilhamento preenchido, o payload deve representar a relacao completa: empresa, assinantes, cidade/UF, data, mes inicial, mes de referencia derivado, distribuicao, periodo mensal, percentuais, regime, prazo medio e valores financeiros.
+No compartilhamento preenchido, o payload deve representar a relacao completa: empresa, assinantes, cidade/UF, data, mes inicial, mes de referencia derivado, distribuicao, periodo mensal, percentuais, regime, prazo medio e valores financeiros. [bf7b01a]
 
-Autosave local deve preservar dados cadastrais, financeiros, mes inicial, periodo, classificacoes derivadas, percentuais, regime tributario, assinatura e Prazo Medio unico.
+Autosave local deve preservar dados cadastrais, financeiros, mes inicial, periodo, classificacoes derivadas, percentuais, regime tributario, assinatura e Prazo Medio unico. [bf7b01a]
 
-A exportacao local pela toolbar global deve usar envelope do modulo `faturamento`, schema `jcem.faturamento.v1` e payload equivalente ao compartilhamento preenchido. A importacao local deve validar modulo, schema e versao antes de aplicar dados, reutilizando os mesmos aliases e normalizacoes do JSON Base64. Arquivos de outros modulos devem ser recusados sem alterar o formulario.
+Ao lado do campo `Mês inicial`, a interface DEVE oferecer um botão `type="button"` não imprimível com nome acessível e tooltip `Restaurar mês inicial`, reutilizando o ícone compartilhado de atualização/restauração e preservando área de toque mínima, foco visível, ordem de teclado, alinhamento e responsividade do grupo de campo. [PENDENTE-CODIGO]
 
-Ao salvar/exportar preenchimento ou gerar PDF, a sugestao de nome do arquivo deve derivar da Razao Social: remover acentos e caracteres nao alfanumericos, colapsar espacos para um unico hifen, capitalizar palavras e remover sufixos juridicos finais comuns que nao agregam identificacao, como LTDA, ME, EPP, S.A., SA, EIRELI, SLU e equivalentes.
+O acionamento DEVE obter o valor pela mesma função canônica usada quando não existe configuração persistida: tomar o mês da `Data de assinatura` válida atualmente exibida, ou o mês da data corrente apenas quando aquela estiver vazia/inválida, e subtrair exatamente doze meses; valor fixo, cópia da fórmula, `Mês/Ano de Referência` legado ou outra preferência armazenada NÃO PODE substituir essa origem. [PENDENTE-CODIGO]
+
+O reset DEVE escrever diretamente somente o controle e a chave persistida de `Mês inicial`; Razão Social, CNPJ, cidade, UF, data de assinatura, assinantes, percentuais, regime, prazo, faturamento, valores mensais, bloqueios manuais e toda preferência alheia DEVEM permanecer com os mesmos valores, e o reset NÃO PODE invocar a regra de ajuste automático da data de assinatura usada na edição manual do mês. [PENDENTE-CODIGO]
+
+Depois da escrita isolada, o sistema DEVE executar uma única atualização pelo fluxo existente para regenerar os doze rótulos de mês e recomputar somente estados derivados — situação realizado/previsto, referência, previsões, totais, validações e preview — preservando entradas mensais por posição e permitindo apenas as alterações de valores que já sejam consequência determinística da regra de previsão vigente. [PENDENTE-CODIGO]
+
+O valor restaurado DEVE sobreviver a recarregamento Web e Bundle e coincidir com o valor produzido por uma inicialização limpa sob a mesma data de assinatura e data corrente; acionamentos repetidos no mesmo contexto DEVEM ser idempotentes, sem acumular listeners, autosave, linhas, notificações ou histórico residual. [PENDENTE-CODIGO]
+
+A validação DEVE congelar e comparar todas as chaves persistidas antes/depois, exceto `mes-inicial` e saídas estritamente derivadas, cobrindo data de assinatura passada/atual/futura, valor anterior válido/inválido, legado `mes-referencia`, repetição, recarga, teclado, leitor de tela, viewports estreita/larga, temas claro/escuro, impressão, Web e Bundle. [PENDENTE-CODIGO]
+
+A exportacao local pela toolbar global deve usar envelope do modulo `faturamento`, schema `jcem.faturamento.v1` e payload equivalente ao compartilhamento preenchido. A importacao local deve validar modulo, schema e versao antes de aplicar dados, reutilizando os mesmos aliases e normalizacoes do JSON Base64. Arquivos de outros modulos devem ser recusados sem alterar o formulario. [94db6dc]
+
+Ao salvar/exportar preenchimento ou gerar PDF, a sugestao de nome do arquivo deve derivar da Razao Social: remover acentos e caracteres nao alfanumericos, colapsar espacos para um unico hifen, capitalizar palavras e remover sufixos juridicos finais comuns que nao agregam identificacao, como LTDA, ME, EPP, S.A., SA, EIRELI, SLU e equivalentes. [4cd016c]
 
 ## 9. Impressao, PDF e Interface
 
-O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Espaços entre titulo, dados cadastrais, resumo, tabelas, local/data e assinatura devem seguir proporcao editorial formal, sem colar blocos nem desperdiçar a pagina. A pagina imprimivel nao deve gerar pagina extra por altura estrutural, margem externa duplicada, overflow ou arredondamento do motor de impressao/PDF. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas.
+O impresso deve seguir o modelo visual oficial, priorizar fidelidade A4 e caber em uma pagina quando os conteudos estiverem dentro dos limites esperados. Espaços entre titulo, dados cadastrais, resumo, tabelas, local/data e assinatura devem seguir proporcao editorial formal, sem colar blocos nem desperdiçar a pagina. A pagina imprimivel nao deve gerar pagina extra por altura estrutural, margem externa duplicada, overflow ou arredondamento do motor de impressao/PDF. Impressao nativa e PDF dedicado, quando disponivel, devem ocultar interface Web, mensagens, alertas e ferramentas. [4cd016c]
 
-O Faturamento DEVE declarar somente o perfil A4 retrato e o conteudo interno exigido, consumindo integralmente `../../RCF.md`, secao `4.1 Contrato unico de folha e impressao`. Visualizacao, Ctrl+P e PDF dedicado DEVEM usar o mesmo perfil e o elemento `#documento-faturamento`. Wrapper, `@page`, dimensoes externas, aplicacao de margens, box model, escala, overflow, quebra, ocultacao da GUI e adaptadores NAO DEVEM existir como implementacao local concorrente. Conteudo nominal e limite DEVEM permanecer em uma pagina; excesso DEVE bloquear a saida com diagnostico, nunca ser cortado por `overflow: hidden`.
+O Faturamento DEVE declarar somente o perfil A4 retrato e o conteudo interno exigido, consumindo integralmente `../../RCF.md`, secao `4.1 Contrato unico de folha e impressao`. Visualizacao, Ctrl+P e PDF dedicado DEVEM usar o mesmo perfil e o elemento `#documento-faturamento`. Wrapper, `@page`, dimensoes externas, aplicacao de margens, box model, escala, overflow, quebra, ocultacao da GUI e adaptadores NAO DEVEM existir como implementacao local concorrente. Conteudo nominal e limite DEVEM permanecer em uma pagina; excesso DEVE bloquear a saida com diagnostico, nunca ser cortado por `overflow: hidden`. [ef96ae2]
 
-A interface Web nao precisa reproduzir exatamente a folha durante edicao. Deve priorizar produtividade, clareza, rapidez, validacao em tempo real, prevencao de inconsistencias e revisao visual fiel antes da impressao. Campos curtos, percentuais, datas, UF, prazos e seletores nao devem ocupar largura desnecessaria; grupos de formulario devem evitar paineis isolados para campo unico quando houver agrupamento semantico coerente.
+A interface Web nao precisa reproduzir exatamente a folha durante edicao. Deve priorizar produtividade, clareza, rapidez, validacao em tempo real, prevencao de inconsistencias e revisao visual fiel antes da impressao. Campos curtos, percentuais, datas, UF, prazos e seletores nao devem ocupar largura desnecessaria; grupos de formulario devem evitar paineis isolados para campo unico quando houver agrupamento semantico coerente. [aa9551c]
 
 ## 10. Fluxo Operacional
 
@@ -112,27 +124,27 @@ Erros obrigatorios: CNPJ invalido; CPF invalido; data invalida; Mes inicial inva
 
 Normalizacoes: CNPJ/CPF para digitos no armazenamento e mascara na apresentacao; moeda BRL; percentual brasileiro; Mes/Ano compativel com ou sem separador para `mm/aaaa`; localidade `Cidade-UF`; espacos excedentes em textos livres.
 
-Entradas invalidas nao devem corromper dados validos. Quando possivel, preservar o valor original para correcao e bloquear apenas consolidacao, impressao ou exportacao inconsistente.
+Entradas invalidas nao devem corromper dados validos. Quando possivel, preservar o valor original para correcao e bloquear apenas consolidacao, impressao ou exportacao inconsistente. [9b47d80]
 
 ## 12. Componentes e Reuso
 
-O modulo deve reutilizar infraestrutura compartilhada para layout de workspace/preview/formularios, toolbar/acoes documentais, autosave, JSON Base64, impressao/PDF, separacao interface/area imprimivel, validadores, normalizadores, formatacao de datas/moedas/percentuais/documentos brasileiros, mensagens e estados de erro.
+O modulo deve reutilizar infraestrutura compartilhada para layout de workspace/preview/formularios, toolbar/acoes documentais, autosave, JSON Base64, impressao/PDF, separacao interface/area imprimivel, validadores, normalizadores, formatacao de datas/moedas/percentuais/documentos brasileiros, mensagens e estados de erro. [c333121]
 
-Layout de formulario externo, workspace, contraste da interface, tooltips, icones, separadores e botoes globais da toolbar pertencem a camada compartilhada. O CSS local deve permanecer restrito ao desenho interno da folha oficial e a detalhes semanticos especificos da Relacao de Faturamento.
+Layout de formulario externo, workspace, contraste da interface, tooltips, icones, separadores e botoes globais da toolbar pertencem a camada compartilhada. O CSS local deve permanecer restrito ao desenho interno da folha oficial e a detalhes semanticos especificos da Relacao de Faturamento. [94db6dc]
 
-Devem ser promovidas ou consumidas como compartilhadas as logicas reutilizaveis, incluindo validacao de Mes/Ano, geracao de doze meses, formatacao/arredondamento BRL, reconciliacao de centavos, validacao percentual, Cidade-UF e serializacao de formularios complexos.
+Devem ser promovidas ou consumidas como compartilhadas as logicas reutilizaveis, incluindo validacao de Mes/Ano, geracao de doze meses, formatacao/arredondamento BRL, reconciliacao de centavos, validacao percentual, Cidade-UF e serializacao de formularios complexos. [9b47d80]
 
 Permanecem locais: semantica da Relacao de Faturamento, Mercado Interno, Faturamento Bruto Anual, distribuicao/redistribuicao mensal, classificacao vinculada a data de assinatura, referencia derivada, layout interno oficial da folha e regras de assinatura/apresentacao do responsavel.
 
 ## 13. Extensoes Permitidas
 
-Novos mercados/categorias de receita, estrategias deterministicas de distribuicao, regras adicionais de percentuais e exportacoes futuras podem ser adicionados se preservarem a relacao atual, consistencia de dados, equivalencia visual e ausencia de dependencia obrigatoria de planilhas, com registro neste RCF.
+Novos mercados/categorias de receita, estrategias deterministicas de distribuicao, regras adicionais de percentuais e exportacoes futuras podem ser adicionados se preservarem a relacao atual, consistencia de dados, equivalencia visual e ausencia de dependencia obrigatoria de planilhas, com registro neste RCF. [9b47d80]
 
 ## 14. UX e Acessibilidade
 
-Campos editaveis devem ter rotulos claros, ordem de navegacao coerente e erros associados. Informacoes por cor tambem precisam de texto, icone, estado ou indicacao perceptivel.
+Campos editaveis devem ter rotulos claros, ordem de navegacao coerente e erros associados. Informacoes por cor tambem precisam de texto, icone, estado ou indicacao perceptivel. [9b47d80]
 
-Responsividade deve beneficiar edicao/revisao; a area imprimivel preserva medidas, hierarquia, proporcoes e paginacao. O usuario deve identificar rapidamente pendencias, mes inicial, meses realizados/previstos, valores editados manualmente, totais divergentes, estado do autosave e prontidao para impressao.
+Responsividade deve beneficiar edicao/revisao; a area imprimivel preserva medidas, hierarquia, proporcoes e paginacao. O usuario deve identificar rapidamente pendencias, mes inicial, meses realizados/previstos, valores editados manualmente, totais divergentes, estado do autosave e prontidao para impressao. [bf7b01a]
 
 ## 15. Invariantes e Aceitacao
 
@@ -151,4 +163,4 @@ src/faturamento/
 └── regras.ts
 ```
 
-O modulo permanece estatico e executado no navegador. Infraestrutura reutilizavel e compartilhada; regras especificas ficam neste RCF. A logica de calculo deve ser independente da renderizacao visual, e a impressao A4 fiel e requisito permanente.
+O modulo permanece estatico e executado no navegador. Infraestrutura reutilizavel e compartilhada; regras especificas ficam neste RCF. A logica de calculo deve ser independente da renderizacao visual, e a impressao A4 fiel e requisito permanente. [9b47d80]

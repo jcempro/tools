@@ -5187,6 +5187,550 @@
       "sentenceSha256": "da7e3f5c6d38ee1155d84e6dde2329ac574dcc2dc1645af8976f37ddaffadfda",
       "state": "synchronized",
       "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "d1d19d264c5da54417c16ea7",
+      "line": 7,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "7723a3291b5ab18e27697b422aa40138385a49215e2c550408d87f31b2f80a45",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "739259b7a7f0a9573f07abe4",
+      "line": 13,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "448530069f76da4011fba9fd5ead6dac957f7d1c7834471526f15cf54b1bfb8c",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "8bb73db1061ceed6b8d06bda",
+      "line": 19,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "749b6e948ac649499a9d697194c1d12ca75de330c13d4a7c18845c4c76dd4c03",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "e01019f18cb6d63cf3a5e77e",
+      "line": 23,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "482fe78a4b6d985d9675f84cb2ac19bdcea09670e7ef453d5b45450d4e0466cd",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "9534597f3ce04e24e4691b94c3d83c9ee723765b",
+      "ft": "FT-013",
+      "id": "c8ebe9d068182f8c264ac75f",
+      "line": 25,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "1207a1eed1ff731866177dccd75f995cb8ac66985c2709c948b3e37d06323561",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "3ac2a9ca266a7ff5993968062ee23fd1cbda95a2",
+      "ft": "FT-013",
+      "id": "264553dbd6edbef895b137f5",
+      "line": 35,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "399a5adce0da850963195581fe61269e6c244b19e2f05e2113f5536b18bea3fa",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "9534597f3ce04e24e4691b94c3d83c9ee723765b",
+      "ft": "FT-013",
+      "id": "dc29f402ccddcc72b9417a7f",
+      "line": 39,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "e98f204b01f8c3f1cbed1741b15a94f71fcbc92aa4cc99250daed39b349c0fb3",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "24e42401e1b1361f2639906c",
+      "line": 53,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "cc562af282b480209679dc975c537afc622ee880fa49fc8b42a7a009ec527446",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "69e9d18550319415d6286e40435634a5b7225a97",
+      "ft": "FT-013",
+      "id": "3f283d17432f9fdf76503c28",
+      "line": 55,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "eb8119277b901c30632edddbaf9ca5ea2669af5b5b65ec4e098d2087e2f7fe9f",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "05add66c62b393d4642c2580695bae9f8aa9551c",
+      "ft": "FT-013",
+      "id": "f2a5556e1704d36f75f7076b",
+      "line": 57,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "dc516163823dc2daf42ddfd918e64b278ffac60e343d9603278d679afb474c80",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "c95743107b0effde3fb3ed9d",
+      "line": 61,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "7fcaa42aa3ec315a680575b17a93e63ec1c8836198881241ed1638b35bb597c2",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "a5d29e7f8519d8e28c5bca489fe26f6edbf7b01a",
+      "ft": "FT-013",
+      "id": "6b65f6d94ec56afb7f577e93",
+      "line": 63,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "811277847dd61f5b02955f78cde940ceb6eda8aa46359150ef19598d7a96eb7e",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "2862a7fa3ae670d30ccf787d",
+      "line": 65,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "b2daefa4b72a306fcb86976957759b16daec4a2b82d957a1f9fa4ce72321321f",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "0c094f69d176aa2b7273338a283ce190aef4557e",
+      "ft": "FT-013",
+      "id": "eb1a87d31bc882341fcb7221",
+      "line": 67,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "cc18a0061c213bd5be988049ab50278ea028174a1b1c949f5bd524ccf59b30d5",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "0c094f69d176aa2b7273338a283ce190aef4557e",
+      "ft": "FT-013",
+      "id": "1a94339da670efbe0cc87a91",
+      "line": 69,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "b48dc4db2d502a456db142016958c66bf29b447bd66d683bda63075528fe0df7",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "9534597f3ce04e24e4691b94c3d83c9ee723765b",
+      "ft": "FT-013",
+      "id": "7a602043424f0b24f3e9bf49",
+      "line": 71,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "8b925d1b2fd6dae71fdff9df3b695a4d99aad457ecebb6c133cf910339645925",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "aa1d6cc1dfcc5290eca1ea23",
+      "line": 75,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "00830454351458c3d4813948aeeb06dad09ca75f3c9fac348fdbdc6c2c4f31bb",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "cbd6bc18a3976d0228215957",
+      "line": 77,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "f3262141661c094974b46172391d20cd9c93b620c56317ac30aa2c83fe940c1e",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "eb523dbc00f3011ee72e07ba",
+      "line": 81,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "828fdfbe4dd31443102522f1f586f547dceb97b148802b2ef5944f4281e5f7fd",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "a5d29e7f8519d8e28c5bca489fe26f6edbf7b01a",
+      "ft": "FT-013",
+      "id": "bba3cad0288cd8440e7fef8b",
+      "line": 83,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "1889126a01706c2f6c1ff1a3f9b33cbbde162919cf500942715bf398adc44cd5",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "a5d29e7f8519d8e28c5bca489fe26f6edbf7b01a",
+      "ft": "FT-013",
+      "id": "1d7fc62f964b866625d3223f",
+      "line": 85,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "c9cf5f063d9b1fde24a361d4e428f71b060397804006f03aeb56d98ba5c3d9ee",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "0ba76a0a9f1f087e5b48a2e6",
+      "line": 87,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "2d890871a9e7e291b20f9ef03d92e923bf9b7c3fd7fcfdb8d5a45038dd25c934",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "3c597ac0c6d4c5a463317bb67a5667bfa94db6dc",
+      "ft": "FT-013",
+      "id": "e9f884c8c28ef201ec86941a",
+      "line": 87,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "1fb578b4c05afb52f9bce7cc5ce124e9f94dfd53175a8d71bf48c6cad2774cdb",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "8bf593b3f7b086fd4a51dda1",
+      "line": 89,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "b0c14943df02c797cc6ed4e4358d46bd54c6e038782f21c94055ca95e5094da9",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "ffd616ea11be1bd7639c90832defd70814cd016c",
+      "ft": "FT-013",
+      "id": "268fa00ba70de006c5dd832e",
+      "line": 89,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "daa8559da76e35e17c22754ec87260161d21bf9b043df099f62f184e274ade42",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "9f225426ef4a0d30eda9a373",
+      "line": 91,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "d63df50eaf42760abab28b42213d542336ad2697bf295c36b741cfe431e04117",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "b364de4338b588c5d70c4c58",
+      "line": 93,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "89729f7bfa84874e7d062a7f18b28e1ab6946884fae6b2155863360b2985a24d",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "ffd616ea11be1bd7639c90832defd70814cd016c",
+      "ft": "FT-013",
+      "id": "0c6d27306c4a6af2bf1bb5b4",
+      "line": 93,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "9cc565d75c518368da614c19423ffe8c4fbd60b06143cfee9bda03d87aa6d482",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "9d6718d63fa559f964daddc8",
+      "line": 95,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "48587b43fa32ea50d778193488228d492a1e476507056eb3eb24a0c655a8d19d",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "ce9483e966f13f244646cbd16538008b9ef96ae2",
+      "ft": "FT-013",
+      "id": "29eaed064eb4cabbc0bb9276",
+      "line": 95,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "0dac0665c3302d12beebc1d502f84cd94850d1f95764c900b7acd9370bde211d",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/assets/config/icons.json",
+        "src/faturamento/faturamento.scss",
+        "src/faturamento/faturamento.ts",
+        "src/faturamento/index.html",
+        "tests/faturamento.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-037",
+      "id": "eb5b9e30b17cbe57a24097bd",
+      "line": 97,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "27f280b3c01f17368dd85e30220354faf444c49bcaf1d4fa4b07da8be82fb1c8",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "05add66c62b393d4642c2580695bae9f8aa9551c",
+      "ft": "FT-013",
+      "id": "10f6389210bf97baf3f5fa58",
+      "line": 97,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "bd438246578ad4db58e2209452e4808035299f80a0b3306f4b8ebe78dbc25de5",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "7954a23789ca71e01761f326",
+      "line": 115,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "c11562bee95d0e1bc81b646616d6743e9c9448d0bf773f83ac0376396b2e972b",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5c1d409c79763e6055ddc7dd7a52a1ecbc333121",
+      "ft": "FT-013",
+      "id": "e2ee013f4113d0c1b82305dc",
+      "line": 119,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "c32ccccdd116be299393321a356e432030181a99ac698cfbc9e7d986f167e194",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "3c597ac0c6d4c5a463317bb67a5667bfa94db6dc",
+      "ft": "FT-013",
+      "id": "7cb09ca866a2d5930cb78edf",
+      "line": 121,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "150457a38e218d71aae553c6d9176afab2d6d601c96fc117c99d9608898c9b20",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "08b6d51fb1cedf43f5be2a31",
+      "line": 123,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "7c4b4f3c7f6774d3d50c775b9a3e73545b59df7fc33c9af8420f55e4cb278959",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "546818a4cef6f330fd393ab1",
+      "line": 129,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "8d02e827e9e53789a997ece5a86e20845f0d45ba10c1c262a64a0cb1829ff3ee",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "de26f357ea5eb96c40079026",
+      "line": 133,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "c478bd8dd5ba66619c6d4864a884fcda24371ce9688586114935b232e3bd19ae",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "a5d29e7f8519d8e28c5bca489fe26f6edbf7b01a",
+      "ft": "FT-013",
+      "id": "d01cb117770519b97ca71a15",
+      "line": 135,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "2f5e1e6a89d4de2b00cdd65af9398e816c966e36727b186dcf8c00d0fd959498",
+      "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "src/faturamento/RCF.md"
+      ],
+      "commit": "5f69a323cf8c31e8182cfa90b2f7f03569b47d80",
+      "ft": "FT-013",
+      "id": "158b01667a262a7af26764be",
+      "line": 154,
+      "rcf": "src/faturamento/RCF.md",
+      "sentenceSha256": "35cadcd12de1b21234342f10607e9e49454d78a720dc28414c93cb7fb4717867",
+      "state": "synchronized",
+      "syncCommit": ""
     }
   ]
 }
