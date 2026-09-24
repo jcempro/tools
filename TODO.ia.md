@@ -258,7 +258,7 @@
     * recursos futuros já identificados, mas ainda indefinidos, puderem ser adicionados pelos pontos de extensão previstos sem ruptura arquitetural;
     * nenhuma combinação válida permitir perda de integridade, associação incorreta, fuga/cruzamento de dados ou violação das normas existentes.
 
-- [ ] Módulo declarações/unificadas: Adicionar reset individual ao campo `Mês inicial` no submódulo de Faturamento
+- [ ] Adicionar reset individual ao campo `Mês inicial` no submódulo de Faturamento
   - Ao lado do campo `Mês inicial`, DEVE existir um botão visualmente adequado ao layout existente, com ícone de **atualizar/restaurar**.
   - Ao ser acionado, o botão DEVE resetar **exclusivamente** a configuração de `Mês inicial`, sem alterar qualquer outro campo ou preferência.
   - O valor restaurado DEVE corresponder exatamente ao **mês/ano padrão que seria inicialmente gerado pelo sistema caso não existisse nenhum dado/configuração salva para esse campo**.
@@ -270,7 +270,7 @@
     - o valor restaurado é idêntico ao valor inicial calculado na ausência de dados salvos;
     - demais configurações permanecem intactas;
     - recarregar/reabrir o estado mantém o comportamento esperado conforme as regras de persistência existentes.
-    - [ ] Corrigir inconsistências visuais evidenciadas em `evidencia6.png`, preservando os comportamentos já corretos
+- [ ] Corrigir inconsistências visuais evidenciadas em `evidencia6.png`, preservando os comportamentos já corretos
   - Inspecionar o estado real e aplicar a correção no mecanismo responsável, sem hardcode específico para a evidência.
   - **Índice de definição:**
     - DEVE usar o `background` definido na configuração aplicável;
