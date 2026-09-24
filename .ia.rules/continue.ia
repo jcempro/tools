@@ -9,15 +9,15 @@
 - Escopo: Tecnico.
 - Objetivo: equalizar e normatizar a composicao nominal do rodape para preservar marcadores contextuais, limitar negrito a nomes e documentos e eliminar espacamento artificial sem regredir justificacao, paginacao ou impressao.
 - Prioridade: alta.
-- Status: em andamento.
+- Status: concluido.
 - Dependencias: FT-022 e FT-023 concluidas; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF especifico distingue marcador de qualificacao e referencia, delimita negrito de nome/documento e define espacos semanticamente controlados, cobrindo integralmente `evidencia6.png` sem antecipar codigo.
 
 ### Plano vigente
 
-1. Etapa 1/3 - equalizar fonte, evidencia, estado real e contratos anteriores; corrigir somente a hierarquia textual acidental do TODO. Status: em andamento.
-2. Etapa 2/3 - atualizar o RCF especifico e preparar a rastreabilidade material da FT-027. Status: pendente.
-3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: pendente.
+1. Etapa 1/3 - equalizar fonte, evidencia, estado real e contratos anteriores; corrigir somente a hierarquia textual acidental do TODO. Status: concluido.
+2. Etapa 2/3 - atualizar o RCF especifico e preparar a rastreabilidade material da FT-027. Status: concluido.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: concluido.
 
 ### Equalizacao inicial
 
@@ -26,9 +26,16 @@
 - O marcador de referencia continua em negrito comum, sem `sup` e sem fundo; ele nao pode receber estilos do qualificador.
 - A implementacao permanece isolada na FT-027 e bloqueada ate conclusao commitada desta FT e nova autorizacao humana explicita.
 
+### Resultado e verificacoes
+
+- O RCF agora limita o negrito aos valores calculados de nome e documento, exige composicao segura por tokens e proibe acumulacao de espacos/margens que produza lacuna semelhante a tabulacao.
+- Quatro sentencas materiais foram registradas como `[PENDENTE-CODIGO]` para a FT-027, vinculadas a configuracao, compilador, TypeScript, SCSS e testes locais.
+- `npm run agent:rcf:trace -- validate` aprovou `241/241`; `npm run type-check`, `npm run lint` e `git diff --check` foram aprovados.
+- `npm test` executou 68 testes, com 66 aprovados e duas falhas preexistentes no `HEAD`: o manifesto alterado pelo commit `2cead39` nao corresponde mais a uma expectativa antiga de correcao sintatica, e os templates alterados pelo commit `55cf89b` nao correspondem mais aos literais antigos do teste. A fase normativa nao alterou testes nem mascarou essas divergencias; a FT-027 deve reconciliar as expectativas ao comportamento autorizado e validar integralmente.
+
 ### Proximo ponto
 
-- Concluir a normatizacao e aguardar nova autorizacao humana explicita para a FT-027.
+- FT-026 concluida; aguardar nova autorizacao humana explicita, posterior ao commit normativo, para iniciar a FT-027.
 
 ## FT-027 - Implementacao do rodape nominal das Declaracoes Unificadas
 

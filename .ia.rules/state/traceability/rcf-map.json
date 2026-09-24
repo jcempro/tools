@@ -4245,6 +4245,23 @@
         "src/declaracoes/unificada/unificada.ts",
         "tests/declaracoes-unificada.test.ts"
       ],
+      "commit": "",
+      "ft": "FT-027",
+      "id": "9db4b8dd24fbbcbbd3c78b75",
+      "line": 152,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "33e22fc75fa6858496a7e495b5736e0bca57d2d7114589ab9bbea8fcfd8c6b03",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
       "commit": "4bd8d3cd0e8ded01998b53d1cf417ae0bd13fbfb",
       "ft": "FT-023",
       "id": "1c539e06ddf1f41db8098f16",
@@ -4252,6 +4269,57 @@
       "rcf": "src/declaracoes/unificada/RCF.md",
       "sentenceSha256": "0ce7a866aaea3aac6fe179be76cbe2401713f2767f705b7de3076aaee9955c06",
       "state": "synchronized",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-027",
+      "id": "fcc9656c20d73519f873d06a",
+      "line": 154,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "c702b7c63b99b66fb6061b7c051cb0dc1b298dae7025b4b51ff0bd0938377e4f",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-027",
+      "id": "649cf5ffb32344cf076c6d60",
+      "line": 156,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "ebe94764a59a7b320b2536d6829a6369cf1a9c1e6a14fb0caf9921db4d16f182",
+      "state": "pending",
+      "syncCommit": ""
+    },
+    {
+      "artifacts": [
+        "scripts/compile.mjs",
+        "src/assets/config/declaracoes-unificada.json",
+        "src/declaracoes/unificada/unificada.scss",
+        "src/declaracoes/unificada/unificada.ts",
+        "tests/declaracoes-unificada.test.ts"
+      ],
+      "commit": "",
+      "ft": "FT-027",
+      "id": "244d136d1503068b43da7c49",
+      "line": 162,
+      "rcf": "src/declaracoes/unificada/RCF.md",
+      "sentenceSha256": "2fbb61bc9e02828789a68d01ccdfad7e6d4b47c733caf28947963e098c4bd5c8",
+      "state": "pending",
       "syncCommit": ""
     },
     {

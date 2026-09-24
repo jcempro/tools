@@ -8,7 +8,7 @@
 - Dependencias: FT-022 e FT-023 concluidas e rastreadas; FT-027 bloqueada pela FT-026 e por nova autorizacao humana posterior.
 - Restricoes: nenhuma regra dependente do texto particular da evidencia; nenhum HTML vindo da configuracao; nenhum negrito propagado; nenhuma margem externa capaz de criar recuo em quebra de linha.
 - Fora de escopo: alterar frases institucionais, dados dos declarantes, regras de representantes, GUI, paginação global, reset de `Mes inicial` ou outros itens pendentes do TODO.
-- Estado: FTs registradas; equalizacao normativa da FT-026 em andamento; FT-027 pendente.
+- Estado: FT-026 concluida e validada no escopo normativo; FT-027 pendente e bloqueada por nova autorizacao humana posterior ao commit normativo.
 - Aceite global: cobertura bidirecional TODO/evidencia -> RCF -> fonte -> testes; qualificacao, referencia, negritos e espacos validados separadamente; `npm run validate:all` aprovado.
 
 ## Diagnostico inicial
@@ -17,3 +17,13 @@
 - Os templates atuais recebem `nome` e `documento` como texto escapado sem delimitacao semantica propria, de modo que a futura implementacao precisara compor tokens seguros e contextuais para limitar negrito sem admitir HTML configuravel.
 - O espacamento configurado pertence ao qualificador; ele deve separar o marcador do nome sem criar uma lacuna semelhante a tabulacao nem deslocar inicio/fim de linha justificada.
 - A ultima edicao do TODO aninhou a nova frente dentro do reset do Faturamento e contaminou o titulo desse reset; a equalizacao restaurou duas frentes independentes, sem perda material.
+
+## Handoff normativo
+
+- O RCF preserva integralmente os sete contratos sincronizados pela FT-023 e acrescenta quatro sentencas materiais exclusivas para a FT-027.
+- Nome e documento tornam-se tokens de marcação segura próprios; somente seus valores calculados recebem negrito, sem propagar destaque a rótulos, preposições, pontuação ou representação.
+- A separação depois do qualificador deve ter uma única fonte efetiva; a implementação deve impedir soma de espaço literal, entidade, padding e margem capaz de produzir a lacuna vista em `evidencia6.png`.
+- A validação técnica deve comprovar separadamente qualificador, referência, negritos e justificação contra a evidência, cobrindo Web, Bundle e impressão/PDF.
+- Rastreabilidade: quatro entradas da FT-027 em estado `pending`; `rcf-trace validate` aprovou `241/241`.
+- Validações normativas aprovadas: type-check, lint e `git diff --check`.
+- A suíte existente ficou em 66/68 por duas expectativas já obsoletas no `HEAD`, introduzidas antes desta FT pelos commits `2cead39` e `55cf89b`; nenhuma expectativa foi enfraquecida ou ajustada antecipadamente nesta fase.

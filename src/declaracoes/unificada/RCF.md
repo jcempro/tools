@@ -149,9 +149,17 @@ Quando o número for referenciado no texto corrido de representação, inclusive
 
 A composição do rodapé DEVE distinguir os contextos de qualificação e referência a partir dos respectivos tokens institucionais antes de produzir o HTML escapado, sem substituição textual global que trate toda ocorrência `[n]` como a mesma estrutura visual. [d13fbfb]
 
+Na lista calculada de declarantes, somente o valor de `${nome}` e o número formatado de `${documento}` DEVEM permanecer em negrito; rótulos institucionais, preposições, pontuação, expressão de representação e demais trechos adjacentes NÃO DEVEM herdar nem propagar esse destaque. [PENDENTE-CODIGO]
+
+Os destaques de `${nome}` e `${documento}` DEVEM ser compostos como marcação segura e semanticamente tipada pelo runtime antes da resolução do template, preservando escape integral dos valores e mantendo proibido qualquer HTML configurável ou fornecido pelo usuário. [PENDENTE-CODIGO]
+
+Entre o marcador de qualificação e o nome DEVE existir uma única separação horizontal coerente com o fluxo textual; espaço literal, entidade, padding e margem NÃO DEVEM acumular distância equivalente a tabulação, criar lacuna artificial nem distorcer início, fim ou quebra automática de linha. [PENDENTE-CODIGO]
+
 O parágrafo introdutório e a lista calculada de declarantes DEVEM permanecer em um único fluxo inline contínuo e justificado, sem `text-indent`, margem inicial de fragmento, bloco intermediário ou quebra voluntária; em qualquer quebra automática, a nova linha DEVE começar no mesmo limite de conteúdo do parágrafo, ressalvado somente o espaço interno visual do marcador de qualificação. [d13fbfb]
 
 A validação específica DEVE cobrir PF, PJ e referências, comprovar os elementos e estilos computados dos dois contextos e exercitar larguras que mantenham o marcador no fim da linha, o movam integralmente para a linha seguinte e quebrem antes/depois dele, preservando Web, Bundle, viewport estreita, Ctrl+P e PDF. [d13fbfb]
+
+A validação da FT-027 DEVE comparar diretamente `evidencia6.png` e comprovar separadamente: qualificador em `sup` com `footer.indexBackground`; referência sem `sup` e sem fundo; negrito restrito a nomes e números de CPF/CNPJ; e justificação sem lacuna, recuo ou propagação de estilo, preservando todos os comportamentos já corretos. [PENDENTE-CODIGO]
 
 O rodapé PODE crescer conforme a quantidade de declarantes, mas a paginação DEVE reservar sua altura efetiva em todas as páginas e bloquear configuração que elimine área útil suficiente para o corpo. [ecefbee]
 
