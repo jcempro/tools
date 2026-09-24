@@ -1,4 +1,5 @@
 - [ ] Implementar futuramente detecção de provável duplicidade por similaridade no Conversor CSV, somente após definir no RCF métrica, campos comparados, explicabilidade, tratamento de falsos positivos e validação; um limiar centralizado `float` entre `0` e `1` ou percentual equivalente PODE integrar essa futura implementação, mas nenhuma heurística parcial ou configuração ativa deve ser antecipada na correção de cardinalidade 1:N/N:N.
+  - 📌 FTs FT-028 e FT-029 registradas para contrato e implementação.
 
 - [x] Corrigir, de forma **cirúrgica, criteriosa e sem regressões**, as inconsistências documentadas em `.\.ia.rules\state\evidencias\`, após inspeção do estado real. A implementação DEVE obedecer integralmente aos padrões, arquitetura, layout, estilo, formas de exibição/impressão, mecanismos de interação, modus operandi e demais normas já estabelecidas pelo projeto, inclusive `RCF.md` e `AGENTS.md`. É PROIBIDO inventar normas, comportamentos ou soluções para preencher lacunas quando isso puder desadequar o resultado ao padrão existente, eliminar recursos, alterar comportamentos consolidados ou produzir regressões diretas, indiretas ou progressivas.
   - **Alternância claro/escuro — `evidencia-1a.png` e `evidencia-1b.png`:** o ícone do controle permanece inadequadamente igual entre os modos. Corrigir para que ele **mude juntamente com o estado e indique inequivocamente o target da próxima alternância**, preservando integralmente o mecanismo, comportamento e estilo já definidos para troca de tema.
@@ -39,7 +40,8 @@
   * A apresentação PODE adotar composição elegante e legível, inclusive inspiração **ABNT** ou formato tabular, desde que compatível com os padrões existentes; estética alternativa NÃO justifica alterar o design global.
   * Validar `/atribuicoes` no fluxo real do GitHub Pages, inclusive navegação/roteamento, responsividade e impressão quando aplicável, sem alterar indevidamente páginas, posts, módulos ou recursos preexistentes.
 
-* [ ] Corrigir fundo e transição da barra de ferramentas vertical
+- [ ] Corrigir fundo e transição da barra de ferramentas vertical
+  - 📌 FTs FT-030 e FT-031 registradas para contrato e implementação.
 
   * Conforme `\.ia.rules\state\evidencias\evidencia5.png`, a barra vertical mantém transparência/opacidade que permite visualizar o conteúdo ao fundo durante o scroll, inclusive a barra horizontal, cuja borda acaba visualmente cortada apesar do padding existente.
   * A barra vertical DEVE possuir fundo opaco/adequado ao tema quando em estado de sobreposição, impedindo interferência visual do conteúdo subjacente sem descaracterizar o design.
@@ -48,6 +50,7 @@
   * A solução DEVE respeitar os temas/estados visuais já existentes e NÃO introduzir regressão em navegação, interação, contraste ou demais componentes adjacentes.
 
 - [ ] Otimizar e normatizar a geração/baixamento de PDF para produzir arquivo de alta qualidade, visualmente equivalente à impressão nativa e com tamanho comparável ao PDF gerado pelo navegador.
+  - 📌 FTs FT-032 e FT-033 registradas para contrato e implementação.
   - **Problema observado**
     - Para a mesma página:
       - impressão nativa do navegador em PDF: ~`114 KB`;
@@ -115,7 +118,8 @@
       - validações executadas;
       - eventual diferença residual e sua justificativa técnica.
 
-* [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
+- [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
+  - 📌 FTs FT-034 e FT-035 registradas para contrato e implementação.
 
   * O Conversor CSV DEVE suportar, conforme selecionado:
 
@@ -259,6 +263,7 @@
     * nenhuma combinação válida permitir perda de integridade, associação incorreta, fuga/cruzamento de dados ou violação das normas existentes.
 
 - [ ] Adicionar reset individual ao campo `Mês inicial` no submódulo de Faturamento
+  - 📌 FTs FT-036 e FT-037 registradas para contrato e implementação.
   - Ao lado do campo `Mês inicial`, DEVE existir um botão visualmente adequado ao layout existente, com ícone de **atualizar/restaurar**.
   - Ao ser acionado, o botão DEVE resetar **exclusivamente** a configuração de `Mês inicial`, sem alterar qualquer outro campo ou preferência.
   - O valor restaurado DEVE corresponder exatamente ao **mês/ano padrão que seria inicialmente gerado pelo sistema caso não existisse nenhum dado/configuração salva para esse campo**.

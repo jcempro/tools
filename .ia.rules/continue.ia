@@ -1,5 +1,199 @@
 # Memoria operacional canonica
 
+## FT-028 - Contrato de deteccao de duplicidade por similaridade no CSV
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-09-24T15:24:00-03:00.
+- Origem: primeira frente pendente de `TODO.ia.md`, fonte local versionada com SHA-256 `1C86C825F01B8E84BE9C8567733A0E406E2AD036C96BA5579520F2F08B020D7A` antes da equalizacao.
+- Vinculos: FT-024; FT-025; FT-029; `TODO.ia.md`; `src/csv-bd/RCF.md`; configuracao, UI, motor tabular e testes do Conversor CSV.
+- Escopo: Tecnico.
+- Objetivo: definir metricas, campos, limiar, explicabilidade, falsos positivos e validacao para detectar provaveis duplicidades sem antecipar heuristica arbitraria nem alterar a deduplicacao exata existente.
+- Prioridade: normal.
+- Status: em andamento.
+- Dependencias: cardinalidade multipla das FTs 024/025 concluida; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF especifico define um contrato deterministico, configuravel e explicavel para similaridade, com opt-in, revisao humana e testes de falso positivo/negativo, sem codigo nesta fase.
+
+### Plano vigente
+
+1. Etapa 1/3 - inspecionar dados, normalizacao, deduplicacao exata e UI atuais. Status: em andamento.
+2. Etapa 2/3 - normatizar similaridade e preparar rastreabilidade da FT-029. Status: pendente.
+3. Etapa 3/3 - validar, commitar a norma e interromper antes da implementacao. Status: pendente.
+
+### Proximo ponto
+
+- Concluir o contrato e aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-029.
+
+## FT-029 - Implementacao da deteccao de duplicidade por similaridade no CSV
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-09-24T15:24:01-03:00.
+- Origem: mesma frente operacional vinculada pela FT-028.
+- Vinculos: FT-028; `src/csv-bd/RCF.md`; configuracao, UI, motor tabular, testes e Bundle do Conversor CSV.
+- Escopo: Tecnico.
+- Objetivo: materializar a deteccao explicavel de provaveis duplicidades conforme contrato, preservando deduplicacao exata, cardinalidade, associacao de registros e decisao humana.
+- Prioridade: normal.
+- Status: pendente.
+- Dependencias: FT-028 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: resultados deterministas e explicados, limiar centralizado, opt-in, ausencia de remocao silenciosa e validacao integral Web/Bundle.
+
+### Plano vigente
+
+1. Etapa 1/3 - implementar configuracao, comparador e integracao sem mutacao silenciosa. Status: bloqueado pela FT-028.
+2. Etapa 2/3 - implementar UI acessivel e testes de similaridade/falsos positivos. Status: bloqueado pela FT-028.
+3. Etapa 3/3 - validar, rastrear e concluir. Status: bloqueado pela FT-028.
+
+## FT-030 - Contrato visual da barra de ferramentas vertical em sobreposicao
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-09-24T15:24:02-03:00.
+- Origem: frente pendente de `TODO.ia.md` vinculada a `evidencia5.png`, na mesma fonte local versionada da FT-028.
+- Vinculos: FT-014; FT-015; FT-031; `TODO.ia.md`; `RCF.md`; chrome, temas, navegacao vertical e testes visuais compartilhados.
+- Escopo: Tecnico.
+- Objetivo: normatizar fundo opaco tematico e transicao discreta por limiar de scroll para impedir interferencia do conteudo sob a barra vertical sem alterar geometria ou interacao.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-028 concluida; evidencia e comportamento real inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF global define estados, limiar, contraste, transicao, responsividade e ausencia de sobreposicao visual, cobrindo a evidencia sem codigo nesta fase.
+
+### Plano vigente
+
+1. Etapa 1/3 - inspecionar evidencia, chrome, estilos, temas e gatilhos de scroll. Status: pendente.
+2. Etapa 2/3 - normatizar estados e preparar rastreabilidade da FT-031. Status: pendente.
+3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+
+## FT-031 - Implementacao visual da barra de ferramentas vertical em sobreposicao
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-09-24T15:24:03-03:00.
+- Origem: mesma frente operacional vinculada pela FT-030.
+- Vinculos: FT-030; `RCF.md`; chrome, temas, navegacao vertical, CSS/TypeScript compartilhados e testes visuais.
+- Escopo: Tecnico.
+- Objetivo: aplicar o estado opaco e a transicao normatizados no mecanismo compartilhado da barra vertical, sem hardcode de viewport nem regressao de navegacao.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-030 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: evidencia corrigida em temas e viewports, limiar discreto, transicao curta e ausencia de regressao geometrica, interativa ou responsiva.
+
+### Plano vigente
+
+1. Etapa 1/3 - ajustar mecanismo e estilos compartilhados. Status: bloqueado pela FT-030.
+2. Etapa 2/3 - ampliar testes de estado, tema, scroll e responsividade. Status: bloqueado pela FT-030.
+3. Etapa 3/3 - validar visualmente, rastrear e concluir. Status: bloqueado pela FT-030.
+
+## FT-032 - Contrato de eficiencia e fidelidade do PDF dedicado
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-09-24T15:24:04-03:00.
+- Origem: frente pendente de otimizacao de PDF em `TODO.ia.md`, na mesma fonte local versionada da FT-028.
+- Vinculos: FT-005; FT-006; FT-033; `TODO.ia.md`; `RCF.md`; adaptador documental compartilhado, perfis de folha, dependencias e testes de PDF.
+- Escopo: Tecnico.
+- Objetivo: normatizar eficiencia, preservacao textual/vetorial, reutilizacao de recursos e comparacao mensuravel com impressao nativa sem enfraquecer fidelidade ou qualidade de impressao.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-030 concluida; pipeline e PDFs comparativos inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF global define qualidade e tamanho como requisitos simultaneos, causas justificaveis, limites de rasterizacao/recursos e validacao reprodutivel sem codigo nesta fase.
+
+### Plano vigente
+
+1. Etapa 1/3 - medir pipeline, dependencias, estrutura e tamanhos comparativos. Status: pendente.
+2. Etapa 2/3 - normatizar eficiencia e preparar rastreabilidade da FT-033. Status: pendente.
+3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+
+## FT-033 - Implementacao da eficiencia do PDF dedicado
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-09-24T15:24:05-03:00.
+- Origem: mesma frente operacional vinculada pela FT-032.
+- Vinculos: FT-032; `RCF.md`; adaptador documental compartilhado, dependencias, perfis, testes e Bundles documentais.
+- Escopo: Tecnico.
+- Objetivo: corrigir a causa comprovada do crescimento anormal do PDF preservando o fluxo, a geometria, a qualidade impressa e a equivalencia visual normatizadas.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-032 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: reducao substancial e mensurada, texto pesquisavel quando aplicavel, equivalencia visual e ausencia de regressao em Web, Bundle, Ctrl+P e PDF dedicado.
+
+### Plano vigente
+
+1. Etapa 1/3 - corrigir o pipeline real conforme diagnostico normatizado. Status: bloqueado pela FT-032.
+2. Etapa 2/3 - ampliar testes estruturais, de tamanho e de fidelidade. Status: bloqueado pela FT-032.
+3. Etapa 3/3 - validar PDFs, rastrear e concluir. Status: bloqueado pela FT-032.
+
+## FT-034 - Contrato dos modos independentes de conversao e mesclagem CSV
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-09-24T15:24:06-03:00.
+- Origem: frente pendente de desacoplamento e ampliacao de merge em `TODO.ia.md`, na mesma fonte local versionada da FT-028.
+- Vinculos: FT-024; FT-025; FT-035; `TODO.ia.md`; `src/csv-bd/RCF.md`; UI, estrategias tabulares, configuracao e testes do Conversor CSV.
+- Escopo: Tecnico.
+- Objetivo: definir conversao e mesclagem como capacidades independentes e combinaveis, com estrategias tabulares inequivocas e UI orientada a resultados para usuarios nao tecnicos.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-032 concluida; estado real e contratos de cardinalidade inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF define modos, estrategias suportadas, correspondencia, preservacao de linhas, conflitos, duplicidades, visibilidade CSS e extensoes sem lacunas de negocio.
+
+### Plano vigente
+
+1. Etapa 1/3 - auditar fluxo, UI, estrategias e integridade atuais. Status: pendente.
+2. Etapa 2/3 - normatizar modos/estrategias e preparar rastreabilidade da FT-035. Status: pendente.
+3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+
+## FT-035 - Implementacao dos modos independentes de conversao e mesclagem CSV
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-09-24T15:24:07-03:00.
+- Origem: mesma frente operacional vinculada pela FT-034.
+- Vinculos: FT-034; `src/csv-bd/RCF.md`; UI, estrategias tabulares, configuracao, testes e Bundle do Conversor CSV.
+- Escopo: Tecnico.
+- Objetivo: implementar modos independentes e combinaveis, estrategias normatizadas e UI contextual acessivel, preservando associacao deterministica e ausencia de fuga entre registros.
+- Prioridade: alta.
+- Status: pendente.
+- Dependencias: FT-034 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: conversao isolada, conversao com merge e merge isolado funcionam conforme estrategia, com CSS contextual, acessibilidade e testes de correspondencia completa/parcial/ausente/duplicada.
+
+### Plano vigente
+
+1. Etapa 1/3 - implementar motor/estrategias e fluxo independente. Status: bloqueado pela FT-034.
+2. Etapa 2/3 - implementar UI contextual e testes de integridade/acessibilidade. Status: bloqueado pela FT-034.
+3. Etapa 3/3 - validar Web/Bundle, rastrear e concluir. Status: bloqueado pela FT-034.
+
+## FT-036 - Contrato do reset individual de Mes inicial no Faturamento
+
+- Tipo: implementacao_normativa.
+- criado_em: 2026-09-24T15:24:08-03:00.
+- Origem: frente pendente adicionada a `TODO.ia.md` pelo commit `7e845c2`, incluida na mesma fonte local versionada da FT-028.
+- Vinculos: FT-037; `TODO.ia.md`; `src/faturamento/RCF.md`; formulario, persistencia, regra temporal, UI e testes do Faturamento.
+- Escopo: Tecnico.
+- Objetivo: normatizar reset exclusivo de Mes inicial para o valor dinamico produzido pela inicializacao original, preservando demais campos, persistencia e calculos dependentes.
+- Prioridade: normal.
+- Status: pendente.
+- Dependencias: FT-034 concluida; inicializacao, persistencia e eventos reais inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Aceite: RCF especifico define origem unica do valor padrao, efeito isolado, persistencia, acessibilidade e recomputacao coerente sem codigo nesta fase.
+
+### Plano vigente
+
+1. Etapa 1/3 - inspecionar inicializacao, persistencia, eventos e layout atuais. Status: pendente.
+2. Etapa 2/3 - normatizar reset e preparar rastreabilidade da FT-037. Status: pendente.
+3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+
+## FT-037 - Implementacao do reset individual de Mes inicial no Faturamento
+
+- Tipo: implementacao_codigo.
+- criado_em: 2026-09-24T15:24:09-03:00.
+- Origem: mesma frente operacional vinculada pela FT-036.
+- Vinculos: FT-036; `src/faturamento/RCF.md`; formulario, persistencia, regra temporal, UI, testes e Bundle do Faturamento.
+- Escopo: Tecnico.
+- Objetivo: implementar controle acessivel que restaura apenas Mes inicial pela mesma regra dinamica da inicializacao e dispara os efeitos normatizados sem alterar preferencias alheias.
+- Prioridade: normal.
+- Status: pendente.
+- Dependencias: FT-036 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Aceite: reset exclusivo e persistente, valor identico ao default dinamico, demais dados intactos e validacoes focal/integral/visual aprovadas.
+
+### Plano vigente
+
+1. Etapa 1/3 - implementar controle e reutilizacao da regra de default. Status: bloqueado pela FT-036.
+2. Etapa 2/3 - ampliar testes de isolamento, persistencia e efeitos dependentes. Status: bloqueado pela FT-036.
+3. Etapa 3/3 - validar Web/Bundle, rastrear e concluir. Status: bloqueado pela FT-036.
+
 ## FT-026 - Contrato do rodape nominal das Declaracoes Unificadas
 
 - Tipo: implementacao_normativa.
