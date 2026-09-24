@@ -46,15 +46,15 @@
 - Escopo: Tecnico.
 - Objetivo: materializar a composicao normatizada do rodape, restaurando o qualificador visual, limitando negritos e removendo lacunas artificiais sem alterar conteudo, vinculos, ordenacao, paginacao ou demais estilos.
 - Prioridade: alta.
-- Status: pendente.
+- Status: em andamento.
 - Dependencias: FT-026 concluida e commitada em `7b40253`; autorizacao humana explicita recebida em 2026-09-24, posteriormente ao commit normativo.
 - Aceite: qualificadores usam fundo configurado e `sup`; referencias permanecem sem ambos; somente nomes e CPF/CNPJ ficam em negrito; justificacao e espacos permanecem regulares; testes focais, validacao integral e inspecao visual aprovados.
 
 ### Plano vigente
 
-1. Etapa 1/3 - ajustar a composicao segura por tokens e os estilos locais conforme o contrato. Status: em andamento.
-2. Etapa 2/3 - ampliar testes de marcadores, negritos, espacos, quebras e regressao. Status: em andamento.
-3. Etapa 3/3 - validar Web, Bundle, impressao/PDF, rastreabilidade e concluir. Status: pendente.
+1. Etapa 1/3 - ajustar a composicao segura por tokens e os estilos locais conforme o contrato. Status: concluido.
+2. Etapa 2/3 - ampliar testes de marcadores, negritos, espacos, quebras e regressao. Status: concluido.
+3. Etapa 3/3 - validar Web, Bundle, impressao/PDF, rastreabilidade e concluir. Status: em andamento.
 
 ### Proximo ponto
 
