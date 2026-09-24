@@ -119,7 +119,7 @@
       - eventual diferença residual e sua justificativa técnica.
 
 - [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
-  - 📌 FTs FT-034 e FT-035 registradas para contrato e implementação.
+  - 📜 FT-034 normatizada; FT-035 aguarda autorização posterior ao commit normativo.
 
   * O Conversor CSV DEVE suportar, conforme selecionado:
 

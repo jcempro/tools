@@ -156,15 +156,26 @@
 - Escopo: Tecnico.
 - Objetivo: definir conversao e mesclagem como capacidades independentes e combinaveis, com estrategias tabulares inequivocas e UI orientada a resultados para usuarios nao tecnicos.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: FT-032 concluida e commitada; estado real e contratos de cardinalidade inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF define modos, estrategias suportadas, correspondencia, preservacao de linhas, conflitos, duplicidades, visibilidade CSS e extensoes sem lacunas de negocio.
 
 ### Plano vigente
 
-1. Etapa 1/3 - auditar fluxo, UI, estrategias e integridade atuais. Status: pendente.
-2. Etapa 2/3 - normatizar modos/estrategias e preparar rastreabilidade da FT-035. Status: pendente.
-3. Etapa 3/3 - validar e commitar a norma. Status: pendente.
+1. Etapa 1/3 - auditar fluxo, UI, estrategias e integridade atuais. Status: concluido.
+2. Etapa 2/3 - normatizar modos/estrategias e preparar rastreabilidade da FT-035. Status: concluido.
+3. Etapa 3/3 - validar e commitar a norma. Status: concluido.
+
+### Resultado e verificacoes
+
+- O fluxo atual foi confirmado como conversão obrigatória seguida de complemento opcional; `Somente mesclar` era política de preservação do segundo lado, não uma operação independente.
+- O RCF passa a distinguir somente conversão, conversão com combinação e somente combinação, aceitando dois ou mais arquivos sem inferir modelo no modo independente.
+- Foram definidos `left`, `right`, `inner`, `full` e `append` com linguagem orientada a resultado, dobra ordenada, chaves explícitas, conflitos bloqueantes e deduplicação somente exata.
+- A rastreabilidade material da FT-035 foi preparada para núcleo tabular, interface, estilos e testes do Conversor CSV.
+
+### Proximo ponto
+
+- FT-034 concluida; aguardar nova autorizacao humana posterior ao commit normativo para iniciar a FT-035.
 
 ## FT-035 - Implementacao dos modos independentes de conversao e mesclagem CSV
 
@@ -195,7 +206,7 @@
 - Objetivo: normatizar reset exclusivo de Mes inicial para o valor dinamico produzido pela inicializacao original, preservando demais campos, persistencia e calculos dependentes.
 - Prioridade: normal.
 - Status: pendente.
-- Dependencias: FT-034 concluida; inicializacao, persistencia e eventos reais inspecionados; nenhuma decisao recusada local elegivel registrada.
+- Dependencias: FT-034 concluida e commitada; inicializacao, persistencia e eventos reais inspecionados; nenhuma decisao recusada local elegivel registrada.
 - Aceite: RCF especifico define origem unica do valor padrao, efeito isolado, persistencia, acessibilidade e recomputacao coerente sem codigo nesta fase.
 
 ### Plano vigente
