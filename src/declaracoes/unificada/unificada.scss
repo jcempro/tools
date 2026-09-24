@@ -39,9 +39,10 @@
 .du-page-footer { padding-top: .12cm; border-top: 1px solid #777; font-size: 7.5pt; line-height: 1.18; }
 .du-page-footer p { margin: 0; border-bottom: 0; text-align: justify; text-decoration: none; text-indent: 0; }
 .du-signature { margin-top: .24cm !important; padding-bottom: var(--du-signature-reserve); text-align: center !important; font-weight: 700; }
-.du-page-footer sup { display: inline-block; margin-inline: 0 var(--du-index-margin); white-space: nowrap; }
-.du-page-footer sup > strong { display: inline-block; padding-inline: var(--du-index-padding); background: var(--du-index-background); font-weight: 800; }
+.du-index-qualification { display: inline-block; margin: 0; vertical-align: super; line-height: 0; white-space: nowrap; }
+.du-index-qualification > strong { display: inline-block; padding-inline: var(--du-index-padding); background: var(--du-index-background); font-size: .82em; font-weight: 800; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .du-index-reference { font-weight: 800; }
+.du-footer-value { font-weight: 800; }
 
 :root[data-theme="dark"] .du-declarant { background: #303236; border-color: #555a60; }
 :root[data-theme="dark"] .du-representatives { border-color: #555a60; }

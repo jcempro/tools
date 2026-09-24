@@ -8,7 +8,7 @@
 - Dependencias: FT-022 e FT-023 concluidas e rastreadas; FT-027 bloqueada pela FT-026 e por nova autorizacao humana posterior.
 - Restricoes: nenhuma regra dependente do texto particular da evidencia; nenhum HTML vindo da configuracao; nenhum negrito propagado; nenhuma margem externa capaz de criar recuo em quebra de linha.
 - Fora de escopo: alterar frases institucionais, dados dos declarantes, regras de representantes, GUI, paginação global, reset de `Mes inicial` ou outros itens pendentes do TODO.
-- Estado: FT-026 concluida e validada no escopo normativo; FT-027 pendente e bloqueada por nova autorizacao humana posterior ao commit normativo.
+- Estado: FT-026 concluida no commit `7b40253`; FT-027 autorizada posteriormente e em implementacao.
 - Aceite global: cobertura bidirecional TODO/evidencia -> RCF -> fonte -> testes; qualificacao, referencia, negritos e espacos validados separadamente; `npm run validate:all` aprovado.
 
 ## Diagnostico inicial
@@ -27,3 +27,10 @@
 - Rastreabilidade: quatro entradas da FT-027 em estado `pending`; `rcf-trace validate` aprovou `241/241`.
 - Validações normativas aprovadas: type-check, lint e `git diff --check`.
 - A suíte existente ficou em 66/68 por duas expectativas já obsoletas no `HEAD`, introduzidas antes desta FT pelos commits `2cead39` e `55cf89b`; nenhuma expectativa foi enfraquecida ou ajustada antecipadamente nesta fase.
+
+## Autorizacao e diagnostico tecnico da FT-027
+
+- A autorização humana `Implemente FT-027` foi recebida depois do commit normativo `7b40253` e libera exclusivamente esta implementação.
+- O qualificador dependia parcialmente do estilo padrão do navegador, não exigia preservação da cor de fundo na impressão e acumulava `footer.indexMarginCm` com o espaço literal do template.
+- Nome e documento eram escapados como texto comum; não existia fronteira semântica própria para aplicar negrito somente aos dois valores.
+- A correção usa marcação segura gerada pelo runtime, remove a margem externa duplicada e torna o `sup` e a cor de impressão explícitos, preservando referência, templates institucionais e escape.

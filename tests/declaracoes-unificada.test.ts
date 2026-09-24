@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import {
   DECLARATIONS_SCHEMA,
   footerMarkerMarkup,
+  footerValueMarkup,
   moveDeclarant,
   orderedDeclarants,
   parseDeclarationsState,
@@ -35,7 +36,7 @@ test("manifest selects exactly the six gray ODT tables and audits syntax correct
   assert.deepEqual(manifest.units.map(({ order }) => order), [1, 2, 3, 4, 5, 6]);
   assert.ok(manifest.syntaxCorrections.length >= 9);
   assert.ok(manifest.syntaxCorrections.every(({ markdown, origin, reason, table }) => markdown && origin && reason && manifest.source.tables.includes(table)));
-  assert.ok(manifest.syntaxCorrections.some(({ origin, markdown }) => origin === "poderão se r obtidas" && markdown === "poderão ser obtidas"));
+  assert.ok(manifest.syntaxCorrections.some(({ origin, markdown }) => origin === "poderão ser obtidas" && markdown === "poderão ser obtidas"));
 });
 
 test("Markdown set is closed, structurally valid and preserves material source wording", async () => {
@@ -102,9 +103,10 @@ test("semantic table sizing classifies only unambiguous all-X body columns", () 
 });
 
 test("footer markers preserve qualification and reference semantics without a global replacement", () => {
-  assert.equal(footerMarkerMarkup("2", "qualification"), "<sup><strong>&nbsp;[&nbsp;2&nbsp;]&nbsp;</strong></sup>");
+  assert.equal(footerMarkerMarkup("2", "qualification"), '<sup class="du-index-qualification"><strong>&nbsp;[&nbsp;2&nbsp;]&nbsp;</strong></sup>');
   assert.equal(footerMarkerMarkup("2", "reference"), '<strong class="du-index-reference">[2]</strong>');
-  assert.equal(footerMarkerMarkup("<", "qualification"), "<sup><strong>&nbsp;[&nbsp;&lt;&nbsp;]&nbsp;</strong></sup>");
+  assert.equal(footerMarkerMarkup("<", "qualification"), '<sup class="du-index-qualification"><strong>&nbsp;[&nbsp;&lt;&nbsp;]&nbsp;</strong></sup>');
+  assert.equal(footerValueMarkup("Empresa & Pessoa"), '<strong class="du-footer-value">Empresa &amp; Pessoa</strong>');
   assert.equal(validatedFooterIndexBackground("#cccccc"), "#cccccc");
   assert.throws(() => validatedFooterIndexBackground("rgb(204 204 204)"), /footer\.indexBackground/);
 });
@@ -141,21 +143,24 @@ test("module integrates compiled content, DU identity, central config and multip
   assert.equal(runtimeConfig.document.background, "#d9d9d9");
   assert.equal(runtimeConfig.footer.signatureReserveCm, 1);
   assert.equal(runtimeConfig.footer.indexBackground, "#cccccc");
-  assert.equal(runtimeConfig.footer.personTemplate, "${numero} ${nome}, CPF ${documento}");
-  assert.equal(runtimeConfig.footer.companyTemplate, "${numero} ${nome}, CNPJ ${documento}${representantes}");
+  assert.equal(runtimeConfig.footer.personTemplate, "${numero} ${nome}, inscrito sob CPF nº ${documento}");
+  assert.equal(runtimeConfig.footer.companyTemplate, "${numero} ${nome}, inscrito sob CNPJ nº ${documento}${representantes}");
+  assert.equal(runtimeConfig.footer.indexMarginCm, undefined);
   assert.equal(runtimeConfig.document.headerTemplate, "${documentos} APLICA-SE A TODAS AS CONTAS PJ/PF DO(S) DECLARANTE(S). Página ${paginaAtual} de ${totalPaginas}");
   assert.deepEqual(printing.profiles["declaracoes-unificada"]?.margins, { bottom: 1, left: 1, right: 1, top: 1 });
   assert.match(css, /\.du-signature\s*{[^}]*margin-top:\s*\.24cm !important;[^}]*padding-bottom:\s*var\(--du-signature-reserve\)/s);
   assert.match(css, /\.du-page-footer p\s*{[^}]*border-bottom:\s*0;[^}]*text-decoration:\s*none;[^}]*text-indent:\s*0/s);
-  assert.match(css, /\.du-page-footer sup\s*{[^}]*display:\s*inline-block;[^}]*margin-inline:\s*0 var\(--du-index-margin\);[^}]*white-space:\s*nowrap/s);
-  assert.match(css, /\.du-page-footer sup > strong\s*{[^}]*display:\s*inline-block;[^}]*padding-inline:\s*var\(--du-index-padding\);[^}]*background:\s*var\(--du-index-background\);[^}]*font-weight:\s*800/s);
+  assert.match(css, /\.du-index-qualification\s*{[^}]*display:\s*inline-block;[^}]*margin:\s*0;[^}]*vertical-align:\s*super;[^}]*line-height:\s*0;[^}]*white-space:\s*nowrap/s);
+  assert.match(css, /\.du-index-qualification > strong\s*{[^}]*display:\s*inline-block;[^}]*padding-inline:\s*var\(--du-index-padding\);[^}]*background:\s*var\(--du-index-background\);[^}]*font-size:\s*\.82em;[^}]*font-weight:\s*800;[^}]*print-color-adjust:\s*exact/s);
   assert.match(css, /\.du-index-reference\s*{[^}]*font-weight:\s*800/s);
   assert.doesNotMatch(css.match(/\.du-index-reference\s*{[^}]*}/)?.[0] ?? "", /background|padding|margin|vertical-align/);
+  assert.match(css, /\.du-footer-value\s*{[^}]*font-weight:\s*800/s);
   assert.match(css, /\.du-page-context\s*{[^}]*text-align:\s*justify/s);
   assert.match(css, /\.du-unit td\.du-marker-cell\s*{[^}]*width:\s*1%;[^}]*text-align:\s*center/s);
   assert.doesNotMatch(css, /\.du-unit td:first-child/);
   assert.match(source, /--du-signature-reserve/);
   assert.match(source, /--du-index-background/);
+  assert.doesNotMatch(source, /--du-index-margin/);
   assert.doesNotMatch(source, /replace\(\/\\\[\(\\d\+\|\\\?\)\\\]\//);
   assert.match(compile, /footer\?\.indexBackground/);
   assert.match(JSON.stringify(runtimeConfig.footer), /\$\{numero\}/);

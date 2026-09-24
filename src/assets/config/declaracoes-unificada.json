@@ -6,7 +6,7 @@
     "background": "#d9d9d9",
     "paddingCm": 0.35
   },
-  "footer": {        
+  "footer": {
     "intro": "Esta(s) autorização(ões)/declaração(ões) e adesão(ões) é(são) realizada(s)/assinada(s) física e/ou eletronicamente por",
     "personTemplate": "${numero} ${nome}, inscrito sob CPF nº ${documento}",
     "companyTemplate": "${numero} ${nome}, inscrito sob CNPJ nº ${documento}${representantes}",
@@ -15,8 +15,7 @@
     "signature": "(assinaturas e visto/s)",
     "signatureReserveCm": 1,
     "indexBackground": "#cccccc",
-    "indexPaddingCm": 0.3,
-    "indexMarginCm": 0.3
+    "indexPaddingCm": 0.3
   },
   "defaults": {
     "city": "Pirassununga",

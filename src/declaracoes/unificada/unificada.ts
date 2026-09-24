@@ -45,8 +45,13 @@ function escapeMarkup(value: string): string {
 export function footerMarkerMarkup(value: string, context: FooterMarkerContext): string {
   const escaped = escapeMarkup(value);
   return context === "qualification"
-    ? `<sup><strong>&nbsp;[&nbsp;${escaped}&nbsp;]&nbsp;</strong></sup>`
+    ? `<sup class="du-index-qualification"><strong>&nbsp;[&nbsp;${escaped}&nbsp;]&nbsp;</strong></sup>`
     : `<strong class="du-index-reference">[${escaped}]</strong>`;
+}
+
+/** Materializa um valor nominal do rodapé com destaque restrito e escape obrigatório. */
+export function footerValueMarkup(value: string): string {
+  return `<strong class="du-footer-value">${escapeMarkup(value)}</strong>`;
 }
 
 /**
@@ -348,11 +353,11 @@ function bootstrapDeclarations(w: Window, d: Document): void {
         .join(escapeMarkup(config.footer.representativeJoin));
       const representation = representatives ? resolveMarkupTemplate(config.footer.representationTemplate, { documento: "", nome: "", numero: "", representantes: representatives }, new Set(["representantes"])) : "";
       return resolveMarkupTemplate(declarant.type === "PF" ? config.footer.personTemplate : config.footer.companyTemplate, {
-        documento: formattedDocument(declarant) ?? (declarant.document || "________________"),
-        nome: declarant.name.trim() || "________________",
+        documento: footerValueMarkup(formattedDocument(declarant) ?? (declarant.document || "________________")),
+        nome: footerValueMarkup(declarant.name.trim() || "________________"),
         numero: footerMarkerMarkup(`${numbers.get(declarant.id) ?? "?"}`, "qualification"),
         representantes: representation
-      }, new Set(["numero", "representantes"]));
+      }, new Set(["documento", "nome", "numero", "representantes"]));
     });
     return `<p>${escapeMarkup(config.footer.intro)}${lines.length ? ` ${lines.join("; ")}` : ""}.</p><p class="du-signature">${escapeMarkup(config.footer.signature)}</p>`;
   }
@@ -530,7 +535,6 @@ function bootstrapDeclarations(w: Window, d: Document): void {
     root.style.setProperty("--du-block-padding", `${config.document.paddingCm}cm`);
     root.style.setProperty("--du-index-background", validatedFooterIndexBackground(config.footer.indexBackground));
     root.style.setProperty("--du-index-padding", `${config.footer.indexPaddingCm}cm`);
-    root.style.setProperty("--du-index-margin", `${config.footer.indexMarginCm}cm`);
     root.style.setProperty("--du-signature-reserve", `${config.footer.signatureReserveCm}cm`);
   }
 
