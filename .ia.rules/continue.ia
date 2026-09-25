@@ -160,15 +160,28 @@
 - Escopo: Tecnico.
 - Objetivo: corrigir a causa comprovada do crescimento anormal do PDF preservando o fluxo, a geometria, a qualidade impressa e a equivalencia visual normatizadas.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: FT-032 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
 - Aceite: reducao substancial e mensurada, texto pesquisavel quando aplicavel, equivalencia visual e ausencia de regressao em Web, Bundle, Ctrl+P e PDF dedicado.
 
 ### Plano vigente
 
-1. Etapa 1/3 - corrigir o pipeline real conforme diagnostico normatizado. Status: bloqueado pela FT-032.
-2. Etapa 2/3 - ampliar testes estruturais, de tamanho e de fidelidade. Status: bloqueado pela FT-032.
-3. Etapa 3/3 - validar PDFs, rastrear e concluir. Status: bloqueado pela FT-032.
+1. Etapa 1/3 - corrigir o pipeline real conforme diagnostico normatizado. Status: concluido.
+2. Etapa 2/3 - ampliar testes estruturais, de tamanho e de fidelidade. Status: concluido.
+3. Etapa 3/3 - validar PDFs, rastrear e concluir. Status: concluido.
+
+### Resultado e verificacoes
+
+- Causa raiz confirmada: a folha inteira era rasterizada por `html2canvas` em escala `6` e JPEG `0.98`, eliminando texto/vetor e produzindo aproximadamente 24 MB contra cerca de 114 KB do fluxo nativo.
+- A API e os botoes dedicados agora preparam a mesma folha e abrem `window.print()`, com sugestao de nome pelo titulo temporario e restauracao idempotente por `afterprint`, falha e retorno do dialogo.
+- `html2pdf.js`, 24 pacotes transitivos, scripts CDN, rotas de desenvolvimento, tipos globais, atribuicao e bytes dos Bundles foram removidos; o validador de publicacao rejeita qualquer residuo raster.
+- O PDF nativo medido possui 108.432 bytes, seis paginas A4, 21.719 caracteres extraiveis e zero imagens raster por pagina; as seis paginas renderizadas foram inspecionadas sem corte, sobreposicao ou perda visual.
+- Os Bundles passaram de 325.522 para 62.471 bytes no Faturamento e de 318.175 para 55.204 bytes no Admissional; type-check, lint, 26 testes focais, build Web/Bundle e validacao de 6 paginas/81 arquivos foram aprovados.
+- Commit material: `738694aa5c852700e3c24e9e2c74e5e7afbdf31a`.
+
+### Proximo ponto
+
+- FT-033 concluida; prosseguir para a FT-035, ja autorizada pela solicitacao humana de 2026-09-25.
 
 ## FT-034 - Contrato dos modos independentes de conversao e mesclagem CSV
 

@@ -49,8 +49,8 @@
   * Preservar posição, dimensões, padding, bordas, responsividade, comportamento sticky/fixed existente e relação com a barra horizontal, alterando somente o necessário para eliminar a sobreposição visual indevida.
   * A solução DEVE respeitar os temas/estados visuais já existentes e NÃO introduzir regressão em navegação, interação, contraste ou demais componentes adjacentes.
 
-- [ ] Otimizar e normatizar a geração/baixamento de PDF para produzir arquivo de alta qualidade, visualmente equivalente à impressão nativa e com tamanho comparável ao PDF gerado pelo navegador.
-  - 📜 FT-032 normatizada; FT-033 aguarda autorização posterior ao commit normativo.
+- [x] Otimizar e normatizar a geração/baixamento de PDF para produzir arquivo de alta qualidade, visualmente equivalente à impressão nativa e com tamanho comparável ao PDF gerado pelo navegador.
+  - ✅ FT-032 normatizada e FT-033 implementada, validada e rastreada.
   - **Problema observado**
     - Para a mesma página:
       - impressão nativa do navegador em PDF: ~`114 KB`;
