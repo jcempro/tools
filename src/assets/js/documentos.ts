@@ -510,51 +510,52 @@ declare const __JCEM_BUILD_VERSION__: string;
     }
   }
 
-  function resolveHtml2Pdf(): Html2PdfFactory | null {
-    const candidate = w.html2pdf;
-
-    if (typeof candidate === "function") {
-      return candidate;
-    }
-
-    if (candidate && typeof candidate.default === "function") {
-      return candidate.default;
-    }
-
-    return null;
+  /**
+   * Normaliza a sugestão de nome usada pelo diálogo nativo sem introduzir path ou caracteres inválidos.
+   * @param value Nome produzido pelo módulo consumidor.
+   * @returns Nome seguro, não vazio e terminado em `.pdf`.
+   */
+  function normalizePdfFilename(value: string | undefined): string {
+    const printable = Array.from(value || "documento.pdf", (character) => character.charCodeAt(0) < 32 ? "-" : character).join("");
+    const basename = printable
+      .trim()
+      .replace(/[\\/:*?"<>|]+/g, "-")
+      .replace(/\s+/g, " ")
+      .replace(/^-+|-+$/g, "") || "documento.pdf";
+    return /\.pdf$/i.test(basename) ? basename : `${basename}.pdf`;
   }
 
   async function printPdf(options: PrintPdfOptions): Promise<void> {
-    const html2pdf = resolveHtml2Pdf();
-
-    if (!html2pdf) {
-      w.alert("Gerador de PDF indisponivel.");
-      return;
-    }
-
     const source = options.source;
     if (!source) {
       w.alert("Folha imprimivel nao configurada.");
       return;
     }
 
-    await withPrintMode(async () => {
-      let filename = typeof options.filename === "function" ? options.filename() : options.filename;
-      filename = filename || "documento.pdf";
+    createPageStyle(options.pageConfig);
+    const requested = typeof options.filename === "function" ? options.filename() : options.filename;
+    const filename = normalizePdfFilename(requested);
 
-      if (!/\.pdf$/i.test(filename)) {
-        filename += ".pdf";
-      }
+    await withPrintMode((restorePrintMode) => {
+      const previousTitle = d.title;
+      let restored = false;
+      const restore = (): void => {
+        if (restored) return;
+        restored = true;
+        d.title = previousTitle;
+        w.removeEventListener("afterprint", restore);
+        restorePrintMode();
+      };
 
-      const result = html2pdf(source, {
-        filename,
-        html2canvas: { scale: options.scale ?? 6 },
-        image: { quality: 0.98, type: "jpeg" },
-        jsPDF: { format: options.pageConfig.size, orientation: options.orientation ?? options.pageConfig.orientation, unit: options.pageConfig.unit },
-        margin: options.margin ?? [0, 0, 0, 0]
-      });
-      if (result && typeof result.then === "function") {
-        await result;
+      w.addEventListener("afterprint", restore, { once: true });
+      d.title = filename;
+      try {
+        w.print();
+      } catch (error) {
+        restore();
+        throw error;
+      } finally {
+        restore();
       }
     }, options);
   }
@@ -1058,7 +1059,7 @@ declare const __JCEM_BUILD_VERSION__: string;
     { hint: "Abrir CSV", icon: { unicode: "f574" }, id: "csv-open", label: "", order: 20, selector: ".csv-open" },
     { hint: "Baixar CSV convertido", icon: { unicode: "f56d" }, id: "csv-download", label: "", order: 40, selector: ".csv-download" },
     { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icon: { collection: "streamline-sharp", name: "download-box-1-solid", provider: "iconify" }, id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
-    { hint: "Imprimir PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
+    { hint: "Salvar como PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
     { hint: "Imprimir em branco", icon: { unicode: "f1c1" }, id: "blank-pdf", label: "fixed:em branco", order: 45, selector: ".pdf.formulario" },
     { hint: "Imprimir", hook: "window.print", icon: { unicode: "f02f" }, id: "print", label: "", order: 50, selector: ".browser-print,.print:not(.pdf):not(.formulario)" },
     { hint: "Limpar", icon: { unicode: "f12d" }, id: "clear", label: "", order: 60, selector: ".clear" },

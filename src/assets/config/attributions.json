@@ -47,21 +47,6 @@
       "evidence": ["package-lock.json", "src/assets/config/icons.json", "src/assets/js/icons.ts"]
     },
     {
-      "id": "html2pdf-bundle",
-      "name": "html2pdf.js bundle",
-      "class": "biblioteca composta de geração de PDF",
-      "version": "0.14.0",
-      "source": "https://github.com/eKoopmans/html2pdf.js",
-      "authors": ["Erik Koopmans", "Niklas von Hertzen", "James Hall", "yWorks GmbH", "DOMPurify contributors"],
-      "licenseTitle": "MIT License; componentes sob MIT e MPL-2.0 OR Apache-2.0",
-      "spdx": "MIT AND (MPL-2.0 OR Apache-2.0)",
-      "licenseUrl": "https://github.com/eKoopmans/html2pdf.js/blob/main/LICENSE",
-      "notice": "html2pdf.js: Copyright (c) 2017-2026 Erik Koopmans, MIT License. html2canvas: Copyright (c) 2012 Niklas von Hertzen, MIT License. jsPDF: Copyright (c) 2010-2025 James Hall and Copyright (c) 2015-2025 yWorks GmbH, MIT License. DOMPurify is distributed under MPL-2.0 OR Apache-2.0. The complete upstream license notices remain authoritative at the official source and in html2pdf.bundle.min.js.LICENSE.txt.",
-      "transformations": "O bundle oficial minificado é incorporado nos Bundles offline; na Web é carregado da URL CDN declarada.",
-      "consumers": ["faturamento", "ofícios/admissional", "declarações/unificada", "Bundles offline correspondentes"],
-      "evidence": ["package-lock.json", "scripts/config.json", "scripts/build-bundles-core.mjs"]
-    },
-    {
       "id": "lucide-icons",
       "name": "Lucide Icons",
       "class": "ícones SVG",

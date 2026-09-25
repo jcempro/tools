@@ -19,7 +19,6 @@ declare global {
     JCEMDocumentos?: JCEMDocumentosApi;
     JCEMIcons?: JCEMIconsApi;
     $?: ZeptoStatic;
-    html2pdf?: Html2PdfFactory | { default?: Html2PdfFactory };
     Zepto?: ZeptoStatic;
     isNum?: (value: unknown) => boolean;
   }
@@ -210,16 +209,6 @@ declare global {
     preview?: Element | string | null;
     workspace?: Element | string | null;
   }
-
-  interface PdfOptions {
-    filename: string;
-    html2canvas: { scale: number };
-    image: { quality: number; type: "jpeg" | "png" | "webp" };
-    jsPDF: { format: [number, number]; orientation: "portrait" | "landscape"; unit: string };
-    margin: [number, number, number, number];
-  }
-
-  type Html2PdfFactory = (source: Element, options: PdfOptions) => PromiseLike<unknown> | void;
 
   interface StoredImageOptions {
     key?: string;

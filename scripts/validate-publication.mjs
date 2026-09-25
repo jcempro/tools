@@ -202,6 +202,9 @@ function extractSingleFileZipText(data, expectedInnerName, rel) {
 }
 
 function assertAutonomousBundleHtml(rel, html) {
+  if (/html2pdf(?:\.js)?|html2canvas|jsPDF/.test(html)) {
+    throw new Error(`Bundle offline contem gerador raster de PDF obsoleto em dist/: ${rel}`);
+  }
   const scriptBlocks = [...html.matchAll(/<script\b([^>]*)>[\s\S]*?<\/script>/gi)];
   const externalScript = scriptBlocks.find((match) => /\bsrc\s*=/i.test(match[1] ?? ""));
 
@@ -280,6 +283,9 @@ async function validatePublicText(files) {
       continue;
     }
     const content = await readFile(path.join(distDir, rel), "utf8");
+    if (/html2pdf(?:\.js)?|html2canvas|jsPDF/.test(content)) {
+      throw new Error(`dist/${rel} contem gerador raster de PDF obsoleto.`);
+    }
     assertNoPublicSourceReferences(rel, content);
     assertNoSourceMapReference(rel, content);
     assertOfficialNoscript(rel, content);
@@ -300,7 +306,6 @@ async function assertAttributions(distSet) {
     ["floating-ui", lock.packages?.["node_modules/@floating-ui/dom"]?.version],
     ["fontawesome-free-icons", lock.packages?.["node_modules/@fortawesome/free-solid-svg-icons"]?.version],
     ["game-icons-upgrade", lock.packages?.["node_modules/@iconify-icons/game-icons"]?.version],
-    ["html2pdf-bundle", lock.packages?.["node_modules/html2pdf.js"]?.version],
     ["lucide-icons", lock.packages?.["node_modules/@lucide/icons"]?.version],
     ["streamline-sharp-download-box", lock.packages?.["node_modules/@iconify-icons/streamline-sharp"]?.version],
     ["zepto", lock.packages?.["node_modules/zepto"]?.version]

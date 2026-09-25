@@ -368,7 +368,7 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.doesNotMatch(faturamentoCss, /\.preview-wrap\s*{/);
 });
 
-test("print profiles centralize A4 geometry and asynchronous PDF completion", async () => {
+test("print profiles centralize A4 geometry and native searchable PDF output", async () => {
   const config = JSON.parse(await readFile("src/assets/config/printing.json", "utf8")) as {
     schema: number;
     profiles: Record<string, { orientation: string; size: number[]; unit: string; margins: Record<string, number> }>;
@@ -378,6 +378,16 @@ test("print profiles centralize A4 geometry and asynchronous PDF completion", as
   const faturamentoTs = await readFile("src/faturamento/faturamento.ts", "utf8");
   const admissionalTs = await readFile("src/oficios/admissional/admissional.ts", "utf8");
   const faturamentoCss = await readFile("src/faturamento/faturamento.scss", "utf8");
+  const legacyPdfSurface = await Promise.all([
+    readFile("package.json", "utf8"),
+    readFile("package-lock.json", "utf8"),
+    readFile("scripts/config.json", "utf8"),
+    readFile("src/assets/config/attributions.json", "utf8"),
+    readFile("src/declaracoes/unificada/index.html", "utf8"),
+    readFile("src/faturamento/index.html", "utf8"),
+    readFile("src/oficios/admissional/index.html", "utf8"),
+    readFile("src/types/global.d.ts", "utf8")
+  ]);
 
   assert.equal(config.schema, 1);
   assert.deepEqual(Object.keys(config.profiles).sort(), ["admissional", "declaracoes-unificada", "faturamento"]);
@@ -391,8 +401,13 @@ test("print profiles centralize A4 geometry and asynchronous PDF completion", as
   assert.match(sharedTs, /@media print\{body \.jcem-print-sheet/);
   assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 1px\)/);
   assert.match(sharedTs, /calc\(\$\{height\}\$\{unit\} - 4px\)/);
-  assert.match(sharedTs, /if \(result && typeof result\.then === "function"\)\s*{\s*await result;/);
   assert.match(sharedTs, /if \(!source\)\s*{\s*w\.alert\("Folha imprimivel nao configurada\."\);/);
+  assert.match(sharedTs, /function normalizePdfFilename/);
+  assert.match(sharedTs, /w\.addEventListener\("afterprint", restore, \{ once: true \}\)/);
+  assert.match(sharedTs, /d\.title = filename;[\s\S]*w\.print\(\);[\s\S]*finally\s*{\s*restore\(\);/);
+  assert.match(sharedTs, /d\.title = previousTitle/);
+  assert.doesNotMatch(sharedTs, /html2pdf|html2canvas|jsPDF/);
+  assert.doesNotMatch(legacyPdfSurface.join("\n"), /html2pdf(?:\.js)?|html2canvas|jsPDF/);
   assert.match(sharedCss, /@media print[\s\S]*\.jcem-app-shell-content\s*{[\s\S]*display:\s*block !important/s);
   assert.match(sharedCss, /@media print[\s\S]*\.jcem-document-preview-region\s*{[\s\S]*padding:\s*0 !important;[\s\S]*background:\s*#fff !important;/s);
   assert.match(faturamentoTs, /api\.print\.profile\("faturamento"\)/);
@@ -688,7 +703,7 @@ test("public attributions are inventory-driven, linked and Web-only", async () =
   const catalog = JSON.parse(await readFile("src/assets/config/apps.json", "utf8")) as { apps: Array<{ id: string }> };
 
   assert.equal(config.schema, 1);
-  assert.equal(config.entries.length, 7);
+  assert.equal(config.entries.length, 6);
   assert.deepEqual(config.entries.map(({ name }) => name), [...config.entries.map(({ name }) => name)].sort((left, right) => left.localeCompare(right, "pt-BR", { sensitivity: "base" })));
   assert.ok(config.entries.every((entry) => ["id", "name", "class", "version", "source", "authors", "licenseTitle", "spdx", "licenseUrl", "notice", "transformations", "consumers", "evidence"].every((key) => key in entry)));
   assert.equal((html.match(/class="jcem-attributions-intro"/g) ?? []).length, 1);
