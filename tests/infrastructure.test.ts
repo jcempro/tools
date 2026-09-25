@@ -181,6 +181,14 @@ test("local publish rejects a dirty tree before validation or remote mutation", 
 test("shared chrome checks updates once and delegates presentation to CSS", async () => {
   const sharedTs = await readFile("src/assets/js/documentos.ts", "utf8");
   const sharedCss = await readFile("src/assets/css/documentos.scss", "utf8");
+  assert.match(sharedTs, /observeAppNavigationOverlay\(sentinel, aside\)/);
+  assert.match(sharedTs, /new IntersectionObserver\(\(\[entry\]\)/);
+  assert.match(sharedTs, /classList\.toggle\("jcem-app-nav-overlay",\s*!entry\?\.isIntersecting\)/);
+  assert.match(sharedCss, /\.jcem-app-nav-sentinel\s*\{[^}]*position:\s*absolute[^}]*block-size:\s*1px/s);
+  assert.match(sharedCss, /\.jcem-app-nav-overlay\s*\{[^}]*background:\s*#d6e0e7[^}]*border-color:\s*#9dabb6/s);
+  assert.match(sharedCss, /\.jcem-app-nav\s*\{[^}]*background-color 140ms ease-out[^}]*border-color 140ms ease-out[^}]*box-shadow 140ms ease-out/s);
+  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-app-nav-overlay\s*\{[^}]*background:\s*#25272a[^}]*border-color:\s*#55585e/s);
+  assert.match(sharedCss, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*\.jcem-app-nav[^}]*transition:\s*none/s);
   const compile = await readFile("scripts/compile.mjs", "utf8");
 
   assert.match(compile, /__JCEM_BUILD_VERSION__:\s*JSON\.stringify\(buildVersion\)/);

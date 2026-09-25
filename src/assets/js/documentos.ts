@@ -31,6 +31,7 @@ declare const __JCEM_BUILD_VERSION__: string;
   const autosaveBound = new WeakSet<HTMLInputElement>();
   const tooltipBound = new WeakSet<HTMLElement>();
   let updateCheckStarted = false;
+  let appNavigationObserver: IntersectionObserver | null = null;
   const mpl2BadgeMarkup = `<img class="jcem-mpl2-icon" src="/assets/img/mpl2.svg" alt="">`;
   function $<T extends Element = Element>(selector: string, root: ParentNode = d): T[] {
     return Array.from(root.querySelectorAll<T>(selector));
@@ -1633,6 +1634,8 @@ declare const __JCEM_BUILD_VERSION__: string;
   }
 
   function removeExistingChrome(): void {
+    appNavigationObserver?.disconnect();
+    appNavigationObserver = null;
     for (const element of $(".jcem-chrome-header,.jcem-chrome-footer,.jcem-app-nav")) {
       element.remove();
     }
@@ -1645,6 +1648,21 @@ declare const __JCEM_BUILD_VERSION__: string;
     }
     for (const element of $(".jcem-app-shell-content")) element.classList.remove("jcem-app-shell-content");
     d.body.classList.remove("jcem-has-app-nav", "jcem-has-app-nav-right");
+  }
+
+  /**
+   * Alterna a superfície protetora exatamente quando o trilho sticky alcança a viewport.
+   * @param sentinel Marcador estrutural que antecede imediatamente a navegação.
+   * @param navigation Superfície sticky cuja opacidade protege o conteúdo subjacente.
+   */
+  function observeAppNavigationOverlay(sentinel: HTMLElement, navigation: HTMLElement): void {
+    navigation.classList.add("jcem-app-nav-overlay");
+    if (!("IntersectionObserver" in w)) return;
+
+    appNavigationObserver = new IntersectionObserver(([entry]) => {
+      navigation.classList.toggle("jcem-app-nav-overlay", !entry?.isIntersecting);
+    }, { root: null, threshold: 0 });
+    appNavigationObserver.observe(sentinel);
   }
 
   function updateThemeButton(button: HTMLButtonElement, theme: "dark" | "light"): void {
@@ -1737,6 +1755,9 @@ declare const __JCEM_BUILD_VERSION__: string;
       aside.prepend(toggleLabel);
       const shell = d.createElement("div");
       shell.className = "jcem-app-shell";
+      const sentinel = d.createElement("span");
+      sentinel.className = "jcem-app-nav-sentinel";
+      sentinel.setAttribute("aria-hidden", "true");
       const content = d.createElement("main");
       content.className = "jcem-app-shell-content";
       const footer = one<HTMLElement>(".jcem-chrome-footer");
@@ -1745,8 +1766,9 @@ declare const __JCEM_BUILD_VERSION__: string;
           content.appendChild(child);
         }
       }
-      shell.append(aside, content);
+      shell.append(sentinel, aside, content);
       d.body.insertBefore(shell, footer ?? null);
+      observeAppNavigationOverlay(sentinel, aside);
       const right = catalog.navigationPosition === "right";
       d.body.classList.add("jcem-has-app-nav");
       d.body.classList.toggle("jcem-has-app-nav-right", right);

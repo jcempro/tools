@@ -1647,16 +1647,20 @@ body.imprimir input::placeholder {
 .jcem-theme-toggle, .jcem-nav-toggle, .jcem-header-menu-toggle, .jcem-toolbar-menu-toggle { border: 0; border-radius: .55rem; cursor: pointer; min-width: 44px; min-height: 44px; flex: 0 0 44px; }
 .jcem-nav-state { position: fixed; inline-size: 1px; block-size: 1px; opacity: 0; pointer-events: none; }
 .jcem-app-shell { position: relative; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: stretch; min-height: 50vh; }
+.jcem-app-nav-sentinel { position: absolute; inset: 0 auto auto 0; inline-size: 1px; block-size: 1px; pointer-events: none; }
 .jcem-app-shell::before { content: ""; position: absolute; z-index: 0; inset: 0 auto 0 0; width: 3.5rem; background: #d6e0e7; border-right: 1px solid #9dabb6; box-shadow: .3rem 0 1rem rgb(0 0 0 / .08); transition: width .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease; pointer-events: none; }
 .jcem-app-shell-content { min-width: 0; }
-.jcem-app-nav { position: sticky; z-index: 900; top: 0; align-self: start; justify-self: start; width: 3.5rem; height: max-content; padding: 0; overflow: visible; background: transparent; border: 0; border-radius: 0; }
+.jcem-app-nav { position: sticky; z-index: 900; top: 0; align-self: start; justify-self: start; width: 3.5rem; height: max-content; padding: 0; overflow: visible; background: transparent; border: 0 solid transparent; border-right-width: 1px; border-radius: 0; box-shadow: none; transition: width .18s ease, background-color 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out; }
+.jcem-app-nav-overlay { background: #d6e0e7; border-color: #9dabb6; box-shadow: .3rem 0 1rem rgb(0 0 0 / .08); }
 .jcem-app-nav::before { content: none; }
-.jcem-app-nav-right { grid-column: 2; border-right: 0; border-left: 1px solid #b7c1c9; box-shadow: -.3rem 0 1rem rgb(0 0 0 / .08); }
+.jcem-app-nav-right { grid-column: 2; border-right-width: 0; border-left-width: 1px; }
+.jcem-app-nav-right.jcem-app-nav-overlay { box-shadow: -.3rem 0 1rem rgb(0 0 0 / .08); }
 body.jcem-has-app-nav-right .jcem-app-shell { grid-template-columns: minmax(0, 1fr) 3.5rem; }
 body.jcem-has-app-nav-right .jcem-app-shell::before { inset: 0 0 0 auto; border-right: 0; border-left: 1px solid #9dabb6; box-shadow: -.3rem 0 1rem rgb(0 0 0 / .08); }
 body.jcem-has-app-nav-right .jcem-app-shell-content { grid-column: 1; grid-row: 1; }
 body.jcem-has-app-nav-right .jcem-app-nav { grid-column: 2; grid-row: 1; justify-self: end; }
 .jcem-nav-state:checked ~ .jcem-app-shell::before { width: min(18rem, calc(100vw - 1rem)); background: #d6e0e7; border-color: #9dabb6; box-shadow: .65rem 0 1.8rem rgb(0 0 0 / .2); }
+.jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav { width: min(18rem, calc(100vw - 1rem)); }
 .jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav nav,
 .jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav .jcem-nav-toggle { width: min(18rem, calc(100vw - 1rem)); }
 .jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav-right { box-shadow: -.65rem 0 1.8rem rgb(0 0 0 / .2); }
@@ -1674,8 +1678,9 @@ body.jcem-has-app-nav-right .jcem-nav-state:checked ~ .jcem-app-shell::before { 
 .jcem-nav-dot { width: .75rem; height: .75rem; margin: auto; border-radius: 50%; background: #1b5f8c; }
 :root[data-theme="dark"] .jcem-theme-toggle { background: #34363a; border-color: #666a70; color: #c6c9cd; }
 :root[data-theme="dark"] .jcem-app-shell::before { background: #25272a; border-color: #55585e; box-shadow: .3rem 0 1rem rgb(0 0 0 / .3); }
+:root[data-theme="dark"] .jcem-app-nav-overlay { background: #25272a; border-color: #55585e; box-shadow: .3rem 0 1rem rgb(0 0 0 / .3); }
+:root[data-theme="dark"] .jcem-app-nav-right.jcem-app-nav-overlay { box-shadow: -.3rem 0 1rem rgb(0 0 0 / .3); }
 :root[data-theme="dark"] .jcem-nav-state:checked ~ .jcem-app-shell::before { background: #25272a; border-color: #55585e; box-shadow: .65rem 0 1.8rem rgb(0 0 0 / .35); }
-:root[data-theme="dark"] .jcem-app-nav-right { box-shadow: -.3rem 0 1rem rgb(0 0 0 / .3); }
 :root[data-theme="dark"] .jcem-nav-toggle { background: #323438; border-color: #55585e; color: #f1f1f1; }
 :root[data-theme="dark"] .jcem-app-nav a { color: #e3e3e3; }
 :root[data-theme="dark"] .jcem-app-nav a:hover,
