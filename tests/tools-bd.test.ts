@@ -4,8 +4,11 @@ import { readFile } from "node:fs/promises";
 
 import {
   analyzeSimilarRows,
+  combinationStrategies,
+  combineDatasets,
   convertDataset,
   defaultSimilarityThreshold,
+  eligibleCombinationColumns,
   eligibleSimilarityColumns,
   inferModelKind,
   mergeDatasets,
@@ -289,6 +292,66 @@ test("bd merge retains unrelated blockers", () => {
   assert.equal(invalid.issues.some(({ code, severity }) => code === "invalid-merge-key" && severity === "error"), true);
 });
 
+test("bd combines three files deterministically with every keyed strategy", () => {
+  const first = parseCsv("ID;Nome\n1;Ana\n2;Bia\n");
+  const second = parseCsv("ID;Cidade\n1;Santos\n3;Recife\n");
+  const third = parseCsv("ID;Status\n1;Ativo\n4;Novo\n");
+  const datasets = [first, second, third];
+  const names = ["clientes.csv", "cidades.csv", "status.csv"];
+
+  assert.deepEqual(eligibleCombinationColumns(datasets), ["ID"]);
+  assert.deepEqual(combinationStrategies.map(({ value }) => value), ["left", "right", "inner", "full", "append"]);
+  const left = combineDatasets(datasets, { keyColumn: "ID", sourceNames: names, strategy: "left" });
+  assert.deepEqual(left.dataset.rows, [["1", "Ana", "Santos", "Ativo"], ["2", "Bia", "", ""]]);
+  const right = combineDatasets(datasets, { keyColumn: "ID", sourceNames: names, strategy: "right" });
+  assert.deepEqual(right.dataset.rows, [["1", "Ana", "Santos", "Ativo"], ["4", "", "", "Novo"]]);
+  const inner = combineDatasets(datasets, { keyColumn: "ID", sourceNames: names, strategy: "inner" });
+  assert.deepEqual(inner.dataset.rows, [["1", "Ana", "Santos", "Ativo"]]);
+  const full = combineDatasets(datasets, { keyColumn: "ID", sourceNames: names, strategy: "full" });
+  assert.deepEqual(full.dataset.rows, [
+    ["1", "Ana", "Santos", "Ativo"],
+    ["2", "Bia", "", ""],
+    ["3", "", "Recife", ""],
+    ["4", "", "", "Novo"]
+  ]);
+  assert.deepEqual(full.sourceNames, names);
+  assert.equal(full.steps.length, 2);
+});
+
+test("bd append preserves schema order and consolidates only exact final vectors", () => {
+  const first = parseCsv("ID;Nome\n1;Ana\n");
+  const second = parseCsv("ID;Cidade\n2;Santos\n");
+  const third = parseCsv("Cidade\nRecife\nRecife\n");
+  const result = combineDatasets([first, second, third], { strategy: "append" });
+
+  assert.deepEqual(result.dataset.columns, ["ID", "Nome", "Cidade"]);
+  assert.deepEqual(result.dataset.rows, [["1", "Ana", ""], ["2", "", "Santos"], ["", "", "Recife"]]);
+  assert.equal(result.issues.some(({ code }) => code === "duplicate-append-row"), true);
+});
+
+test("bd keyed combination requires one confirmed common field and reports traceable conflicts", () => {
+  const first = parseCsv("ID;Nome\n1;Ana\n");
+  const second = parseCsv("ID;Nome\n(1);Bia\n");
+  const missing = combineDatasets([first, second], { strategy: "full" });
+  assert.equal(missing.issues.some(({ code }) => code === "missing-combination-key"), true);
+
+  const conflict = combineDatasets([first, second], { keyColumn: "ID", sourceNames: ["a.csv", "b.csv"], strategy: "full" });
+  assert.equal(conflict.issues.some(({ message }) => /a\.csv, linha 2.*b\.csv, linha 2/.test(message)), true);
+  assert.deepEqual(conflict.dataset.rows, [["1", "Ana"]]);
+});
+
+test("bd keyed combination preserves duplicate cardinalities and blocks an absent field", () => {
+  const first = parseCsv("ID;Pessoa\n1;Ana\n1;Bia\n");
+  const second = parseCsv("ID;Cidade\n(1);Santos\n1;Recife\n");
+  const result = combineDatasets([first, second], { keyColumn: "ID", strategy: "inner" });
+  assert.deepEqual(result.dataset.rows, [
+    ["1", "Ana", "Santos"], ["1", "Ana", "Recife"],
+    ["1", "Bia", "Santos"], ["1", "Bia", "Recife"]
+  ]);
+  const invalid = combineDatasets([first, parseCsv("Codigo;Cidade\n1;Santos\n")], { keyColumn: "ID", strategy: "left" });
+  assert.equal(invalid.issues.some(({ code }) => code === "invalid-combination-key"), true);
+});
+
 test("bd detects probable duplicates deterministically without mutating the dataset", () => {
   const dataset = parseCsv([
     "MCI;Nome;Cidade;Data",
@@ -320,16 +383,23 @@ test("bd similarity skips exact normalized vectors and validates eligibility and
   assert.throws(() => analyzeSimilarRows(dataset, ["Nome", "Cidade", "Nome", "Outra"]), /inelegível/);
 });
 
-test("bd UI exposes optional file-backed merge and accessible exclusive policies", async () => {
-  const [html, source] = await Promise.all([
+test("bd UI exposes three accessible operations and contextual combination controls", async () => {
+  const [html, source, styles] = await Promise.all([
     readFile("src/csv-bd/index.html", "utf8"),
-    readFile("src/csv-bd/bd.ts", "utf8")
+    readFile("src/csv-bd/bd.ts", "utf8"),
+    readFile("src/csv-bd/bd.scss", "utf8")
   ]);
   assert.match(html, /id="csv-merge"/);
-  assert.match(html, /id="csv-merge-file"[^>]*type="file"/);
-  assert.equal((html.match(/name="merge-mode"/g) ?? []).length, 3);
-  assert.match(source, /mergeDatasets\(currentResult\.dataset, complement/);
-  assert.match(source, /resultado prévio permaneceu inalterado/);
+  assert.match(html, /id="csv-merge-file"[^>]*type="file"[^>]*multiple/);
+  assert.equal((html.match(/name="operation"/g) ?? []).length, 3);
+  assert.match(html, /O que deseja fazer\?/);
+  assert.match(html, /Somente converter/);
+  assert.match(html, /Converter e combinar arquivos/);
+  assert.match(html, /Somente combinar arquivos/);
+  assert.match(source, /combineDatasets\(datasets/);
+  assert.match(source, /renderStrategies\(\)/);
+  assert.match(styles, /:has\(#operation-convert:checked\) \.combination-group/);
+  assert.match(styles, /combination-strategy.*append.*\.key-group/);
 });
 
 test("bd UI requires opt-in and explicit textual columns for the advisory similarity report", async () => {

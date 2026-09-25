@@ -39,6 +39,13 @@ export interface ConverterOptions {
 }
 
 export type DatasetMergeMode = "previous" | "merge-only" | "summed";
+export type DatasetCombinationStrategy = "left" | "right" | "inner" | "full" | "append";
+
+export interface CombinationStrategyDefinition {
+  help: string;
+  label: string;
+  value: DatasetCombinationStrategy;
+}
 
 export interface DatasetMergeOptions {
   identifierColumns?: string[];
@@ -49,6 +56,26 @@ export interface DatasetMergeResult {
   dataset: TabularDataset;
   indexColumn?: string;
   issues: ConversionIssue[];
+}
+
+export interface DatasetCombinationOptions {
+  keyColumn?: string;
+  sourceNames?: string[];
+  strategy: DatasetCombinationStrategy;
+}
+
+export interface DatasetCombinationStep {
+  exactDuplicates: number;
+  leftOnly: number;
+  matches: number;
+  rightOnly: number;
+  source: string;
+}
+
+export interface DatasetCombinationResult extends DatasetMergeResult {
+  sourceNames: string[];
+  steps: DatasetCombinationStep[];
+  strategy: DatasetCombinationStrategy;
 }
 
 export interface SimilarityFieldExplanation {
@@ -108,7 +135,17 @@ const generatedDialect: CsvDialect = {
 const localIdColumn = "id";
 const similarityDefaults = validateSimilarityConfig(tabularConfig.similarity);
 
+export const combinationStrategies = validateCombinationStrategies(tabularConfig.combinationStrategies);
+
 export const defaultSimilarityThreshold = similarityDefaults.defaultThreshold;
+
+function validateCombinationStrategies(values: Array<{ help: string; label: string; value: string }>): readonly CombinationStrategyDefinition[] {
+  const allowed = new Set<DatasetCombinationStrategy>(["left", "right", "inner", "full", "append"]);
+  if (values.length !== allowed.size || values.some(({ help, label, value }) => !allowed.has(value as DatasetCombinationStrategy) || !help.trim() || !label.trim())) {
+    throw new Error("Registro de estratégias de combinação inválido.");
+  }
+  return values.map(({ help, label, value }) => ({ help, label, value: value as DatasetCombinationStrategy }));
+}
 
 export function eligibleSimilarityColumns(dataset: TabularDataset, identifierColumns: string[] = defaultIdentifierColumns): string[] {
   const identifiers = new Set(identifierColumns.map(canonicalMergeColumn));
@@ -288,57 +325,191 @@ export function convertDataset(dataset: TabularDataset, from: TabularModelKind, 
  * Retorna cópia do resultado prévio quando qualquer validação contratual bloqueia a operação.
  */
 export function mergeDatasets(previous: TabularDataset, complement: TabularDataset, options: DatasetMergeOptions = {}): DatasetMergeResult {
-  const issues: ConversionIssue[] = [];
-  const identities = mergeIndexerIdentities(options.identifierColumns ?? defaultIdentifierColumns);
-  const candidates = identities.map((identity) => ({
-    complement: columnsForMergeIdentity(complement.columns, identity),
-    identity,
-    previous: columnsForMergeIdentity(previous.columns, identity)
-  })).filter(({ complement: right, previous: left }) => right.length > 0 && left.length > 0);
-
-  if (candidates.some(({ complement: right, previous: left }) => right.length !== 1 || left.length !== 1)) {
-    return mergeFailure(previous, "ambiguous-index-columns", "O indexador elegível aparece mais de uma vez em ao menos um dos CSVs.");
-  }
+  const strategyByMode: Record<DatasetMergeMode, DatasetCombinationStrategy> = {
+    previous: "left",
+    "merge-only": "right",
+    summed: "full"
+  };
+  const candidates = eligibleCombinationColumns([previous, complement], options.identifierColumns ?? defaultIdentifierColumns);
   if (candidates.length !== 1) {
     return mergeFailure(previous, "invalid-common-index", candidates.length === 0
       ? "Nenhum indexador comum elegível foi encontrado nos dois CSVs."
       : "Mais de um indexador comum elegível foi encontrado; mantenha exatamente um.");
   }
+  return combineDatasets([previous, complement], {
+    keyColumn: candidates[0],
+    sourceNames: ["resultado prévio", "mesclar"],
+    strategy: strategyByMode[options.mode ?? "previous"]
+  });
+}
 
-  const candidate = candidates[0];
-  if (!candidate) return mergeFailure(previous, "invalid-common-index", "Nenhum indexador comum elegível foi encontrado nos dois CSVs.");
-  const previousIndexColumn = candidate.previous[0] ?? "";
-  const complementIndexColumn = candidate.complement[0] ?? "";
-  const previousRows = indexMergeRows(previous, previousIndexColumn, candidate.identity, "resultado prévio", issues);
-  const complementRows = indexMergeRows(complement, complementIndexColumn, candidate.identity, "mesclar", issues);
-  if (!previousRows || !complementRows || issues.some(({ severity }) => severity === "error")) {
-    return { dataset: cloneDataset(previous), indexColumn: previousIndexColumn, issues };
+/** Lista campos canônicos presentes uma única vez em todas as entradas e aptos a representar o mesmo registro. */
+export function eligibleCombinationColumns(datasets: TabularDataset[], preferredColumns?: string[]): string[] {
+  if (datasets.length === 0) return [];
+  const preferred = preferredColumns ? new Set(preferredColumns.map(canonicalMergeColumn)) : null;
+  const first = datasets[0];
+  if (!first) return [];
+  return first.columns.filter((column, index) => {
+    const canonical = canonicalMergeColumn(column);
+    if (!canonical || (preferred && !preferred.has(canonical) && canonical !== "phone")) return false;
+    if (first.columns.findIndex((candidate) => canonicalMergeColumn(candidate) === canonical) !== index) return false;
+    return datasets.every((dataset) => dataset.columns.filter((candidate) => canonicalMergeColumn(candidate) === canonical).length === 1);
+  });
+}
+
+/** Combina duas ou mais entradas por dobra ordenada, ou apenas as concatena quando a estratégia é append. */
+export function combineDatasets(datasets: TabularDataset[], options: DatasetCombinationOptions): DatasetCombinationResult {
+  const sourceNames = datasets.map((_dataset, index) => options.sourceNames?.[index]?.trim() || `Arquivo ${index + 1}`);
+  const source = datasets[0];
+  if (!source || datasets.length < 2) {
+    const fallback = source ? cloneDataset(source) : { columns: [], dialect: { ...generatedDialect }, rows: [] };
+    return combinationFailure(fallback, options.strategy, sourceNames, "insufficient-combination-files", "Informe ao menos dois arquivos para combinar.");
+  }
+  if (options.strategy === "append") return appendDatasets(datasets, sourceNames);
+  if (!options.keyColumn?.trim()) {
+    return combinationFailure(source, options.strategy, sourceNames, "missing-combination-key", "Confirme o campo que representa o mesmo registro em todos os arquivos.");
+  }
+  const candidates = eligibleCombinationColumns(datasets);
+  const selectedCanonical = canonicalMergeColumn(options.keyColumn);
+  if (!candidates.some((column) => canonicalMergeColumn(column) === selectedCanonical)) {
+    return combinationFailure(source, options.strategy, sourceNames, "invalid-combination-key", "O campo de correspondência deve existir uma única vez em todos os arquivos.");
   }
 
-  const previousSchema = mergeSchema(previous.columns);
-  const complementSchema = mergeSchema(complement.columns);
-  if (!previousSchema || !complementSchema) {
-    return mergeFailure(previous, "duplicate-canonical-column", "Há cabeçalhos canônicos duplicados em ao menos um dos CSVs.", previousIndexColumn);
+  let current = cloneDataset(source);
+  const issues: ConversionIssue[] = [];
+  const steps: DatasetCombinationStep[] = [];
+  let indexColumn: string | undefined = options.keyColumn;
+  for (let index = 1; index < datasets.length; index += 1) {
+    const next = datasets[index];
+    if (!next) continue;
+    const step = mergeDatasetPair(current, next, {
+      keyColumn: options.keyColumn,
+      leftName: index === 1 ? sourceNames[0] ?? "Arquivo 1" : "resultado acumulado",
+      rightName: sourceNames[index] ?? `Arquivo ${index + 1}`,
+      strategy: options.strategy
+    });
+    issues.push(...step.issues);
+    steps.push(step.statistics);
+    if (step.issues.some(({ severity }) => severity === "error")) {
+      return { dataset: cloneDataset(source), indexColumn, issues, sourceNames, steps, strategy: options.strategy };
+    }
+    current = step.dataset;
+    indexColumn = step.indexColumn;
   }
-  const outputColumns = [...previous.columns];
-  for (const column of complement.columns) {
-    if (!previousSchema.has(canonicalMergeColumn(column))) outputColumns.push(column);
-  }
-  const mode = options.mode ?? "previous";
-  const orderedPairs = buildMergePairs(previousRows, complementRows, mode);
+  return { dataset: current, indexColumn, issues, sourceNames, steps, strategy: options.strategy };
+}
 
+function mergeDatasetPair(left: TabularDataset, right: TabularDataset, options: MergePairOptions): MergePairResult {
+  const issues: ConversionIssue[] = [];
+  const identity = mergeIdentityForColumn(options.keyColumn);
+  const leftColumns = columnsForMergeIdentity(left.columns, identity);
+  const rightColumns = columnsForMergeIdentity(right.columns, identity);
+  const emptyStatistics = { exactDuplicates: 0, leftOnly: 0, matches: 0, rightOnly: 0, source: options.rightName };
+  if (leftColumns.length !== 1 || rightColumns.length !== 1) {
+    return {
+      ...mergeFailure(left, "invalid-combination-key", `O campo ${options.keyColumn} deve existir uma única vez em ${options.leftName} e ${options.rightName}.`),
+      statistics: emptyStatistics
+    };
+  }
+  const leftIndexColumn = leftColumns[0] ?? "";
+  const rightIndexColumn = rightColumns[0] ?? "";
+  const leftRows = indexMergeRows(left, leftIndexColumn, identity, options.leftName, issues);
+  const rightRows = indexMergeRows(right, rightIndexColumn, identity, options.rightName, issues);
+  const exactDuplicates = issues.filter(({ code }) => code === "duplicate-merge-row").length;
+  if (!leftRows || !rightRows || issues.some(({ severity }) => severity === "error")) {
+    return { dataset: cloneDataset(left), indexColumn: leftIndexColumn, issues, statistics: { ...emptyStatistics, exactDuplicates } };
+  }
+
+  const leftSchema = mergeSchema(left.columns);
+  const rightSchema = mergeSchema(right.columns);
+  if (!leftSchema || !rightSchema) {
+    return {
+      ...mergeFailure(left, "duplicate-canonical-column", `Há cabeçalhos canônicos duplicados em ${options.leftName} ou ${options.rightName}.`, leftIndexColumn),
+      statistics: { ...emptyStatistics, exactDuplicates }
+    };
+  }
+  const outputColumns = [...left.columns];
+  for (const column of right.columns) {
+    if (!leftSchema.has(canonicalMergeColumn(column))) outputColumns.push(column);
+  }
+  const orderedPairs = buildMergePairs(leftRows, rightRows, options.strategy);
   const rows: string[][] = [];
   for (const pair of orderedPairs) {
-    const merged = mergeRowValues(outputColumns, previous, complement, pair, candidate.identity, issues);
+    const merged = mergeRowValues(outputColumns, left, right, pair, identity, issues, options.leftName, options.rightName);
     if (merged) rows.push(merged);
   }
+  const statistics = {
+    exactDuplicates,
+    leftOnly: leftRows.ordered.filter(({ key }) => !rightRows.byKey.has(key)).length,
+    matches: orderedPairs.filter(({ left: matchedLeft, right: matchedRight }) => matchedLeft && matchedRight).length,
+    rightOnly: rightRows.ordered.filter(({ key }) => !leftRows.byKey.has(key)).length,
+    source: options.rightName
+  };
   if (issues.some(({ severity }) => severity === "error")) {
-    return { dataset: cloneDataset(previous), indexColumn: previousIndexColumn, issues };
+    return { dataset: cloneDataset(left), indexColumn: leftIndexColumn, issues, statistics };
   }
   return {
-    dataset: { columns: outputColumns, dialect: { ...previous.dialect }, rows },
-    indexColumn: previousIndexColumn,
-    issues
+    dataset: { columns: outputColumns, dialect: { ...left.dialect }, rows },
+    indexColumn: leftIndexColumn,
+    issues,
+    statistics
+  };
+}
+
+function appendDatasets(datasets: TabularDataset[], sourceNames: string[]): DatasetCombinationResult {
+  const source = datasets[0];
+  if (!source) return combinationFailure({ columns: [], dialect: { ...generatedDialect }, rows: [] }, "append", sourceNames, "insufficient-combination-files", "Informe ao menos dois arquivos para combinar.");
+  const issues: ConversionIssue[] = [];
+  const columns: string[] = [];
+  const canonicalColumns = new Set<string>();
+  for (let datasetIndex = 0; datasetIndex < datasets.length; datasetIndex += 1) {
+    const dataset = datasets[datasetIndex];
+    if (!dataset || !mergeSchema(dataset.columns)) {
+      return combinationFailure(source, "append", sourceNames, "duplicate-canonical-column", `Há cabeçalhos canônicos duplicados em ${sourceNames[datasetIndex] ?? `Arquivo ${datasetIndex + 1}`}.`);
+    }
+    for (const column of dataset.columns) {
+      const canonical = canonicalMergeColumn(column);
+      if (!canonicalColumns.has(canonical)) {
+        canonicalColumns.add(canonical);
+        columns.push(column);
+      }
+    }
+  }
+
+  const rows: string[][] = [];
+  const fingerprints = new Set<string>();
+  const steps: DatasetCombinationStep[] = [];
+  datasets.forEach((dataset, datasetIndex) => {
+    const schema = mergeSchema(dataset.columns) ?? new Map<string, number>();
+    let exactDuplicates = 0;
+    let added = 0;
+    dataset.rows.forEach((row, rowIndex) => {
+      const output = columns.map((column) => {
+        const sourceIndex = schema.get(canonicalMergeColumn(column));
+        return sourceIndex === undefined ? "" : row[sourceIndex] ?? "";
+      });
+      const fingerprint = JSON.stringify(output);
+      if (fingerprints.has(fingerprint)) {
+        exactDuplicates += 1;
+        issues.push({
+          code: "duplicate-append-row",
+          message: `Linha ${rowIndex + 2} duplicada exata consolidada em ${sourceNames[datasetIndex] ?? `Arquivo ${datasetIndex + 1}`}.`,
+          severity: "warning"
+        });
+        return;
+      }
+      fingerprints.add(fingerprint);
+      rows.push(output);
+      added += 1;
+    });
+    steps.push({ exactDuplicates, leftOnly: datasetIndex === 0 ? 0 : rows.length - added, matches: 0, rightOnly: added, source: sourceNames[datasetIndex] ?? `Arquivo ${datasetIndex + 1}` });
+  });
+  return {
+    dataset: { columns, dialect: { ...source.dialect }, rows },
+    issues,
+    sourceNames,
+    steps,
+    strategy: "append"
   };
 }
 
@@ -760,8 +931,8 @@ function emptyRecord(columns: string[]): Map<string, string> {
 /** Identidade canônica e estratégia de normalização da coluna usada como indexador. */
 type MergeIndexerIdentity = Readonly<{ key: string; kind: "identifier" | "phone" }>;
 
-/** Linha distinta vinculada à chave já normalizada, mantendo os valores originais para composição. */
-type IndexedMergeRow = Readonly<{ key: string; row: string[] }>;
+/** Linha distinta vinculada à chave já normalizada, mantendo valores e posição para conflitos rastreáveis. */
+type IndexedMergeRow = Readonly<{ key: string; row: string[]; sourceRow: number }>;
 
 /** Projeções ordenada e agrupada das linhas distintas de um dos lados da mesclagem. */
 type IndexedMergeRows = Readonly<{ byKey: ReadonlyMap<string, IndexedMergeRow[]>; ordered: IndexedMergeRow[] }>;
@@ -769,19 +940,32 @@ type IndexedMergeRows = Readonly<{ byKey: ReadonlyMap<string, IndexedMergeRow[]>
 /** Correspondência unitária restrita a uma única chave canônica. */
 type MergePair = Readonly<{ key: string; left?: IndexedMergeRow; right?: IndexedMergeRow }>;
 
+type MergePairOptions = Readonly<{
+  keyColumn: string;
+  leftName: string;
+  rightName: string;
+  strategy: Exclude<DatasetCombinationStrategy, "append">;
+}>;
+
+type MergePairResult = DatasetMergeResult & { statistics: DatasetCombinationStep };
+
 function mergeFailure(source: TabularDataset, code: string, message: string, indexColumn?: string): DatasetMergeResult {
   return { dataset: cloneDataset(source), indexColumn, issues: [{ code, message, severity: "error" }] };
 }
 
-function mergeIndexerIdentities(identifiers: string[]): MergeIndexerIdentity[] {
-  const values = new Map<string, MergeIndexerIdentity>();
-  identifiers.forEach((identifier) => {
-    const key = normalizeKey(identifier);
-    if (key === "fone" || key === "telefone") values.set("phone", { key: "phone", kind: "phone" });
-    else if (key) values.set(`identifier:${key}`, { key, kind: "identifier" });
-  });
-  values.set("phone", { key: "phone", kind: "phone" });
-  return [...values.values()];
+function combinationFailure(
+  source: TabularDataset,
+  strategy: DatasetCombinationStrategy,
+  sourceNames: string[],
+  code: string,
+  message: string
+): DatasetCombinationResult {
+  return { dataset: cloneDataset(source), issues: [{ code, message, severity: "error" }], sourceNames, steps: [], strategy };
+}
+
+function mergeIdentityForColumn(column: string): MergeIndexerIdentity {
+  const key = canonicalMergeColumn(column);
+  return key === "phone" ? { key: "phone", kind: "phone" } : { key, kind: "identifier" };
 }
 
 function columnsForMergeIdentity(columns: string[], identity: MergeIndexerIdentity): string[] {
@@ -821,7 +1005,7 @@ function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: 
       issues.push({ code: "duplicate-merge-row", message: `Linha duplicada exata consolidada em ${label} para a chave ${key}.`, severity: "warning" });
       continue;
     }
-    const item = { key, row };
+    const item = { key, row, sourceRow: rowIndex + 2 };
     seen.add(fingerprint);
     fingerprints.set(key, seen);
     const group = indexed.get(key);
@@ -833,9 +1017,9 @@ function indexMergeRows(dataset: TabularDataset, indexColumn: string, identity: 
 }
 
 /** Materializa todas as correspondências da mesma chave e aplica ao final somente a política de linhas sem par. */
-function buildMergePairs(previous: IndexedMergeRows, complement: IndexedMergeRows, mode: DatasetMergeMode): MergePair[] {
+function buildMergePairs(previous: IndexedMergeRows, complement: IndexedMergeRows, strategy: Exclude<DatasetCombinationStrategy, "append">): MergePair[] {
   const pairs: MergePair[] = [];
-  if (mode === "merge-only") {
+  if (strategy === "right") {
     for (const right of complement.ordered) {
       const leftRows = previous.byKey.get(right.key) ?? [];
       if (leftRows.length === 0) pairs.push({ key: right.key, right });
@@ -846,10 +1030,10 @@ function buildMergePairs(previous: IndexedMergeRows, complement: IndexedMergeRow
 
   for (const left of previous.ordered) {
     const rightRows = complement.byKey.get(left.key) ?? [];
-    if (rightRows.length === 0) pairs.push({ key: left.key, left });
+    if (rightRows.length === 0 && strategy !== "inner") pairs.push({ key: left.key, left });
     else rightRows.forEach((right) => pairs.push({ key: left.key, left, right }));
   }
-  if (mode === "summed") {
+  if (strategy === "full") {
     complement.ordered.filter(({ key }) => !previous.byKey.has(key)).forEach((right) => pairs.push({ key: right.key, right }));
   }
   return pairs;
@@ -877,7 +1061,9 @@ function mergeRowValues(
   complement: TabularDataset,
   pair: MergePair,
   indexIdentity: MergeIndexerIdentity,
-  issues: ConversionIssue[]
+  issues: ConversionIssue[],
+  leftName: string,
+  rightName: string
 ): string[] | null {
   const previousSchema = mergeSchema(previous.columns);
   const complementSchema = mergeSchema(complement.columns);
@@ -891,7 +1077,11 @@ function mergeRowValues(
     const left = leftIndex === undefined || !pair.left ? "" : pair.left.row[leftIndex]?.trim() ?? "";
     const right = rightIndex === undefined || !pair.right ? "" : pair.right.row[rightIndex]?.trim() ?? "";
     if (left && right && left !== right) {
-      issues.push({ code: "merge-value-conflict", message: `Conflito na coluna ${column} para a chave ${pair.key}.`, severity: "error" });
+      issues.push({
+        code: "merge-value-conflict",
+        message: `Conflito na coluna ${column} para a chave ${pair.key}: ${leftName}, linha ${pair.left?.sourceRow ?? "-"}, valor “${left}”; ${rightName}, linha ${pair.right?.sourceRow ?? "-"}, valor “${right}”.`,
+        severity: "error"
+      });
       return left;
     }
     return left || right;

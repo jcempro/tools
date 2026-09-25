@@ -45,13 +45,23 @@ textarea {
   font: inherit;
 }
 
-#csv-merge { min-height: 170px; }
+#csv-merge { min-height: 140px; }
 
 #merge-file-button { width: 100%; margin-top: 8px; }
 
-.merge-options { display: grid; grid-template-columns: 1fr; gap: 4px; margin: 12px 0 0; }
-.merge-options label { display: flex; align-items: center; gap: 8px; margin: 0; padding: 5px 0; color: var(--ink); font-weight: 500; }
-.merge-options input { flex: 0 0 auto; width: 1.15rem; min-height: 1.15rem; }
+.operation-options,
+.merge-options { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.operation-options label,
+.merge-options label { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; margin: 0; padding: 7px 0; color: var(--ink); font-weight: 600; }
+.operation-options input,
+.merge-options input { width: 1.15rem; min-height: 1.15rem; margin: 2px 0 0; }
+.strategy-copy { display: block; }
+.strategy-copy small { display: block; margin-top: 2px; color: var(--muted); font-weight: 400; line-height: 1.35; }
+.combination-files { margin: 8px 0 12px; padding-left: 24px; color: var(--muted); font-size: 13px; }
+.combination-files:empty { display: none; }
+.operation-shell:has(#operation-convert:checked) .combination-group,
+.operation-shell:has(#operation-combine:checked) .conversion-group,
+.combination-group:has(input[name="combination-strategy"][value="append"]:checked) .key-group { display: none; }
 
 .similarity-controls { margin-top: 14px; }
 .check-option { display: flex; align-items: center; gap: 8px; color: var(--ink); }

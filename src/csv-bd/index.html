@@ -16,7 +16,7 @@
     <div data-jcem-actions hidden>
       <input id="csv-file" type="file" accept=".csv,text/csv,text/plain" />
       <button type="button" class="ico csv-open">Abrir CSV</button>
-      <button type="button" class="ico csv-download">Baixar CSV convertido</button>
+      <button type="button" class="ico csv-download">Baixar CSV resultante</button>
       <button type="button" class="ico clear">Limpar</button>
       <a
         class="ico bundle"
@@ -38,19 +38,26 @@
       </section>
 
       <section class="workspace" aria-label="Conversor">
-        <form class="panel controls" id="bd-form">
-          <fieldset>
-            <legend>Entrada</legend>
-            <label for="csv-text">Conteudo CSV</label>
-            <textarea
-              id="csv-text"
-              spellcheck="false"
-              placeholder="Cole aqui o CSV ou selecione um arquivo."
-            ></textarea>
+        <form class="panel controls operation-shell" id="bd-form">
+          <fieldset class="operation-options">
+            <legend>O que deseja fazer?</legend>
+            <label><input id="operation-convert" type="radio" name="operation" value="convert" checked /> Somente converter</label>
+            <label><input id="operation-convert-combine" type="radio" name="operation" value="convert-combine" /> Converter e combinar arquivos</label>
+            <label><input id="operation-combine" type="radio" name="operation" value="combine" /> Somente combinar arquivos</label>
           </fieldset>
 
           <fieldset>
-            <legend>Modelos</legend>
+            <legend>Primeiro arquivo</legend>
+            <label for="csv-text">Conteúdo CSV</label>
+            <textarea
+              id="csv-text"
+              spellcheck="false"
+              placeholder="Cole aqui o primeiro CSV ou selecione um arquivo."
+            ></textarea>
+          </fieldset>
+
+          <fieldset class="conversion-group contextual-group">
+            <legend>Conversão entre modelos</legend>
             <div class="direction-grid">
               <label>
                 <span>Origem</span>
@@ -75,26 +82,31 @@
             <input id="identifier-columns" type="text" value="MCI, CID, MGI" />
           </fieldset>
 
-          <fieldset>
-            <legend>Mesclagem complementar opcional</legend>
-            <label for="csv-merge">CSV para mesclar</label>
+          <fieldset class="combination-group contextual-group">
+            <legend>Arquivos e resultado da combinação</legend>
+            <label for="csv-merge">Conteúdo de um arquivo adicional</label>
             <textarea
               id="csv-merge"
               spellcheck="false"
-              placeholder="Cole um segundo CSV ou abra um arquivo. Deixe vazio para apenas converter."
+              placeholder="Cole um CSV adicional ou selecione dois ou mais arquivos abaixo."
             ></textarea>
-            <input id="csv-merge-file" type="file" accept=".csv,text/csv,text/plain" hidden />
-            <button type="button" id="merge-file-button" class="secondary">Abrir CSV para mesclar</button>
-            <fieldset class="merge-options">
-              <legend>Linhas do resultado</legend>
-              <label><input type="radio" name="merge-mode" value="previous" checked /> Resultado prévio</label>
-              <label><input type="radio" name="merge-mode" value="merge-only" /> Somente mesclar</label>
-              <label><input type="radio" name="merge-mode" value="summed" /> Somadas</label>
+            <input id="csv-merge-file" type="file" accept=".csv,text/csv,text/plain" multiple hidden />
+            <button type="button" id="merge-file-button" class="secondary">Selecionar arquivos adicionais</button>
+            <ol id="combination-files" class="combination-files" aria-live="polite"></ol>
+            <fieldset class="merge-options" id="combination-strategies">
+              <legend>Quais linhas deseja manter?</legend>
             </fieldset>
+            <div class="key-group contextual-group">
+              <label for="combination-key">Campo que representa o mesmo registro em todos</label>
+              <select id="combination-key" aria-describedby="combination-key-help">
+                <option value="">Analise os arquivos para escolher</option>
+              </select>
+              <p id="combination-key-help" class="field-help">A sugestão automática só ocorre quando existe exatamente um campo comum elegível.</p>
+            </div>
           </fieldset>
 
           <div class="actions">
-            <button type="button" id="convert">Converter</button>
+            <button type="button" id="convert">Executar operação</button>
             <button type="button" id="clear">Limpar</button>
             <button type="button" id="download" disabled>Baixar CSV</button>
           </div>
@@ -114,8 +126,8 @@
 
         <section class="panel output" aria-label="Resultado">
           <div class="summary-grid" id="summary">
-            <div><strong>Origem</strong><span>-</span></div>
-            <div><strong>Destino</strong><span>-</span></div>
+            <div><strong>Operação</strong><span>-</span></div>
+            <div><strong>Estratégia</strong><span>-</span></div>
             <div><strong>Linhas</strong><span>0</span></div>
             <div><strong>Colunas</strong><span>0</span></div>
           </div>
@@ -124,7 +136,7 @@
 
           <section id="similarity-report" class="similarity-report" aria-live="polite" hidden></section>
 
-          <label for="csv-output">CSV convertido</label>
+          <label for="csv-output">CSV resultante</label>
           <textarea id="csv-output" spellcheck="false" readonly></textarea>
         </section>
       </section>

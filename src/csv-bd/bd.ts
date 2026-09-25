@@ -1,20 +1,25 @@
 import {
   analyzeSimilarRows,
+  combinationStrategies,
+  combineDatasets,
   convertDataset,
   decodeTextBuffer,
+  eligibleCombinationColumns,
   eligibleSimilarityColumns,
   inferModelKind,
-  mergeDatasets,
   oppositeModel,
   parseCsv,
   serializeCsv,
   type ConversionIssue,
   type ConversionResult,
-  type DatasetMergeMode,
+  type DatasetCombinationStrategy,
   type NameDecision,
   type TabularDataset,
   type TabularModelKind
 } from "../assets/js/tabular";
+
+type OperationKind = "convert" | "convert-combine" | "combine";
+type AdditionalSource = Readonly<{ name: string; text: string }>;
 
 (function bootstrapBd(w: Window, d: Document): void {
   "use strict";
@@ -23,6 +28,8 @@ import {
   const maxHeaderScanChars = 128 * 1024;
   let sourceDataset: TabularDataset | null = null;
   let currentResult: ConversionResult | null = null;
+  let primaryName = "Primeiro arquivo";
+  let additionalSources: AdditionalSource[] = [];
   let inferenceTimer = 0;
   let inferenceRun = 0;
   const nameDecisions: Record<string, string> = {};
@@ -104,8 +111,12 @@ import {
     return textarea("#csv-text").value.trim();
   }
 
-  function mergeMode(): DatasetMergeMode {
-    return one<HTMLInputElement>('input[name="merge-mode"]:checked').value as DatasetMergeMode;
+  function operation(): OperationKind {
+    return one<HTMLInputElement>('input[name="operation"]:checked').value as OperationKind;
+  }
+
+  function combinationStrategy(): DatasetCombinationStrategy {
+    return one<HTMLInputElement>('input[name="combination-strategy"]:checked').value as DatasetCombinationStrategy;
   }
 
   function invalidateResult(): void {
@@ -141,7 +152,8 @@ import {
     clearLogs();
     setOutput("");
     hideDecisions();
-    log("Inicio da conversao.");
+    const selectedOperation = operation();
+    log(`Início: ${operationLabel(selectedOperation)}.`);
 
     sourceDataset = parseSource();
     if (!sourceDataset) {
@@ -149,14 +161,21 @@ import {
       return;
     }
 
-    const from = inferModelKind(sourceDataset);
-    const to = oppositeModel(from);
-    updateDirection(from, to);
-    log(`Modelo de origem inferido: ${modelLabel(from)}. Saida definida automaticamente: ${modelLabel(to)}.`);
-    currentResult = convertDataset(sourceDataset, from, to, {
-      identifierColumns: identifiers(),
-      nameDecisions
-    });
+    let direction = "Sem conversão";
+    if (selectedOperation === "combine") {
+      currentResult = { dataset: sourceDataset, issues: [], pendingNameDecisions: [] };
+      log("Os arquivos originais serão combinados sem inferência nem transformação de modelo.");
+    } else {
+      const from = inferModelKind(sourceDataset);
+      const to = oppositeModel(from);
+      direction = `${modelLabel(from)} → ${modelLabel(to)}`;
+      updateDirection(from, to);
+      log(`Modelo de origem inferido: ${modelLabel(from)}. Saída definida automaticamente: ${modelLabel(to)}.`);
+      currentResult = convertDataset(sourceDataset, from, to, {
+        identifierColumns: identifiers(),
+        nameDecisions
+      });
+    }
 
     for (const issue of currentResult.issues) {
       log(issue.message, issue.severity);
@@ -164,55 +183,83 @@ import {
 
     if (currentResult.issues.some((issue) => issue.severity === "error")) {
       setOutput("");
-      updateSummary(from, to, null);
-      log("Conversao interrompida por erro recuperavel.", "error");
+      updateSummary(operationLabel(selectedOperation), direction, null);
+      log("Operação interrompida por erro recuperável.", "error");
       return;
     }
 
     if (currentResult.pendingNameDecisions.length > 0) {
       renderDecisions(currentResult.pendingNameDecisions);
-      log("Existem divergencias de nome aguardando revisao do usuario.", "decision");
+      log("Existem divergências de nome aguardando revisão do usuário.", "decision");
       setOutput("");
-      updateSummary(from, to, null);
-      log("Confirme os nomes canonicos antes de gerar o CSV final.", "decision");
+      updateSummary(operationLabel(selectedOperation), direction, null);
+      log("Confirme os nomes canônicos antes de gerar o CSV final.", "decision");
       return;
     }
 
-    const mergeText = textarea("#csv-merge").value.trim();
-    if (mergeText) {
-      let complement: TabularDataset;
-      try {
-        complement = parseCsv(mergeText);
-      } catch (error) {
-        log(error instanceof Error ? error.message : "Falha ao interpretar o CSV complementar.", "error");
-        setOutput("");
-        updateSummary(from, to, null);
+    let resultContext = direction;
+    if (selectedOperation !== "convert") {
+      const inputs = readAdditionalSources();
+      if (inputs.length === 0) {
+        log("Informe ao menos um arquivo adicional para combinar.", "error");
+        updateSummary(operationLabel(selectedOperation), "Aguardando arquivos", null);
         return;
       }
-      if (complement.columns.length === 0) {
-        log("CSV complementar sem cabecalho identificavel.", "error");
-        setOutput("");
-        updateSummary(from, to, null);
+      const parsed = parseAdditionalDatasets(inputs);
+      if (!parsed) {
+        updateSummary(operationLabel(selectedOperation), "Arquivos inválidos", null);
         return;
       }
-      log(`Mesclagem iniciada no modo ${mergeModeLabel(mergeMode())}: ${complement.rows.length} linhas complementares.`);
-      const merged = mergeDatasets(currentResult.dataset, complement, { identifierColumns: identifiers(), mode: mergeMode() });
-      merged.issues.forEach((issue) => log(issue.message, issue.severity));
-      if (merged.issues.some(({ severity }) => severity === "error")) {
-        setOutput("");
-        updateSummary(from, to, null);
-        log("Mesclagem bloqueada; o resultado prévio permaneceu inalterado.", "error");
+      const datasets = [currentResult.dataset, ...parsed];
+      const strategy = combinationStrategy();
+      const key = strategy === "append" ? undefined : populateCombinationKeys(datasets);
+      if (strategy !== "append" && !key) {
+        log("Confirme o campo de correspondência antes de combinar.", "decision");
+        updateSummary(operationLabel(selectedOperation), strategyLabel(strategy), null);
         return;
       }
-      currentResult = { ...currentResult, dataset: merged.dataset, issues: [...currentResult.issues, ...merged.issues] };
-      log(`Mesclagem concluída pelo indexador ${merged.indexColumn ?? "comum"}.`);
+      const sourceNames = [primaryName, ...inputs.map(({ name }) => name)];
+      log(`Arquivos na ordem efetiva: ${sourceNames.join(" → ")}.`);
+      log(`Estratégia: ${strategyLabel(strategy)}${key ? `; campo confirmado: ${key}` : "; sem cruzamento por chave"}.`);
+      const combined = combineDatasets(datasets, { keyColumn: key, sourceNames, strategy });
+      combined.issues.forEach((issue) => log(issue.message, issue.severity));
+      combined.steps.forEach((step) => log(`${step.source}: ${step.matches} correspondências, ${step.leftOnly} exclusivas anteriores, ${step.rightOnly} exclusivas do arquivo e ${step.exactDuplicates} duplicatas exatas consolidadas.`));
+      if (combined.issues.some(({ severity }) => severity === "error")) {
+        setOutput("");
+        updateSummary(operationLabel(selectedOperation), strategyLabel(strategy), null);
+        log("Combinação bloqueada; nenhum resultado parcial foi exportado.", "error");
+        return;
+      }
+      currentResult = { ...currentResult, dataset: combined.dataset, issues: [...currentResult.issues, ...combined.issues] };
+      resultContext = strategyLabel(strategy);
     }
 
     const csv = serializeCsv(currentResult.dataset);
     setOutput(csv);
-    updateSummary(from, to, currentResult.dataset);
+    updateSummary(operationLabel(selectedOperation), resultContext, currentResult.dataset);
     populateSimilarityColumns(currentResult.dataset);
-    log(`Conclusao: ${currentResult.dataset.rows.length} linhas exportaveis em UTF-8 com BOM.`);
+    log(`Conclusão: ${currentResult.dataset.rows.length} linhas exportáveis em UTF-8 com BOM.`);
+  }
+
+  function readAdditionalSources(): AdditionalSource[] {
+    const pasted = textarea("#csv-merge").value.trim();
+    return pasted ? [{ name: "Conteúdo adicional", text: pasted }] : [...additionalSources];
+  }
+
+  function parseAdditionalDatasets(inputs: AdditionalSource[]): TabularDataset[] | null {
+    const datasets: TabularDataset[] = [];
+    for (const source of inputs) {
+      try {
+        const dataset = parseCsv(source.text);
+        if (dataset.columns.length === 0) throw new Error("CSV sem cabeçalho identificável.");
+        datasets.push(dataset);
+        log(`${source.name}: ${dataset.rows.length} linhas e ${dataset.columns.length} colunas.`);
+      } catch (error) {
+        log(`${source.name}: ${error instanceof Error ? error.message : "falha ao interpretar CSV"}`, "error");
+        return null;
+      }
+    }
+    return datasets;
   }
 
   function invalidateSimilarityReport(): void {
@@ -294,10 +341,70 @@ import {
     return value === "modelo1" ? "Modelo 1" : "Modelo 2";
   }
 
-  function mergeModeLabel(value: DatasetMergeMode): string {
-    if (value === "merge-only") return "Somente mesclar";
-    if (value === "summed") return "Somadas";
-    return "Resultado prévio";
+  function operationLabel(value: OperationKind): string {
+    if (value === "convert-combine") return "Converter e combinar arquivos";
+    if (value === "combine") return "Somente combinar arquivos";
+    return "Somente converter";
+  }
+
+  function strategyLabel(value: DatasetCombinationStrategy): string {
+    return combinationStrategies.find((strategy) => strategy.value === value)?.label ?? value;
+  }
+
+  function populateCombinationKeys(datasets: TabularDataset[]): string | undefined {
+    const chooser = select("#combination-key");
+    const previous = chooser.value;
+    const candidates = eligibleCombinationColumns(datasets);
+    chooser.replaceChildren();
+    const placeholder = d.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = candidates.length === 0 ? "Nenhum campo comum elegível" : "Escolha um campo comum";
+    chooser.appendChild(placeholder);
+    candidates.forEach((column) => {
+      const option = d.createElement("option");
+      option.value = column;
+      option.textContent = column;
+      chooser.appendChild(option);
+    });
+    const preserved = candidates.find((column) => column === previous);
+    if (preserved) chooser.value = preserved;
+    else if (candidates.length === 1) chooser.value = candidates[0] ?? "";
+    if (candidates.length > 1 && !chooser.value) {
+      log(`Foram encontrados ${candidates.length} campos comuns; escolha explicitamente um deles.`, "decision");
+    }
+    return chooser.value || undefined;
+  }
+
+  function renderStrategies(): void {
+    const container = one<HTMLFieldSetElement>("#combination-strategies");
+    combinationStrategies.forEach((strategy, index) => {
+      const label = d.createElement("label");
+      const radio = d.createElement("input");
+      radio.type = "radio";
+      radio.name = "combination-strategy";
+      radio.value = strategy.value;
+      radio.checked = index === 0;
+      const copy = d.createElement("span");
+      copy.className = "strategy-copy";
+      copy.textContent = strategy.label;
+      const help = d.createElement("small");
+      help.textContent = `${strategy.help} (${strategy.value})`;
+      copy.appendChild(help);
+      label.append(radio, copy);
+      container.appendChild(label);
+    });
+  }
+
+  function syncContext(): void {
+    const selectedOperation = operation();
+    const conversion = one<HTMLFieldSetElement>(".conversion-group");
+    const combination = one<HTMLFieldSetElement>(".combination-group");
+    conversion.setAttribute("aria-hidden", String(selectedOperation === "combine"));
+    combination.setAttribute("aria-hidden", String(selectedOperation === "convert"));
+    const keyGroup = one<HTMLElement>(".key-group");
+    const usesKey = selectedOperation !== "convert" && combinationStrategy() !== "append";
+    keyGroup.setAttribute("aria-hidden", String(!usesKey));
+    select("#combination-key").disabled = !usesKey;
   }
 
   function cancelPendingInference(): void {
@@ -310,6 +417,10 @@ import {
 
   function scheduleInference(reason: "arquivo" | "texto"): void {
     cancelPendingInference();
+    if (operation() === "combine") {
+      updateSummary(operationLabel("combine"), "Sem conversão", null);
+      return;
+    }
     const run = inferenceRun;
     inferenceTimer = w.setTimeout(() => {
       inferenceTimer = 0;
@@ -318,6 +429,7 @@ import {
   }
 
   async function inferDirectionPreview(run: number, reason: "arquivo" | "texto"): Promise<void> {
+    if (operation() === "combine") return;
     const text = textarea("#csv-text").value;
     if (!text.trim()) {
       updateDirection("modelo1");
@@ -343,7 +455,7 @@ import {
       const from = inferModelKind(dataset);
       const to = oppositeModel(from);
       updateDirection(from, to);
-      updateSummary(from, to, null);
+      updateSummary(operationLabel(operation()), `${modelLabel(from)} → ${modelLabel(to)}`, null);
       if (reason === "arquivo") {
         log(`Modelo de origem inferido apos leitura do arquivo: ${modelLabel(from)}.`);
       }
@@ -440,27 +552,49 @@ import {
     log(`Lendo arquivo ${file.name}.`);
     const decoded = decodeTextBuffer(await file.arrayBuffer());
     textarea("#csv-text").value = decoded.text;
+    primaryName = file.name;
     log(`Codificacao detectada: ${decoded.dialect.encoding}.`);
     scheduleInference("arquivo");
   }
 
-  async function loadMergeFile(file: File): Promise<void> {
+  async function loadMergeFiles(files: File[]): Promise<void> {
     invalidateResult();
-    log(`Lendo arquivo complementar ${file.name}.`);
-    const decoded = decodeTextBuffer(await file.arrayBuffer());
-    textarea("#csv-merge").value = decoded.text;
-    log(`Codificacao complementar detectada: ${decoded.dialect.encoding}.`);
+    textarea("#csv-merge").value = "";
+    additionalSources = [];
+    for (const file of files) {
+      log(`Lendo arquivo adicional ${file.name}.`);
+      const decoded = decodeTextBuffer(await file.arrayBuffer());
+      additionalSources.push({ name: file.name, text: decoded.text });
+      log(`${file.name}: codificação ${decoded.dialect.encoding}.`);
+    }
+    renderCombinationFiles();
+  }
+
+  function renderCombinationFiles(): void {
+    const list = one<HTMLOListElement>("#combination-files");
+    list.replaceChildren();
+    additionalSources.forEach(({ name }) => {
+      const item = d.createElement("li");
+      item.textContent = name;
+      list.appendChild(item);
+    });
   }
 
   function clearAll(): void {
     sourceDataset = null;
     currentResult = null;
+    primaryName = "Primeiro arquivo";
+    additionalSources = [];
     for (const key of Object.keys(nameDecisions)) {
       delete nameDecisions[key];
     }
     textarea("#csv-text").value = "";
     textarea("#csv-merge").value = "";
-    one<HTMLInputElement>('input[name="merge-mode"][value="previous"]').checked = true;
+    input("#operation-convert").checked = true;
+    const firstStrategy = one<HTMLInputElement>('input[name="combination-strategy"]');
+    firstStrategy.checked = true;
+    select("#combination-key").replaceChildren(new Option("Analise os arquivos para escolher", ""));
+    renderCombinationFiles();
     setOutput("");
     select("#source-model").value = "modelo1";
     select("#target-model").value = "modelo2";
@@ -469,6 +603,7 @@ import {
     input("#similarity-enabled").checked = false;
     populateSimilarityColumns(null);
     invalidateSimilarityReport();
+    syncContext();
     clearLogs();
     log("Estado limpo.");
   }
@@ -476,7 +611,7 @@ import {
   function downloadCsv(): void {
     const content = textarea("#csv-output").value;
     if (!content || !currentResult) {
-      log("Nao ha CSV convertido para baixar.", "warning");
+      log("Não há CSV resultante para baixar.", "warning");
       return;
     }
 
@@ -484,7 +619,7 @@ import {
     const url = URL.createObjectURL(blob);
     const link = d.createElement("a");
     link.href = url;
-    link.download = `modelo-convertido-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `resultado-csv-${new Date().toISOString().slice(0, 10)}.csv`;
     d.body.appendChild(link);
     link.click();
     d.body.removeChild(link);
@@ -503,6 +638,8 @@ import {
   }
 
   ready(() => {
+    renderStrategies();
+    syncContext();
     const shared = w.JCEMDocumentos;
     shared?.toolbar.configure({
       actions: {
@@ -523,18 +660,31 @@ import {
     });
     input("#csv-merge-file").addEventListener("change", (event) => {
       const target = event.target;
-      if (!(target instanceof HTMLInputElement) || !target.files?.[0]) return;
-      void loadMergeFile(target.files[0]);
+      if (!(target instanceof HTMLInputElement) || !target.files?.length) return;
+      void loadMergeFiles(Array.from(target.files));
     });
     button("#merge-file-button").addEventListener("click", () => input("#csv-merge-file").click());
     textarea("#csv-text").addEventListener("input", () => {
       sourceDataset = null;
+      primaryName = "Conteúdo principal";
       invalidateResult();
       scheduleInference("texto");
     });
-    textarea("#csv-merge").addEventListener("input", invalidateResult);
+    textarea("#csv-merge").addEventListener("input", () => {
+      additionalSources = [];
+      renderCombinationFiles();
+      invalidateResult();
+    });
     input("#identifier-columns").addEventListener("input", invalidateResult);
-    d.querySelectorAll<HTMLInputElement>('input[name="merge-mode"]').forEach((radio) => radio.addEventListener("change", invalidateResult));
+    d.querySelectorAll<HTMLInputElement>('input[name="operation"]').forEach((radio) => radio.addEventListener("change", () => {
+      invalidateResult();
+      syncContext();
+    }));
+    d.querySelectorAll<HTMLInputElement>('input[name="combination-strategy"]').forEach((radio) => radio.addEventListener("change", () => {
+      invalidateResult();
+      syncContext();
+    }));
+    select("#combination-key").addEventListener("change", invalidateResult);
     button("#convert").addEventListener("click", convert);
     button("#clear").addEventListener("click", clearAll);
     button("#download").addEventListener("click", downloadCsv);
