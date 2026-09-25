@@ -6,7 +6,7 @@
 - Ordem: FT-028/029; FT-030/031; FT-032/033; FT-034/035; FT-036/037.
 - Arquitetura: RCF global para chrome/PDF; RCF do CSV para similaridade e modos de mesclagem; RCF do Faturamento para reset de Mes inicial.
 - Restricoes herdadas: RCF antes de codigo; commits por tarefa concluida; preservacao de comportamento; rastreabilidade material; Web/Bundle; evidencia visual quando aplicavel.
-- Estado: FTs registradas; FT-028 em equalizacao; demais aguardam a ordem declarada.
+- Estado: FTs 028/029 concluídas; FTs 030/032/034/036 normatizadas; implementações 031/033/035/037 permanecem pendentes.
 - Aceite global: cada frente possui contrato completo, implementacao causal, testes proporcionais, validacao integral e commit proprio; nenhuma lacuna de negocio e preenchida por arbitrio.
 
 ## Subcontextos

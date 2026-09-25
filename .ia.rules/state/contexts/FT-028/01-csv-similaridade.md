@@ -7,4 +7,4 @@
 - Fora de escopo: remocao automatica silenciosa, heuristica sem contrato e configuracao ativa antecipada.
 - Validacao: determinismo, falsos positivos/negativos, explicabilidade, opt-in, Web e Bundle.
 - Decisao: comparação Levenshtein normalizada por uma a três colunas textuais escolhidas explicitamente, média simples e limiar central `0.90`; resultado somente consultivo, explicável e sem mutação automática.
-- Estado: contrato concluído; FT-029 bloqueada até nova autorização humana posterior ao commit normativo.
+- Estado: contrato e FT-029 concluídos; implementação material em `e90889a1f5bac2331c9f0bf2ebffdf9d92d08c7f`, validada em Web/Bundle e sincronizada ao RCF.

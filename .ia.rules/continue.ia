@@ -39,15 +39,27 @@
 - Escopo: Tecnico.
 - Objetivo: materializar a deteccao explicavel de provaveis duplicidades conforme contrato, preservando deduplicacao exata, cardinalidade, associacao de registros e decisao humana.
 - Prioridade: normal.
-- Status: pendente.
-- Dependencias: FT-028 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
+- Status: concluido.
+- Dependencias: FT-028 concluida e commitada em `515e3f7`; autorizacao humana explicita recebida posteriormente ao commit normativo.
 - Aceite: resultados deterministas e explicados, limiar centralizado, opt-in, ausencia de remocao silenciosa e validacao integral Web/Bundle.
 
 ### Plano vigente
 
-1. Etapa 1/3 - implementar configuracao, comparador e integracao sem mutacao silenciosa. Status: bloqueado pela FT-028.
-2. Etapa 2/3 - implementar UI acessivel e testes de similaridade/falsos positivos. Status: bloqueado pela FT-028.
-3. Etapa 3/3 - validar, rastrear e concluir. Status: bloqueado pela FT-028.
+1. Etapa 1/3 - implementar configuracao, comparador e integracao sem mutacao silenciosa. Status: concluido.
+2. Etapa 2/3 - implementar UI acessivel e testes de similaridade/falsos positivos. Status: concluido.
+3. Etapa 3/3 - validar, rastrear e concluir. Status: concluido.
+
+### Resultado e verificacoes
+
+- A configuração compartilhada centraliza limiar `0.90` e limite de `250000` pares, ambos validados antes da execução.
+- O motor normaliza Unicode NFKD, calcula Levenshtein por campo e média simples, compara pares únicos em ordem estável e exclui vetores exatos ou pares com campo vazio.
+- A UI permanece desativada por padrão, aceita uma a três colunas textuais elegíveis e produz relatório explicável por linha/campo sem alterar o CSV.
+- Type-check, lint, 22 testes focais e a validação integral foram aprovados; a suíte final executou 71 testes, build Web, quatro Bundles offline e publicação de 6 páginas/81 arquivos; o commit material é `e90889a1f5bac2331c9f0bf2ebffdf9d92d08c7f`.
+- O finalizador oficial sem filtro por FT recusou associar o commit às FTs 031/033/035/037 ainda pendentes; a projeção exclusiva da FT-029 foi aplicada conforme o contrato e submetida ao validador oficial.
+
+### Proximo ponto
+
+- FT-029 concluida; nenhuma pendencia funcional permanece nesta frente.
 
 ## FT-030 - Contrato visual da barra de ferramentas vertical em sobreposicao
 
