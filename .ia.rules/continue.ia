@@ -100,15 +100,26 @@
 - Escopo: Tecnico.
 - Objetivo: aplicar o estado opaco e a transicao normatizados no mecanismo compartilhado da barra vertical, sem hardcode de viewport nem regressao de navegacao.
 - Prioridade: alta.
-- Status: pendente.
+- Status: concluido.
 - Dependencias: FT-030 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
 - Aceite: evidencia corrigida em temas e viewports, limiar discreto, transicao curta e ausencia de regressao geometrica, interativa ou responsiva.
 
 ### Plano vigente
 
-1. Etapa 1/3 - ajustar mecanismo e estilos compartilhados. Status: bloqueado pela FT-030.
-2. Etapa 2/3 - ampliar testes de estado, tema, scroll e responsividade. Status: bloqueado pela FT-030.
-3. Etapa 3/3 - validar visualmente, rastrear e concluir. Status: bloqueado pela FT-030.
+1. Etapa 1/3 - ajustar mecanismo e estilos compartilhados. Status: concluido.
+2. Etapa 2/3 - ampliar testes de estado, tema, scroll e responsividade. Status: concluido.
+3. Etapa 3/3 - validar visualmente, rastrear e concluir. Status: concluido.
+
+### Resultado e verificacoes
+
+- O chrome compartilhado passou a inserir sentinela estrutural imediatamente antes da navegacao e alternar estado binario por `IntersectionObserver`, sem listener de scroll, com fallback opaco quando o observador nao existe.
+- O trilho sticky usa as superficies e bordas dos temas claro/escuro, cobre a largura retraida ou expandida e transiciona apenas fundo, borda e sombra por `140ms ease-out`; movimento reduzido mantem troca imediata.
+- Os 26 testes de infraestrutura e o type-check foram aprovados; o Bundle offline foi inspecionado no topo escuro/retraido e apos rolagem em claro/expandido, sem transparencia sobre toolbar ou conteudo.
+- Commit material: `b856da75d18837d62ad09d2ff0d9aa1ddebf5bf9`; rastreabilidade validada com 310 entradas e 309 materiais.
+
+### Proximo ponto
+
+- FT-031 concluida; prosseguir para a FT-033, ja autorizada pela solicitacao humana de 2026-09-25.
 
 ## FT-032 - Contrato de eficiencia e fidelidade do PDF dedicado
 
