@@ -1639,13 +1639,13 @@
         "src/assets/css/documentos.scss",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "2d6da35171fb8d330d2f00e28bd5b074ddee7f7e",
       "ft": "FT-031",
       "id": "eab919ea255fd8f2b4c17ede",
       "line": 286,
       "rcf": "RCF.md",
       "sentenceSha256": "f2836803d3868c53d465351945b00f01b1842612a0ea9c7536d9833c6d42579a",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -1666,13 +1666,13 @@
         "src/assets/css/documentos.scss",
         "tests/infrastructure.test.ts"
       ],
-      "commit": "",
+      "commit": "2d6da35171fb8d330d2f00e28bd5b074ddee7f7e",
       "ft": "FT-031",
       "id": "f1b5cb1ba9102e5223dca569",
       "line": 292,
       "rcf": "RCF.md",
       "sentenceSha256": "7c01128dd5a2e2010e16c38c394e845b30cc07cd74646fb4b01fcc77b12f48b3",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
