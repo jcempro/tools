@@ -5469,13 +5469,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "0ba76a0a9f1f087e5b48a2e6",
       "line": 87,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "2d890871a9e7e291b20f9ef03d92e923bf9b7c3fd7fcfdb8d5a45038dd25c934",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -5499,13 +5499,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "8bf593b3f7b086fd4a51dda1",
       "line": 89,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "b0c14943df02c797cc6ed4e4358d46bd54c6e038782f21c94055ca95e5094da9",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -5529,13 +5529,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "9f225426ef4a0d30eda9a373",
       "line": 91,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "d63df50eaf42760abab28b42213d542336ad2697bf295c36b741cfe431e04117",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -5546,13 +5546,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "b364de4338b588c5d70c4c58",
       "line": 93,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "89729f7bfa84874e7d062a7f18b28e1ab6946884fae6b2155863360b2985a24d",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -5576,13 +5576,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "9d6718d63fa559f964daddc8",
       "line": 95,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "48587b43fa32ea50d778193488228d492a1e476507056eb3eb24a0c655a8d19d",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
@@ -5606,13 +5606,13 @@
         "src/faturamento/index.html",
         "tests/faturamento.test.ts"
       ],
-      "commit": "",
+      "commit": "2a460a1ab760b606e41a20b2858b313da9c55976",
       "ft": "FT-037",
       "id": "eb5b9e30b17cbe57a24097bd",
       "line": 97,
       "rcf": "src/faturamento/RCF.md",
       "sentenceSha256": "27f280b3c01f17368dd85e30220354faf444c49bcaf1d4fa4b07da8be82fb1c8",
-      "state": "pending",
+      "state": "synchronized",
       "syncCommit": ""
     },
     {
