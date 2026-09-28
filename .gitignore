@@ -59,6 +59,7 @@ node_modules/
 !/.ia.rules/state/requests/
 !/.ia.rules/state/requests/FT-031/
 !/.ia.rules/state/requests/FT-031/request.md
+!/.ia.rules/state/requests/FT-031/visual-ledger.json
 !/.ia.rules/state/requests/FT-031/menu-expandido.png
 !/.ia.rules/state/requests/FT-031/borda-horizontal.png
 !/.ia.rules/clients/codex/validation-audit.toml

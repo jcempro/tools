@@ -1,0 +1,22 @@
+[
+  {
+    "artifact": "menu-expandido.png → captura local Web de Faturamento, 487 × 582 e 320 × 568",
+    "region": "navegação vertical expandida, do botão ao último aplicativo",
+    "observation": "a regra genérica .no-print limitava o elemento sticky à coluna recolhida, enquanto nav e botão cresciam para 18rem; o fundo da faixa adicional era transparente",
+    "rule": "RCF.md §13: superfície expandida opaca, contínua e temática, sem conteúdo visível através do trilho",
+    "expected": "elemento sticky, navegação interna e botão compartilham a mesma largura expandida, com fundo opaco desde o topo inicial",
+    "criterion": "larguras iguais, fundo rgb(214, 224, 231) no claro, sem documento visível no painel expandido",
+    "before": "anexo 337 × 369; captura Web inicial reproduziu linhas e conteúdo do documento através do painel",
+    "after": "captura Web desta execução no topo e após rolagem; larguras medidas de 240 px para elemento, nav interno e botão; fundo opaco, sem vazamento"
+  },
+  {
+    "artifact": "borda-horizontal.png → captura local Web de Faturamento, lados esquerdo e direito",
+    "region": "interseção da borda inferior do cabeçalho e da divisória da toolbar com o trilho vertical",
+    "observation": "a borda e a sombra do cabeçalho percorriam toda a largura, e a divisória da toolbar só reservava espaço para o trilho à esquerda",
+    "rule": "RCF.md §13: borda, sombra e cor subjacentes não podem atravessar a navegação vertical; lado configurado deve ser preservado",
+    "expected": "divisórias começam após a coluna à esquerda ou terminam antes da coluna à direita; a expansão opaca cobre a interseção",
+    "criterion": "faixa reservada de 3,5rem e divisórias fora dela nos dois lados; menu expandido sem linha interna",
+    "before": "anexo 132 × 302; borda horizontal visível sobre a faixa da navegação",
+    "after": "capturas Web desta execução: divisória do cabeçalho e da toolbar com offset de 46,6667 px à esquerda; no lado direito, offset de 46,6667 px à direita; painel expandido opaco em 320 × 568"
+  }
+]

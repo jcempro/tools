@@ -774,6 +774,11 @@ body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-toolbar-row::before {
   left: 3.5rem;
 }
 
+body.jcem-has-app-nav-right:not(.imprimir) .jcem-chrome-toolbar-row::before {
+  left: 0;
+  right: 3.5rem;
+}
+
 .jcem-chrome-toolbar-row.jcem-has-overflow {
   grid-template-columns: minmax(0, 1fr) 44px;
 }
@@ -1644,14 +1649,22 @@ body.imprimir input::placeholder {
 }
 :root[data-theme="light"] .jcem-nav-toggle { background: #d7e1e7; color: #29465b; border-color: #aebbc5; }
 :root[data-theme="light"] .jcem-theme-toggle { background: #f5f8fa; border-color: transparent; color: #526a7a; }
+/* A divisória horizontal termina na coluna de conteúdo, sem atravessar o trilho. */
+body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-header { border-bottom-color: transparent; box-shadow: none; }
+body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-header::after { content: ""; position: absolute; inset: auto 0 0 3.5rem; border-bottom: 1px solid #aeb8c2; box-shadow: 0 1px 0 rgb(20 35 50 / 6%); pointer-events: none; }
+body.jcem-has-app-nav-right:not(.imprimir) .jcem-chrome-header::after { left: 0; right: 3.5rem; }
+:root[data-theme="light"] body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-header::after { border-color: #aebbc5; }
+:root[data-theme="dark"] body.jcem-has-app-nav:not(.imprimir) .jcem-chrome-header::after { border-color: #505359; }
 .jcem-theme-toggle, .jcem-nav-toggle, .jcem-header-menu-toggle, .jcem-toolbar-menu-toggle { border: 0; border-radius: .55rem; cursor: pointer; min-width: 44px; min-height: 44px; flex: 0 0 44px; }
 .jcem-nav-state { position: fixed; inline-size: 1px; block-size: 1px; opacity: 0; pointer-events: none; }
 .jcem-app-shell { position: relative; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: stretch; min-height: 50vh; }
 .jcem-app-nav-sentinel { position: absolute; inset: 0 auto auto 0; inline-size: 1px; block-size: 1px; pointer-events: none; }
 .jcem-app-shell::before { content: ""; position: absolute; z-index: 0; inset: 0 auto 0 0; width: 3.5rem; background: #d6e0e7; border-right: 1px solid #9dabb6; box-shadow: .3rem 0 1rem rgb(0 0 0 / .08); transition: width .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease; pointer-events: none; }
 .jcem-app-shell-content { min-width: 0; }
-.jcem-app-nav { position: sticky; z-index: 900; top: 0; align-self: start; justify-self: start; width: 3.5rem; height: max-content; padding: 0; overflow: visible; background: transparent; border: 0 solid transparent; border-right-width: 1px; border-radius: 0; box-shadow: none; transition: width .18s ease, background-color 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out; }
-.jcem-app-nav-overlay { background: #d6e0e7; border-color: #9dabb6; box-shadow: .3rem 0 1rem rgb(0 0 0 / .08); }
+/* PROTEÇÃO: a regra genérica .no-print não pode limitar o painel expandido à coluna retraída. */
+.jcem-app-nav { position: sticky; z-index: 900; top: 0; align-self: start; justify-self: start; width: 3.5rem; max-width: none; height: max-content; padding: 0; overflow: visible; background: transparent; border: 0 solid transparent; border-right-width: 1px; border-radius: 0; box-shadow: none; transition: width .18s ease, background-color 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out; }
+.jcem-app-nav-overlay,
+.jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav { background: #d6e0e7; border-color: #9dabb6; box-shadow: .3rem 0 1rem rgb(0 0 0 / .08); }
 .jcem-app-nav::before { content: none; }
 .jcem-app-nav-right { grid-column: 2; border-right-width: 0; border-left-width: 1px; }
 .jcem-app-nav-right.jcem-app-nav-overlay { box-shadow: -.3rem 0 1rem rgb(0 0 0 / .08); }
@@ -1668,7 +1681,7 @@ body.jcem-has-app-nav-right .jcem-nav-state:checked ~ .jcem-app-shell::before { 
 .jcem-nav-toggle { display: grid; place-items: center; width: 100%; min-width: 0; height: 3.25rem; border: 0; border-bottom: 1px solid #b7c1c9; border-radius: 0; background: #dde3e7; font-size: 2rem; line-height: 1; }
 .jcem-nav-toggle .jcem-fa-icon { width: 1.45rem; height: 1.45rem; }
 .jcem-app-nav nav, .jcem-app-nav .jcem-nav-toggle { transition: width .18s ease; }
-.jcem-app-nav nav { display: grid; gap: .15rem; padding: .35rem; }
+.jcem-app-nav nav { box-sizing: border-box; display: grid; gap: .15rem; padding: .35rem; }
 .jcem-app-nav a { display: grid; grid-template-columns: 2.8rem 1fr; align-items: center; gap: .55rem; min-height: 2.75rem; color: #252a2f; text-decoration: none; white-space: nowrap; border-radius: .4rem; }
 .jcem-app-nav a { overflow: hidden; }
 .jcem-app-nav a > span:last-child { opacity: 0; visibility: hidden; transition: opacity .14s ease; }
@@ -1678,7 +1691,8 @@ body.jcem-has-app-nav-right .jcem-nav-state:checked ~ .jcem-app-shell::before { 
 .jcem-nav-dot { width: .75rem; height: .75rem; margin: auto; border-radius: 50%; background: #1b5f8c; }
 :root[data-theme="dark"] .jcem-theme-toggle { background: #34363a; border-color: #666a70; color: #c6c9cd; }
 :root[data-theme="dark"] .jcem-app-shell::before { background: #25272a; border-color: #55585e; box-shadow: .3rem 0 1rem rgb(0 0 0 / .3); }
-:root[data-theme="dark"] .jcem-app-nav-overlay { background: #25272a; border-color: #55585e; box-shadow: .3rem 0 1rem rgb(0 0 0 / .3); }
+:root[data-theme="dark"] .jcem-app-nav-overlay,
+:root[data-theme="dark"] .jcem-nav-state:checked ~ .jcem-app-shell .jcem-app-nav { background: #25272a; border-color: #55585e; box-shadow: .3rem 0 1rem rgb(0 0 0 / .3); }
 :root[data-theme="dark"] .jcem-app-nav-right.jcem-app-nav-overlay { box-shadow: -.3rem 0 1rem rgb(0 0 0 / .3); }
 :root[data-theme="dark"] .jcem-nav-state:checked ~ .jcem-app-shell::before { background: #25272a; border-color: #55585e; box-shadow: .65rem 0 1.8rem rgb(0 0 0 / .35); }
 :root[data-theme="dark"] .jcem-nav-toggle { background: #323438; border-color: #55585e; color: #f1f1f1; }

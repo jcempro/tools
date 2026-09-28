@@ -185,9 +185,11 @@ test("shared chrome checks updates once and delegates presentation to CSS", asyn
   assert.match(sharedTs, /new IntersectionObserver\(\(\[entry\]\)/);
   assert.match(sharedTs, /classList\.toggle\("jcem-app-nav-overlay",\s*!entry\?\.isIntersecting\)/);
   assert.match(sharedCss, /\.jcem-app-nav-sentinel\s*\{[^}]*position:\s*absolute[^}]*block-size:\s*1px/s);
-  assert.match(sharedCss, /\.jcem-app-nav-overlay\s*\{[^}]*background:\s*#d6e0e7[^}]*border-color:\s*#9dabb6/s);
+  assert.match(sharedCss, /\.jcem-app-nav-overlay,\s*\.jcem-nav-state:checked ~ \.jcem-app-shell \.jcem-app-nav\s*\{[^}]*background:\s*#d6e0e7[^}]*border-color:\s*#9dabb6/s);
+  assert.match(sharedCss, /\.jcem-app-nav\s*\{[^}]*max-width:\s*none;/s);
+  assert.match(sharedCss, /\.jcem-app-nav nav\s*\{[^}]*box-sizing:\s*border-box;/s);
   assert.match(sharedCss, /\.jcem-app-nav\s*\{[^}]*background-color 140ms ease-out[^}]*border-color 140ms ease-out[^}]*box-shadow 140ms ease-out/s);
-  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-app-nav-overlay\s*\{[^}]*background:\s*#25272a[^}]*border-color:\s*#55585e/s);
+  assert.match(sharedCss, /:root\[data-theme="dark"\] \.jcem-app-nav-overlay,\s*:root\[data-theme="dark"\] \.jcem-nav-state:checked ~ \.jcem-app-shell \.jcem-app-nav\s*\{[^}]*background:\s*#25272a[^}]*border-color:\s*#55585e/s);
   assert.match(sharedCss, /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*\.jcem-app-nav[^}]*transition:\s*none/s);
   const compile = await readFile("scripts/compile.mjs", "utf8");
 
@@ -333,6 +335,9 @@ test("printable modules consume the shared document workspace layout", async () 
   assert.match(sharedCss, /\.jcem-document-workspace\s*{[^}]*overflow:\s*clip;/s);
   assert.match(sharedCss, /\.jcem-chrome-toolbar-row::before\s*{[^}]*border-top:\s*1px solid/s);
   assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-toolbar-row::before\s*{[^}]*left:\s*3\.5rem;/s);
+  assert.match(sharedCss, /body\.jcem-has-app-nav-right:not\(\.imprimir\) \.jcem-chrome-toolbar-row::before\s*{[^}]*left:\s*0;[^}]*right:\s*3\.5rem;/s);
+  assert.match(sharedCss, /body\.jcem-has-app-nav:not\(\.imprimir\) \.jcem-chrome-header::after\s*{[^}]*3\.5rem;[^}]*border-bottom:\s*1px solid/s);
+  assert.match(sharedCss, /body\.jcem-has-app-nav-right:not\(\.imprimir\) \.jcem-chrome-header::after\s*{[^}]*left:\s*0;[^}]*right:\s*3\.5rem;/s);
   assert.match(sharedCss, /@media\s*\(min-width:\s*1120px\)\s*{[^}]*\.jcem-document-workspace\s*{[^}]*grid-template-columns:/s);
   assert.match(sharedCss, /\.jcem-document-workspace\.jcem-document-workspace--document-only\s*{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   assert.match(sharedCss, /\.jcem-document-preview-region\s*{[^}]*padding:\s*1rem;/s);
