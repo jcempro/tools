@@ -7,7 +7,7 @@
     "expected": "elemento sticky, navegação interna e botão compartilham a mesma largura expandida, com fundo opaco desde o topo inicial",
     "criterion": "larguras iguais, fundo rgb(214, 224, 231) no claro, sem documento visível no painel expandido",
     "before": "anexo 337 × 369; captura Web inicial reproduziu linhas e conteúdo do documento através do painel",
-    "after": "captura Web desta execução no topo e após rolagem; larguras medidas de 240 px para elemento, nav interno e botão; fundo opaco, sem vazamento"
+    "after": "captura Web desta execução no topo e após rolagem; larguras medidas de 240 px para elemento, nav interno e botão; fundo opaco, sem vazamento; contraste CSS escuro 11,67:1, ainda sem inspeção visual interativa do tema"
   },
   {
     "artifact": "borda-horizontal.png → captura local Web de Faturamento, lados esquerdo e direito",
@@ -17,6 +17,6 @@
     "expected": "divisórias começam após a coluna à esquerda ou terminam antes da coluna à direita; a expansão opaca cobre a interseção",
     "criterion": "faixa reservada de 3,5rem e divisórias fora dela nos dois lados; menu expandido sem linha interna",
     "before": "anexo 132 × 302; borda horizontal visível sobre a faixa da navegação",
-    "after": "capturas Web desta execução: divisória do cabeçalho e da toolbar com offset de 46,6667 px à esquerda; no lado direito, offset de 46,6667 px à direita; painel expandido opaco em 320 × 568"
+    "after": "capturas Web desta execução: divisória do cabeçalho e da toolbar com offset de 46,6667 px à esquerda; no lado direito, offset de 46,6667 px à direita; painel expandido opaco em 320 × 568; Bundle gerado, mas abertura visual file: bloqueada pelo navegador"
   }
 ]

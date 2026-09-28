@@ -100,7 +100,7 @@
 - Escopo: Tecnico.
 - Objetivo: aplicar o estado opaco e a transicao normatizados no mecanismo compartilhado da barra vertical, sem hardcode de viewport nem regressao de navegacao.
 - Prioridade: alta.
-- Status: reaberta_para_correcao.
+- Status: implementada_aguarda_validacao_humana.
 - Dependencias: FT-030 concluida e commitada; nova autorizacao humana explicita posterior ao commit normativo.
 - Aceite: evidencia corrigida em temas e viewports, limiar discreto, transicao curta e ausencia de regressao geometrica, interativa ou responsiva.
 
@@ -109,7 +109,7 @@
 1. Etapa 1/3 - ajustar mecanismo e estilos compartilhados. Status: concluido.
 2. Etapa 2/3 - ampliar testes de estado, tema, scroll e responsividade. Status: concluido.
 3. Etapa 3/3 - validar visualmente, rastrear e concluir. Status: concluido.
-4. Correção de 2026-09-28 - eliminar transparência no menu expandido e a travessia da borda horizontal, validar estados e sincronizar rastreabilidade. Status: em andamento.
+4. Correção de 2026-09-28 - eliminar transparência no menu expandido e a travessia da borda horizontal, validar estados e sincronizar rastreabilidade. Status: implementada; validação visual humana de tema escuro e Bundle pendente.
 
 ### Resultado e verificacoes
 
@@ -117,10 +117,14 @@
 - O trilho sticky usa as superficies e bordas dos temas claro/escuro, cobre a largura retraida ou expandida e transiciona apenas fundo, borda e sombra por `140ms ease-out`; movimento reduzido mantem troca imediata.
 - Os 26 testes de infraestrutura e o type-check foram aprovados; o Bundle offline foi inspecionado no topo escuro/retraido e apos rolagem em claro/expandido, sem transparencia sobre toolbar ou conteudo.
 - Commit material: `b856da75d18837d62ad09d2ff0d9aa1ddebf5bf9`; rastreabilidade validada com 310 entradas e 309 materiais.
+- Correção da regressão: `max-width: none` permite que o elemento sticky tenha a largura expandida real; o conteúdo interno usa `border-box`; o estado expandido recebe a superfície opaca temática mesmo antes do limiar de rolagem; divisórias do cabeçalho e da toolbar respeitam a coluna do trilho à esquerda ou à direita.
+- Evidências originais preservadas em `.ia.rules/state/requests/FT-031/`; inspeção Web confirmou topo/rolagem, recolhido/expandido e lados esquerdo/direito em 487 × 582 e 320 × 568. Contraste calculado: 10,80:1 no claro e 11,67:1 no escuro.
+- `npm run check` aprovou type-check, lint, 77 testes, build Web/quatro Bundles e validação de 6 páginas/81 arquivos. O navegador bloqueou a abertura visual do Bundle `file:`; esse bloqueio não foi contornado. Tema escuro foi validado por regra CSS e contraste, mas não por inspeção visual interativa.
+- Commit material da correção: `2d6da35171fb8d330d2f00e28bd5b074ddee7f7e`; sincronização do RCF: `ff3b9ef`.
 
 ### Proximo ponto
 
-- A complementação humana e os dois anexos estão preservados em `.ia.rules/state/requests/FT-031/`; concluir a correção na superfície compartilhada, verificar temas/lados/estados/Web/Bundle e sincronizar o commit material.
+- Aguardar validação visual humana do tema escuro e do Bundle offline; não publicar a correção como homologada antes desse aceite.
 
 ## FT-032 - Contrato de eficiencia e fidelidade do PDF dedicado
 
