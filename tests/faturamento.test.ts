@@ -9,6 +9,7 @@ import {
   distributeCents,
   firstBusinessDayOfNextMonth,
   formatMesAno,
+  initialMonthForSignatureDate,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
   normalizePredictedRows,
@@ -68,6 +69,24 @@ test("faturamento builds twelve months from the selected initial month", () => {
   assert.equal(period.length, 12);
   assert.equal(formatMesAno(period[0]!), "07/2025");
   assert.equal(formatMesAno(period[11]!), "06/2026");
+});
+
+test("faturamento restores the initial month from the displayed signature date", () => {
+  const today = new Date(2026, 8, 28);
+  assert.equal(formatMesAno(initialMonthForSignatureDate("2024-01-31", today)), "01/2023");
+  assert.equal(formatMesAno(initialMonthForSignatureDate("2026-09-28", today)), "09/2025");
+  assert.equal(formatMesAno(initialMonthForSignatureDate("2028-12-01", today)), "12/2027");
+  assert.equal(formatMesAno(initialMonthForSignatureDate("", today)), "09/2025");
+  assert.equal(formatMesAno(initialMonthForSignatureDate("2026-02-30", today)), "09/2025");
+});
+
+test("faturamento keeps the existing indirect link between edited month and signature", () => {
+  const today = new Date(2026, 8, 28);
+  const manuallySelected = parseMesAno("11/2026");
+  assert.ok(manuallySelected);
+  const signature = signatureDateForInitialMonth(manuallySelected, today);
+  assert.equal(signature.toISOString().slice(0, 10), "2026-12-01");
+  assert.equal(formatMesAno(initialMonthForSignatureDate("2026-12-01", today)), "12/2025");
 });
 
 test("faturamento classifies realized and predicted months from signature date", () => {

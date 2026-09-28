@@ -369,6 +369,14 @@ export function monthFromDate(date: Date): MesAno {
   return { ano: date.getFullYear(), mes: date.getMonth() + 1 };
 }
 
+export function initialMonthForSignatureDate(value: string, today = new Date()): MesAno {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const candidate = match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
+  const valid = candidate && match && candidate.getFullYear() === Number(match[1])
+    && candidate.getMonth() + 1 === Number(match[2]) && candidate.getDate() === Number(match[3]);
+  return addMonths(monthFromDate(valid ? candidate : today), -12);
+}
+
 export function previousClosedMonth(date: Date): MesAno {
   const candidate = new Date(date.getFullYear(), date.getMonth() - 1, 1);
   return { ano: candidate.getFullYear(), mes: candidate.getMonth() + 1 };

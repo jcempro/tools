@@ -47,6 +47,7 @@
     { "identity": "fontawesome:paper-plane", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:pen-to-square", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:print", "licenseId": "fontawesome-free" },
+    { "identity": "fontawesome:rotate", "licenseId": "fontawesome-free" },
     { "identity": "fontawesome:stamp", "licenseId": "fontawesome-free" },
     { "identity": "iconify:game-icons:upgrade", "licenseId": "game-icons" },
     { "identity": "iconify:streamline-sharp:download-box-1-solid", "licenseId": "streamline-sharp" },

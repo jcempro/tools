@@ -17,6 +17,7 @@ import {
   faPaperPlane,
   faPenToSquare,
   faPrint,
+  faRotate,
   faStamp
 } from "@fortawesome/free-solid-svg-icons";
 import { Moon as moonIcon, Sun as sunIcon } from "@lucide/icons";
@@ -127,7 +128,7 @@ function registerIconify(collection: string, name: string, data: IconifyData): v
 
 [
   faBars, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircleDown, faEllipsisVertical,
-  faEraser, faFileArrowDown, faFileArrowUp, faFilePdf, faFloppyDisk, faFolderOpen, faPaperPlane, faPenToSquare, faPrint, faStamp
+  faEraser, faFileArrowDown, faFileArrowUp, faFilePdf, faFloppyDisk, faFolderOpen, faPaperPlane, faPenToSquare, faPrint, faRotate, faStamp
 ].forEach(registerFontAwesome);
 registerLucide(moonIcon);
 registerLucide(sunIcon);

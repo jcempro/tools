@@ -79,13 +79,16 @@
               </div>
               <div>
                 <label for="mes-inicial">Mês inicial</label>
-                <input
-                  id="mes-inicial"
-                  name="mesInicial"
-                  type="text"
-                  placeholder="07/2025"
-                  required
-                />
+                <div class="initial-month-control">
+                  <input
+                    id="mes-inicial"
+                    name="mesInicial"
+                    type="text"
+                    placeholder="07/2025"
+                    required
+                  />
+                  <button id="restaurar-mes-inicial" class="restore-initial-month no-print" type="button" aria-label="Restaurar mês inicial" title="Restaurar mês inicial" data-jcem-tooltip="Restaurar mês inicial"></button>
+                </div>
               </div>
             </div>
           </fieldset>

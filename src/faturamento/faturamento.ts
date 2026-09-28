@@ -8,6 +8,7 @@ import {
   formatCurrencyFromCents,
   formatMesAno,
   formatPercent,
+  initialMonthForSignatureDate,
   isRegimeAllowed,
   MEI_LIMIT_CENTS,
   MONTHLY_DISTRIBUTION_TOLERANCE_PERCENT,
@@ -156,7 +157,7 @@ import faturamentoConfig from "../assets/config/faturamento.json";
   }
 
   function defaultInitialMonth(): MesAno {
-    return addMonths({ ano: signatureDate().getFullYear(), mes: signatureDate().getMonth() + 1 }, -12);
+    return initialMonthForSignatureDate(input("data-assinatura").value);
   }
 
   function initialMonth(): MesAno {
@@ -410,6 +411,11 @@ import faturamentoConfig from "../assets/config/faturamento.json";
     bindDynamicInputs();
     updateDistributionLockState();
     renderPreview();
+  }
+
+  function restoreInitialMonth(): void {
+    setValue("mes-inicial", formatMesAno(defaultInitialMonth()));
+    refreshPeriodIfNeeded();
   }
 
   function distributionVistaPercent(): number {
@@ -1094,12 +1100,16 @@ import faturamentoConfig from "../assets/config/faturamento.json";
     api.autosave.init({ selector: "#faturamento-app input", validation });
     restoreFixedDistribution();
     normalizeDefaults();
-    syncInitialMonthSignatureDate();
     applyJsonPayload();
-    syncInitialMonthSignatureDate();
     refreshPeriodIfNeeded();
     updateDistributionLockState();
     bindStaticInputs();
+
+    const restoreMonthButton = api.one<HTMLButtonElement>("#restaurar-mes-inicial");
+    if (restoreMonthButton && w.JCEMIcons) {
+      restoreMonthButton.innerHTML = w.JCEMIcons.render({ provider: "fontawesome", name: "rotate" });
+    }
+    api.on(restoreMonthButton, "click", restoreInitialMonth);
 
     const distribute = api.one<HTMLButtonElement>("#distribuir-faturamento");
     api.on(distribute, "click", distributeAnnual);

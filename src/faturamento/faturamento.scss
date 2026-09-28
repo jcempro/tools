@@ -10,6 +10,57 @@
   --warn: #fff4cc;
 }
 
+.initial-month-control {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.initial-month-control #mes-inicial {
+  min-width: 0;
+  flex: 1;
+}
+
+.restore-initial-month {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: 0.1875rem;
+  border: 1px solid #9fabb6;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #174a7c;
+  cursor: pointer;
+}
+
+.restore-initial-month .jcem-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+}
+
+.restore-initial-month:hover,
+.restore-initial-month:focus-visible {
+  border-color: #2d7fbd;
+  background: #dcecf8;
+  outline: 2px solid #2d7fbd;
+  outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .restore-initial-month {
+  border-color: #666a70;
+  background: #34363a;
+  color: #e4ebf2;
+}
+
+:root[data-theme="dark"] .restore-initial-month:hover,
+:root[data-theme="dark"] .restore-initial-month:focus-visible {
+  background: #494c52;
+}
+
 .print-page table th,
 .print-page table td {
   box-sizing: border-box;
