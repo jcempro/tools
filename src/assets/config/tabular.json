@@ -3,27 +3,27 @@
     {
       "value": "left",
       "label": "Manter todas as linhas do primeiro arquivo",
-      "help": "Preserva o primeiro arquivo e acrescenta dados encontrados nos demais."
+      "help": "Preserva o primeiro arquivo e acrescenta dados encontrados nos demais. Ex.: A tem Ana/Bia e B tem Bia/Caio; mantém Ana e Bia."
     },
     {
       "value": "right",
       "label": "Manter todas as linhas do arquivo mais recente",
-      "help": "Preserva cada arquivo novo e acrescenta dados encontrados nos anteriores."
+      "help": "Preserva cada arquivo novo e acrescenta dados encontrados nos anteriores. Ex.: A tem Ana/Bia e B tem Bia/Caio; mantém Bia e Caio."
     },
     {
       "value": "inner",
       "label": "Manter somente linhas encontradas em todos",
-      "help": "Descarta registros que não tenham correspondência em cada arquivo."
+      "help": "Descarta registros sem correspondência. Ex.: A tem Ana/Bia e B tem Bia/Caio; mantém só Bia."
     },
     {
       "value": "full",
       "label": "Manter todas as linhas de todos os arquivos",
-      "help": "Combina correspondências e também preserva registros exclusivos."
+      "help": "Combina correspondências e preserva registros exclusivos. Ex.: A tem Ana/Bia e B tem Bia/Caio; mantém Ana, Bia e Caio."
     },
     {
       "value": "append",
       "label": "Apenas adicionar as linhas em sequência",
-      "help": "Não cruza registros: apenas concatena as linhas na ordem dos arquivos."
+      "help": "Não cruza registros: concatena as linhas na ordem dos arquivos. Ex.: A tem Ana/Bia e B tem Bia/Caio; mantém Ana, Bia, Bia e Caio, salvo linhas finais exatamente iguais."
     }
   ],
   "similarity": {

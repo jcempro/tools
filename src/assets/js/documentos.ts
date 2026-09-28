@@ -1057,7 +1057,7 @@ declare const __JCEM_BUILD_VERSION__: string;
   const toolbarLegacyBlueprints: ToolbarLegacyBlueprint[] = [
     // FIX-BUG: preserva ações utilitárias do CSV na normalização da toolbar global.
     { hint: "Abrir CSV", icon: { unicode: "f574" }, id: "csv-open", label: "", order: 20, selector: ".csv-open" },
-    { hint: "Baixar CSV convertido", icon: { unicode: "f56d" }, id: "csv-download", label: "", order: 40, selector: ".csv-download" },
+    { hint: "Baixar CSV resultante", icon: { unicode: "f56d" }, id: "csv-download", label: "", order: 40, selector: ".csv-download" },
     { datasetSource: "bundle", download: true, hint: "Baixar versão offline", hrefSource: "href", icon: { collection: "streamline-sharp", name: "download-box-1-solid", provider: "iconify" }, id: "bundle", label: "", order: 90, selector: "[data-bundle-download],.bundle" },
     { hint: "Salvar como PDF", icon: { unicode: "f1c1" }, id: "pdf", label: "", order: 40, selector: ".pdf.print" },
     { hint: "Imprimir em branco", icon: { unicode: "f1c1" }, id: "blank-pdf", label: "fixed:em branco", order: 45, selector: ".pdf.formulario" },
