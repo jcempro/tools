@@ -118,8 +118,8 @@
       - validações executadas;
       - eventual diferença residual e sua justificativa técnica.
 
-- [ ] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
-  - 📜 FT-034 normatizada; FT-035 aguarda autorização posterior ao commit normativo.
+- [x] Desacoplar `merge` da conversão no submódulo Conversor CSV, ampliar os modos de mesclagem e adaptar sua UI para operação compreensível por usuários não técnicos
+  - ✅ FT-035 implementada e validada em Web/Bundle; três operações e cinco estratégias disponíveis.
 
   * O Conversor CSV DEVE suportar, conforme selecionado:
 
