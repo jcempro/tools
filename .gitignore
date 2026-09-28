@@ -55,6 +55,12 @@ node_modules/
 !/.ia.rules/skills/context-cost-audit/scripts/
 !/.ia.rules/scenarios/web/page-like/capabilities/
 !/.ia.rules/agents.inc.md
+!/.ia.rules/state/
+!/.ia.rules/state/requests/
+!/.ia.rules/state/requests/FT-031/
+!/.ia.rules/state/requests/FT-031/request.md
+!/.ia.rules/state/requests/FT-031/menu-expandido.png
+!/.ia.rules/state/requests/FT-031/borda-horizontal.png
 !/.ia.rules/clients/codex/validation-audit.toml
 !/.ia.rules/clients/github-copilot/validation-audit.agent.md
 !/.ia.rules/config/core.json
