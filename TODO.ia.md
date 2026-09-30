@@ -296,3 +296,9 @@
     - DEVEM ser impedidas distorções equivalentes no início ou fim de linhas/blocos;
     - a correção DEVE preservar a aparência e o fluxo de texto **justificado**, sem lacunas artificiais, recuos ou desalinhamentos.
   - Validar separadamente os índices de definição e citação, negritos e espaçamento, garantindo ausência de regressões nos comportamentos já corretos.
+
+- [ ] Regressões identificadas no tratamento do botão de imprimir em PDF:
+  - Objetivo da solicitação era garantir que ele geraria um PDF pequeno equiparavelmente à impressão nativa, NÃO igualá-lo a função de impressão que depende da existência no dipositivo de impressoras instaladas. O gerador de PDF DEVE gerar, efetivamente o PDF para download, SEM passar e SEM depender de mecanismo de impressão, sendo completamente independente do dispositivo e da existência de impressoras isntaladas (impressoras físicas ou impressoras virtuais como XPS e outras)
+
+- [ ]  No módulos declarações unificadas NÃO deve haver necessidade de selecionar o tipo de pessoas (juridica ou física), isso DEVE ser inferido automaticamente por meio do número informado.
+  - Embora a exibiação impresssa DEVA permanecer exibindo todos os s representantes anteriormente, o mesmo N~ÇAO deve SER EXIGIDO para UI de gerenciá-las.
